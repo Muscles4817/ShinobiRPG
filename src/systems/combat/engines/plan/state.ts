@@ -358,6 +358,8 @@ export function patch(
       | 'committed'
       | 'gathering'
       | 'threadsSlipped'
+      | 'threadsCut'
+      | 'rethreading'
       | 'meditating'
       | 'veiled'
       | 'revealed'

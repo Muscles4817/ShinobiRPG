@@ -2,6 +2,7 @@ import { canReach, reachable, type RowAttack } from '../../rules/rows';
 import { RANGE_BANDS, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { hasVerb } from '../../rules/verbs';
 import { playsAnywhere, type Card } from './cards';
+import { hangsSlack } from './puppets';
 import type { PlanFighter } from './state';
 
 /**
@@ -27,9 +28,14 @@ export function attackOf(card: Card): RowAttack {
   }
 }
 
+/** Those who hold a line: a puppet hanging slack on its threads is no wall (`puppets.ts`). */
+function holdingTheLine(fighters: readonly PlanFighter[]): PlanFighter[] {
+  return fighters.filter((f) => !hangsSlack({ fighters: [...fighters] }, f));
+}
+
 /** Whether a card can reach this foe past their front row. */
 export function canHit(card: Card, foe: PlanFighter, fighters: readonly PlanFighter[]): boolean {
-  return canReach(attackOf(card), foe, fighters);
+  return canReach(attackOf(card), foe, holdingTheLine(fighters));
 }
 
 /** The foes a card can reach past their front row. */
@@ -38,5 +44,5 @@ export function hittable(
   foes: readonly PlanFighter[],
   fighters: readonly PlanFighter[],
 ): PlanFighter[] {
-  return reachable(attackOf(card), foes, fighters);
+  return reachable(attackOf(card), foes, holdingTheLine(fighters));
 }

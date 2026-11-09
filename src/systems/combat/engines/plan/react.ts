@@ -1,3 +1,4 @@
+import { threadsCutBy } from './puppets';
 import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
@@ -353,7 +354,8 @@ export function react(start: Round, struck: Hit): Round {
     ...kitNote(momentOf(shielded, attacker.id), target, blow),
   );
   const marked = smashed ? brokeGuard(told, target.id, attacker.id) : told;
-  const worn = wearShroud(wound(marked, target.id, damage), target.id, hitTypeOf(blow), damage);
+  const cut = threadsCutBy(wound(marked, target.id, damage), attacker, target);
+  const worn = wearShroud(cut, target.id, hitTypeOf(blow), damage);
   const landed = confuse(worn, hit);
   return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;
 }
