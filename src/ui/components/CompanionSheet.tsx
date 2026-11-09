@@ -121,6 +121,7 @@ export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetP
             <p className="person-tags">
               <span className="badge">{c.kind}</span>
               <span className="badge">{c.growing.stage}</span>
+              {c.nature && <span className="badge">{c.nature}</span>}
             </p>
           </div>
         </header>

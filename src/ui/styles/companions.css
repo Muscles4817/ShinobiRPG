@@ -100,6 +100,8 @@
 .companion-sheet .badge {
   color: var(--paper-ink);
   border-color: var(--paper-muted);
+  /* Kinds and natures are written in sentence case: "Thunder kite", "Lightning nature". */
+  text-transform: none;
 }
 .handler-teach {
   display: grid;

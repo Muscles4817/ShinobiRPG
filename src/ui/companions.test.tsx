@@ -75,6 +75,14 @@ describe('companions (smoke test)', () => {
     expect(done).toEqual([{ type: 'feedCompanion', ingredientId: null }]);
   });
 
+  it('shows a beast companion’s nature on its sheet', () => {
+    const kite = withHound(newGame(), { kindId: 'thunder-kite-chick', name: 'Raikō' });
+    render(
+      <CompanionSheet ctx={ctx} state={kite} perform={() => undefined} onClose={() => undefined} />,
+    );
+    expect(screen.getByText('Lightning nature')).toBeTruthy();
+  });
+
   it('buys medicine at the animal clinic', async () => {
     const user = userEvent.setup();
     const done: GameAction[] = [];

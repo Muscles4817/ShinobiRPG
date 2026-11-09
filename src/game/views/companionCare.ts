@@ -1,3 +1,4 @@
+import { capitalise } from '@/core';
 import { stageName, stageOf, stageProgress } from '@/systems/bonds';
 import {
   hungerOf,
@@ -61,6 +62,8 @@ export interface FoodOption extends Choice {
 
 export interface CompanionSheet extends CompanionStrip {
   readonly kind: string;
+  /** "Lightning nature", for a kind of a chakra beast's line; null for a plain animal. */
+  readonly nature: string | null;
   /** Its body and skills, and how it is growing (`companionGrowing.ts`). */
   readonly growing: CompanionGrowing;
   /** Its kind's arts, known and still to open (`handling.ts`). */
@@ -154,6 +157,7 @@ export function companionSheet(state: GameState, ctx: GameContext): CompanionShe
   return {
     ...strip,
     kind: kind.name,
+    nature: kind.nature ? `${capitalise(kind.nature)} nature` : null,
     growing: companionGrowing(companion, kind, state.board.seed),
     arts: companionArts(companion, kind, ctx),
     role: roleLine(companion, kind),
