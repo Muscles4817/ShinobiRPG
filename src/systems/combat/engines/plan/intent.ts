@@ -128,6 +128,9 @@ const DEFENDING: Readonly<Record<DefenceCard['kind'], string>> = {
   brace: 'Digging in to take it',
 };
 
+/** What a dazed foe is about to do: nothing. */
+const LOSES_TURN = 'Dazed: loses the next turn';
+
 function telegraph(card: Card, precise: boolean): string {
   if (isDefenceCard(card)) return DEFENDING[card.kind];
   switch (card.kind) {
@@ -155,6 +158,8 @@ function telegraph(card: Card, precise: boolean): string {
 function nextMove(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
   // A hidden foe gives nothing away to eyes that don't see them.
   if (!inSight(playerOf(state), f)) return undefined;
+  // A daze costs them their next turn, whatever they meant to do with it.
+  if (f.stunned > 0) return LOSES_TURN;
   const id = state.intents[f.id];
   const card = id === undefined ? null : findCard(f, id);
   return card ? telegraph(card, readsPrecisely(playerOf(state), f, insight)) : undefined;
@@ -171,9 +176,16 @@ function knownCards(state: PlanState, f: PlanFighter, insight: boolean): string 
   return `${insight ? `${RANGE_LABEL[state.range]} cards` : 'Seen'}: ${names.join(', ')}`;
 }
 
-/** What the fight screen says about a foe: its next move, then the cards you know it has. */
+function told(state: PlanState, f: PlanFighter): boolean {
+  return f.side === 'enemy' && alive(f) && !state.result;
+}
+
+/** What the fight screen says a foe is about to do: its next move, and only that. */
 export function intentLine(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
-  if (f.side !== 'enemy' || !alive(f) || state.result) return undefined;
-  const parts = [nextMove(state, f, insight), knownCards(state, f, insight)].filter(Boolean);
-  return parts.length > 0 ? parts.join('. ') : undefined;
+  return told(state, f) ? nextMove(state, f, insight) : undefined;
+}
+
+/** The cards you know a foe holds, said apart from its next move (`CombatantView.known`). */
+export function knownLine(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
+  return told(state, f) ? knownCards(state, f, insight) : undefined;
 }

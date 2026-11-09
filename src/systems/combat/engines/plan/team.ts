@@ -157,11 +157,11 @@ export function stanceStatus(f: PlanFighter, fighters: readonly PlanFighter[]): 
   const stance = stanceOf(f);
   switch (stance.kind) {
     case 'press':
-      return ['Pressing'];
+      return ['Pressing the attack'];
     case 'support':
-      return ['Supporting'];
+      return ['Supporting from behind'];
     case 'hold':
-      return ['Holding'];
+      return ['Holding back'];
     case 'cover': {
       const ward = fighters.find((w) => w.id === stance.covers);
       return [ward?.isPlayer ? 'Covering you' : `Covering ${ward?.name ?? 'a teammate'}`];

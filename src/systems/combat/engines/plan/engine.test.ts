@@ -264,7 +264,9 @@ describe('plan & watch engine', () => {
       createRng(1),
     );
     const bandit = engine.view(armed).combatants.find((c) => c.id === 'bandit');
-    expect(bandit?.intent).toMatch(/\. Mid cards: Blast/);
+    // The next move is the intent; the cards held are said apart from it.
+    expect(bandit?.intent).not.toMatch(/cards/);
+    expect(bandit?.known).toMatch(/^Mid cards: Blast/);
   });
 
   it('a fight saved under the old single-tactic plan resumes at the card table', () => {
