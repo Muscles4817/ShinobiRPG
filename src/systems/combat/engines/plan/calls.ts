@@ -13,6 +13,8 @@ export interface Caller {
   readonly summonFates?: Readonly<Record<string, SummonFate>>;
   /** A hard hit made their puppets' threads slip, until their next turn (`puppets.ts`). */
   readonly threadsSlipped?: boolean;
+  /** What share of its health each summon called this fight had as it left, by call id. */
+  readonly summonShares?: Readonly<Record<string, number>>;
   /** Calls that won't answer again this fight: beaten, or sent home hurt to save them. */
   readonly summonsLost?: readonly string[];
   /** Call ids of sage toads perched on them (`perching.ts`), off the field but still out. */

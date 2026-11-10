@@ -1,3 +1,4 @@
+import { withYourPuppets } from './puppetry/yours';
 import type { EnemyDef } from '@/content';
 import type { Rng } from '@/core';
 import type { CombatOpening, CombatOutcome } from '@/systems/combat';
@@ -68,7 +69,7 @@ export function beginCombat(
     state,
     ctx,
     {
-      player: withSummons(playerCombatant(state, ctx), state, ctx),
+      player: withYourPuppets(withSummons(playerCombatant(state, ctx), state, ctx), state, ctx),
       allies: [...teamAllies(state, ctx), ...companionAllies(state, ctx)],
       enemies,
       canFlee: stage.canFlee,

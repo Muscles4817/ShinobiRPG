@@ -135,6 +135,7 @@ export type GameAction =
   | { readonly type: 'takeHive'; readonly clanId: string; readonly share: HiveShare }
   | { readonly type: 'studyDustScroll'; readonly dustId: string }
   | { readonly type: 'makeDust' }
+  | { readonly type: 'mendPuppet'; readonly frameId: string }
   | { readonly type: 'buyDust'; readonly placeId: string }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }

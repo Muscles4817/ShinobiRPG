@@ -33,7 +33,8 @@ function puppetBody(puppet: PuppetDef, ctx: GameContext): CombatantSetup {
   };
 }
 
-function puppetCall(puppet: PuppetDef, ctx: GameContext): CombatCall {
+/** A puppet as a call its unsealing technique makes. */
+export function puppetCall(puppet: PuppetDef, ctx: GameContext): CombatCall {
   return {
     id: puppet.id,
     body: puppetBody(puppet, ctx),
