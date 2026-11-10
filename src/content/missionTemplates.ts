@@ -1,3 +1,4 @@
+import type { CombatGround } from '@/systems/combat';
 import type { MissionDef, MissionStage } from '@/systems/missions';
 
 /**
@@ -7,7 +8,8 @@ import type { MissionDef, MissionStage } from '@/systems/missions';
  * the mission flow and validation never know a job came from a template.
  *
  * A placeholder is `{name}` (letters, digits and dashes) anywhere in a template's text,
- * including enemy ids and flavour. Validation reports any placeholder a fill left empty.
+ * including enemy ids and flavour. Validation reports any placeholder a fill left empty. A
+ * fight's ground isn't text, so a fill names it apart (`MissionFill.ground`).
  */
 
 export interface MissionTemplate {
@@ -40,6 +42,8 @@ export interface MissionFill {
   readonly minMissionsCompleted?: number;
   /** Overrides the template's pay, for a richer or poorer client. */
   readonly reward?: { readonly ryo: number; readonly reputation: number };
+  /** Where the job's fights happen, for those its template leaves on open ground. */
+  readonly ground?: CombatGround;
 }
 
 const PLACEHOLDER = /\{([a-zA-Z0-9-]+)\}/g;
@@ -70,6 +74,17 @@ function fillDeep<T>(value: T, values: Readonly<Record<string, string>>): T {
   return value;
 }
 
+/** A fight stage the template left on open ground, set where the fill says. */
+function grounded(stage: MissionStage, ground: CombatGround | undefined): MissionStage {
+  if (!ground || (stage.kind !== 'combat' && stage.kind !== 'encounter')) return stage;
+  return stage.ground ? stage : { ...stage, ground };
+}
+
+/** Whether a template has a fight a fill's ground could go to. */
+export function templateFights(template: MissionTemplate): boolean {
+  return template.stages.some((s) => s.kind === 'combat' || s.kind === 'encounter');
+}
+
 /** One fill made into a mission. Throws on an unknown template (a programmer error). */
 export function missionFromFill(template: MissionTemplate, fill: MissionFill): MissionDef {
   const { values } = fill;
@@ -86,7 +101,7 @@ export function missionFromFill(template: MissionTemplate, fill: MissionFill): M
     ...(template.threads ? { threads: fillDeep(template.threads, values) } : {}),
     ...(template.charge ? { charge: fillDeep(template.charge, values) } : {}),
     ...(template.twists ? { twists: template.twists } : {}),
-    stages: template.stages.map((s) => fillDeep(s, values)),
+    stages: template.stages.map((s) => grounded(fillDeep(s, values), fill.ground)),
   };
 }
 

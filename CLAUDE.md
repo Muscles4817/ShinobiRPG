@@ -1169,7 +1169,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   outcomes for later acts to `remember` (validated: every remembered mark is left by some job).
 - **Add many jobs of one shape:** write a `MissionTemplate` (`content/missionTemplates.ts`) with
   `{slot}` placeholders and their meanings in `placeholders`, then add `MissionFill`s giving every
-  slot a value (`packs/original/jobs/`). Fills become ordinary missions on the board; validation
+  slot a value (`packs/original/jobs/`); a fill's `ground` sets where its fights happen, where the
+  template leaves them on open ground. Fills become ordinary missions on the board; validation
   reports any slot left unfilled, and tests check each fill gives exactly what its template asks.
 - **Add a technique:** give it a source (validated): the academy (rank E–D), a library (its open
   shelves keep standard techniques to C, for genin once their sensei signs the permit at a
