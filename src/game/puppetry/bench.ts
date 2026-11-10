@@ -13,13 +13,15 @@ import { STAT_GRADES, statTier } from '@/systems/stats';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { atHome } from '../home/home';
 import { chip, log, placesHere } from '../ops';
 import type { GameState } from '../state';
+import { sealCap, SEAL_RYO, sealsProblem } from './seals';
+import { atABench, atWorkshop, puppetRoom, WORKSHOP_REACH } from './workshop';
 import { knowsPuppetry } from './yours';
 
 /**
- * Building puppets at your bench at home (`docs/design/retinue-plan.md`, step 5b-ii): materials
+ * Building puppets at a bench (`docs/design/retinue-plan.md`, step 5b-ii; your own at home, or a
+ * workshop's, `workshop.ts`): materials
  * bought by the lot where a shop sells them, a frame your craft can manage, mechanisms for its
  * slots, and days of work, one session a day. A rebuild puts one of your built puppets back on
  * the bench with new mechanisms or material, for half the materials and half the days.
@@ -34,6 +36,8 @@ export interface BuildOrder {
   readonly partIds: readonly string[];
   readonly materialId: string;
   readonly name: string;
+  /** Your own techniques to seal into its slots (`seals.ts`). */
+  readonly seals?: readonly string[];
   /** One of your built puppets, to rebuild; absent for a new one. */
   readonly puppetId?: string;
 }
@@ -76,26 +80,37 @@ export function buildNeeds(
     : { lots: frame.lots, days: frame.days };
 }
 
-/** Ryo the mechanisms cost. */
-export function partsCost(ctx: GameContext, partIds: readonly string[]): number {
-  return partIds.reduce((sum, id) => sum + (ctx.content.puppetParts.get(id)?.cost ?? 0), 0);
+/** Ryo the mechanisms and seals cost. */
+export function partsCost(
+  ctx: GameContext,
+  partIds: readonly string[],
+  seals: readonly string[] = [],
+): number {
+  const parts = partIds.reduce((sum, id) => sum + (ctx.content.puppetParts.get(id)?.cost ?? 0), 0);
+  return parts + seals.length * SEAL_RYO;
 }
 
-/** Whether your craft can manage a frame. */
-export function craftManages(state: GameState, frame: PuppetFrameDef): boolean {
-  const yours = STAT_GRADES.indexOf(statTier(state.puppetry.craft).grade);
+/** Whether your craft can manage a frame here: a workshop's bench reaches a grade further. */
+export function craftManages(state: GameState, ctx: GameContext, frame: PuppetFrameDef): boolean {
+  const reach = atWorkshop(state, ctx) ? WORKSHOP_REACH : 0;
+  const yours = STAT_GRADES.indexOf(statTier(state.puppetry.craft).grade) + reach;
   return yours >= STAT_GRADES.indexOf(frame.craft);
 }
 
 function orderProblem(state: GameState, ctx: GameContext, order: BuildOrder): string | null {
   const frame = ctx.content.puppetFrames.get(order.frameId);
   if (!frame || !ctx.content.puppetMaterials.get(order.materialId)) return 'No such frame.';
-  if (!craftManages(state, frame)) return `${frame.name} asks for more craft than your hands have.`;
+  if (!craftManages(state, ctx, frame))
+    return `${frame.name} asks for more craft than your hands have.`;
+  const seals = order.seals ?? [];
   const parts = new Set(order.partIds);
-  if (parts.size !== order.partIds.length || order.partIds.length === 0)
-    return 'Fit at least one mechanism, each once.';
-  if (order.partIds.length > frame.slots) return `${frame.name} holds ${frame.slots} mechanisms.`;
+  if (parts.size !== order.partIds.length || order.partIds.length + seals.length === 0)
+    return 'Fit at least one mechanism or seal, each once.';
+  if (order.partIds.length + seals.length > frame.slots)
+    return `${frame.name} holds ${frame.slots} mechanisms and seals.`;
   if (order.partIds.some((id) => !ctx.content.puppetParts.get(id))) return 'No such mechanism.';
+  const sealed = sealsProblem(state, ctx, seals);
+  if (sealed) return sealed;
   const name = order.name.trim();
   return name.length === 0 || name.length > NAME_MAX ? 'Give it a short name.' : null;
 }
@@ -113,18 +128,19 @@ export function startBuildBlocker(
   order: BuildOrder,
 ): string | null {
   if (!knowsPuppetry(state, ctx)) return 'Learn the art of the threads first.';
-  if (!atHome(state, ctx)) return 'You build at your bench at home.';
+  if (!atABench(state, ctx)) return 'You build at a bench: your own at home, or a workshop’s.';
   if (state.puppetry.build) return 'Something is on the bench already.';
   const problem = orderProblem(state, ctx, order) ?? rebuildProblem(state, order);
   if (problem) return problem;
   const id = order.puppetId ?? nextPuppetId(state.puppetry);
-  if (keepsTooMany(state.puppetry, id)) return 'You keep as many puppets as you have room for.';
+  if (keepsTooMany(state.puppetry, id, puppetRoom(state, ctx)))
+    return 'You keep as many puppets as your home has room for.';
   const frame = ctx.content.puppetFrames.require(order.frameId);
   const { lots } = buildNeeds(frame, order.puppetId !== undefined);
   if ((state.puppetry.stock[order.materialId] ?? 0) < lots)
     return `It takes ${lots} lots of material.`;
-  const ryo = partsCost(ctx, order.partIds);
-  return state.wallet.ryo < ryo ? `The mechanisms cost ${ryo} ryo.` : null;
+  const ryo = partsCost(ctx, order.partIds, order.seals);
+  return state.wallet.ryo < ryo ? `The mechanisms and seals cost ${ryo} ryo.` : null;
 }
 
 export function startBuild(state: GameState, ctx: GameContext, order: BuildOrder): GameState {
@@ -132,7 +148,7 @@ export function startBuild(state: GameState, ctx: GameContext, order: BuildOrder
   const rebuild = order.puppetId !== undefined;
   const { lots, days } = buildNeeds(frame, rebuild);
   const taken = stockTaken(state.puppetry, order.materialId, lots);
-  const ryo = partsCost(ctx, order.partIds);
+  const ryo = partsCost(ctx, order.partIds, order.seals);
   const paid = spend(state.wallet, ryo);
   if (!taken || !paid.ok) return state;
   const job: BuildJob = {
@@ -141,6 +157,9 @@ export function startBuild(state: GameState, ctx: GameContext, order: BuildOrder
     frameId: order.frameId,
     partIds: order.partIds,
     materialId: order.materialId,
+    ...(order.seals && order.seals.length > 0
+      ? { seals: order.seals, sealCap: sealCap(state) }
+      : {}),
     daysLeft: days,
   };
   return log(
@@ -158,7 +177,7 @@ export function startBuild(state: GameState, ctx: GameContext, order: BuildOrder
 export function workBlocker(state: GameState, ctx: GameContext): string | null {
   const job = state.puppetry.build;
   if (!job) return 'Nothing is on the bench.';
-  if (!atHome(state, ctx)) return 'The bench is at home.';
+  if (!atABench(state, ctx)) return 'Work on it at a bench: your own at home, or a workshop’s.';
   return job.workedDay === state.time.day ? 'You have worked on it today.' : null;
 }
 

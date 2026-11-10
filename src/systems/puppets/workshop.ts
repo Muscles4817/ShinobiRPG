@@ -18,6 +18,10 @@ export interface BuiltSheet {
   readonly materialId: string;
   /** Your craft when it was finished: a build is as good as the hands that made it. */
   readonly craftAt: number;
+  /** Your own techniques sealed into it (ninjutsu or genjutsu), one a slot. */
+  readonly seals?: readonly string[];
+  /** How far a sealed art can go in it: a grade below your fūinjutsu when they were fitted. */
+  readonly sealCap?: number;
 }
 
 /** A puppet of yours: how whole it is, its name, and how it was built if you built it. */
@@ -39,6 +43,9 @@ export interface BuildJob {
   readonly frameId: string;
   readonly partIds: readonly string[];
   readonly materialId: string;
+  /** Techniques to seal into it, and how far their art can go there. */
+  readonly seals?: readonly string[];
+  readonly sealCap?: number;
   readonly daysLeft: number;
   /** The last day it was worked on: one session a day. */
   readonly workedDay?: number;
@@ -95,14 +102,14 @@ export function afterFight(workshop: Workshop, shares: Readonly<Record<string, n
   return { ...workshop, puppets };
 }
 
-/** The share of a puppet one session at the bench mends, by your craft. */
-export function mendShare(craft: number): number {
-  return Math.min(MEND_MOST, MEND_BASE + Math.max(0, craft) * MEND_PER_CRAFT);
+/** The share of a puppet one session at the bench mends, by your craft and the bench (`boost`). */
+export function mendShare(craft: number, boost = 1): number {
+  return Math.min(1, Math.min(MEND_MOST, MEND_BASE + Math.max(0, craft) * MEND_PER_CRAFT) * boost);
 }
 
 /** What a session's materials cost for a puppet this big (its `healthScale`) and this hurt. */
-export function mendCost(puppet: OwnedPuppet, scale: number, craft: number): number {
-  const mended = Math.min(1 - puppet.condition, mendShare(craft));
+export function mendCost(puppet: OwnedPuppet, scale: number, craft: number, boost = 1): number {
+  const mended = Math.min(1 - puppet.condition, mendShare(craft, boost));
   return Math.max(1, Math.ceil(MEND_RYO_WHOLE * scale * mended));
 }
 
@@ -113,8 +120,8 @@ export function craftAfterSession(craft: number): number {
 }
 
 /** A session at the bench on one puppet: it is mended a share, and your craft grows. */
-export function mended(workshop: Workshop, id: string): Workshop {
-  const share = mendShare(workshop.craft);
+export function mended(workshop: Workshop, id: string, boost = 1): Workshop {
+  const share = mendShare(workshop.craft, boost);
   const puppets = workshop.puppets.map((p) =>
     p.id === id ? { ...p, condition: Math.min(1, p.condition + share) } : p,
   );

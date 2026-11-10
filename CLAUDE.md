@@ -467,7 +467,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     hands and the wood together (`builtValue`: your craft reaches only so far past itself, each
     material only so far, the frame no further than it was designed), it gets its own generated
     unsealing card (`game/puppetry/built.ts`), and it may be rebuilt for half the materials and
-    days, and named. You keep `KEEP_LIMIT` puppets. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
+    days, and named. A slot may hold a **fitted seal** in place of a mechanism (`game/puppetry/seals.ts`:
+    a ninjutsu or genjutsu technique of yours, asking your fūinjutsu at its rank and going in the
+    puppet a grade below it, `sealCap`). A puppet-maker's **workshop** (a place's `puppetBench`,
+    `game/puppetry/workshop.ts`, never in a home village) mends twice as fast and builds a frame a
+    craft grade past yours. You keep `KEEP_LIMIT` puppets, more in a home with the room
+    (`HomeDef.puppets`, `puppetRoom`). A **hive** is a pool, not a body (`CombatantSetup.swarm`,
     `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,
     senses), its species' gifts 1 to 3 (chakra drain, camouflage, glow, blinding, venom) and
     what it fears, a count and a cap; each read once in `rules/swarms.ts`,

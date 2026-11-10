@@ -88,7 +88,12 @@ function PuppetRowView({
             type="button"
             className="btn ghost small"
             onClick={() => {
-              onRebuild({ puppetId: row.puppetId, name: row.name, ...sheet });
+              onRebuild({
+                puppetId: row.puppetId,
+                name: row.name,
+                ...sheet,
+                seals: sheet.seals ?? [],
+              });
             }}
           >
             Rebuild

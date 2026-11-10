@@ -6,7 +6,7 @@ import { craftAfterSession, type BuildJob, type OwnedPuppet, type Workshop } fro
  * your craft reaches only so far past itself (`CRAFT_LEAD`), and each grade of material only so
  * far (`MATERIAL_CAP`), so a master working pine makes a sound doll and an apprentice wastes
  * ironwood. Neither lifts a frame past what it was designed for. Every day at the bench teaches
- * craft, and you keep only so many puppets (`KEEP_LIMIT`).
+ * craft, and you keep only so many puppets (`KEEP_LIMIT`, more in a home with the room).
  */
 
 /** How far past your craft a build of yours reaches. */
@@ -31,10 +31,10 @@ export function materialToughness(quality: 1 | 2 | 3): number {
   return MATERIAL_TOUGHNESS[quality];
 }
 
-/** Whether a new puppet would be one too many to keep (a rebuild never is). */
-export function keepsTooMany(workshop: Workshop, puppetId: string): boolean {
+/** Whether a new puppet would be one too many to keep (a rebuild never is), with this much room. */
+export function keepsTooMany(workshop: Workshop, puppetId: string, room = KEEP_LIMIT): boolean {
   const rebuilding = workshop.puppets.some((p) => p.id === puppetId);
-  return !rebuilding && workshop.puppets.length >= KEEP_LIMIT;
+  return !rebuilding && workshop.puppets.length >= room;
 }
 
 /** The id the next puppet you build will have. */
@@ -71,6 +71,7 @@ function finished(workshop: Workshop, job: BuildJob, craft: number): Workshop {
       partIds: job.partIds,
       materialId: job.materialId,
       craftAt: craft,
+      ...(job.seals && job.seals.length > 0 ? { seals: job.seals, sealCap: job.sealCap ?? 0 } : {}),
     },
   };
   // A rebuild keeps its place on the shelf; a new puppet goes at the end.

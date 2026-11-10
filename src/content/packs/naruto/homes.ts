@@ -28,6 +28,8 @@ export const NARUTO_HOMES: readonly HomeDef[] = /*#__PURE__*/ (() => [
     needs: { rank: 'chunin' },
     spots: ['bed', 'desk', 'wall', 'corner', 'hearth'],
     rooms: ['garden', 'yard', 'guest'],
+    // A workroom with shelves for your puppets.
+    puppets: 4,
     beds: 6,
     yardTrainingIds: ['training-posts', 'rooftop-runs', 'sword-kata'],
   } satisfies HomeDef,
@@ -41,6 +43,8 @@ export const NARUTO_HOMES: readonly HomeDef[] = /*#__PURE__*/ (() => [
     needs: { rank: 'jonin' },
     spots: ['bed', 'desk', 'wall', 'corner', 'hearth'],
     rooms: ['garden', 'yard', 'guest'],
+    // A workroom with shelves for your puppets.
+    puppets: 5,
     beds: 8,
     yardTrainingIds: ['training-posts', 'rooftop-runs', 'sword-kata'],
     lockedReason: 'The old district’s houses are still being restored.',

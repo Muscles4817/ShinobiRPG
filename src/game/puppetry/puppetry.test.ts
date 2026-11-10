@@ -90,7 +90,7 @@ describe('mending a puppet', () => {
 
   it('mends a share and teaches craft, for the materials it took', () => {
     const broken = { ...puppeteer(0), wallet: { ryo: 500 } };
-    const cost = mendingCost(broken, yourPuppets(broken, ctx)[0]!);
+    const cost = mendingCost(broken, ctx, yourPuppets(broken, ctx)[0]!);
     const after = act(broken, mend);
     expect(after.puppetry.puppets[0]?.condition).toBe(MEND_BASE);
     expect(after.puppetry.craft).toBeGreaterThan(0);

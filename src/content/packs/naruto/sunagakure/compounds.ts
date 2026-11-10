@@ -36,6 +36,8 @@ export const SUNA_COMPOUNDS: readonly PlaceDef[] = [
     name: 'The Red Sand Workshops',
     icon: 'seal',
     blurb: 'Half-built puppets hanging from the rafters, and the smell of lacquer and poison',
+    // The Red Sand let a friend of the clan work at their benches.
+    puppetBench: true,
     clanId: 'akasuna',
   },
   {

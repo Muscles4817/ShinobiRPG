@@ -4,6 +4,7 @@ import {
   benchView,
   blockerFor,
   type BenchJob,
+  type BenchSeal,
   type BenchView,
   type BuildOrder,
   type GameAction,
@@ -18,6 +19,7 @@ export interface Rebuilding {
   readonly frameId: string;
   readonly partIds: readonly string[];
   readonly materialId: string;
+  readonly seals: readonly string[];
 }
 
 interface Props {
@@ -60,6 +62,7 @@ function JobOnBench({
 interface Picks {
   readonly frameId: string;
   readonly partIds: readonly string[];
+  readonly seals: readonly string[];
   readonly materialId: string;
   readonly name: string;
 }
@@ -69,6 +72,7 @@ function startPicks(view: BenchView, rebuilding: Rebuilding | null): Picks {
   return {
     frameId: view.frames[0]?.id ?? '',
     partIds: [],
+    seals: [],
     materialId: view.materials[0]?.id ?? '',
     name: '',
   };
@@ -83,10 +87,53 @@ function needsLine(view: BenchView, picks: Picks, rebuild: boolean): string | nu
   const frame = view.frames.find((f) => f.id === picks.frameId);
   if (!frame) return null;
   const needs = rebuild ? frame.rebuild : frame;
-  const ryo = view.parts
-    .filter((p) => picks.partIds.includes(p.id))
-    .reduce((sum, p) => sum + p.cost, 0);
-  return `Takes ${needs.lots} lots, ${ryo} ryo of mechanisms and ${needs.days} days at the bench.`;
+  const ryo =
+    view.parts.filter((p) => picks.partIds.includes(p.id)).reduce((sum, p) => sum + p.cost, 0) +
+    picks.seals.length * view.sealRyo;
+  return `Takes ${needs.lots} lots, ${ryo} ryo of mechanisms and seals and ${needs.days} days at the bench.`;
+}
+
+/** One id in or out of a list. */
+function flipped(list: readonly string[], id: string): readonly string[] {
+  return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+}
+
+/** Your techniques a seal could carry into a slot, and why any can't yet. */
+function SealPicker({
+  seals,
+  picked,
+  ryo,
+  onToggle,
+}: {
+  readonly seals: readonly BenchSeal[];
+  readonly picked: readonly string[];
+  readonly ryo: number;
+  readonly onToggle: (id: string) => void;
+}) {
+  if (seals.length === 0) return null;
+  return (
+    <fieldset>
+      <legend>Seals</legend>
+      <p className="muted small">
+        A ninjutsu or genjutsu technique of yours, sealed into a slot ({ryo} ryo of inks). It works
+        in the puppet a grade below your fūinjutsu.
+      </p>
+      {seals.map((t) => (
+        <label key={t.id} className={t.blocker ? 'muted' : ''}>
+          <input
+            type="checkbox"
+            disabled={t.blocker !== null && !picked.includes(t.id)}
+            checked={picked.includes(t.id)}
+            onChange={() => {
+              onToggle(t.id);
+            }}
+          />{' '}
+          {t.name}, {t.rank}-rank {t.discipline}.{' '}
+          {t.blocker && <span className="muted">{t.blocker}</span>}
+        </label>
+      ))}
+    </fieldset>
+  );
 }
 
 /** The frame, mechanisms and material of a new build or a rebuild, and its name. */
@@ -103,14 +150,16 @@ function BuildForm({
     setPicks((now) => ({ ...now, ...change }));
   };
   const toggle = (id: string) => {
-    const on = picks.partIds.includes(id);
-    pick({ partIds: on ? picks.partIds.filter((p) => p !== id) : [...picks.partIds, id] });
+    pick({ partIds: flipped(picks.partIds, id) });
   };
   const start: GameAction = { type: 'startBuild', order: orderOf(picks, rebuilding) };
   const blocker = blockerFor(state, start, ctx);
   return (
     <div className="bench">
       <h3>{rebuilding ? `Rebuild ${rebuilding.name}` : 'Build a puppet'}</h3>
+      <p className="muted small">
+        {view.where} You keep {view.kept} of the {view.room} puppets your home has room for.
+      </p>
       <fieldset>
         <legend>Frame</legend>
         {view.frames.map((f) => (
@@ -142,6 +191,14 @@ function BuildForm({
           </label>
         ))}
       </fieldset>
+      <SealPicker
+        seals={view.seals}
+        picked={picks.seals}
+        ryo={view.sealRyo}
+        onToggle={(id) => {
+          pick({ seals: flipped(picks.seals, id) });
+        }}
+      />
       <label className="bench-field">
         Material
         <select

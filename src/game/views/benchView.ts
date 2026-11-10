@@ -1,5 +1,8 @@
 import type { GameContext } from '../context';
 import { buildNeeds, craftManages, NAME_MAX } from '../puppetry/bench';
+import { sealCandidates, SEAL_RYO } from '../puppetry/seals';
+import { atHome } from '../home/home';
+import { puppetRoom, workshopHere } from '../puppetry/workshop';
 import { knowsPuppetry } from '../puppetry/yours';
 import type { GameState } from '../state';
 import { choice, type Choice } from './common';
@@ -8,7 +11,8 @@ import { MATERIAL_GRADES } from './materialsOnShelf';
 /**
  * The bench on the puppet card: what is on it and how many days it needs, the materials you
  * keep, and everything a new build or a rebuild is chosen from (frames your craft can and can't
- * manage yet, mechanisms with their cost, materials with your stock). The choice itself is made
+ * manage yet, mechanisms with their cost, your techniques a seal could carry, materials with
+ * your stock), and where you are working and how many puppets your home keeps. The choice itself is made
  * on the screen and checked with `blockerFor` before it is set on the bench.
  */
 
@@ -40,6 +44,15 @@ export interface BenchMaterial {
   readonly held: number;
 }
 
+export interface BenchSeal {
+  readonly id: string;
+  readonly name: string;
+  readonly rank: string;
+  readonly discipline: string;
+  /** Why you can't seal it yet, or null. */
+  readonly blocker: string | null;
+}
+
 export interface BenchJob {
   readonly name: string;
   readonly daysLeft: number;
@@ -51,7 +64,23 @@ export interface BenchView {
   readonly frames: readonly BenchFrame[];
   readonly parts: readonly BenchPart[];
   readonly materials: readonly BenchMaterial[];
+  readonly seals: readonly BenchSeal[];
+  readonly sealRyo: number;
+  /** Where you would work, and what that bench gives, in words. */
+  readonly where: string;
+  /** Puppets you keep, and how many your home has room for. */
+  readonly kept: number;
+  readonly room: number;
   readonly nameMax: number;
+}
+
+/** Where you would work on a puppet now, in words. */
+function benchWhere(state: GameState, ctx: GameContext): string {
+  const workshop = workshopHere(state, ctx);
+  if (workshop)
+    return `You work at the bench at ${workshop.name.replace(/^The /, 'the ')}: it mends twice as fast, and you can try a frame a grade past your craft.`;
+  if (atHome(state, ctx)) return 'You work at your own bench at home.';
+  return 'There is no bench for you here: work at home, or at a puppet-maker’s workshop.';
 }
 
 /** The bench, for someone who knows the art; null for anyone else. */
@@ -73,7 +102,7 @@ export function benchView(state: GameState, ctx: GameContext): BenchView | null 
       slots: f.slots,
       ...buildNeeds(f, false),
       rebuild: buildNeeds(f, true),
-      beyond: craftManages(state, f) ? null : `Asks for ${f.craft}-grade craft.`,
+      beyond: craftManages(state, ctx, f) ? null : `Asks for ${f.craft}-grade craft.`,
     })),
     parts: ctx.content.puppetParts.all.map((p) => ({
       id: p.id,
@@ -87,6 +116,17 @@ export function benchView(state: GameState, ctx: GameContext): BenchView | null 
       grade: MATERIAL_GRADES[m.quality],
       held: state.puppetry.stock[m.id] ?? 0,
     })),
+    seals: sealCandidates(state, ctx).map(({ technique, blocker }) => ({
+      id: technique.id,
+      name: technique.name,
+      rank: technique.rank,
+      discipline: technique.discipline,
+      blocker,
+    })),
+    sealRyo: SEAL_RYO,
+    where: benchWhere(state, ctx),
+    kept: state.puppetry.puppets.length,
+    room: puppetRoom(state, ctx),
     nameMax: NAME_MAX,
   };
 }
