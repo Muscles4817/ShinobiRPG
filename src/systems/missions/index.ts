@@ -6,6 +6,7 @@ export {
   currentStage,
   advance,
   reward,
+  isFightStage,
   stageFoes,
   withStagePay,
   type CheckApproach,

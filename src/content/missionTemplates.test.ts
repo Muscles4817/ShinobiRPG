@@ -1,5 +1,7 @@
 import { ORIGINAL_PACK } from './packs/original';
 import { MISSION_FILLS, MISSION_TEMPLATES } from './packs/original/jobs';
+import { isFightStage } from '@/systems/missions';
+
 import { missionFromFill, placeholdersIn, type MissionTemplate } from './missionTemplates';
 
 const TEMPLATE: MissionTemplate = {
@@ -57,6 +59,16 @@ describe('mission templates', () => {
     expect(mission.minMissionsCompleted).toBe(6);
     expect(mission.reward.ryo).toBe(120);
   });
+
+  it('sets a fill’s ground on the fights its template leaves on open ground', () => {
+    const fill = { id: 'x', templateId: 'lost-thing', values: {}, ground: 'forest' } as const;
+    expect(missionFromFill(TEMPLATE, fill).stages[0]).toMatchObject({ ground: 'forest' });
+    const indoors: MissionTemplate = {
+      ...TEMPLATE,
+      stages: TEMPLATE.stages.map((s) => ({ ...s, ground: 'room' as const })),
+    };
+    expect(missionFromFill(indoors, fill).stages[0]).toMatchObject({ ground: 'room' });
+  });
 });
 
 describe('the original pack’s templates and fills', () => {
@@ -83,6 +95,9 @@ describe('the original pack’s templates and fills', () => {
       expect(template).toBeDefined();
       const asked = Object.keys(template?.placeholders ?? {}).sort();
       expect(Object.keys(fill.values).sort()).toEqual(asked);
+      if (!fill.ground || !template) return;
+      const fights = missionFromFill(template, fill).stages.filter(isFightStage);
+      expect(fights.some((s) => s.ground === fill.ground)).toBe(true);
     },
   );
 });

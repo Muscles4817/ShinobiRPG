@@ -3,13 +3,16 @@ import type { MissionFill } from '../../../../missionTemplates';
 /**
  * Hunts that go off the paths after a beast changed by chakra, into the heart of the wild
  * country it lives in, for the villages at its edge: a charcoal wood, a goat hamlet, a reed
- * village, an oasis and a fishing cove.
+ * village, an oasis and a fishing cove. The boar is fought among the trees and the scorpion on
+ * the sand. The serpent is met on the firm ground between channels: a lake fight would cost
+ * the team their footing, and no beast of the water walks on it.
  */
 export const WILD_FILLS: readonly MissionFill[] = [
   {
     id: 'the-burning-boar',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 5,
+    ground: 'forest',
     values: {
       title: 'The Burning Boar',
       client: 'The Charcoal-Burners of Sumiyama',
@@ -74,6 +77,7 @@ export const WILD_FILLS: readonly MissionFill[] = [
     id: 'the-glass-at-the-well',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 7,
+    ground: 'desert',
     values: {
       title: 'The Glass at the Well',
       client: 'The Well-Keepers of Hoshimizu',

@@ -322,9 +322,16 @@ export function daysAway(def: Pick<MissionDef, 'stages'>): number {
  */
 export const MIN_RYO_PER_DAY_AWAY = 120;
 
+/** A stage that may come to a fight: a combat, or an encounter. */
+export type FightStage = Extract<MissionStage, { kind: 'combat' | 'encounter' }>;
+
+export function isFightStage(stage: MissionStage): stage is FightStage {
+  return stage.kind === 'combat' || stage.kind === 'encounter';
+}
+
 /** The enemies a stage may make you fight: a combat's, or the foes of an encounter. */
 export function stageFoes(stage: MissionStage): readonly string[] {
-  return stage.kind === 'combat' || stage.kind === 'encounter' ? stage.enemyIds : [];
+  return isFightStage(stage) ? stage.enemyIds : [];
 }
 
 /** Applies an encounter's pay to the run's reward. */
