@@ -183,9 +183,10 @@ writing keeps reaching for one.
    the high pass at C rank, then at B rank the owl, which you either fight or follow to a
    missing-nin digging warm stones out of the peak. The owl is met on a venture only once you
    have followed it and let it be, and then once only (a road event's gate). Before the arc,
-   only the arc brings it. The fan pack fills the hunt too (`naruto/deepHunts.ts`: a boar in the
-   Great Forest, a kite over the hills behind the Leaf, a serpent past the paddies, scorpions on
-   the road to the Sand); the stag and the owl are the original pack's.
+   only the arc brings it. The fan pack fills the hunt with its own (`naruto/deepHunts.ts`: a boar
+   at a charcoal camp in the Great Forest, a kite over the Leaf's northern watch post, a serpent
+   down the Naka, scorpions on the barge road out of Kagerō Landing); the stag and the owl are the
+   original pack's.
 
 5. **Scouting and the field book.** A read says "Changed by chakra" and names the nature and the
    gift once seen. The field book's foes page takes them with no code; a page of its own for chakra

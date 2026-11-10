@@ -1,106 +1,109 @@
 import type { MissionDef } from '@/systems/missions';
 
-import { missionsFromTemplates } from '../../missionTemplates';
+import { missionsFromTemplates, type MissionFill } from '../../missionTemplates';
 import { DEEP_HUNT } from '../../shared/jobs/deepHunt';
 
 /**
- * The fan pack's hunts for beasts changed by chakra (`docs/design/chakra-beasts-plan.md`): off the
- * roads of the Land of Fire into the Great Forest, the hills behind the Leaf and the marsh past
- * the paddies, and out to the edge of the Land of Wind. The boar is fought among the trees and
- * the scorpion on the sand; the serpent's fight is on the firm ground between channels.
+ * The Leaf's hunts for beasts changed by chakra (`docs/design/chakra-beasts-plan.md`): a charcoal
+ * camp in the Great Forest, the watch post on the northern pass, a reed hamlet down the Naka, all
+ * posted at the mission desk, and the barge road out of Kagerō Landing, posted at its Barge
+ * Office. The serpent is fought on the mudbanks, out of the water it can't walk on either.
  */
-export const DEEP_HUNTS: readonly MissionDef[] = /*#__PURE__*/ missionsFromTemplates(DEEP_HUNT, [
+export const DEEP_HUNT_FILLS: readonly MissionFill[] = [
   {
-    id: 'boar-of-the-great-forest',
+    id: 'embers-under-the-oaks',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 5,
     ground: 'forest',
     values: {
-      title: 'The Boar of the Great Forest',
-      client: 'The Woodcutters of the Coast Road',
-      quarry: 'a boar whose tusks smoke in the rain',
-      village: 'the woodcutters’ hamlet on the road through the Great Forest',
-      harm: 'The hamlet’s woodpile burned down in the night, and the tracks round the ashes are a boar’s, each one as wide as a hand.',
-      going:
-        'You leave the coast road where the woodcutters stop cutting and go in under oaks nobody has felled.',
+      title: 'Embers under the Oaks',
+      client: 'The Charcoal Camp on the Coast Road',
+      quarry: 'a boar that sets the undergrowth alight where it roots',
+      village: 'the charcoal camp where the coast road enters the Great Forest',
+      harm: 'Every kiln in the camp was knocked over in one night, and the ground round them is ploughed up and still smoking.',
+      going: 'At the Fallen Oak you step off the road and keep the morning sun at your backs.',
       country: 'woods',
-      sign: 'Deeper in, the bark is burned off the oaks at shoulder height, and the scorch marks all lead one way.',
-      lair: 'A boar the size of a cart gets up out of a burned hollow, and steam comes off its back where the rain hits it.',
+      sign: 'By afternoon the moss is singed in patches a stride apart, and the patches get fresher as you go.',
+      lair: 'In a clearing of burned saplings, a boar lifts its head out of the ash and snorts sparks.',
       foe: 'ember-tusk-boar',
       second: 'mist-fox',
       terrain:
-        'A hollow of black ferns between two fallen oaks, wet moss underfoot and a stream on the low side.',
+        'Burned saplings round a clearing deep in ash, with a fallen oak along one side to put your back to.',
       ending:
-        'The woodcutters rebuild the woodpile and keep a bucket of water beside it. They send the team home with a cart of seasoned oak for the Leaf’s bathhouses.',
+        'The burners have the first kiln lit again before the team is out of sight of the camp.',
     },
   },
   {
-    id: 'the-kite-over-the-hills',
+    id: 'the-struck-watchtower',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 6,
     values: {
-      title: 'The Kite over the Hills',
-      client: 'The Hill Farms North of the Leaf',
-      quarry: 'a bird that comes down with the lightning',
-      village: 'the hill farms behind the Hokage Rock',
-      harm: 'Lightning has struck the same terraced field four storms running, and the last bolt killed an ox. The farmers say they saw wings in it.',
+      title: 'The Struck Watchtower',
+      client: 'The Northern Watch Post',
+      quarry: 'a kite that rides the storms in from the north',
+      village: 'the Leaf’s watch post on the northern pass',
+      harm: 'Lightning has hit the watch post’s signal tower three times since the new moon. The last strike threw the sentry off the platform, and the sentry swears it came down in the shape of a bird.',
       going:
-        'You climb past the last terrace, where the farm track gives out, and on up the bare slope.',
+        'Above the watch post the path narrows to a goat track, and then there is no path at all.',
       country: 'mountain',
-      sign: 'High above the farms, every rock on the ridge is split and blackened on its top side.',
-      lair: 'A kite with wings as wide as a door circles over the peak, and your hair stands up before it dives.',
+      sign: 'On the high ridge the snow has melted in streaks, and every streak points up at the same peak.',
+      lair: 'The kite drops out of the cloud with its feathers crackling, and the hairs on your arms stand up just before it strikes.',
       foe: 'thunder-kite',
       second: 'stone-serow',
       terrain:
-        'A bare ridge above the tree line, loose stone underfoot and nothing taller than you for a mile.',
+        'A bare ridge above the tree line, loose stone underfoot and the sky open on every side.',
       ending:
-        'The storms pass over the hill farms now. The farmers send the team home with a sack of new rice and a feather as long as an arm.',
+        'The sentries rebuild the platform a little lower down the slope, and nothing has struck the tower since.',
     },
   },
   {
-    id: 'the-serpent-past-the-paddies',
+    id: 'the-serpent-of-the-lower-reeds',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 6,
     values: {
-      title: 'The Serpent past the Paddies',
-      client: 'The Rice Farmers by the East Gate',
-      quarry: 'a serpent as long as a fishing boat',
-      village: 'the rice paddies outside the Leaf’s east gate',
-      harm: 'The water in the outer paddies drained away overnight through a hole in the dyke wide enough to row through.',
+      title: 'The Serpent of the Lower Reeds',
+      client: 'The Reed-Cutters of the Lower Naka',
+      quarry: 'a serpent that pulls boats under',
+      village: 'the reed hamlet where the Naka River spreads out into marsh',
+      harm: 'A punt came back to the hamlet empty with its pole snapped, and nobody will cut reeds past the marker posts now.',
       going:
-        'You walk out past the last paddy and on into the reed beds, where the farmers never go.',
+        'You pole out past the marker posts and leave the punt where the water gets too shallow for it.',
       country: 'marsh',
-      sign: 'Far out in the reeds, a channel has been pushed through them as wide as a boat, and the water in it is still cloudy.',
-      lair: 'The black water swells, and a green head as broad as a door rises out of it to look at you.',
+      sign: 'Deeper in, the herons have all gone, and a furrow through the reeds runs ahead of you towards open water.',
+      lair: 'The open water goes still. Then a green head breaks the surface without a ripple and turns to watch you.',
       foe: 'marsh-serpent',
       second: 'lightning-eel',
-      terrain:
-        'Black channels between banks of firm mud, mist lying on the water, and reeds over your head.',
+      terrain: 'Mudbanks firm enough to stand on, cut apart by black channels too deep to wade.',
       ending:
-        'The farmers mend the dyke and flood the paddies again. They send the team home with a bale of rice straw and a scale the size of a plate.',
+        'Within the week the reed-cutters are back past the marker posts, and the newest punt in the hamlet is named for the team.',
     },
   },
   {
-    id: 'the-glass-in-the-outer-sands',
+    id: 'landing-glass-scorpion',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 7,
     ground: 'desert',
     values: {
-      title: 'The Glass in the Outer Sands',
-      client: 'The Waystation on the Road to the Sand',
-      quarry: 'scorpions you can see through',
-      village: 'the waystation well at the edge of the Land of Wind',
-      harm: 'Two of the waystation’s keepers are laid up with swollen legs, and the caravans have started going round by the long road.',
-      going: 'You leave the caravan road at the last marker stone and walk on into the dunes.',
+      title: 'Glass on the Barge Road',
+      client: 'The Barge Masters of Kagerō Landing',
+      quarry: 'a scorpion clear enough to see the sand through',
+      village: 'the barge road out of Kagerō Landing',
+      harm: 'A barge came in last night with two of its haulers stung and raving, and the rest won’t go out again until the road is safe.',
+      going:
+        'You follow the barge road out of the Landing until the haulers’ cairns stop, then turn off it into the dunes.',
       country: 'desert',
-      sign: 'Out on the white sand, small tracks like beads pressed into it all lead the same way.',
-      lair: 'A scorpion as long as your arm stands up on the white sand, clear as a bottle, with its tail already raised.',
+      sign: 'On the flats beyond, the drag marks of the stung barge lead back to a dune the haulers wouldn’t go near.',
+      lair: 'The sand at the foot of the dune shifts, and a scorpion climbs out of it, hard to see against the light.',
       foe: 'glass-scorpion',
       second: 'dune-serpent',
-      terrain:
-        'White sand as far as you can see, one spine of rock, and the sun straight overhead.',
+      terrain: 'Hard flats under the dune, the heat coming up off them and no shade until sundown.',
       ending:
-        'The caravans come back to the short road. The keepers fill the team’s flasks from the deep well and won’t take payment for the water.',
+        'The barges run again the next morning, and the haulers paint a glass scorpion on the bow of the first one out.',
     },
   },
-]);
+];
+
+export const DEEP_HUNTS: readonly MissionDef[] = /*#__PURE__*/ missionsFromTemplates(
+  DEEP_HUNT,
+  DEEP_HUNT_FILLS,
+);

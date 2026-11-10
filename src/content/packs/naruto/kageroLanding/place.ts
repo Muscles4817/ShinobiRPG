@@ -66,6 +66,7 @@ export const KAGERO_LANDING: LocationDef = {
         'landing-lost-skiff',
         'landing-spice-runners',
         'landing-sand-envoy',
+        'landing-glass-scorpion',
       ],
     },
     {

@@ -5,7 +5,7 @@ import type { MissionTemplate } from '../../missionTemplates';
  * (`docs/design/chakra-beasts-plan.md`), a day at each depth of the wild country it lives in,
  * its heart, and two days back out. The days draw on their depth's road events (`deepRegion`)
  * for sights and finds; a job's foes are its own, so the depths' foes stay off it. Every pack
- * takes it and writes its own hunts (`jobs/fills/wild.ts`, `naruto/deepHunts.ts`).
+ * takes it and writes its own hunts (`packs/original/jobs/fills/wild.ts`, `packs/naruto/deepHunts.ts`).
  */
 export const DEEP_HUNT: readonly MissionTemplate[] = [
   {
@@ -17,9 +17,9 @@ export const DEEP_HUNT: readonly MissionTemplate[] = [
     minMissionsCompleted: 5,
     placeholders: {
       title: 'the job’s title, e.g. The Burning Boar',
-      client: 'who sends for the team, e.g. the Charcoal-Burners of Sumiyama',
+      client: 'who sends for the team, e.g. the charcoal-burners of a forest village',
       quarry: 'the one beast the team hunts, mid-sentence, e.g. a boar whose tusks smoke',
-      village: 'where it threatens, mid-sentence, e.g. the charcoal village of Sumiyama',
+      village: 'where it threatens, mid-sentence, e.g. a charcoal village at the forest’s edge',
       harm: 'a sentence: what the beast has done, seen on arrival',
       going: 'a sentence: the day in at the edge of the wild, off the paths',
       country:
