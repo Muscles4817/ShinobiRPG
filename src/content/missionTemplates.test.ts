@@ -2,7 +2,14 @@ import { ORIGINAL_PACK } from './packs/original';
 import { MISSION_FILLS, MISSION_TEMPLATES } from './packs/original/jobs';
 import { isFightStage } from '@/systems/missions';
 
-import { missionFromFill, placeholdersIn, type MissionTemplate } from './missionTemplates';
+import {
+  missionFromFill,
+  placeholdersIn,
+  type MissionFill,
+  type MissionTemplate,
+} from './missionTemplates';
+import { DEEP_HUNT_FILLS } from './packs/naruto/deepHunts';
+import { DEEP_HUNT } from './shared/jobs/deepHunt';
 
 const TEMPLATE: MissionTemplate = {
   id: 'lost-thing',
@@ -72,8 +79,6 @@ describe('mission templates', () => {
 });
 
 describe('the original pack’s templates and fills', () => {
-  const templates = new Map(MISSION_TEMPLATES.map((t) => [t.id, t]));
-
   it('gives the board over a hundred distinct jobs', () => {
     const jobs = ORIGINAL_PACK.missions.filter((m) => m.examOnly !== true);
     expect(jobs.length).toBeGreaterThan(100);
@@ -87,17 +92,30 @@ describe('the original pack’s templates and fills', () => {
       expect(used).toEqual(Object.keys(template.placeholders).sort());
     },
   );
-
-  it.each(MISSION_FILLS.map((f) => [f.id, f] as const))(
-    'fill "%s" gives exactly the values its template asks for',
-    (_id, fill) => {
-      const template = templates.get(fill.templateId);
-      expect(template).toBeDefined();
-      const asked = Object.keys(template?.placeholders ?? {}).sort();
-      expect(Object.keys(fill.values).sort()).toEqual(asked);
-      if (!fill.ground || !template) return;
-      const fights = missionFromFill(template, fill).stages.filter(isFightStage);
-      expect(fights.some((s) => s.ground === fill.ground)).toBe(true);
-    },
-  );
 });
+
+/** Each fill gives exactly what its template asks, and its ground reaches a fight. */
+function checkFills(
+  packName: string,
+  templates: readonly MissionTemplate[],
+  fills: readonly MissionFill[],
+) {
+  const byId = new Map(templates.map((t) => [t.id, t]));
+  describe(`the ${packName} pack’s fills`, () => {
+    it.each(fills.map((f) => [f.id, f] as const))(
+      'fill "%s" gives exactly the values its template asks for',
+      (_id, fill) => {
+        const template = byId.get(fill.templateId);
+        expect(template).toBeDefined();
+        const asked = Object.keys(template?.placeholders ?? {}).sort();
+        expect(Object.keys(fill.values).sort()).toEqual(asked);
+        if (!fill.ground || !template) return;
+        const fights = missionFromFill(template, fill).stages.filter(isFightStage);
+        expect(fights.some((s) => s.ground === fill.ground)).toBe(true);
+      },
+    );
+  });
+}
+
+checkFills('original', MISSION_TEMPLATES, MISSION_FILLS);
+checkFills('naruto', DEEP_HUNT, DEEP_HUNT_FILLS);

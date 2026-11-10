@@ -170,7 +170,7 @@ writing keeps reaching for one.
    on the mountain, and the owl has been watching it). No road-event bands: they stay off the
    roads.
 
-   **As built.** A C-rank template, `c-team-deep-hunt` (`jobs/templates/cTeamWild.ts`): a day at
+   **As built.** A C-rank template, `c-team-deep-hunt` (`content/shared/jobs/deepHunt.ts`, every pack's): a day at
    the edge and one in the deep, a way-finding check, a day into the heart and the beast there,
    two days back, named by one `country` slot. Its days draw the depths' sights and finds; a job's
    foes are its own, and its fight is where the beast lives: a fill names the ground
@@ -183,8 +183,10 @@ writing keeps reaching for one.
    the high pass at C rank, then at B rank the owl, which you either fight or follow to a
    missing-nin digging warm stones out of the peak. The owl is met on a venture only once you
    have followed it and let it be, and then once only (a road event's gate). Before the arc,
-   only the arc brings it. The fan pack's board has no
-   templates yet, so these are the original pack's.
+   only the arc brings it. The fan pack fills the hunt with its own (`naruto/deepHunts.ts`: a boar
+   at a charcoal camp in the Great Forest, a kite over the Leaf's northern watch post, a serpent
+   down the Naka, scorpions on the barge road out of Kagerō Landing); the stag and the owl are the
+   original pack's.
 
 5. **Scouting and the field book.** A read says "Changed by chakra" and names the nature and the
    gift once seen. The field book's foes page takes them with no code; a page of its own for chakra

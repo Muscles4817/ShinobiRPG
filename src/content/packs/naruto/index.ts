@@ -5,6 +5,7 @@ import { WILD_STRAINS } from '../../shared/wildStrains';
 import { DUSTS } from '../../shared/dusts';
 import { DUST_TECHNIQUES } from '../../shared/dustTechniques';
 import { CONTRACTS, TOAD_MISSION } from './contracts';
+import { DEEP_HUNTS } from './deepHunts';
 import { CONTRACT_TECHNIQUES } from './contractTechniques';
 import type { ContentPack } from '../../types';
 import { BUILDS } from '../../shared/builds';
@@ -168,6 +169,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...MISSIONS,
     TOAD_MISSION,
     ...TEAM_MISSIONS,
+    ...DEEP_HUNTS,
     ...ELITE_MISSIONS,
     ...CHUNIN_MISSIONS,
     ...SENIOR_MISSIONS,
