@@ -69,7 +69,7 @@ function techniqueWorth(
   t: CombatTechnique,
   round: Round,
 ): number {
-  const incoming = techniqueIncoming(self, foe, t, round.range);
+  const incoming = techniqueIncoming(self, foe, t, round);
   if (!incoming) return 0;
   const reaches = 1 - avoidOdds(round, incoming);
   const worths = t.effects.map((e) => ({ e, worth: effectWorth(self, foe, t, e) }));

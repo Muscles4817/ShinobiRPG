@@ -254,7 +254,7 @@ describe('meditating into Sage Mode', () => {
 
   it('is carried clear by a mount, slipping far more than sitting open', () => {
     const foe = (r: Round) => who(r, 'foe');
-    const odds = (r: Round) => avoidOdds(r, techniqueIncoming(foe(r), sage(r), BOLT, r.range)!);
+    const odds = (r: Round) => avoidOdds(r, techniqueIncoming(foe(r), sage(r), BOLT, r)!);
     expect(carrierOf(meditating(true), sage(meditating(true)))).toBeDefined();
     expect(odds(meditating(true))).toBeGreaterThan(odds(meditating(false)) * 2);
   });

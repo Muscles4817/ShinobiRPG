@@ -14,6 +14,7 @@ import type {
   CombatTrait,
 } from '../contract';
 import type { CombatGear } from '../gearContract';
+import type { CombatMind } from '../mindContract';
 import { armouredAttributes } from './armour';
 import { areaCostScale, rankedCost } from './chakra';
 import { startsHidden } from './conditions';
@@ -67,6 +68,8 @@ export interface Body {
   readonly size?: BodySize;
   /** What a meal brought into the fight (`provisions.ts`); absent for most. */
   readonly provisions?: readonly CombatProvision[];
+  /** The mind they share with other bodies of their side (`minds.ts`); absent: their own. */
+  readonly mind?: CombatMind;
 }
 
 export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = false): Body {
@@ -79,7 +82,8 @@ export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = fal
     isPlayer,
     perks: setup.perks ?? [],
     traits,
-    hidden: startsHidden({ traits }),
+    // A mind's source stands off the field, unseen until it is found (`minds.ts`).
+    hidden: startsHidden({ traits }) || setup.mind?.source === true,
     confused: 0,
     items: setup.items ?? [],
   };

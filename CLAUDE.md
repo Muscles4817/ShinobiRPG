@@ -453,7 +453,17 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     from the next exchange casting fresh ones, moving it again only the exchange after); a slack
     puppet holds no line, so the back row behind it is open; a puppet has no mind for an illusion; a
     `worn` puppet (a shell) takes the blows aimed at its master while it stands, though an area
-    or an illusion still reaches them. **Your puppets** (`systems/puppets`, `GameState.puppetry`,
+    or an illusion still reaches them. **Shared minds** (`mindContract.ts`, `rules/minds.ts`,
+    `plan/sharedMind.ts`, `plan/oneMind.ts`): fighters of one side with the same
+    `CombatantSetup.mind` (or a call that is `shared`, of its caller's mind) think with the
+    sharpest of them, aim at their side's mark as one, and watch each other's backs (nothing
+    strikes one unseen while another of the mind stands in sight). A mind's `source` stands off
+    the field in the back row, hidden and harder to find than its illusions (`SOURCE_DISTANCE`):
+    only a Search, a sense or eyes that see everything find it (a Dispel doesn't), it takes no
+    turns, its fall takes every body down, and with every body down it gives up. A fighter with
+    the `raises` perk brings a body of its mind that fell this exchange back up at the end of it
+    (`RAISED_SHARE`, for `RAISE_COST_SHARE` of its chakra, a glimpse of a hidden raiser), unless a
+    seal was on the body as it fell. **Your puppets** (`systems/puppets`, `GameState.puppetry`,
     `game/puppetry/`): learning a technique that unseals one of the pack's puppets gives you that
     puppet (`notePuppetsLearned` in `dispatch`); each rides into mission fights as whole as it is
     and a broken one stays home (`withYourPuppets`); each comes home as whole as it ended the

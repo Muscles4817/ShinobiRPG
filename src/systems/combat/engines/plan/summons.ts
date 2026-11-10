@@ -5,7 +5,9 @@ import { readsInTheMoment } from './judgement';
 import { harmLine } from '../../rules/narration';
 import { tell } from '../../rules/telling';
 import type { CombatCall, SummonFate } from '../../contract';
+import { mindOf } from '../../rules/minds';
 import { answers } from './calls';
+import { withOneMind } from './oneMind';
 import { perchesKept, perchOn, perchUpkeep } from './perching';
 import {
   calledFighter,
@@ -61,6 +63,8 @@ function summoned(round: Round, caller: Fighter, call: CombatCall): Fighter {
       : {}),
     ...(call.worn ? { worn: true as const } : {}),
     ...(call.mount ? { mount: true as const } : {}),
+    // A body of its caller's mind thinks and aims as they do (`sharedMind.ts`).
+    ...(call.shared ? { mind: { id: mindOf(caller) } } : {}),
   };
   // Its plan is made as the exchange ends, before its first turn (`summonPlans.ts`).
   return fighter;
@@ -83,8 +87,9 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   const fighters = round.fighters.map((f) =>
     f.id === caller.id ? { ...f, health: f.health - blood, summonsOut: out, ...row } : f,
   );
+  // A body of its caller's mind thinks as sharply as they do (`oneMind.ts`).
   const answered = say(
-    { ...round, fighters: [...fighters, body] },
+    { ...round, fighters: call.shared ? withOneMind([...fighters, body]) : [...fighters, body] },
     tell(call.puppet ? PUPPET_CALL : SUMMON_CALL, { a: actor, b: body }),
   );
   const paid = harmLine(tell('{a} pay{a.s} in blood.', { a: actor }), blood);

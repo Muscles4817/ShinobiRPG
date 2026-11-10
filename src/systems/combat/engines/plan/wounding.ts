@@ -91,7 +91,7 @@ export function damage(round: Round, aimed: Aimed, use: Wounding): Round {
   const ground = groundElementScale(round.ground, t.element);
   const pool = swarmPower(actor, t) * dustPower(actor, t);
   // A killing blow on a target who can't meet it hits to kill (`rules/lethal.ts`).
-  const kills = strikesToKill(t, killingMoment(actor, target));
+  const kills = strikesToKill(t, killingMoment(actor, target, round.fighters));
   const kill = kills ? LETHAL_SCALE : 1;
   const scale = finisherScale({ open }) * (combo?.scale ?? 1) * (boost ?? 1) * ground * pool * kill;
   const hit = strike(round, aimed, blowsFor(aimed, use, { scale, kills }));

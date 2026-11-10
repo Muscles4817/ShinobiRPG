@@ -4,6 +4,7 @@ import type { Verb } from '@/systems/techniques';
 
 import type { CombatItemEffect, CombatTechnique, RangeBand } from '../../contract';
 import { seesTheHidden } from '../../rules/eyes';
+import { isSource } from '../../rules/minds';
 import { dispelChance, searchChance } from '../../rules/conditions';
 import { canAttackFrom, hasTrait, homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
@@ -160,7 +161,9 @@ function finder(fighter: PlanFighter, pool: readonly Card[], facing: Facing): Ca
     hiders.length === 0 ? 0 : Math.min(...hiders.map(chance));
   const ways = pool.flatMap((card): { readonly card: Card; readonly odds: number }[] => {
     if (card.kind === 'search') return [{ card, odds: odds((f) => searchChance(fighter, f)) }];
-    if (card.kind === 'dispel') return [{ card, odds: odds((f) => dispelChance(fighter, f)) }];
+    // A Dispel breaks an illusion; a mind's source isn't in one, it stands off the field.
+    if (card.kind === 'dispel')
+      return [{ card, odds: odds((f) => (isSource(f) ? 0 : dispelChance(fighter, f))) }];
     return [];
   });
   // A Search first between equals (it comes first in the kit): it costs no chakra.

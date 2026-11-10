@@ -77,6 +77,7 @@ const PERK_WORDS: Readonly<Record<CombatPerk, string>> = {
   'tree-walking': 'Walks up trees',
   shield: 'Shield: dust that rises on its own against a hit',
   'all-seeing': 'All-seeing: sees everything at once, so no illusion takes hold',
+  raises: 'Raises the fallen: brings a body of its own mind back up',
 };
 
 const sandboxes = new WeakMap<GameContext, GameState>();

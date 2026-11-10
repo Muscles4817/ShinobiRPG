@@ -5,6 +5,7 @@ import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/tec
 import type { CombatGear, CombatItem } from './gearContract';
 import type { CombatDust } from './dustContract';
 import type { CombatGround } from './groundContract';
+import type { CombatMind } from './mindContract';
 import type { CombatSwarm } from './swarmContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
@@ -85,10 +86,18 @@ export { COMBAT_ITEM_EFFECTS, type CombatItem, type CombatItemEffect } from './g
  * `rules/ground.ts`), or a `shield`: dust that rises on its own against a hit, a gift of
  * where the power came from (a tailed beast, a bound spirit; `rules/shield.ts`), or `all-seeing`:
  * eyes that see everything at once (the Byakugan), not ahead like `foresight`, so no illusion
- * takes hold of them (`rules/eyes.ts`). Engines ignore what they don't use.
+ * takes hold of them (`rules/eyes.ts`), or `raises`: brings a fallen body of its own mind back up
+ * (`mindContract.ts`). Engines ignore what they don't use.
  */
 export type CombatPerk =
-  'insight' | 'foresight' | 'mimicry' | 'water-walking' | 'tree-walking' | 'shield' | 'all-seeing';
+  | 'insight'
+  | 'foresight'
+  | 'mimicry'
+  | 'water-walking'
+  | 'tree-walking'
+  | 'shield'
+  | 'all-seeing'
+  | 'raises';
 
 export { COMBAT_GROUNDS, type CombatGround } from './groundContract';
 
@@ -204,6 +213,8 @@ export interface CombatantSetup {
   readonly swarm?: CombatSwarm;
   /** The dust they command and carry (`dustContract.ts`). */
   readonly dust?: CombatDust;
+  /** The mind they share with other bodies of their side, if any (`mindContract.ts`). */
+  readonly mind?: CombatMind;
 }
 
 /**
@@ -228,6 +239,8 @@ export interface CombatCall {
    * energy in with them while it perches (`plan/perching.ts`).
    */
   readonly perch?: true;
+  /** Of its caller's mind, not its own: it thinks and aims as they do (`mindContract.ts`). */
+  readonly shared?: true;
 }
 
 /** How a summon's part in a fight ended: still there, beaten, or sent home unpaid. */

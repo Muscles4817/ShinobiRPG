@@ -39,6 +39,7 @@ import {
   type SlotCondition,
   type TargetRule,
 } from './state';
+import { mindsMark } from './sharedMind';
 
 /**
  * How the player's plan plays: slot order is priority. Each exchange the player plays the
@@ -141,7 +142,9 @@ export function aimAt(
       return byHealth(foes, false);
     case undefined:
       // Left to their judgement (foes, teammates), a fighter goes for whoever is most worth it.
-      return self.isPlayer ? byHealth(foes, false) : bestTarget(self, foes);
+      // A body of a mind aims at its side's mark, as one (`sharedMind.ts`).
+      if (self.isPlayer) return byHealth(foes, false);
+      return mindsMark(self, foes, round) ?? bestTarget(self, foes);
   }
 }
 

@@ -9,6 +9,7 @@ import type { EffectUse } from '../../rules/verbs';
 import { committedTo } from './commitment';
 import { say, type Round } from './state';
 import type { Aimed } from './wounding';
+import { watched } from './sharedMind';
 
 /**
  * Whether what a technique brings takes hold of the foe it reached: the verbs that land on a foe,
@@ -66,7 +67,8 @@ export function shakenOff(
   if (!verb) return null;
   // Eyes that see the chakra points close them more surely (`rules/eyes.ts`); a hold cast from
   // hiding comes from where its target isn't looking (`rules/lethal.ts`).
-  const hidden = actor.hidden ? HIDDEN_HOLD_RESIST : 1;
+  const unseen = actor.hidden && !watched(round.fighters, target);
+  const hidden = unseen ? HIDDEN_HOLD_RESIST : 1;
   const resist = conditionResist(actor, target, use) * pointsSeenScale(actor, verb) * hidden;
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);

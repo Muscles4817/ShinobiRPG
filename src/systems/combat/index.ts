@@ -42,6 +42,7 @@ export {
 } from './contract';
 export type { CombatOrders, CombatStance, CombatUsage, StanceKind } from './teamContract';
 export { STANCE_KINDS } from './teamContract';
+export type { CombatMind } from './mindContract';
 export {
   DUST_GIFTS,
   DUST_QUALITIES,
