@@ -8,7 +8,7 @@ import {
   mended,
   mendShare,
   NO_WORKSHOP,
-  ownsFrame,
+  owns,
   withPuppet,
 } from './workshop';
 
@@ -18,10 +18,10 @@ const doll = withPuppet(NO_WORKSHOP, 'doll', 'Workshop Doll');
 
 describe('owning puppets', () => {
   it('gives a puppet whole, and never a frame you already own twice', () => {
-    expect(doll.puppets).toEqual([{ frameId: 'doll', name: 'Workshop Doll', condition: 1 }]);
+    expect(doll.puppets).toEqual([{ id: 'doll', name: 'Workshop Doll', condition: 1 }]);
     expect(withPuppet(doll, 'doll', 'Again')).toBe(doll);
-    expect(ownsFrame(doll, 'doll')).toBe(true);
-    expect(ownsFrame(doll, 'crow')).toBe(false);
+    expect(owns(doll, 'doll')).toBe(true);
+    expect(owns(doll, 'crow')).toBe(false);
   });
 
   it('brings each called puppet home as whole as it ended the fight; beaten is broken', () => {

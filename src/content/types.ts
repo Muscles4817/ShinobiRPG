@@ -1,3 +1,4 @@
+import type { PuppetryKit } from './puppetry';
 import type { BodySize, CombatPerk } from '@/systems/combat';
 import type { FoodDef, TrainingDef } from './drills';
 import type { EnemyDef } from './enemies';
@@ -276,6 +277,8 @@ export type PlaceDef =
       readonly loreIds?: readonly string[];
       /** Dust sold by the batch (`DustDef.price`), for those who command it. */
       readonly dustIds?: readonly string[];
+      /** Materials to build puppets from, sold by the lot (`PuppetMaterialDef`). */
+      readonly materialIds?: readonly string[];
     });
 
 export type PlaceKind = PlaceDef['kind'];
@@ -355,6 +358,8 @@ export interface ContentPack {
   readonly strains: readonly StrainDef[];
   /** Kinds of dust a user may command (`dusts.ts`), shared by every pack. */
   readonly dusts: readonly DustDef[];
+  /** Frames, mechanisms and materials to build puppets from (`puppetry.ts`), shared by every pack. */
+  readonly puppetry: PuppetryKit;
   readonly training: readonly TrainingDef[];
   readonly foods: readonly FoodDef[];
   readonly clans: readonly ClanDef[];

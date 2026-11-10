@@ -13,8 +13,8 @@ import { yourPuppets, type YourPuppet } from './yours';
  * broken puppet takes a few sessions; a scratched one, one.
  */
 
-function yoursOf(state: GameState, ctx: GameContext, frameId: string): YourPuppet | undefined {
-  return yourPuppets(state, ctx).find((p) => p.owned.frameId === frameId);
+function yoursOf(state: GameState, ctx: GameContext, puppetId: string): YourPuppet | undefined {
+  return yourPuppets(state, ctx).find((p) => p.owned.id === puppetId);
 }
 
 /** What a session on this puppet costs in materials now. */
@@ -23,8 +23,8 @@ export function mendingCost(state: GameState, puppet: YourPuppet): number {
 }
 
 /** Why you can't mend this puppet now, or null. Energy and the slot are the action's. */
-export function mendBlocker(state: GameState, ctx: GameContext, frameId: string): string | null {
-  const puppet = yoursOf(state, ctx, frameId);
+export function mendBlocker(state: GameState, ctx: GameContext, puppetId: string): string | null {
+  const puppet = yoursOf(state, ctx, puppetId);
   if (!puppet) return 'That isn’t one of your puppets.';
   if (puppet.owned.condition >= 1) return 'It is whole; there is nothing to mend.';
   if (!atHome(state, ctx)) return 'You mend it at your bench at home.';
@@ -40,14 +40,14 @@ function mendLine(before: OwnedPuppet, after: OwnedPuppet): string {
 }
 
 /** A session at the bench on one of your puppets. */
-export function mendPuppet(state: GameState, ctx: GameContext, frameId: string): GameState {
-  const puppet = yoursOf(state, ctx, frameId);
+export function mendPuppet(state: GameState, ctx: GameContext, puppetId: string): GameState {
+  const puppet = yoursOf(state, ctx, puppetId);
   if (!puppet) return state;
   const ryo = mendingCost(state, puppet);
   const paid = spend(state.wallet, ryo);
   if (!paid.ok) return state;
-  const puppetry = mended(state.puppetry, frameId);
-  const after = puppetry.puppets.find((p) => p.frameId === frameId) ?? puppet.owned;
+  const puppetry = mended(state.puppetry, puppetId);
+  const after = puppetry.puppets.find((p) => p.id === puppetId) ?? puppet.owned;
   const share = Math.round(
     Math.min(1 - puppet.owned.condition, mendShare(state.puppetry.craft)) * 100,
   );

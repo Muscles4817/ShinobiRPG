@@ -42,4 +42,19 @@ describe('the puppet card', () => {
       within(screen.getByRole('region', { name: 'Your puppets' })).getByText('Badly damaged'),
     ).toBeTruthy();
   });
+
+  it('sets a new puppet on the bench from the materials you keep', async () => {
+    const user = userEvent.setup();
+    const game = withBrokenDoll();
+    const puppetry = { ...game.puppetry, stock: { 'pine-and-wire': 2 } };
+    render(<App store={storeWith({ ...game, puppetry })} />);
+    await user.click(screen.getByRole('button', { name: /Continue/ }));
+    await user.click(screen.getByRole('button', { name: 'Shinobi' }));
+    const card = screen.getByRole('region', { name: 'Your puppets' });
+    await user.click(within(card).getByRole('checkbox', { name: /Wrist blades/ }));
+    await user.type(within(card).getByRole('textbox', { name: 'Name' }), 'Kite');
+    await user.click(within(card).getByRole('button', { name: 'Set it on the bench' }));
+    const after = screen.getByRole('region', { name: 'Your puppets' });
+    expect(within(after).getByText('On the bench: Kite')).toBeTruthy();
+  });
 });

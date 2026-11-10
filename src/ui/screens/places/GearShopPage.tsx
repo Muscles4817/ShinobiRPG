@@ -1,6 +1,7 @@
 import { gearShopView, headerView, type GearItem, type ToolItem } from '@/game';
 
 import { GearChips, GearKind } from './GearTags';
+import { MaterialsRack } from './MaterialsRack';
 
 import { Icon } from '../../art/Icon';
 import { Banner } from '../../components/Banner';
@@ -172,6 +173,7 @@ export function GearShopPage({
             </div>
           </section>
         )}
+        <MaterialsRack materials={view.materials} perform={perform} />
         {view.tools.length > 0 && (
           <section className="rack" aria-label="Fight tools">
             <h2 className="label">Fight tools</h2>

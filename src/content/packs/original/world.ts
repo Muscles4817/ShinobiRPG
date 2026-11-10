@@ -165,6 +165,8 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'hawk-talisman',
           'chakra-beads',
         ],
+        // Kazuo buys his paper and bamboo here; so does anyone he teaches.
+        materialIds: ['pine-and-wire', 'cypress-and-steel'],
       },
       {
         id: 'academy',

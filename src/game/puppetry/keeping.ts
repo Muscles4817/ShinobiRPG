@@ -1,5 +1,5 @@
 import type { CombatOutcome } from '@/systems/combat';
-import { afterFight, isBroken, ownsFrame, withPuppet } from '@/systems/puppets';
+import { afterFight, isBroken, owns, withPuppet } from '@/systems/puppets';
 import { knows } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
@@ -22,7 +22,7 @@ export function notePuppetsLearned(
   return ctx.content.puppets.all
     .filter((p) => !knows(before.techniques, p.techniqueId))
     .filter((p) => knows(after.techniques, p.techniqueId))
-    .filter((p) => !ownsFrame(after.puppetry, p.id))
+    .filter((p) => !owns(after.puppetry, p.id))
     .reduce(
       (state, puppet) =>
         log(
@@ -41,11 +41,11 @@ export function notePuppetsLearned(
 /** Your puppets after a mission fight: each called comes home as whole as it ended it. */
 export function afterPuppetFight(state: GameState, outcome: CombatOutcome): GameState {
   const shares = outcome.summonHealth ?? {};
-  const called = state.puppetry.puppets.filter((p) => shares[p.frameId] !== undefined);
+  const called = state.puppetry.puppets.filter((p) => shares[p.id] !== undefined);
   if (called.length === 0) return state;
   const puppetry = afterFight(state.puppetry, shares);
   const broken = puppetry.puppets.filter(
-    (p) => isBroken(p) && called.some((c) => c.frameId === p.frameId && !isBroken(c)),
+    (p) => isBroken(p) && called.some((c) => c.id === p.id && !isBroken(c)),
   );
   const kept = { ...state, puppetry };
   return broken.reduce(

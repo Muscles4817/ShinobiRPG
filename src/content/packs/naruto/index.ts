@@ -1,3 +1,4 @@
+import { PUPPET_PART_TECHNIQUES, PUPPETRY } from '../../shared/puppetry';
 import { BEAST_TECHNIQUES, COMPANION_LORE } from '../../shared/beastTechniques';
 import { CHAKRA_BEAST_ARTS } from '../../shared/bestiary';
 import { STRAINS } from './strains';
@@ -164,6 +165,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...CANON_TECHNIQUES,
     ...DUELIST_TECHNIQUES,
     ...WORKSHOP_DOLL_ARTS,
+    ...PUPPET_PART_TECHNIQUES,
   ],
   missions: [
     ...MISSIONS,
@@ -212,6 +214,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
   dusts: DUSTS,
+  puppetry: PUPPETRY,
   enemies: narutoFoes(),
   training: [
     ...TRAINING,

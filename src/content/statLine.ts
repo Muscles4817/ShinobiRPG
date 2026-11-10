@@ -26,6 +26,11 @@ const GRADE_VALUE: Readonly<Record<StatGrade, number>> = {
 /** A grade, or an exact value where the grade is too coarse. */
 export type StatMark = StatGrade | number;
 
+/** A grade's typical value, as `statLine` writes it (a frame's ceilings read the same way). */
+export function gradeValue(grade: StatGrade): number {
+  return GRADE_VALUE[grade];
+}
+
 function valueOf(mark: StatMark): number {
   return typeof mark === 'number' ? mark : GRADE_VALUE[mark];
 }
