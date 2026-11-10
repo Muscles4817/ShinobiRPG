@@ -18,6 +18,7 @@ import { loreOnShelf, type LoreOnShelf } from './handling';
 import { choice, type Choice } from './common';
 import { gearChips, gearKindLabel } from './gearWords';
 import { townPrice } from '../greetings';
+import { materialsOnShelf, type MaterialOnShelf } from './materialsOnShelf';
 
 /** Gear shops (racks of gear, a tray of fight tools) and your own gear locker at home. */
 
@@ -97,6 +98,8 @@ export interface GearShopView {
   readonly lore: readonly LoreOnShelf[];
   /** A batch of the dust you command, if the shop sells it; null otherwise. */
   readonly dust: DustOnShelf | null;
+  /** Materials to build puppets from, for those who know the art; empty otherwise. */
+  readonly materials: readonly MaterialOnShelf[];
 }
 
 export interface DustOnShelf extends Choice {
@@ -161,6 +164,7 @@ export function gearShopView(
     tools: (place.toolIds ?? []).map((id) => toolItem(state, ctx, ctx.content.tools.require(id))),
     lore: loreOnShelf(state, ctx, place.loreIds ?? []),
     dust: dustOnShelf(state, ctx, place),
+    materials: materialsOnShelf(state, ctx, place),
   };
 }
 

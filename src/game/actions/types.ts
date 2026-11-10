@@ -1,3 +1,4 @@
+import type { BuildOrder } from '../puppetry/bench';
 import type { Rng } from '@/core';
 import type { MapStyle } from '../mapStyle';
 import type { DayEndMode } from '../daybook/state';
@@ -135,7 +136,11 @@ export type GameAction =
   | { readonly type: 'takeHive'; readonly clanId: string; readonly share: HiveShare }
   | { readonly type: 'studyDustScroll'; readonly dustId: string }
   | { readonly type: 'makeDust' }
-  | { readonly type: 'mendPuppet'; readonly frameId: string }
+  | { readonly type: 'mendPuppet'; readonly puppetId: string }
+  | { readonly type: 'buyMaterial'; readonly placeId: string; readonly materialId: string }
+  | { readonly type: 'startBuild'; readonly order: BuildOrder }
+  | { readonly type: 'workOnBuild' }
+  | { readonly type: 'renamePuppet'; readonly puppetId: string; readonly name: string }
   | { readonly type: 'buyDust'; readonly placeId: string }
   | { readonly type: 'feedCompanion'; readonly ingredientId: string | null }
   | { readonly type: 'playWithCompanion'; readonly play: PlayKind }

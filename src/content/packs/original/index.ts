@@ -1,3 +1,4 @@
+import { PUPPET_PART_TECHNIQUES, PUPPETRY } from '../../shared/puppetry';
 import { LANTERN_DOLL, LANTERN_MAKER, LANTERN_PUPPET_ARTS } from './puppeteer';
 import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
 import { OLD_OWL_ARC, OLD_OWL_JOBS } from './arcs/oldOwl';
@@ -135,6 +136,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CONTRACT_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
     ...LANTERN_PUPPET_ARTS,
+    ...PUPPET_PART_TECHNIQUES,
     ...WILD_FOLK_TECHNIQUES,
   ],
   missions: [
@@ -185,6 +187,7 @@ export const ORIGINAL_PACK: ContentPack = {
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
   dusts: DUSTS,
+  puppetry: PUPPETRY,
   puppets: [LANTERN_DOLL],
   enemies: [
     ...ENEMIES,

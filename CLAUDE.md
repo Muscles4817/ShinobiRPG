@@ -459,7 +459,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and a broken one stays home (`withYourPuppets`); each comes home as whole as it ended the
     fight (`CombatOutcome.summonHealth`), beaten is broken, never lost; and it is mended at your
     bench at home (`mendPuppet`), a share a session for materials, more by your **craft**, a
-    skill of its own that grows with the work. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
+    skill of its own that grows with the work. Puppets are also **built** at that bench
+    (`game/puppetry/bench.ts`, `systems/puppets/build.ts`): a frame your craft can manage, its
+    slots filled with mechanisms (each a technique the puppet fights with) and lots of a material
+    bought by the lot where a shop's `materialIds` sells it (`content/shared/puppetry.ts`, the
+    same in every pack), then days of work, one session a day; what comes out is as good as the
+    hands and the wood together (`builtValue`: your craft reaches only so far past itself, each
+    material only so far, the frame no further than it was designed), it gets its own generated
+    unsealing card (`game/puppetry/built.ts`), and it may be rebuilt for half the materials and
+    days, and named. You keep `KEEP_LIMIT` puppets. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
     `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,
     senses), its species' gifts 1 to 3 (chakra drain, camouflage, glow, blinding, venom) and
     what it fears, a count and a cap; each read once in `rules/swarms.ts`,
@@ -1131,6 +1139,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   teacher's `contract`, with the `tastes` it likes as offerings and its `parting` words. A
   contract only foes hold needs neither: list its summons on an `EnemyDef.summons` with a
   `tell`. Validated in `validateContracts.ts`.
+- **Add a puppet frame, mechanism or material:** a `PuppetFrameDef`, `PuppetPartDef` (with its
+  technique in `PUPPET_PART_TECHNIQUES`) or `PuppetMaterialDef` in `content/shared/puppetry.ts`;
+  every pack takes the shared kit. A material must be sold by some gear place's `materialIds`
+  (validated in `validatePuppetry.ts`).
 - **Add a hive strain or hive clan:** a `StrainDef` in the pack's `strains.ts` (a species and
   family, the six qualities graded E to A, at least one gift, the elements it fears), a `hive`
   on the `ClanDef` naming it, and clan techniques with a `swarmCost`. A body's install adds a

@@ -1449,3 +1449,37 @@ lantern-maker as a placeholder until its own puppetry is designed (step 7).
   stays home, and the bench with its cost.
 - **Left for 5b-ii:** frames and mechanisms (fitted seals among them), building with craft and
   materials, naming, and a workshop that mends faster than your own bench.
+
+### Step 5b-ii-a: building puppets
+
+Decided in the planning discussion: a fitted seal asks your fūinjutsu at the technique's rank and
+caps the puppet's grade in its art a step below yours (5b-ii-b); a puppet of yours may be
+rebuilt; you keep three, more with a bigger home (5b-ii-b).
+
+- **The kit** (`content/shared/puppetry.ts`, the same in every pack, validated in
+  `validatePuppetry.ts`): four frames from a light doll (E craft, two slots) through a fighting
+  frame and an armoured heavy frame to a shell its maker fights inside (B craft, four slots);
+  seven mechanisms, each a technique the puppet fights with (wrist blades, a needle launcher,
+  venom needles, ram fists, a capture belly, guard plates, a smoke vent); and three materials,
+  common pine and wire, fine cypress and steel cord, rare ironwood and chakra wire.
+- **Where materials are sold** (`materialIds` on a gear place): in the fan pack, Suna's Windbreak
+  Workshop sells all three; in the original pack, Tōrōgakure's outfitter sells the common and
+  the fine, and Shiomachi's net-mender the rare, off the foreign ships.
+- **Quality** (`builtValue`, `systems/puppets/build.ts`): each of a frame's ceilings is worked
+  up as far as your craft (when the puppet is finished) reaches past itself and as far as its
+  material can be worked (common to a C, fine to a B, rare to an S), never past the frame. Fine
+  wood also makes a puppet tougher, common frailer.
+- **The bench** (`game/puppetry/bench.ts`): you set a build on it at home (it takes the frame's
+  lots of material from your stock and the mechanisms' ryo), and work on it a session a day (an
+  afternoon and some energy, teaching craft) until it stands up. A rebuild of one of yours takes
+  half the lots and half the days, and the puppet stays home meanwhile. You keep three puppets.
+- **In fights**: a puppet you built needs only the art (any unsealing learned) and comes with an
+  unsealing card of its own, made by the game (`game/puppetry/built.ts`).
+- **Save v72**: a puppet's `frameId` is now its `id` (a built one is `built-n`), and the
+  workshop keeps your stock, the build on the bench and the next number.
+- **Screens**: materials on a shop's racks, by the lot, for anyone who knows the art; on the
+  puppet card, each built puppet's rename and rebuild, and the bench (a day's work on what is
+  on it, or a new build chosen from frames, mechanisms and material, with what it takes and why
+  it can't start yet).
+- **Left for 5b-ii-b**: fitted seals, a workshop bench that mends faster and builds a grade
+  above your craft, and room for more puppets in a bigger home.

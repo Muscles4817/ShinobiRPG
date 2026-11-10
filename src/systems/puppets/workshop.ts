@@ -8,23 +8,56 @@ import { clamp } from '@/core';
  * the puppet a session, more the better your craft, paid for in materials.
  */
 
-/** A puppet of yours: a frame of the pack's (`PuppetDef`), how whole it is and its name. */
-export interface OwnedPuppet {
-  /** The frame it was built as (a `PuppetDef` id); also its call in a fight. */
+/** How a puppet you built was built: its frame, its mechanisms and what it is made of. */
+export interface BuiltSheet {
+  /** The frame (a `PuppetFrameDef` id). */
   readonly frameId: string;
+  /** Its mechanisms (`PuppetPartDef` ids), one a slot. */
+  readonly partIds: readonly string[];
+  /** What it was made of (a `PuppetMaterialDef` id). */
+  readonly materialId: string;
+  /** Your craft when it was finished: a build is as good as the hands that made it. */
+  readonly craftAt: number;
+}
+
+/** A puppet of yours: how whole it is, its name, and how it was built if you built it. */
+export interface OwnedPuppet {
+  /** Its call in a fight: a pack puppet's own id (`PuppetDef`), or one of yours (`built-n`). */
+  readonly id: string;
   readonly name: string;
   /** How whole it is: 1 whole, 0 broken. */
   readonly condition: number;
+  /** How you built it; absent for a pack's puppet given with its art. */
+  readonly built?: BuiltSheet;
 }
 
-/** Everything puppet-making you keep: your puppets and your craft. */
+/** A puppet on the bench: a new build, or a rebuild of one of yours, and the days it still needs. */
+export interface BuildJob {
+  /** The puppet it will be (an id of yours when rebuilding one). */
+  readonly puppetId: string;
+  readonly name: string;
+  readonly frameId: string;
+  readonly partIds: readonly string[];
+  readonly materialId: string;
+  readonly daysLeft: number;
+  /** The last day it was worked on: one session a day. */
+  readonly workedDay?: number;
+}
+
+/** Everything puppet-making you keep: your puppets, your craft, materials and the bench. */
 export interface Workshop {
   readonly puppets: readonly OwnedPuppet[];
   /** Your craft, on the stat scale (0–60): graded as a skill. */
   readonly craft: number;
+  /** Lots of each material you keep (`PuppetMaterialDef` id). */
+  readonly stock: Readonly<Record<string, number>>;
+  /** The puppet on the bench, if any. */
+  readonly build: BuildJob | null;
+  /** The number the next puppet you build is given. */
+  readonly nextId: number;
 }
 
-export const NO_WORKSHOP: Workshop = { puppets: [], craft: 0 };
+export const NO_WORKSHOP: Workshop = { puppets: [], craft: 0, stock: {}, build: null, nextId: 1 };
 
 /** Share of a puppet a session at the bench mends with no craft at all… */
 export const MEND_BASE = 0.25;
@@ -42,21 +75,21 @@ export function isBroken(puppet: OwnedPuppet): boolean {
   return puppet.condition <= 0;
 }
 
-/** Whether you own a puppet of this frame. */
-export function ownsFrame(workshop: Workshop, frameId: string): boolean {
-  return workshop.puppets.some((p) => p.frameId === frameId);
+/** Whether you own this puppet (a pack puppet's id, or one of yours). */
+export function owns(workshop: Workshop, id: string): boolean {
+  return workshop.puppets.some((p) => p.id === id);
 }
 
-/** A new puppet, whole, to your workshop; a frame you already own isn't given twice. */
-export function withPuppet(workshop: Workshop, frameId: string, name: string): Workshop {
-  if (ownsFrame(workshop, frameId)) return workshop;
-  return { ...workshop, puppets: [...workshop.puppets, { frameId, name, condition: 1 }] };
+/** A pack's puppet, whole, to your workshop; one you already own isn't given twice. */
+export function withPuppet(workshop: Workshop, id: string, name: string): Workshop {
+  if (owns(workshop, id)) return workshop;
+  return { ...workshop, puppets: [...workshop.puppets, { id, name, condition: 1 }] };
 }
 
 /** Your puppets after a fight: each one called comes home as whole as it ended it. */
 export function afterFight(workshop: Workshop, shares: Readonly<Record<string, number>>): Workshop {
   const puppets = workshop.puppets.map((p) => {
-    const share = shares[p.frameId];
+    const share = shares[p.id];
     return share === undefined ? p : { ...p, condition: clamp(share, 0, 1) };
   });
   return { ...workshop, puppets };
@@ -80,10 +113,10 @@ export function craftAfterSession(craft: number): number {
 }
 
 /** A session at the bench on one puppet: it is mended a share, and your craft grows. */
-export function mended(workshop: Workshop, frameId: string): Workshop {
+export function mended(workshop: Workshop, id: string): Workshop {
   const share = mendShare(workshop.craft);
   const puppets = workshop.puppets.map((p) =>
-    p.frameId === frameId ? { ...p, condition: Math.min(1, p.condition + share) } : p,
+    p.id === id ? { ...p, condition: Math.min(1, p.condition + share) } : p,
   );
-  return { puppets, craft: craftAfterSession(workshop.craft) };
+  return { ...workshop, puppets, craft: craftAfterSession(workshop.craft) };
 }

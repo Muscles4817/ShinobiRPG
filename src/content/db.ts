@@ -22,6 +22,7 @@ import { travellerRoadEvents } from './travellerEvents';
 import type { CompanionKindDef, CompanionLoreDef } from './companions';
 import type { ContractDef, SummonDef } from './contracts';
 import type { PuppetDef } from './puppets';
+import type { PuppetFrameDef, PuppetMaterialDef, PuppetPartDef } from './puppetry';
 import type { DustDef } from './dusts';
 import type { StrainDef } from './strains';
 import type { SenseiTestDef } from './senseiTests';
@@ -117,6 +118,9 @@ export interface ContentDb {
   readonly duelists: Catalog<PersonDef>;
   /** Puppets arsenals carry (`ContentPack.puppets`), by call id. */
   readonly puppets: Catalog<PuppetDef>;
+  readonly puppetFrames: Catalog<PuppetFrameDef>;
+  readonly puppetParts: Catalog<PuppetPartDef>;
+  readonly puppetMaterials: Catalog<PuppetMaterialDef>;
   readonly conversations: Catalog<ConversationDef>;
   readonly conversationTopics: readonly ConversationTopic[];
   readonly names: NamePools;
@@ -186,6 +190,9 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     people: createCatalog('person', pack.people),
     duelists: createCatalog('duelist', pack.duelists ?? []),
     puppets: createCatalog('puppet', pack.puppets ?? []),
+    puppetFrames: createCatalog('puppet frame', pack.puppetry.frames),
+    puppetParts: createCatalog('puppet part', pack.puppetry.parts),
+    puppetMaterials: createCatalog('puppet material', pack.puppetry.materials),
     conversations: createCatalog('conversation', pack.conversations),
     conversationTopics: pack.conversationTopics,
     names: pack.names,

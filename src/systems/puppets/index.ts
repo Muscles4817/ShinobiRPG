@@ -8,8 +8,22 @@ export {
   mended,
   mendShare,
   NO_WORKSHOP,
-  ownsFrame,
+  owns,
   withPuppet,
+  type BuildJob,
+  type BuiltSheet,
   type OwnedPuppet,
   type Workshop,
 } from './workshop';
+export {
+  buildStarted,
+  builtValue,
+  KEEP_LIMIT,
+  keepsTooMany,
+  materialToughness,
+  nextPuppetId,
+  renamed,
+  stockTaken,
+  stocked,
+  workedOn,
+} from './build';

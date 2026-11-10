@@ -172,6 +172,7 @@ export {
   type LoadoutView,
   type LoadoutSlot,
 } from './views/shops';
+export { type MaterialOnShelf } from './views/materialsOnShelf';
 export { kitchenView, type DinnerInvite, type KitchenView, type RecipeCard } from './views/kitchen';
 export { STOVE_BEATS, EXPERIMENT_LIMIT, type StoveBeat } from './views/stove';
 export { wildsView, type FishingSpotView, type WhatsAbout, type WildsView } from './views/wilds';
@@ -285,5 +286,14 @@ export { contractCard, type ContractCard } from './views/contract';
 export { hiveCard, type HiveCard } from './views/hiveCard';
 export { dustCard, type DustCard } from './views/dustCard';
 export { puppetCard, type PuppetCard, type PuppetRow } from './views/puppetCard';
+export {
+  benchView,
+  type BenchFrame,
+  type BenchJob,
+  type BenchMaterial,
+  type BenchPart,
+  type BenchView,
+} from './views/benchView';
+export { type BuildOrder } from './puppetry/bench';
 export { dustScrollRows, type DustScrollRow } from './views/dustScrolls';
 export { riteCards, type RiteCard, type RiteShare } from './views/riteCard';

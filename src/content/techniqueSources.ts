@@ -22,6 +22,8 @@ export function learnableIds(pack: ContentPack): Set<string> {
     ...pack.contracts.flatMap((c) => c.summons.flatMap((s) => [s.techniqueId, ...s.techniqueIds])),
     // A puppet's unsealing and its mechanisms come with the puppet (`validatePuppets.ts`).
     ...(pack.puppets ?? []).flatMap((p) => [p.techniqueId, ...p.techniqueIds]),
+    // A built puppet's mechanisms come with the parts fitted to it (`shared/puppetry.ts`).
+    ...pack.puppetry.parts.map((p) => p.techniqueId),
   ]);
 }
 

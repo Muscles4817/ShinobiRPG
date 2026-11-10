@@ -79,6 +79,8 @@ export const PORT_SHIOMACHI: LocationDef = {
       gearIds: ['fishhook-darts', 'gutting-needles', 'oilskin-coat', 'cork-float-charm'],
       toolIds: TOOL_IDS,
       loreIds: ['kennel-masters-notes'],
+      // Ironwood off the foreign ships, and chakra wire nobody asks about.
+      materialIds: ['pine-and-wire', 'ironwood-and-chakra-wire'],
     },
     {
       id: 'breakwater',

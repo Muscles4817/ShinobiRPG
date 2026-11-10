@@ -94,6 +94,7 @@ export const SUNAGAKURE: LocationDef = {
       gearIds: ['war-fan', 'sand-veil', 'senbon-case'],
       toolIds: ['smoke-bomb', 'explosive-tag'],
       dustIds: ['iron-sand', 'gold-dust'],
+      materialIds: ['pine-and-wire', 'cypress-and-steel', 'ironwood-and-chakra-wire'],
     },
     {
       id: 'steam-baths',

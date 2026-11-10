@@ -36,9 +36,7 @@ describe('coming by a puppet', () => {
   it('comes with its art, once: learning its unsealing gives you the puppet', () => {
     const before = newGame();
     const learned = notePuppetsLearned(before, knowing(before, [UNSEAL]), ctx);
-    expect(learned.puppetry.puppets).toEqual([
-      { frameId: DOLL, name: 'Lantern Doll', condition: 1 },
-    ]);
+    expect(learned.puppetry.puppets).toEqual([{ id: DOLL, name: 'Lantern Doll', condition: 1 }]);
     const again = notePuppetsLearned(learned, learned, ctx);
     expect(again.puppetry.puppets).toHaveLength(1);
   });
@@ -83,7 +81,7 @@ describe('your puppets in a fight', () => {
 });
 
 describe('mending a puppet', () => {
-  const mend = { type: 'mendPuppet', frameId: DOLL } as const;
+  const mend = { type: 'mendPuppet', puppetId: DOLL } as const;
 
   it('is work at home, for materials, on a puppet that needs it', () => {
     expect(blockerFor(puppeteer(), mend, ctx)).toMatch(/whole/);

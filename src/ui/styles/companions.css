@@ -200,6 +200,55 @@
   font-size: 1rem;
 }
 
+.hive-card .bench {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--paper-muted);
+}
+.hive-card .bench h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.hive-card .bench fieldset {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  font-size: 0.85rem;
+}
+.hive-card .bench legend {
+  margin-bottom: 4px;
+  font-family: var(--font-story);
+}
+.hive-card .bench label {
+  min-height: 40px;
+}
+.hive-card .bench-field,
+.hive-card .puppet-rename label {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0;
+  font-size: 0.85rem;
+}
+.hive-card .bench-field select,
+.hive-card .bench-field input,
+.hive-card .puppet-rename input {
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--paper-muted);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--paper-ink);
+}
+.hive-card .puppet-rename {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+}
+
 .hive-card .hive-jars,
 .hive-card .hive-name {
   margin-top: 12px;
