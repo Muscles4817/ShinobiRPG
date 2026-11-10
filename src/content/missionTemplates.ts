@@ -1,5 +1,5 @@
 import type { CombatGround } from '@/systems/combat';
-import type { MissionDef, MissionStage } from '@/systems/missions';
+import { isFightStage, type MissionDef, type MissionStage } from '@/systems/missions';
 
 /**
  * Mission templates: one shape of job (a delivery that goes wrong, a haunting to lay, a camp
@@ -9,7 +9,7 @@ import type { MissionDef, MissionStage } from '@/systems/missions';
  *
  * A placeholder is `{name}` (letters, digits and dashes) anywhere in a template's text,
  * including enemy ids and flavour. Validation reports any placeholder a fill left empty. A
- * fight's ground isn't text, so a fill names it apart (`MissionFill.ground`).
+ * fight's ground isn't text, so a fill gives it separately (`MissionFill.ground`).
  */
 
 export interface MissionTemplate {
@@ -76,13 +76,7 @@ function fillDeep<T>(value: T, values: Readonly<Record<string, string>>): T {
 
 /** A fight stage the template left on open ground, set where the fill says. */
 function grounded(stage: MissionStage, ground: CombatGround | undefined): MissionStage {
-  if (!ground || (stage.kind !== 'combat' && stage.kind !== 'encounter')) return stage;
-  return stage.ground ? stage : { ...stage, ground };
-}
-
-/** Whether a template has a fight a fill's ground could go to. */
-export function templateFights(template: MissionTemplate): boolean {
-  return template.stages.some((s) => s.kind === 'combat' || s.kind === 'encounter');
+  return ground && isFightStage(stage) && !stage.ground ? { ...stage, ground } : stage;
 }
 
 /** One fill made into a mission. Throws on an unknown template (a programmer error). */

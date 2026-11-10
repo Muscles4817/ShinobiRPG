@@ -1,11 +1,8 @@
 import { ORIGINAL_PACK } from './packs/original';
 import { MISSION_FILLS, MISSION_TEMPLATES } from './packs/original/jobs';
-import {
-  missionFromFill,
-  placeholdersIn,
-  templateFights,
-  type MissionTemplate,
-} from './missionTemplates';
+import { isFightStage } from '@/systems/missions';
+
+import { missionFromFill, placeholdersIn, type MissionTemplate } from './missionTemplates';
 
 const TEMPLATE: MissionTemplate = {
   id: 'lost-thing',
@@ -98,7 +95,9 @@ describe('the original pack’s templates and fills', () => {
       expect(template).toBeDefined();
       const asked = Object.keys(template?.placeholders ?? {}).sort();
       expect(Object.keys(fill.values).sort()).toEqual(asked);
-      if (fill.ground && template) expect(templateFights(template)).toBe(true);
+      if (!fill.ground || !template) return;
+      const fights = missionFromFill(template, fill).stages.filter(isFightStage);
+      expect(fights.some((s) => s.ground === fill.ground)).toBe(true);
     },
   );
 });

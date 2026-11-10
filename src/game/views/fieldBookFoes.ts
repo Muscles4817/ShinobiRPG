@@ -1,5 +1,6 @@
 import type { EnemyDef } from '@/content';
 import { knownWell, type FoeRecord } from '@/systems/collections';
+import { stageFoes } from '@/systems/missions';
 
 import type { GameContext } from '../context';
 import { scoutOpponents, traitNotes } from '../scouting';
@@ -53,9 +54,7 @@ function fought(state: GameState, ctx: GameContext, foe: EnemyDef): FieldEntry {
 function namedInReports(state: GameState, ctx: GameContext): EnemyDef[] {
   return state.board.intel
     .flatMap((missionId) => ctx.content.missions.get(missionId)?.stages ?? [])
-    .flatMap((stage) =>
-      stage.kind === 'combat' || stage.kind === 'encounter' ? stage.enemyIds : [],
-    )
+    .flatMap(stageFoes)
     .filter((id, i, all) => all.indexOf(id) === i && state.fieldBook.foes[id] === undefined)
     .flatMap((id) => ctx.content.enemies.get(id) ?? []);
 }

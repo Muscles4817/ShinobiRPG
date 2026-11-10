@@ -174,7 +174,7 @@ writing keeps reaching for one.
    the edge and one in the deep, a way-finding check, a day into the heart and the beast there,
    two days back, named by one `country` slot. Its days draw the depths' sights and finds; a job's
    foes are its own, and its fight is where the beast lives: a fill names the ground
-   (`MissionFill.ground`: forest, lake, desert), and the mountain and the cove stay open ground. Five
+   (`MissionFill.ground`: the boar's forest, the scorpion's desert); the rest stay open ground. Five
    fills (`jobs/fills/wild.ts`): the ember-tusk boar at a charcoal village, the thunder kite over
    a goat hamlet, the marsh serpent at a reed village, a glass scorpion at an oasis, the tide crab
    at a fishing cove. **The White Stag** (`jobs/whiteStag.ts`, once only): poachers in the deep

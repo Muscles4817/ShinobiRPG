@@ -3,8 +3,9 @@ import type { MissionFill } from '../../../../missionTemplates';
 /**
  * Hunts that go off the paths after a beast changed by chakra, into the heart of the wild
  * country it lives in, for the villages at its edge: a charcoal wood, a goat hamlet, a reed
- * village, an oasis and a fishing cove. The beast is fought where it lives: among the trees,
- * on the black water, on the sand; the mountain saddle and the cove's rocks are open ground.
+ * village, an oasis and a fishing cove. The boar is fought among the trees and the scorpion on
+ * the sand. The serpent is met on the firm ground between channels: a lake fight would cost
+ * the team their footing, and no beast of the water walks on it.
  */
 export const WILD_FILLS: readonly MissionFill[] = [
   {
@@ -55,7 +56,6 @@ export const WILD_FILLS: readonly MissionFill[] = [
     id: 'the-serpent-in-the-black-water',
     templateId: 'c-team-deep-hunt',
     minMissionsCompleted: 6,
-    ground: 'lake',
     values: {
       title: 'The Serpent in the Black Water',
       client: 'The Reed-Cutters of Ashikawa',

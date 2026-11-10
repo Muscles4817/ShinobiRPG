@@ -93,6 +93,21 @@ export const BEAST: readonly FlavourSet[] = [
     },
   },
   {
+    grounds: ['desert'],
+    flavour: {
+      terrain:
+        'Tracks across the dune face, a hollow scooped out in the lee of a rock, and nothing else alive in sight.',
+      noticed:
+        'The sand on the far slope stops trickling. Whatever was moving there has gone still.',
+      slipped: 'You keep below the crest with the wind in your faces, and leave it to the heat.',
+      caught: 'Your foot sends a slide of sand down the slope, and it turns towards the sound.',
+      parley: 'It backs off over the crest and is gone into the haze.',
+      ambush: 'You come over the dune on top of it while it lies in the shade of the rock.',
+      spotted:
+        'It was lying under the sand at the foot of the dune. It is out and coming at you before the sand settles.',
+    },
+  },
+  {
     jobs: ['patrol', 'escort'],
     flavour: {
       terrain:
