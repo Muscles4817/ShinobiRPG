@@ -65,7 +65,7 @@ export function puppetCard(state: GameState, ctx: GameContext): PuppetCard | nul
         p.owned.condition < 1
           ? {
               ...choice(state, ctx, { type: 'mendPuppet', puppetId: p.owned.id }),
-              cost: mendingCost(state, p),
+              cost: mendingCost(state, ctx, p),
             }
           : null,
     })),

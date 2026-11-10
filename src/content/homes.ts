@@ -39,6 +39,8 @@ export interface HomeDef {
   readonly beds?: number;
   /** Drills done in the yard, with a yard (`TrainingDef` ids). */
   readonly yardTrainingIds?: readonly string[];
+  /** Puppets it has room to keep, when more than the ordinary few (`KEEP_LIMIT`). */
+  readonly puppets?: number;
   /** Not playable yet: shown sealed with this reason, never moved into. */
   readonly lockedReason?: string;
 }

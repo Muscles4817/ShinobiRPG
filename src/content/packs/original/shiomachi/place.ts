@@ -81,6 +81,8 @@ export const PORT_SHIOMACHI: LocationDef = {
       loreIds: ['kennel-masters-notes'],
       // Ironwood off the foreign ships, and chakra wire nobody asks about.
       materialIds: ['pine-and-wire', 'ironwood-and-chakra-wire'],
+      // The shipwrights' bench in the back, where Oki lets a puppet-maker work for a cup of tea.
+      puppetBench: true,
     },
     {
       id: 'breakwater',

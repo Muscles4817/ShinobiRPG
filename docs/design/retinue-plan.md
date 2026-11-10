@@ -1483,3 +1483,22 @@ rebuilt; you keep three, more with a bigger home (5b-ii-b).
   it can't start yet).
 - **Left for 5b-ii-b**: fitted seals, a workshop bench that mends faster and builds a grade
   above your craft, and room for more puppets in a bigger home.
+
+### Step 5b-ii-b: seals, workshops and room
+
+- **Fitted seals** (`game/puppetry/seals.ts`): a ninjutsu or genjutsu technique you know may go
+  into a frame's slot in place of a mechanism (30 ryo of inks a seal; mechanisms and seals
+  together fit the frame's slots). Sealing a technique asks your fūinjutsu at its rank, and the
+  art goes in the puppet a grade below your fūinjutsu when it was fitted (`sealCap`, kept on the
+  sheet), worked as far as craft and material reach like any ceiling; summonings won't seal. The
+  puppet fights with the technique like a mechanism's, and its master's chakra control still
+  limits it in the fight.
+- **Workshops** (`puppetBench` on a place; `game/puppetry/workshop.ts`): a puppet-maker's bench
+  you are let in to (a clan's only as its gate allows) mends twice as much a session and lets
+  you build a frame a craft grade past your own. In the fan pack it is the Akasuna compound in
+  Suna; in the original pack the shipwrights' bench at Shiomachi's net-menders. None stands in a
+  home village, so travelling there is the price.
+- **Room** (`HomeDef.puppets`): you keep three puppets in a room, four or five in the bigger
+  homes (`puppetRoom`).
+- **Screens**: the bench says where you are working, what that bench gives and how many
+  puppets your home keeps, and offers your techniques as seals with why any can't go in yet.

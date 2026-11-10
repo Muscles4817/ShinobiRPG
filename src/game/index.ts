@@ -292,6 +292,7 @@ export {
   type BenchJob,
   type BenchMaterial,
   type BenchPart,
+  type BenchSeal,
   type BenchView,
 } from './views/benchView';
 export { type BuildOrder } from './puppetry/bench';

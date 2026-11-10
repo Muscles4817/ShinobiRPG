@@ -232,6 +232,8 @@ interface PlaceBase {
   readonly inText?: string;
   /** Shops and schools close; homes, grounds, the hall and the hospital never do. */
   readonly hours?: OpeningHours;
+  /** A puppet-maker's bench you may work at: faster mending, a frame a grade past your craft. */
+  readonly puppetBench?: true;
 }
 
 /**

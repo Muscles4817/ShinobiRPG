@@ -2,7 +2,7 @@ import { mendCost, mended, mendShare, type OwnedPuppet } from '@/systems/puppets
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { atHome } from '../home/home';
+import { atABench, atWorkshop, WORKSHOP_MENDS } from './workshop';
 import { chip, log } from '../ops';
 import type { GameState } from '../state';
 import { yourPuppets, type YourPuppet } from './yours';
@@ -17,9 +17,19 @@ function yoursOf(state: GameState, ctx: GameContext, puppetId: string): YourPupp
   return yourPuppets(state, ctx).find((p) => p.owned.id === puppetId);
 }
 
+/** How much more a session mends here: twice at a workshop's bench. */
+function benchBoost(state: GameState, ctx: GameContext): number {
+  return atWorkshop(state, ctx) ? WORKSHOP_MENDS : 1;
+}
+
 /** What a session on this puppet costs in materials now. */
-export function mendingCost(state: GameState, puppet: YourPuppet): number {
-  return mendCost(puppet.owned, puppet.def.healthScale, state.puppetry.craft);
+export function mendingCost(state: GameState, ctx: GameContext, puppet: YourPuppet): number {
+  return mendCost(
+    puppet.owned,
+    puppet.def.healthScale,
+    state.puppetry.craft,
+    benchBoost(state, ctx),
+  );
 }
 
 /** Why you can't mend this puppet now, or null. Energy and the slot are the action's. */
@@ -27,8 +37,8 @@ export function mendBlocker(state: GameState, ctx: GameContext, puppetId: string
   const puppet = yoursOf(state, ctx, puppetId);
   if (!puppet) return 'That isn’t one of your puppets.';
   if (puppet.owned.condition >= 1) return 'It is whole; there is nothing to mend.';
-  if (!atHome(state, ctx)) return 'You mend it at your bench at home.';
-  const ryo = mendingCost(state, puppet);
+  if (!atABench(state, ctx)) return 'You mend it at a bench: your own at home, or a workshop’s.';
+  const ryo = mendingCost(state, ctx, puppet);
   return state.wallet.ryo < ryo ? `The materials cost ${ryo} ryo.` : null;
 }
 
@@ -43,13 +53,14 @@ function mendLine(before: OwnedPuppet, after: OwnedPuppet): string {
 export function mendPuppet(state: GameState, ctx: GameContext, puppetId: string): GameState {
   const puppet = yoursOf(state, ctx, puppetId);
   if (!puppet) return state;
-  const ryo = mendingCost(state, puppet);
+  const ryo = mendingCost(state, ctx, puppet);
   const paid = spend(state.wallet, ryo);
   if (!paid.ok) return state;
-  const puppetry = mended(state.puppetry, puppetId);
+  const boost = benchBoost(state, ctx);
+  const puppetry = mended(state.puppetry, puppetId, boost);
   const after = puppetry.puppets.find((p) => p.id === puppetId) ?? puppet.owned;
   const share = Math.round(
-    Math.min(1 - puppet.owned.condition, mendShare(state.puppetry.craft)) * 100,
+    Math.min(1 - puppet.owned.condition, mendShare(state.puppetry.craft, boost)) * 100,
   );
   return log(
     { ...state, wallet: paid.value, puppetry },

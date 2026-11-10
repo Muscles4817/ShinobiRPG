@@ -1,5 +1,5 @@
 import { act, ctx, fightOut, intoFight, newGame, veteran } from '@/test/gameFixtures';
-import { blockerFor } from '@/game';
+import { benchView, blockerFor } from '@/game';
 import { slotsUntilNextMorning } from '@/systems/time';
 
 import { playerCombatant } from '../combatants';
@@ -115,5 +115,89 @@ describe('a built puppet in a fight', () => {
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
     const done = fightOut(intoFight(state));
     expect(done.combatFinale?.log.join(' ')).toMatch(/Kite unfolds/);
+  });
+});
+
+describe('fitted seals', () => {
+  function sealer(fuuinjutsu: number): GameState {
+    const base = apprentice();
+    const known = [...base.techniques.known, 'pebble-volley', 'vacuum-blade'];
+    const stats = { ...base.character.stats, fuuinjutsu };
+    return {
+      ...base,
+      techniques: { ...base.techniques, known },
+      character: { ...base.character, stats },
+    };
+  }
+  const sealed = (seals: readonly string[]) =>
+    ({ type: 'startBuild', order: { ...KITE, partIds: ['wrist-blades'], seals } }) as const;
+
+  it('ask your fūinjutsu at the technique’s rank, and a slot each', () => {
+    expect(blockerFor(sealer(5), sealed(['vacuum-blade']), ctx)).toMatch(/fūinjutsu at C/);
+    expect(blockerFor(sealer(16), sealed(['vacuum-blade']), ctx)).toBeNull();
+    expect(blockerFor(sealer(16), sealed(['vacuum-blade', 'pebble-volley']), ctx)).toMatch(
+      /holds 2/,
+    );
+  });
+
+  it('carry the technique into the puppet, its art a grade below your fūinjutsu', () => {
+    let state = act(sealer(16), sealed(['pebble-volley']));
+    state = act(state, { type: 'workOnBuild' });
+    state = act(nextMorning(state), { type: 'workOnBuild' });
+    const owned = state.puppetry.puppets[0]!;
+    const def = builtDef(owned, owned.built!, ctx);
+    expect(def.techniqueIds).toContain('pebble-volley');
+    expect(def.stats.ninjutsu).toBe(10);
+  });
+
+  it('shows on the bench with why a seal can’t go in yet', () => {
+    const seals = benchView(sealer(5), ctx)?.seals ?? [];
+    const blade = seals.find((t) => t.id === 'vacuum-blade');
+    expect(blade?.blocker).toMatch(/fūinjutsu at C/);
+    expect(seals.find((t) => t.id === 'pebble-volley')?.blocker).toBeNull();
+    expect(benchView(sealer(5), ctx)?.where).toMatch(/your own bench at home/);
+  });
+});
+
+describe('where puppets are worked and kept', () => {
+  it('lets a workshop’s bench build a frame a grade past your craft', () => {
+    const fighter = { type: 'startBuild', order: { ...KITE, frameId: 'frame-fighter' } } as const;
+    const home = apprentice(3);
+    expect(blockerFor(home, fighter, ctx)).toMatch(/more craft/);
+    const away = { ...home, locationId: 'port-shiomachi' };
+    expect(blockerFor(away, fighter, ctx)).toBeNull();
+  });
+
+  it('mends twice as much at a workshop’s bench', () => {
+    const broken = (s: GameState): GameState => ({
+      ...s,
+      puppetry: {
+        ...s.puppetry,
+        puppets: [{ id: 'lantern-doll', name: 'Lantern Doll', condition: 0 }],
+      },
+    });
+    const mend = { type: 'mendPuppet', puppetId: 'lantern-doll' } as const;
+    const home = act(broken(apprentice()), mend).puppetry.puppets[0]!.condition;
+    const away = act(broken({ ...apprentice(), locationId: 'port-shiomachi' }), mend).puppetry
+      .puppets[0]!.condition;
+    expect(away).toBe(home * 2);
+  });
+
+  it('keeps more puppets in a home with the room', () => {
+    let state = built();
+    const room = (homeId: string | null) => ({ ...state, housing: { ...state.housing, homeId } });
+    state = { ...state, puppetry: { ...state.puppetry, stock: { 'pine-and-wire': 2 } } };
+    const full = {
+      ...state,
+      puppetry: {
+        ...state.puppetry,
+        puppets: [0, 1, 2].map((i) => ({ id: `p${i}`, name: 'Doll', condition: 1 })),
+      },
+    };
+    const order = { type: 'startBuild', order: KITE } as const;
+    expect(blockerFor({ ...full, housing: room(null).housing }, order, ctx)).toMatch(/room for/);
+    expect(
+      blockerFor({ ...full, housing: room('dyers-townhouse').housing }, order, ctx),
+    ).toBeNull();
   });
 });

@@ -13,7 +13,8 @@ import type { GameContext } from '../context';
 /**
  * A puppet you built, as a fight sees it: its frame's ceilings worked up as far as your craft (when
  * you finished it) and its material allow, the frame's body made tougher or frailer by what it is
- * made of, and its mechanisms' techniques. Each gets an unsealing of its own, made here and never
+ * made of, and its mechanisms' techniques, and the techniques sealed into it with their art no
+ * further than the seals carry it. Each gets an unsealing of its own, made here and never
  * written in a pack, so building one needs no content.
  */
 
@@ -23,7 +24,19 @@ const UNSEAL_COST = 8;
 /** What a mind never drives on its own: the master's mind works it, so the frame's is nothing. */
 const MINDLESS = 1;
 
-function builtStats(frame: PuppetFrameDef, sheet: BuiltSheet, quality: 1 | 2 | 3): Stats {
+/** The arts the seals fitted into it carry, each as far as the seals let it go. */
+function sealedArts(sheet: BuiltSheet, ctx: GameContext, quality: 1 | 2 | 3): Partial<Stats> {
+  const cap = builtValue(sheet.sealCap ?? 0, sheet.craftAt, quality);
+  const arts = (sheet.seals ?? []).map((id) => ctx.content.techniques.require(id).discipline);
+  return Object.fromEntries(arts.map((art) => [art, cap]));
+}
+
+function builtStats(
+  frame: PuppetFrameDef,
+  sheet: BuiltSheet,
+  quality: 1 | 2 | 3,
+  ctx: GameContext,
+): Stats {
   const worked = (grade: PuppetFrameDef['body']['speed']) =>
     builtValue(gradeValue(grade), sheet.craftAt, quality);
   const arts = Object.fromEntries(
@@ -35,6 +48,7 @@ function builtStats(frame: PuppetFrameDef, sheet: BuiltSheet, quality: 1 | 2 | 3
     speed: worked(frame.body.speed),
     stamina: worked(frame.body.stamina),
     ...arts,
+    ...sealedArts(sheet, ctx, quality),
   };
 }
 
@@ -47,13 +61,16 @@ export function unsealingId(puppetId: string): string {
 export function builtDef(owned: OwnedPuppet, sheet: BuiltSheet, ctx: GameContext): PuppetDef {
   const frame = ctx.content.puppetFrames.require(sheet.frameId);
   const material = ctx.content.puppetMaterials.require(sheet.materialId);
-  const techniqueIds = sheet.partIds.map((id) => ctx.content.puppetParts.require(id).techniqueId);
+  const techniqueIds = [
+    ...sheet.partIds.map((id) => ctx.content.puppetParts.require(id).techniqueId),
+    ...(sheet.seals ?? []),
+  ];
   return {
     id: owned.id,
     name: owned.name,
     description: `${frame.name} of ${material.name.toLowerCase()}. ${frame.description}`,
     techniqueId: unsealingId(owned.id),
-    stats: builtStats(frame, sheet, material.quality),
+    stats: builtStats(frame, sheet, material.quality, ctx),
     healthScale: frame.healthScale * materialToughness(material.quality),
     maxChakra: frame.maxChakra,
     techniqueIds,

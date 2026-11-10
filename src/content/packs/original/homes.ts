@@ -28,6 +28,8 @@ export const ORIGINAL_HOMES: readonly HomeDef[] = [
     needs: { rank: 'chunin' },
     spots: ['bed', 'desk', 'wall', 'corner', 'hearth'],
     rooms: ['garden', 'yard', 'guest'],
+    // A workroom with shelves for your puppets.
+    puppets: 4,
     beds: 6,
     yardTrainingIds: ['post-kicks', 'rooftop-sprints', 'blade-forms'],
   },
@@ -41,6 +43,8 @@ export const ORIGINAL_HOMES: readonly HomeDef[] = [
     needs: { rank: 'jonin' },
     spots: ['bed', 'desk', 'wall', 'corner', 'hearth'],
     rooms: ['garden', 'yard', 'guest'],
+    // A workroom with shelves for your puppets.
+    puppets: 5,
     beds: 8,
     yardTrainingIds: ['post-kicks', 'rooftop-sprints', 'blade-forms'],
     lockedReason: 'The river houses are still being built.',
@@ -54,6 +58,8 @@ export const ORIGINAL_HOMES: readonly HomeDef[] = [
     needs: { rank: 'jonin' },
     spots: ['bed', 'desk', 'wall', 'corner', 'hearth'],
     rooms: ['garden', 'yard', 'guest'],
+    // A workroom with shelves for your puppets.
+    puppets: 5,
     beds: 8,
     yardTrainingIds: ['post-kicks', 'rooftop-sprints', 'blade-forms'],
     lockedReason: 'Founding a house of your own comes later.',
