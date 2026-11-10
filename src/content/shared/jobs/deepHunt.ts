@@ -1,12 +1,13 @@
-import type { MissionTemplate } from '../../../../missionTemplates';
+import type { MissionTemplate } from '../../missionTemplates';
 
 /**
  * A C-rank team job that goes off the paths: a hunt for a beast changed by chakra
  * (`docs/design/chakra-beasts-plan.md`), a day at each depth of the wild country it lives in,
  * its heart, and two days back out. The days draw on their depth's road events (`deepRegion`)
- * for sights and finds; a job's foes are its own, so the depths' foes stay off it.
+ * for sights and finds; a job's foes are its own, so the depths' foes stay off it. Every pack
+ * takes it and writes its own hunts (`jobs/fills/wild.ts`, `naruto/deepHunts.ts`).
  */
-export const C_TEAM_WILD: readonly MissionTemplate[] = [
+export const DEEP_HUNT: readonly MissionTemplate[] = [
   {
     id: 'c-team-deep-hunt',
     rank: 'C',
