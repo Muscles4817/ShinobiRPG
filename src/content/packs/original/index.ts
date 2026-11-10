@@ -1,3 +1,4 @@
+import { LANTERN_DOLL, LANTERN_MAKER, LANTERN_PUPPET_ARTS } from './puppeteer';
 import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
 import { OLD_OWL_ARC, OLD_OWL_JOBS } from './arcs/oldOwl';
 import { WHITE_STAG } from './jobs/whiteStag';
@@ -133,6 +134,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...CHAKRA_BEAST_ARTS,
     ...CONTRACT_TECHNIQUES,
     ...TIDEWIRE_TECHNIQUES,
+    ...LANTERN_PUPPET_ARTS,
     ...WILD_FOLK_TECHNIQUES,
   ],
   missions: [
@@ -183,6 +185,7 @@ export const ORIGINAL_PACK: ContentPack = {
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
   dusts: DUSTS,
+  puppets: [LANTERN_DOLL],
   enemies: [
     ...ENEMIES,
     ...bestiary(ORIGINAL_FOE_KIT),
@@ -238,6 +241,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...SHIOMACHI_PEOPLE,
     ...WILD_FOLK,
     ...KIRI_FORD_PEOPLE,
+    LANTERN_MAKER,
   ],
   conversations: [
     ...GENERIC_CONVERSATIONS,

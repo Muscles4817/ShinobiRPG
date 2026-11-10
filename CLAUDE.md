@@ -453,7 +453,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     from the next exchange casting fresh ones, moving it again only the exchange after); a slack
     puppet holds no line, so the back row behind it is open; a puppet has no mind for an illusion; a
     `worn` puppet (a shell) takes the blows aimed at its master while it stands, though an area
-    or an illusion still reaches them. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
+    or an illusion still reaches them. **Your puppets** (`systems/puppets`, `GameState.puppetry`,
+    `game/puppetry/`): learning a technique that unseals one of the pack's puppets gives you that
+    puppet (`notePuppetsLearned` in `dispatch`); each rides into mission fights as whole as it is
+    and a broken one stays home (`withYourPuppets`); each comes home as whole as it ended the
+    fight (`CombatOutcome.summonHealth`), beaten is broken, never lost; and it is mended at your
+    bench at home (`mendPuppet`), a share a session for materials, more by your **craft**, a
+    skill of its own that grows with the work. A **hive** is a pool, not a body (`CombatantSetup.swarm`,
     `swarmContract.ts`: a strain's qualities graded 1 to 5 (speed, bite, toughness, brood, size,
     senses), its species' gifts 1 to 3 (chakra drain, camouflage, glow, blinding, venom) and
     what it fears, a count and a cap; each read once in `rules/swarms.ts`,

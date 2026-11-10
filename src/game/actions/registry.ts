@@ -1,3 +1,4 @@
+import { mendAPuppet } from './puppetry';
 import { combatAct } from './combat';
 import { eat, rest, sleep, train } from './daily';
 import { encounterApproach, encounterRecon } from './encounter';
@@ -153,6 +154,7 @@ export const HANDLERS: Registry = {
   takeHive: takeAHive,
   studyDustScroll,
   makeDust: makeABatch,
+  mendPuppet: mendAPuppet,
   buyDust: buyABatch,
   feedCompanion,
   playWithCompanion,

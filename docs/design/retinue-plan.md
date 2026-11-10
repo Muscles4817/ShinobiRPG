@@ -1422,3 +1422,30 @@ Bench (40 seeds, Neji on the AI side): Kankurō's wins against Neji fall from 72
 goes for Kankurō while Crow hangs slack. What still costs him is the blind spot: Crow judges by
 Kankurō's mind, which is sharp enough to find it. Fights with Neji on the player's side aren't
 comparable since the player's plan stopped playing the kit by itself (#257).
+
+### Step 5b-i: puppets of your own
+
+Decided in the planning discussion: craft is a skill of its own, and what a puppet is made of
+counts too (with building, in 5b-ii); a puppet is always repairable; the original pack keeps a
+lantern-maker as a placeholder until its own puppetry is designed (step 7).
+
+- **The workshop** (`systems/puppets`, `GameState.puppetry`, save v71): the puppets you own
+  (a frame of the pack's, a name, how whole it is) and your craft, on the stat scale and read as
+  a skill in words (an apprentice's hands up to the old masters').
+- **Coming by one.** Learning a technique that unseals one of the pack's puppets gives you that
+  puppet, once (`notePuppetsLearned` in `dispatch`): the art comes with a body to work it on.
+  Tsumugi of the Red Sand teaches the workshop doll's unsealing and Chakra Threads in Suna, to
+  a friend (bond stage two); Kazuo the lantern-maker teaches a lantern doll's in Tōrōgakure
+  (a bamboo-and-paper doll with a lamp-hook that sets its oil burning).
+- **In fights.** Your puppets ride into mission fights (never spars), each as whole as it is
+  (`withYourPuppets`); a broken one stays home, and so does its unsealing, so the plan never
+  holds a scroll with nothing in it. The engine reports each called body's health as the fight
+  ends (`CombatOutcome.summonHealth`), and each puppet comes home that whole; one beaten is
+  broken, never lost.
+- **Mending.** At home, a session at the bench (an afternoon and some energy) mends a quarter
+  of a puppet with no craft, up to three quarters with a master's, for materials in ryo by its
+  size and what it mends; each session teaches craft, a beginner most (`mendPuppet`).
+- **Screens:** a puppet card on the Shinobi tab: your craft, each puppet's condition, why it
+  stays home, and the bench with its cost.
+- **Left for 5b-ii:** frames and mechanisms (fitted seals among them), building with craft and
+  materials, naming, and a workshop that mends faster than your own bench.

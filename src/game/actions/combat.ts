@@ -13,6 +13,7 @@ import { resolveCombat } from '../missionFight';
 import { resolveSpar } from '../sparFlow';
 import { afterCompanionFight, isCompanionCombatant } from '../companions/combatant';
 import { afterSummons } from '../contracts/summons';
+import { afterPuppetFight } from '../puppetry/keeping';
 import { afterHiveFight } from '../hives/keeping';
 import { afterDustFight } from '../dust/keeping';
 import type { GameState } from '../state';
@@ -82,7 +83,10 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const hived = afterDustFight(afterHiveFight(ended, outcome, ctx), outcome, ctx);
     const tended = sparring
       ? hived
-      : afterSummons(afterCompanionFight(hived, outcome, ctx), outcome, ctx);
+      : afterPuppetFight(
+          afterSummons(afterCompanionFight(hived, outcome, ctx), outcome, ctx),
+          outcome,
+        );
     const resolved = resolveFight(tended, outcome, view, ctx);
     const end = { outcome, view, sparring };
     const settled = growFromFight(applyFightToll(resolved, end, ctx, rng), lessons, ctx);

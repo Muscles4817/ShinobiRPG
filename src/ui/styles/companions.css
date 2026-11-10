@@ -189,6 +189,17 @@
   font-size: 0.85rem;
 }
 
+.hive-card .puppet-row {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--paper-muted);
+}
+.hive-card .puppet-row h3 {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+
 .hive-card .hive-jars,
 .hive-card .hive-name {
   margin-top: 12px;

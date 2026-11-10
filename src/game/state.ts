@@ -1,6 +1,7 @@
 import type { Contract } from '@/systems/contracts';
 import type { DustScroll, DustStore } from '@/systems/dusts';
 import type { Hive } from '@/systems/hives';
+import type { Workshop } from '@/systems/puppets';
 import type { CombatState, WeaponMastery } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
@@ -108,6 +109,8 @@ export interface GameState {
   readonly dust: DustStore | null;
   /** S-rank scrolls of dust you hold, and how far you have read each (`dust/scrolls.ts`). */
   readonly dustScrolls: readonly DustScroll[];
+  /** Your puppets and your craft in keeping them (`systems/puppets`, `puppetry/`). */
+  readonly puppetry: Workshop;
   /** Hive clans whose rite you have learned (`hives/rite.ts`), by clan id. */
   readonly rites: readonly string[];
   /**

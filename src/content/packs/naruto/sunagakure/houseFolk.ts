@@ -65,6 +65,15 @@ export const SUNA_HOUSE_FOLK: readonly PersonDef[] = [
       evening: 'akasuna-compound',
       night: 'last-well',
     },
+    teacher: {
+      quirk: 'patient',
+      teaches: ['unseal-workshop-doll', 'chakra-threads'],
+      price: {
+        kind: 'bond',
+        minStage: 2,
+        line: '“The old woman would skin me for teaching an outsider. So don’t tell her who.”',
+      },
+    },
     arsenal: { techniqueIds: ['chakra-threads'], puppets: ['workshop-doll'] },
   },
   {

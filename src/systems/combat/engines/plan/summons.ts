@@ -155,6 +155,7 @@ function leaves(round: Round, summon: Fighter, going: Going): Round {
         ...f,
         summonsOut: (caller.summonsOut ?? []).filter((id) => id !== callId),
         summonFates: { ...caller.summonFates, [callId]: fate },
+        summonShares: { ...caller.summonShares, [callId]: shareLeft(summon) },
         ...(going.lost && !lost.includes(callId) ? { summonsLost: [...lost, callId] } : {}),
       };
     });
@@ -223,6 +224,21 @@ export function summonsAfter(round: Round): Round {
   const callers = [...new Set(out.map((s: Fighter) => s.summoner ?? ''))];
   // Puppets given fresh threads this exchange are worked again from the next (`puppets.ts`).
   return threadsTaken(perchesKept(callers.reduce(spared, kept)));
+}
+
+/** The share of its health a body has left, 0 when beaten. */
+function shareLeft(body: Fighter): number {
+  return body.maxHealth > 0 ? Math.max(0, body.health) / body.maxHealth : 0;
+}
+
+/** What share of its health each body the fighter called ended with, those still out included. */
+export function summonSharesOf(
+  fighter: PlanFighter,
+  fighters: readonly PlanFighter[],
+): Record<string, number> {
+  const out = fighters.filter((f) => f.summoner === fighter.id && f.callId !== undefined);
+  const still = Object.fromEntries(out.map((f) => [f.callId ?? '', shareLeft(f)]));
+  return { ...fighter.summonShares, ...still };
 }
 
 /** How each summon the fighter called ended its part, including those still out. */

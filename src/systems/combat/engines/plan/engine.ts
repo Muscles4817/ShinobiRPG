@@ -36,7 +36,7 @@ import {
   type PlanState,
 } from './state';
 import { editTeam, teamOptions } from './orders';
-import { summonFatesOf } from './summons';
+import { summonFatesOf, summonSharesOf } from './summons';
 import { metersOf, onStage, poolsLeft } from './swarmView';
 import { editPlan, tableOptions } from './table';
 import { foeMarkFor } from './foeTeam';
@@ -332,6 +332,7 @@ export function createPlanEngine(): CombatEngine {
         allies: alliesAfter(plan.fighters),
         summary: fightSummary(plan, result),
         summons: summonFatesOf(player),
+        summonHealth: summonSharesOf(player, plan.fighters),
         ...poolsLeft(player),
       };
     },

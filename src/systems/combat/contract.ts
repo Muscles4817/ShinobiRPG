@@ -425,6 +425,11 @@ export interface CombatOutcome {
   readonly summary?: string;
   /** How each summon the player called ended its part, by call id (the last call of each). */
   readonly summons?: Readonly<Record<string, SummonFate>>;
+  /**
+   * The share of its health each body the player called ended with (summons and puppets), by
+   * call id: 0 when it fell. A puppet's damage carries to the next fight.
+   */
+  readonly summonHealth?: Readonly<Record<string, number>>;
   /** Insects in the player's hive as the fight ended; absent without a hive. */
   readonly swarm?: number;
   /** Dust the player still commands as the fight ended; absent without any. */

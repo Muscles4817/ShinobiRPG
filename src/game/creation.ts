@@ -1,3 +1,4 @@
+import { NO_WORKSHOP } from '@/systems/puppets';
 import { createRng } from '@/core';
 import { EMPTY_FIELD_BOOK } from '@/systems/collections';
 import { learnRecipes, NO_COOKING } from '@/systems/cooking';
@@ -282,6 +283,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     rites: [],
     dust: bornDust(clan, ctx),
     dustScrolls: [],
+    puppetry: NO_WORKSHOP,
     cooking: learnRecipes(
       NO_COOKING,
       content.recipes.all.filter((r) => r.starter === true).map((r) => r.id),
