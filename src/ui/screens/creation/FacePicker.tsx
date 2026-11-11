@@ -29,7 +29,7 @@ export function FacePicker({ palettes, look, onChange }: FacePickerProps) {
   return (
     <>
       <div className="face-preview">
-        <Portrait appearance={look} size={72} />
+        <Portrait appearance={look} size={96} />
       </div>
       {ROWS.map(({ part, label }) => (
         <Segments<string>

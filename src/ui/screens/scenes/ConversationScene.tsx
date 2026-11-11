@@ -23,7 +23,7 @@ export function ConversationScene({ ctx, state, perform }: ScreenProps) {
     <>
       <header className="scene-head talk-head">
         <span className={person.relation ? 'person-photo team' : 'person-photo'}>
-          <Portrait appearance={person.appearance} size={56} />
+          <Portrait appearance={person.appearance} size={96} />
         </span>
         <div>
           <p className="label">{person.title}</p>

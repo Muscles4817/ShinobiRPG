@@ -82,7 +82,7 @@ export function FighterProfile({ profile, children }: FighterProfileProps) {
   return (
     <article className="versus-profile" aria-label={`${fighter.name}’s profile`}>
       <header className="versus-profile-head">
-        {fighter.look && <Portrait appearance={fighter.look} size={72} />}
+        {fighter.look && <Portrait appearance={fighter.look} size={96} />}
         <div>
           <h2>{fighter.name}</h2>
           <p>{standingLine(profile)}</p>

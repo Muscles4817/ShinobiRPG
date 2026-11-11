@@ -70,7 +70,7 @@ export function ShinobiScreen({
             忍
           </span>
           <span className="photo">
-            <Portrait appearance={view.appearance} size={70} />
+            <Portrait appearance={view.appearance} size={100} />
           </span>
           <h1 className="id-name">{[view.name, view.familyName].filter(Boolean).join(' ')}</h1>
           <dl className="id-kv">

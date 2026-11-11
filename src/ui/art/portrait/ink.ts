@@ -1,16 +1,12 @@
 /**
- * The portrait's inks: the woodblock key line, and the shade and light a colour takes. Skin,
+ * The portrait's inks: the brush's ink, and the shade and light a colour takes. Skin,
  * hair and eyes are the person's own colours; these derive their shadows and highlights.
  */
 
-/** The print's key-block ink, outlining every shape. */
+/** The ink every line is brushed in. */
 export const INK = '#1d1510';
 
-/** Warm light from the lanterns, caught along the far edge of a face. */
-export const RIM = '#ffb46a';
-
-/** The inside of an open mouth, and the paper white of eyes and teeth. */
-export const MOUTH = '#5a1e1e';
+/** The paper white of eyes and teeth. */
 export const WHITE = '#fbf6ee';
 
 function channels(hex: string): readonly [number, number, number] {
@@ -37,3 +33,10 @@ export function shaded(hex: string, amount = 0.2): string {
 export function lit(hex: string, amount = 0.5): string {
   return toHex(channels(hex).map((c) => c + (255 - c) * amount));
 }
+
+/** The paper a portrait is brushed on, and its lit centre. */
+export const PAPER = '#e9dcbe';
+export const PAPER_LIT = '#f6ecd4';
+
+/** A shadow laid over a colour, as a wash of ink. */
+export const SHADE = '#3a2416';

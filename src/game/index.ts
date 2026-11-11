@@ -269,6 +269,7 @@ export {
   type Grades,
   type HairStyle,
   type HeadbandPlace,
+  type Dress,
   type Look,
   type Mark,
   type NoseShape,
