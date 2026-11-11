@@ -27,6 +27,7 @@ const KEEPS_PREVIOUS: Readonly<Record<SlotName, boolean>> = {
   save: true,
   prefs: false,
   edits: false,
+  rescue: false,
 };
 
 interface SlotFiles {

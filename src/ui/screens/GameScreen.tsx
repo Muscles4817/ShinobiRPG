@@ -37,6 +37,7 @@ import { PromotionScene } from './scenes/PromotionScene';
 import { RaceScene } from './scenes/RaceScene';
 import { RivalScene } from './scenes/RivalScene';
 import { StorySceneFrame } from './scenes/StorySceneFrame';
+import type { SaveKeeping } from './settings/SaveData';
 import { SettingsScreen } from './settings/SettingsScreen';
 import { ChakraPaperScene } from './scenes/ChakraPaperScene';
 import { SenseiTestScene } from './scenes/SenseiTestScene';
@@ -67,6 +68,7 @@ interface TabContentProps extends ScreenProps {
   readonly wide: boolean;
   readonly setNav: (n: Nav) => void;
   readonly onAbandon: () => void;
+  readonly saves: SaveKeeping;
   readonly onMenu: () => void;
   readonly onOpenPerson: (personId: string) => void;
   readonly onOpenCompanion: () => void;
@@ -77,6 +79,7 @@ function TabContent({
   wide,
   setNav,
   onAbandon,
+  saves,
   onMenu,
   onOpenPerson,
   onOpenCompanion,
@@ -91,6 +94,7 @@ function TabContent({
     return (
       <SettingsScreen
         game={props}
+        saves={saves}
         onBack={() => {
           setNav({ ...nav, settings: false });
         }}
@@ -226,6 +230,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       wide={wide}
       setNav={setNav}
       onAbandon={session.abandon}
+      saves={session}
       onMenu={onMenu}
       onOpenPerson={setPersonId}
       onOpenCompanion={openCompanion}

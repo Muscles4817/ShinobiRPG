@@ -65,7 +65,7 @@ export {
   type VersusProfile,
 } from './versus';
 export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
-export { serialize, deserialize, SAVE_VERSION, type SaveStore } from './persistence/save';
+export * from './persistence';
 export type { Choice, Discipline } from './views/common';
 export { headerView, type HeaderView, type HungerNote, type Meter } from './views/header';
 export { hubView, isRestKind, type HubView, type PlaceCard, type RestKind } from './views/hub';

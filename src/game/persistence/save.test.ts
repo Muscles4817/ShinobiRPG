@@ -2,7 +2,7 @@ import { cookingGrade } from '@/systems/cooking';
 import { SOLO } from '@/systems/missions';
 import { act, intoFight, newGame, veteran, withHound } from '@/test/gameFixtures';
 
-import { deserialize, SAVE_VERSION, serialize } from './save';
+import { deserialize, savedVersion, SAVE_VERSION, serialize } from './save';
 
 describe('persistence', () => {
   it('round-trips a game, including an in-progress fight', () => {
@@ -642,5 +642,32 @@ describe('persistence', () => {
       ok: false,
       error: 'This save is from a newer version of the game.',
     });
+  });
+
+  it('refuses a save a migration chokes on, rather than throwing', () => {
+    // An empty state at version 40 reaches a migration that reads fields it doesn't have.
+    const broken = JSON.stringify({ version: 40, state: {} });
+    expect(() => deserialize(broken)).not.toThrow();
+    const result = deserialize(broken);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/could not be brought up from version/);
+  });
+
+  it('never throws, whatever version and shape it is handed', () => {
+    const shapes = [{}, { character: null }, { people: 3, character: 'x', techniques: null }];
+    for (let version = 0; version <= SAVE_VERSION; version++) {
+      for (const state of shapes) {
+        const raw = JSON.stringify({ version, state });
+        expect(() => deserialize(raw)).not.toThrow();
+        expect(deserialize(raw).ok).toBe(false);
+      }
+    }
+  });
+
+  it('reads the version a save was written at, and none from text that isn’t a save', () => {
+    expect(savedVersion(serialize(newGame()))).toBe(SAVE_VERSION);
+    expect(savedVersion(JSON.stringify({ version: 12, state: {} }))).toBe(12);
+    expect(savedVersion('garbage')).toBeNull();
+    expect(savedVersion('{"version":"3","state":{}}')).toBeNull();
   });
 });

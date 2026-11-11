@@ -4,6 +4,7 @@ import { ELECTRON_BACKEND } from './electronBackend';
 import {
   createLocalEditsStore,
   createLocalPrefsStore,
+  createLocalRescueStore,
   createLocalSaveStore,
 } from './localSaveStore';
 import type { NativeBackend } from './storageBackend';
@@ -28,6 +29,7 @@ function browserStores(): Stores {
     save: createLocalSaveStore(),
     prefs: createLocalPrefsStore(),
     edits: createLocalEditsStore(),
+    rescue: createLocalRescueStore(),
   };
 }
 

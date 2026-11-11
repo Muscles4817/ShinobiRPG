@@ -4,26 +4,19 @@ import {
   contextForPack,
   createNewGame,
   cueAfter,
-  deserialize,
   dispatch,
   serialize,
   soundAfter,
   type ActionCue,
   type CreationDraft,
   type GameAction,
-  type GameContext,
-  type GameState,
   type SaveStore,
 } from '@/game';
 
 import { useSound } from './audio/SoundProvider';
 import { useEdits } from './edits/EditsProvider';
+import { fromOlderVersion, keepCopy, readSave, type Loaded } from './saveKeeping';
 import { saveSafely, STORAGE_FULL } from './saveSafely';
-
-interface Loaded {
-  readonly game: GameState;
-  readonly ctx: GameContext;
-}
 
 /** An animation to play for the last action; `id` tells two of the same kind apart. */
 export interface ShownCue {
@@ -42,26 +35,39 @@ export interface GameSession {
   readonly start: (packId: string, draft: CreationDraft, seed: number) => void;
   readonly abandon: () => void;
   readonly dismissNotice: () => void;
+  /** The save as text, to copy somewhere safe; null with no game. */
+  readonly exportSave: () => string | null;
+  /** Plays a save given as text, keeping a copy of the one it replaces. Null, or why not. */
+  readonly importSave: (raw: string) => string | null;
+  /** The copy kept of the last save replaced, updated or unreadable; null if there is none. */
+  readonly keptCopy: () => string | null;
 }
 
-function loadInitial(store: SaveStore): { game: Loaded | null; notice: string | null } {
+/** Where the device keeps nothing, for a session given no place for kept copies (tests). */
+const NOWHERE: SaveStore = { load: () => null, save: () => undefined, clear: () => undefined };
+
+function loadInitial(
+  store: SaveStore,
+  rescue: SaveStore,
+): { game: Loaded | null; notice: string | null } {
   const raw = store.load();
   if (!raw) return { game: null, notice: null };
-  const loaded = deserialize(raw);
-  if (!loaded.ok) return { game: null, notice: `Your save could not be loaded: ${loaded.error}` };
-  const ctx = contextForPack(loaded.value.packId, loaded.value.edits);
-  if (!ctx) {
+  const read = readSave(raw);
+  if (!read.ok) {
+    keepCopy(rescue, raw);
     return {
       game: null,
-      notice: `Your save uses the "${loaded.value.packId}" world, which this version doesn’t include.`,
+      notice: `Your save could not be loaded: ${read.error} A copy of it is kept on this device (Settings, Save data), and a new game won’t erase it.`,
     };
   }
-  return { game: { game: loaded.value, ctx }, notice: null };
+  // The save as it was before this version changed it, in case the change went wrong.
+  if (fromOlderVersion(raw)) keepCopy(rescue, raw);
+  return { game: read.loaded, notice: null };
 }
 
 /** Owns the live GameState and its context: dispatches actions and autosaves after every change. */
-export function useGameSession(store: SaveStore): GameSession {
-  const [initial] = useState(() => loadInitial(store));
+export function useGameSession(store: SaveStore, rescue: SaveStore = NOWHERE): GameSession {
+  const [initial] = useState(() => loadInitial(store, rescue));
   const [game, setGame] = useState<Loaded | null>(initial.game);
   const [notice, setNotice] = useState<string | null>(initial.notice);
   const [cue, setCue] = useState<ShownCue | null>(null);
@@ -95,15 +101,39 @@ export function useGameSession(store: SaveStore): GameSession {
     [game, keep, play],
   );
 
+  // Whatever save is about to be replaced is kept as the device's copy first.
+  const replace = useCallback(
+    (next: Loaded) => {
+      const old = store.load();
+      if (old) keepCopy(rescue, old);
+      keep(next);
+    },
+    [keep, rescue, store],
+  );
+
   // A new game takes the editor's changes as they stand, and keeps them in its save.
   const start = useCallback(
     (packId: string, draft: CreationDraft, seed: number) => {
       const ctx = contextForPack(packId, editsFor(packId));
       if (!ctx) return;
-      keep({ game: createNewGame({ draft, seed }, ctx), ctx });
+      replace({ game: createNewGame({ draft, seed }, ctx), ctx });
     },
-    [editsFor, keep],
+    [editsFor, replace],
   );
+
+  const exportSave = useCallback(() => (game ? serialize(game.game) : null), [game]);
+
+  const importSave = useCallback(
+    (raw: string) => {
+      const read = readSave(raw.trim());
+      if (!read.ok) return `That save can’t be loaded: ${read.error}`;
+      replace(read.loaded);
+      return null;
+    },
+    [replace],
+  );
+
+  const keptCopy = useCallback(() => rescue.load(), [rescue]);
 
   const abandon = useCallback(() => {
     store.clear();
@@ -118,5 +148,17 @@ export function useGameSession(store: SaveStore): GameSession {
     setCue(null);
   }, []);
 
-  return { game, notice, perform, cue, clearCue, start, abandon, dismissNotice };
+  return {
+    game,
+    notice,
+    perform,
+    cue,
+    clearCue,
+    start,
+    abandon,
+    dismissNotice,
+    exportSave,
+    importSave,
+    keptCopy,
+  };
 }

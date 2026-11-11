@@ -53,3 +53,66 @@
 .volume:has(input:disabled) b {
   color: var(--muted);
 }
+
+/* Save data: the save copied out, loaded back in, and the copy the game keeps. */
+.save-data {
+  gap: 10px;
+}
+.save-data > .btn {
+  align-self: flex-start;
+}
+.save-note,
+.save-load small {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.save-load,
+.save-kept {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+}
+.save-data textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--raise);
+  color: var(--ink);
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  resize: vertical;
+}
+.save-status {
+  color: var(--story);
+}
+
+/* The page shown in place of the game when something it didn't expect stops it. */
+.crash-screen {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 48px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--ink);
+}
+.crash-screen h1 {
+  font-family: var(--font-story);
+  font-weight: normal;
+  color: var(--story);
+}
+.crash-what {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}

@@ -4,7 +4,7 @@
  * game's own (`src/platform/storageBackend.ts`), which a test checks.
  */
 
-export const SLOTS = ['save', 'prefs', 'edits'] as const;
+export const SLOTS = ['save', 'prefs', 'edits', 'rescue'] as const;
 export type Slot = (typeof SLOTS)[number];
 
 /** The IPC channels the preload calls. Repeated in `preload.cts`, which can't import. */

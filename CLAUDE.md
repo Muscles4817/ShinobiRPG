@@ -1329,8 +1329,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   eyes, brows, nose, ears, expression, age, facial hair, a mark): a new part is a union member in
   `systems/profile/face.ts` and a drawing in the matching `Record`.
 - **Run in a native shell (the desktop or phone app):** implement a `StorageBackend`
-  (`platform/storageBackend.ts`: read, write and remove the `save`, `prefs` and `edits` slots,
-  writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in
+  (`platform/storageBackend.ts`: read, write and remove the `save`, `prefs`, `edits` and `rescue`
+  slots, writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in
   `platform/chooseStores.ts`. `openCachedStores` reads everything at boot and writes behind each
   save, so the game stays synchronous; a failed write is reported by the next save, and the
   service worker is registered only outside a shell. The phone app's is
@@ -1341,8 +1341,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   release (the repository is public); Android is release-signed from the repository's secrets
   when they are set (`docs/app-builds.md`). `build:release` is a node script
   (`scripts/build-release.mjs`), so every release command runs from any shell.
-- **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence.ts`, and
-  a test that a previous-version save still loads. Never break existing saves.
+- **Change the save shape:** bump `SAVE_VERSION`, add a migration in `game/persistence/migrations.ts`,
+  and a test that a previous-version save still loads. Never break existing saves.
+- **A save is never lost quietly** (`ui/saveKeeping.ts`): loading never throws (`readSave`; a
+  migration that chokes is an error, not a crash), and the `rescue` store keeps one copy of the
+  last save that couldn't be read, was written by an older version (as it was before migrating)
+  or was replaced by a new game or a loaded save. Settings, Save data copies the save out as
+  text, loads one pasted in and brings the kept copy back (from the title only). A screen that
+  throws while drawing shows the crash screen (`components/CrashScreen.tsx`), never a blank
+  window; anything that replaces the save must go through `replace` in `useGameSession`.
 
 ## Code quality rules
 
