@@ -62,12 +62,18 @@ function migrate(version: number, state: Record<string, unknown>): Result<Record
   for (let v = version; v < SAVE_VERSION; v++) {
     const step = MIGRATIONS[v];
     if (!step) return err(`No migration from save version ${v}.`);
-    current = step(current);
+    // A migration meeting a save it didn't expect must refuse it, never take the game down.
+    try {
+      current = step(current);
+    } catch {
+      return err(`The save could not be brought up from version ${v}.`);
+    }
   }
   return ok(current);
 }
 
-export function deserialize(raw: string): Result<GameState> {
+/** The text as a save file, whatever its version, or why it isn't one. */
+function saveFileFrom(raw: string): Result<{ version: number; state: Record<string, unknown> }> {
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -77,6 +83,19 @@ export function deserialize(raw: string): Result<GameState> {
   if (!isRecord(parsed) || typeof parsed.version !== 'number' || !isRecord(parsed.state)) {
     return err('Save data is not a valid save file.');
   }
+  return ok({ version: parsed.version, state: parsed.state });
+}
+
+/** The version a save was written at, or null if the text isn't a save file at all. */
+export function savedVersion(raw: string): number | null {
+  const file = saveFileFrom(raw);
+  return file.ok ? file.value.version : null;
+}
+
+export function deserialize(raw: string): Result<GameState> {
+  const file = saveFileFrom(raw);
+  if (!file.ok) return file;
+  const parsed = file.value;
   if (parsed.version > SAVE_VERSION) return err('This save is from a newer version of the game.');
 
   const migrated = migrate(parsed.version, parsed.state);

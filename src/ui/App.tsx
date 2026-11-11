@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { musicMood, saveSummary, type MusicMood, type SaveStore } from '@/game';
 
 import { SoundProvider, useMusic } from './audio/SoundProvider';
+import { CrashBoundary } from './components/CrashScreen';
 import { EditsProvider } from './edits/EditsProvider';
 import { GameScreen } from './screens/GameScreen';
 import { CreationScreen } from './screens/creation/CreationScreen';
@@ -35,15 +36,19 @@ interface AppProps {
   readonly prefs?: SaveStore;
   /** Where the editor's changes are kept, apart from the save. */
   readonly edits?: SaveStore;
+  /** Where the copy of the last save replaced, updated or unreadable is kept. */
+  readonly rescue?: SaveStore;
 }
 
-export function App({ store, prefs = NOWHERE, edits = NOWHERE }: AppProps) {
+export function App({ store, prefs = NOWHERE, edits = NOWHERE, rescue = NOWHERE }: AppProps) {
   return (
-    <SoundProvider prefs={prefs}>
-      <EditsProvider store={edits}>
-        <Screens store={store} />
-      </EditsProvider>
-    </SoundProvider>
+    <CrashBoundary store={store}>
+      <SoundProvider prefs={prefs}>
+        <EditsProvider store={edits}>
+          <Screens store={store} rescue={rescue} />
+        </EditsProvider>
+      </SoundProvider>
+    </CrashBoundary>
   );
 }
 
@@ -54,8 +59,13 @@ function moodFor(mode: Mode, session: GameSession): MusicMood {
   return mode.kind === 'versus' ? 'fight' : 'title';
 }
 
-function Screens({ store }: { readonly store: SaveStore }) {
-  const session = useGameSession(store);
+interface ScreensProps {
+  readonly store: SaveStore;
+  readonly rescue: SaveStore;
+}
+
+function Screens({ store, rescue }: ScreensProps) {
+  const session = useGameSession(store, rescue);
   const [mode, setMode] = useState<Mode>({ kind: 'menu' });
   useMusic(moodFor(mode, session));
   const [lastChoice, setLastChoice] = useState<VersusChoice | null>(null);
@@ -111,7 +121,7 @@ function Screens({ store }: { readonly store: SaveStore }) {
         />
       );
     case 'settings':
-      return <SettingsScreen game={null} onBack={toMenu} />;
+      return <SettingsScreen game={null} saves={session} onBack={toMenu} />;
     case 'editor':
       return <EditorScreen onBack={toMenu} />;
     case 'menu':

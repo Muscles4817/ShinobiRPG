@@ -1,10 +1,13 @@
 import type { ScreenProps } from '../types';
 import { SettingsPanel } from '../SettingsPanel';
+import { SaveData, type SaveKeeping } from './SaveData';
 import { SoundSettings } from './SoundSettings';
 
 interface SettingsScreenProps {
   /** The game in play, for the settings kept with its save; null from the title screen. */
   readonly game: ScreenProps | null;
+  /** The save as text: copied out in a game, and loaded or brought back from the title. */
+  readonly saves: SaveKeeping;
   readonly onBack: () => void;
 }
 
@@ -12,7 +15,7 @@ interface SettingsScreenProps {
  * The settings page: sound for the device, then (in a game) what is kept with the save. Opened
  * from the title screen and from the Shinobi tab.
  */
-export function SettingsScreen({ game, onBack }: SettingsScreenProps) {
+export function SettingsScreen({ game, saves, onBack }: SettingsScreenProps) {
   return (
     <main className="page settings-page">
       <header className="settings-page-head">
@@ -23,6 +26,7 @@ export function SettingsScreen({ game, onBack }: SettingsScreenProps) {
       </header>
       <SoundSettings />
       {game && <SettingsPanel ctx={game.ctx} state={game.state} perform={game.perform} />}
+      <SaveData saves={saves} canLoad={game === null} />
     </main>
   );
 }

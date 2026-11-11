@@ -85,18 +85,20 @@ export function cachedStore(
 
 /** Reads every slot from the backend, then hands the game stores that keep it written. */
 export async function openCachedStores(backend: StorageBackend): Promise<CachedStores> {
-  const [save, prefs, edits] = await Promise.all([
+  const [save, prefs, edits, rescue] = await Promise.all([
     backend.read('save'),
     backend.read('prefs'),
     backend.read('edits'),
+    backend.read('rescue'),
   ]);
   const stores = {
     save: cachedStore(backend, 'save', save),
     prefs: cachedStore(backend, 'prefs', prefs),
     edits: cachedStore(backend, 'edits', edits),
+    rescue: cachedStore(backend, 'rescue', rescue),
   };
   const flushed = async () => {
-    await Promise.all([stores.save.flushed(), stores.prefs.flushed(), stores.edits.flushed()]);
+    await Promise.all(Object.values(stores).map((store) => store.flushed()));
   };
   return { stores, flushed };
 }

@@ -60,7 +60,7 @@ async function boot(container: HTMLElement): Promise<void> {
   const { stores, shell } = await chooseStores();
   createRoot(container).render(
     <StrictMode>
-      <App store={stores.save} prefs={stores.prefs} edits={stores.edits} />
+      <App store={stores.save} prefs={stores.prefs} edits={stores.edits} rescue={stores.rescue} />
     </StrictMode>,
   );
   // An app ships its files with it; only the web build caches itself for offline play.
@@ -68,4 +68,7 @@ async function boot(container: HTMLElement): Promise<void> {
   if (shell === CAPACITOR_SHELL) void startPhoneShell();
 }
 
-void boot(root);
+// If the device's files can't be opened at all, say so; a blank window says nothing.
+boot(root).catch((error: unknown) => {
+  root.textContent = `The game couldn’t start: ${error instanceof Error ? error.message : String(error)}`;
+});

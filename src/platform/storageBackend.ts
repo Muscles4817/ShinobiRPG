@@ -5,8 +5,11 @@
  * in `chooseStores.ts`.
  */
 
-/** The three things the game keeps on a device: the save, its settings, the editor's changes. */
-export const SLOTS = ['save', 'prefs', 'edits'] as const;
+/**
+ * What the game keeps on a device: the save, its settings, the editor's changes, and `rescue`,
+ * a copy of the last save that was replaced, brought up from an older version or couldn't be read.
+ */
+export const SLOTS = ['save', 'prefs', 'edits', 'rescue'] as const;
 export type SlotName = (typeof SLOTS)[number];
 
 export interface StorageBackend {
