@@ -32,15 +32,58 @@ export function distanceBetween(spacing: Spacing, a: string, b: string): RangeBa
  * from it, their footwork moves from it, and the screen says it of them. With no foe left
  * standing, the fight's distance.
  */
-export function bandOf(
-  spacing: Spacing & { readonly fighters: readonly PlanFighter[] },
+export function bandOf(spacing: Field, fighter: Pick<PlanFighter, 'id' | 'side'>): RangeBand {
+  const foe = facing(spacing, fighter);
+  return foe ? distanceBetween(spacing, fighter.id, foe.id) : spacing.range;
+}
+
+/** A fight's spacing with the fighters in it. */
+type Field = Spacing & { readonly fighters: readonly PlanFighter[] };
+
+/** The foe a fighter faces: the nearest still standing (the first named, between equals). */
+export function facing(
+  spacing: Field,
   fighter: Pick<PlanFighter, 'id' | 'side'>,
-): RangeBand {
+): PlanFighter | undefined {
+  const near = (foe: PlanFighter) =>
+    RANGE_BANDS.indexOf(distanceBetween(spacing, fighter.id, foe.id));
   const foes = spacing.fighters.filter((f) => f.side !== fighter.side && alive(f));
-  const bands = foes.map((foe) =>
-    RANGE_BANDS.indexOf(distanceBetween(spacing, fighter.id, foe.id)),
+  return foes.reduce<PlanFighter | undefined>(
+    (best, foe) => (best === undefined || near(foe) < near(best) ? foe : best),
+    undefined,
   );
-  return bands.length === 0 ? spacing.range : (RANGE_BANDS[Math.min(...bands)] ?? spacing.range);
+}
+
+/** One pair put at a new distance. */
+export interface PairMove {
+  readonly a: string;
+  readonly b: string;
+  readonly to: RangeBand;
+}
+
+/** The pairs' distances once these pairs have moved; every other pair keeps its own. */
+export function withMoves(spacing: Spacing, moves: readonly PairMove[]): Distances {
+  const next: Record<string, RangeBand> = { ...spacing.distances };
+  for (const move of moves) next[pairKey(move.a, move.b)] = move.to;
+  return next;
+}
+
+/**
+ * Bodies that join the fight beside another (a summons by its caller, shadow clones by their
+ * maker) stand from every foe where they stand. Nothing to keep while every pair stands at the
+ * fight's distance.
+ */
+export function joinedBeside(
+  spacing: Field,
+  joinerIds: readonly string[],
+  beside: PlanFighter,
+): Pick<Spacing, 'distances'> {
+  if (!spacing.distances) return {};
+  const foes = spacing.fighters.filter((f) => f.side !== beside.side);
+  const moves = joinerIds.flatMap((joiner) =>
+    foes.map((foe) => ({ a: joiner, b: foe.id, to: distanceBetween(spacing, beside.id, foe.id) })),
+  );
+  return { distances: withMoves(spacing, moves) };
 }
 
 /** Whether everyone stands where they stood: the fight's distance and every pair's. */

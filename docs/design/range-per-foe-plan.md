@@ -27,7 +27,7 @@ Kakashi ── close ── Zabuza (unchanged)
 - **Read through the helpers.** Ask a pair with `distanceBetween`, and a fighter with `bandOf`.
   Never read `range` for one fighter's sake.
 
-## Stage 1: the state, every fight as before (this change)
+## Stage 1: the state, every fight as before (done)
 
 - `distances` and the helpers live in `engines/plan/distance.ts`.
 - Every read of the shared distance goes through the helpers:
@@ -40,29 +40,33 @@ Kakashi ── close ── Zabuza (unchanged)
 - Saves need nothing. `distances` is optional, and a fight saved without it resumes with every
   pair at `range`.
 
-## Stage 2: movement per foe
+## Stage 2: movement per foe (this change)
 
-Every writer of `range` becomes a writer of pairs:
+Every writer of `range` now writes pairs (`pairMoves.ts`, `pairsMoved` in `groundPlay.ts`):
 
-| Writer                                                | What moves                                                                                                    |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| A step                                                | The stepper and the foe they step on (their target, else the foe they face). Other pairs keep their distance. |
-| An entry or a flicker                                 | The user and their target.                                                                                    |
-| A knock                                               | The attacker and the one knocked.                                                                             |
-| A conceal that goes where the user fights best (Mole) | The user and the foe they come up on, not everyone.                                                           |
-| A wide area that throws the fight apart               | The maker and each foe it caught.                                                                             |
-| A vast blast                                          | Everyone: every pair goes to far, and `range` with it.                                                        |
-| Walls (a room has no far)                             | Every pair, as the ground allows.                                                                             |
-| Holding off                                           | Who fires is whoever the closer steps in on; the pair is the holder and the closer.                           |
-| Fleeing                                               | Judged from the nearest chaser.                                                                               |
+| Writer                                           | What moves                                                                                                              |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| A step in                                        | The stepper and the foe they step on (their target, else the foe they face). Other pairs keep their distance.           |
+| A step back                                      | The stepper gets clear of every foe nearer than where they go, but each of the others may keep pace (the same contest). |
+| An entry, a flicker, a conceal that moves (Mole) | The user and their target (else the foe they face), the same way as a step.                                             |
+| A knock                                          | The attacker and the one knocked.                                                                                       |
+| A wide area                                      | The maker and each foe it caught.                                                                                       |
+| A vast blast                                     | Everyone: every pair goes to far, and `range` with it.                                                                  |
+| Walls (a room has no far)                        | Each pair, as the ground allows.                                                                                        |
+| A summons, a shadow clone                        | Joins standing from every foe where its caller or maker stands (`joinedBeside`).                                        |
+| Holding off                                      | Unchanged: any foe whose own distance to the closer has a hold-off ready may fire.                                      |
 
-Rules that stay as they are:
+Rules that keep a crowd a crowd:
 
-- **Rows.** The front row still covers the back up close (`canReach`). Stepping in on a
-  back-row foe while their front row stands brings you close to the front row first.
+- **Rows.** Going in on a back-row foe while their front row stands brings you as near the
+  front row too (`closingIn`); the front row still covers the back up close (`canReach`).
+- **Ganging up.** A step in on a foe someone of your side is already fighting up close is sure:
+  nobody keeps a second foe off while busy with the first. Without it, a caster held a gang of
+  three off one at a time (the content bench's gang went from 5% to 50% won).
 - **Targets.** A card aims only at foes within its reach from the attacker's distance to each.
 
-Re-measure the benches, and retune the named constants where they move.
+The benches held after these two rules (the gang 9%, the bandit chief 63% for a ninjutsu
+graduate, against 5% and 65% before).
 
 ## Stage 3: the screens
 

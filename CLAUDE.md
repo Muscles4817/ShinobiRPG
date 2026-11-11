@@ -228,7 +228,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     Every pair of foes keeps a **distance** of its own (`plan/distance.ts`,
     `docs/design/range-per-foe-plan.md`): a pair with none stands at the fight's `range`, where
     everyone starts; ask a pair with `distanceBetween` and a fighter (their distance to the foe
-    they face, the nearest) with `bandOf`, never `range` for one fighter's sake.
+    they face, the nearest) with `bandOf`, never `range` for one fighter's sake. Movement moves
+    only the pairs it concerns (`plan/pairMoves.ts`, `pairsMoved`): a step, an entry or a knock
+    the mover and their foe (going back, clear of every nearer foe, each of whom may keep pace;
+    in on a guarded back-row foe, past the front row too), a wide area its maker and whom it
+    caught, a vast blast everyone; a summons or shadow clone joins where its caller stands
+    (`joinedBeside`), and a step in on a foe someone else is fighting up close is sure.
     Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
     `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
     throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.

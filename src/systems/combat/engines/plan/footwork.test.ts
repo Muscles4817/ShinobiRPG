@@ -1,3 +1,4 @@
+import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 
 import { castsLine, SWAPS } from '@/test/fightLines';
@@ -203,7 +204,7 @@ describe('plan & watch verbs: move', () => {
     const round = roundOf({ attributes: { ...attributes, speed: 40 } }, 'far');
     for (let seed = 1; seed < 20; seed++) {
       const turn = { actor: hero(round), target: foeOf(round), rng: createRng(seed) };
-      expect(useJutsu(round, turn, flicker).range).toBe('close');
+      expect(distanceBetween(useJutsu(round, turn, flicker), 'hero', 'foe')).toBe('close');
     }
   });
 
@@ -211,7 +212,7 @@ describe('plan & watch verbs: move', () => {
     const away = technique('away', [{ verb: 'move', power: 8, to: 'far' }]);
     const round = roundOf();
     const turn = { actor: hero(round), target: undefined, rng: createRng(1) };
-    expect(useJutsu(round, turn, away).range).toBe('far');
+    expect(distanceBetween(useJutsu(round, turn, away), 'hero', 'foe')).toBe('far');
   });
 
   it('is footwork, never slotted: the way to where you fight, and not played once there', () => {

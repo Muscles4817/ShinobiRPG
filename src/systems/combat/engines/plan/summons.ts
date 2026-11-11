@@ -1,3 +1,4 @@
+import { joinedBeside } from './distance';
 import { alive } from '../../rules/body';
 import { drivenAttributes } from '../../rules/puppets';
 import { threadsTaken } from './puppets';
@@ -89,7 +90,11 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   );
   // A body of its caller's mind thinks as sharply as they do (`oneMind.ts`).
   const answered = say(
-    { ...round, fighters: call.shared ? withOneMind([...fighters, body]) : [...fighters, body] },
+    {
+      ...round,
+      fighters: call.shared ? withOneMind([...fighters, body]) : [...fighters, body],
+      ...joinedBeside(round, [body.id], actor),
+    },
     tell(call.puppet ? PUPPET_CALL : SUMMON_CALL, { a: actor, b: body }),
   );
   const paid = harmLine(tell('{a} pay{a.s} in blood.', { a: actor }), blood);

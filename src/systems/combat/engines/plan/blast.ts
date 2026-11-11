@@ -11,9 +11,10 @@ import {
   potencyOf,
   raiseField,
 } from '../../rules/verbs';
-import { movedTo } from './groundPlay';
+import { distanceBetween } from './distance';
+import { movedTo, pairsMoved } from './groundPlay';
 import type { Turn } from './senses';
-import { fighterIn, say, type Round } from './state';
+import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
  * What a wide or vast technique leaves behind once it has gone off (`rules/verbs/area.ts`): the
@@ -40,12 +41,35 @@ function dusted(round: Round, turn: Turn, t: CombatTechnique): Round {
   return say({ ...round, field }, FIELD_RULES.dust.rises);
 }
 
-/** The ground after a technique has gone off: thrown apart, and dust after a vast one. */
-export function aftermath(round: Round, turn: Turn, t: CombatTechnique): Round {
-  const size = widest(t);
+/** A wide blast throws back only those it caught, from its maker. */
+function thrownBack(round: Round, maker: PlanFighter, caught: readonly PlanFighter[]): Round {
+  const moves = caught.map((foe) => ({
+    a: maker.id,
+    b: foe.id,
+    to: afterBlast(distanceBetween(round, maker.id, foe.id), 'wide'),
+  }));
+  const moving = moves.filter((m) => m.to !== distanceBetween(round, m.a, m.b));
+  return moving.length === 0 ? round : pairsMoved(round, moving, THROWN_BACK);
+}
+
+const THROWN_BACK = 'The blast throws back everyone it caught.';
+
+/**
+ * The ground after a technique has gone off: a wide one throws back those it `caught`, a vast
+ * one throws everyone apart and leaves dust.
+ */
+export function aftermath(round: Round, turn: Turn, used: Blast): Round {
+  const size = widest(used.t);
   if (!size) return round;
+  if (size === 'wide') return thrownBack(round, turn.actor, used.caught);
   const range = afterBlast(round.range, size);
-  const thrown =
-    range === round.range ? round : movedTo(round, range, 'The blast throws everyone apart.');
-  return AREA_RULES[size].dust ? dusted(thrown, turn, t) : thrown;
+  const apart = round.distances === undefined && range === round.range;
+  const thrown = apart ? round : movedTo(round, range, 'The blast throws everyone apart.');
+  return AREA_RULES[size].dust ? dusted(thrown, turn, used.t) : thrown;
+}
+
+/** A technique gone off, and whom its area caught. */
+export interface Blast {
+  readonly t: CombatTechnique;
+  readonly caught: readonly PlanFighter[];
 }

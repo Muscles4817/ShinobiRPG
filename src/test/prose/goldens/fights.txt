@@ -102,7 +102,7 @@
   —— First exchange ——
   You come in through the trees.
   The first grey wolf’s bite tears at you before you are properly set. [−8]
-  The second grey wolf’s bite sinks into you cleanly. [−8]
+  The second grey wolf lunges in close.
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the first grey wolf, guard or no guard, and it’s thrown back against a trunk. [Guarded] [−34]
@@ -270,7 +270,7 @@
   —— First exchange ——
   You cut across the street and into the first bandit thug’s reach.
   The first bandit thug’s strike catches you before you are properly set. [−12]
-  The second bandit thug lands his strike on you. [−13]
+  The second bandit thug closes in at once.
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel cuts into the first bandit thug. [Guarded] [−18]
@@ -296,7 +296,16 @@
   You use Gale Heel once more.
   Your Gale Heel batters the first bandit thug. [Guarded] [−20]
   The first bandit thug’s strike hits you. [Guarded] [−8]
-  The second bandit thug lands his strike on you. [Guarded] [−5]
+  The second bandit thug lands his strike on you. [Guarded] [−8]
+  —— Third exchange ——
+  You go back to Gale Heel.
+  Your Gale Heel cuts into the first bandit thug cleanly. [Guarded] [−6]
+  The first bandit thug crumples in the street and doesn’t get up.
+  The second bandit thug’s strike clips you. [Guarded] [−7]
+  —— Last exchange ——
+  You reach for Gale Heel again.
+  You find the strength from somewhere, and your Gale Heel slices across the second bandit thug. [Guarded] [−18]
+  The second bandit thug lands his strike on you. [Guarded] [−3]
   You drop to your knees and topple over.
-  Everything goes dark.
-  summary: You lasted two rounds before going down. The first bandit thug and the second bandit thug were still standing.
+  The fight goes on a little longer without you, then ends.
+  summary: You lasted two rounds before going down. The second bandit thug was still standing.

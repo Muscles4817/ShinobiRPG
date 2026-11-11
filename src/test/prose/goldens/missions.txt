@@ -1267,20 +1267,18 @@ view:
   Asuka’s Lantern Cut tears through the bandit archer with everything behind it, guard or no guard. [Guarded] [−56]
   Gōran weaves in under the bandit archer’s fire.
   Gōran closes in at once.
-  Goro launches into Palm Strike.
-  Goro’s Palm Strike slams into the bandit thug, and it leaves him shaken. [Guarded] [−22]
-  You open with Gale Heel.
-  Your Gale Heel hammers the bandit thug, and he feels it. [Guarded] [−21]
-  Asuka slips past the bandit thug’s strike. [Missed]
+  Goro darts in close.
+  You keep low and come in under the bandit thug’s guard, inside the bandit thug’s reach.
+  The bandit thug’s strike only just clips Gōran. [−2]
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit thug, through the guard all the same, and he’s nearly knocked off his feet. [Guarded] [−43]
-  Gōran launches into Lantern Wind Flurry.
-  The bandit thug can do little as Gōran’s Lantern Wind Flurry smashes into him, through the guard all the same. [Guarded] [−14]
-  The bandit thug goes down and stays down.
-  Goro explodes forward with Palm Strike.
-  Goro’s Palm Strike crashes into the bandit archer, and she feels it. [Guarded] [−27]
-  The bandit archer turns and runs.
+  Asuka’s Lantern Cut tears through the bandit archer, through the guard all the same, and she’s nearly knocked off her feet. [Guarded] [−44]
+  The bandit archer goes down and stays down.
+  Gōran explodes forward with Lantern Wind Flurry.
+  Gōran’s Lantern Wind Flurry drives through the bandit thug with everything behind it, guard or no guard. [Guarded] [−40]
+  The bandit thug can do little as Gōran’s Lantern Wind Flurry flattens him again. [−47]
+  Gōran’s Lantern Wind Flurry smashes into the bandit thug again, and he’s nearly knocked off his feet. [−13]
+  The bandit thug hits the ground and doesn’t get up.
   You are still on your feet, and no one is left to face you.
 
 >>> leaveFight
@@ -2098,18 +2096,22 @@ view:
   You close in at once.
   Asuka opens with Lantern Cut.
   Asuka’s Lantern Cut tears through the first bandit thug, through the guard all the same, and he’s nearly knocked off his feet. [Guarded] [−38]
-  Gōran opens with Lantern Wind Flurry.
-  The first bandit thug can do little as Gōran’s Lantern Wind Flurry smashes into him, through the guard all the same. [Guarded] [−39]
-  Gōran’s Lantern Wind Flurry drives through the first bandit thug again with everything behind it. [−23]
-  The first bandit thug hits the ground and doesn’t get up.
-  Goro starts with Palm Strike before anyone has settled.
-  Goro’s Palm Strike slams into the second bandit thug. [Guarded] [−22]
+  Gōran darts in close.
+  Goro keeps low and comes in under the first bandit thug’s guard, inside the first bandit thug’s reach.
+  The second bandit thug closes in.
   Asuka steps in front of you.
-  The second bandit thug’s strike finds only the space where Asuka stood. [Missed]
+  Asuka is already elsewhere when the first bandit thug’s strike arrives. [Missed]
   —— Second exchange ——
   You send Gale Heel howling out.
-  Your Gale Heel hurls aside the second bandit thug, guard or no guard, and he’s nearly knocked off his feet. [Guarded] [−78]
-  The second bandit thug hits the ground and doesn’t get up.
+  Your Gale Heel hurls aside the first bandit thug, guard or no guard, and he’s nearly knocked off his feet. [Guarded] [−62]
+  The first bandit thug goes down and stays down.
+  Steel flashes as Asuka looses Lantern Cut.
+  The second bandit thug can do little as Asuka’s Lantern Cut tears through him, guard or no guard. [Guarded] [−39]
+  Goro keeps low and comes in under the second bandit thug’s guard, inside the second bandit thug’s reach.
+  Gōran goes in with Lantern Wind Flurry.
+  Gōran’s Lantern Wind Flurry drives through the second bandit thug with everything behind it, through the guard all the same. [Guarded] [−39]
+  Gōran’s Lantern Wind Flurry smashes into the second bandit thug a second time, and he’s nearly knocked off his feet. [−22]
+  The second bandit thug goes down and stays down.
   You are still on your feet, and no one is left to face you.
 
 >>> leaveFight

@@ -1,3 +1,4 @@
+import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 
 import { GETS_THROUGH, holdsOff } from '@/test/fightLines';
@@ -79,8 +80,8 @@ describe('holding a foe off', () => {
     const through = results.filter((r) => r.lines.some((l) => GETS_THROUGH.test(l)));
     expect(held.length).toBeGreaterThan(0);
     expect(through.length).toBeGreaterThan(0);
-    for (const r of held) expect(r.range).toBe('mid');
-    for (const r of through) expect(r.range).toBe('close');
+    for (const r of held) expect(distanceBetween(r, 'hero', 'caster')).toBe('mid');
+    for (const r of through) expect(distanceBetween(r, 'hero', 'caster')).toBe('close');
     // Holding off is the holder's turn.
     for (const r of [...held, ...through]) expect(r.acted).toContain('caster');
   });
@@ -138,13 +139,15 @@ describe('a big body closing in', () => {
   it('takes the shot and keeps coming, where a human-sized one is held off', () => {
     const seeds = Array.from({ length: 60 }, (_, i) => i + 1);
     const closed = (hero: Partial<CombatantSetup>) =>
-      seeds.filter((seed) => stepIn(atMid([], hero), seed).range === 'close').length;
+      seeds.filter(
+        (seed) => distanceBetween(stepIn(atMid([], hero), seed), 'hero', 'caster') === 'close',
+      ).length;
     expect(closed({ size: 'large' })).toBeGreaterThan(closed({}));
     const walked = seeds
       .map((seed) => stepIn(atMid([], { size: 'large' }), seed))
       .filter((r) => r.lines.some((l) => l.includes('coming')));
     expect(walked.length).toBeGreaterThan(0);
-    for (const r of walked) expect(r.range).toBe('close');
+    for (const r of walked) expect(distanceBetween(r, 'hero', 'caster')).toBe('close');
   });
 
   it('fights with more health than it brings, and reports it back on the human scale', () => {

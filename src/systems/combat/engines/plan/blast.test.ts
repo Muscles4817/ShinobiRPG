@@ -1,3 +1,4 @@
+import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 import type { AreaSize } from '@/systems/techniques';
 
@@ -83,10 +84,10 @@ describe('area techniques in a fight', () => {
   });
 
   it('a wide blast throws the fight apart; a vast one to far, under dust', () => {
-    expect(cast(facing('guard'), 'small', 1).range).toBe('close');
-    expect(cast(facing('guard'), 'wide', 1).range).toBe('mid');
+    expect(distanceBetween(cast(facing('guard'), 'small', 1), 'hero', 'bandit')).toBe('close');
+    expect(distanceBetween(cast(facing('guard'), 'wide', 1), 'hero', 'bandit')).toBe('mid');
     const vast = cast(facing('guard'), 'vast', 1);
-    expect(vast.range).toBe('far');
+    expect(distanceBetween(vast, 'hero', 'bandit')).toBe('far');
     expect(vast.field?.id).toBe('dust');
   });
 });
