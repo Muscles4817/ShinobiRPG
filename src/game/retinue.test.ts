@@ -17,6 +17,16 @@ describe('a foe’s retinue', () => {
     expect(hound?.id).not.toBe(master?.id);
   });
 
+  it('is one mind with a master who drives it from off the field', () => {
+    const keeper = ctx.content.enemies.require('mask-keeper');
+    const [source, ...masks] = enemyParty(keeper, 0, ctx);
+    expect(source?.mind).toEqual({ id: source?.id, source: true });
+    expect(masks.map((m) => m.mind)).toEqual([{ id: source?.id }, { id: source?.id }]);
+    const [master, hound] = enemyParty(poacher, 0, ctx);
+    expect(master?.mind).toBeUndefined();
+    expect(hound?.mind).toBeUndefined();
+  });
+
   it('stands on the field when the job comes to blows', () => {
     let state = act(veteran(newGame(), 2), { type: 'startMission', missionId: JOB }, ctx);
     for (let i = 0; i < 6 && !state.combat; i++) state = pressOn(state);

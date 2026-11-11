@@ -7,7 +7,8 @@ import { killingMoment } from './avoid';
 import { createPlanEngine } from './engine';
 import { decide } from './round';
 import { mindsAfter, mindsMark, stillFighting, watched } from './sharedMind';
-import { callSummon } from './summons';
+import { kitCall } from './calling';
+import { callSummon, summonsAfter } from './summons';
 import { decode, initialFighters, type PlanFighter, type Round } from './state';
 
 /**
@@ -146,6 +147,32 @@ describe('a shared mind', () => {
     const shade = called.fighters.find((f) => f.summoner === 'you')!;
     expect(shade.mind?.id).toBe('you');
     expect(shade.attributes.intellect).toBe(30);
+  });
+
+  it('calls bodies of its own mind at once against anyone strong, and they never go home hurt', () => {
+    const raise: TechniqueDef = {
+      ...BLOW,
+      id: 'raise-two',
+      discipline: 'ninjutsu',
+      effects: [
+        { verb: 'summon', power: 1, call: 'shade-a' },
+        { verb: 'summon', power: 1, call: 'shade-b' },
+      ],
+    };
+    const shade = (id: string): CombatCall => ({ id, body: setup(id), upkeep: 2, shared: true });
+    const r0 = keeperFight();
+    const caller = {
+      ...who(r0, 'you'),
+      techniques: [raise],
+      calls: [shade('shade-a'), shade('shade-b')],
+    };
+    const r = changed(r0, 'you', caller);
+    const call = kitCall(caller, { fighters: r.fighters, band: 'close' });
+    expect(call).toMatchObject({ kind: 'jutsu', technique: { id: 'raise-two' } });
+    const called = callSummon(callSummon(r, caller, 'shade-a'), who(r, 'you'), 'shade-b');
+    const hurt = called.fighters.map((f) => (f.summoner === 'you' ? { ...f, health: 5 } : f));
+    const kept = summonsAfter({ ...called, fighters: hurt });
+    expect(kept.fighters.filter((f) => f.summoner === 'you')).toHaveLength(2);
   });
 
   it('a whole fight against a hidden source ends, one way or the other', () => {

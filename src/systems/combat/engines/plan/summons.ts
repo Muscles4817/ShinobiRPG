@@ -117,12 +117,14 @@ function goingHome(round: Round, summon: Fighter): Going | null {
   const caller: Fighter | undefined = summon.summoner
     ? fighterIn(round, summon.summoner)
     : undefined;
-  // A puppet has no home to go to: it fights until it breaks.
-  if (!alive(summon) || (!summon.puppet && hurtTo(summon, BROKEN_SHARE))) {
+  // A puppet has no home to go to, and a body of its caller's mind no fear of its own: each
+  // fights until it falls.
+  const fearless = summon.puppet === true || summon.mind !== undefined;
+  if (!alive(summon) || (!fearless && hurtTo(summon, BROKEN_SHARE))) {
     return { fate: 'fell', lost: true };
   }
   if (!caller || !alive(caller)) return { fate: 'sent-home', lost: false };
-  if (!summon.puppet && readsInTheMoment(caller) && hurtTo(summon, SAVED_SHARE)) {
+  if (!fearless && readsInTheMoment(caller) && hurtTo(summon, SAVED_SHARE)) {
     return { fate: 'sent-home', lost: true, saved: true };
   }
   return caller.chakra < (summon.upkeep ?? 0) ? { fate: 'sent-home', lost: false } : null;

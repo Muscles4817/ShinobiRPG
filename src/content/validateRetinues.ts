@@ -5,7 +5,8 @@ import type { ContentPack, EnemyDef } from './types';
 /**
  * Foes' retinues (`EnemyDef.retinue`): every body named is a real enemy, never the foe
  * themselves, keeps no retinue of its own (one master, one level), and is no more dangerous
- * than its master, so a job's danger (read from the master) never understates it.
+ * than its master, so a job's danger (read from the master) never understates it. A foe who
+ * drives their retinue from off the field has one to drive.
  */
 
 function entryProblems(
@@ -26,7 +27,10 @@ function entryProblems(
 
 export function validateRetinues(pack: ContentPack): string[] {
   const enemies = new Map(pack.enemies.map((e) => [e.id, e]));
-  return pack.enemies.flatMap((enemy) =>
-    (enemy.retinue ?? []).flatMap(entryProblems(enemy, enemies)),
-  );
+  return pack.enemies.flatMap((enemy) => [
+    ...(enemy.retinue ?? []).flatMap(entryProblems(enemy, enemies)),
+    ...(enemy.drives && !enemy.retinue?.length
+      ? [`enemy "${enemy.id}" drives a retinue it hasn’t got`]
+      : []),
+  ]);
 }

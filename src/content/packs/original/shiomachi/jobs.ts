@@ -169,6 +169,42 @@ export const SHIOMACHI_JOBS: readonly MissionDef[] = [
       },
     ],
   },
+  {
+    id: 'harbour-mask-theatre',
+    title: 'The Empty Masks',
+    rank: 'C',
+    client: 'The harbour theatre',
+    summary:
+      'Festival masks have been walking the quay at night with no one inside them. The theatre wants them stopped before the festival.',
+    slots: 3,
+    energyCost: 30,
+    reward: { ryo: 360, reputation: 9 },
+    minMissionsCompleted: 12,
+    once: true,
+    stages: [
+      {
+        kind: 'check',
+        text: 'Two masks stand at the end of the quay, faces turned the same way, as if one pair of eyes looked through both.',
+        approaches: [
+          { label: 'Look for the threads that move them', stat: 'perception', difficulty: 12 },
+          { label: 'Work out who would carve masks like these', stat: 'intellect', difficulty: 12 },
+        ],
+        success:
+          'There are no threads. Whoever moves them is somewhere else, watching through them.',
+        failure: 'You get too close, and both masks turn to you at the same moment.',
+        onFailure: 'forward',
+      },
+      {
+        kind: 'encounter',
+        ground: 'town',
+        template: 'bandit-camp',
+        job: 'escort',
+        text: 'The masks come at you together. Somewhere out of sight, someone is moving them, and they keep getting back up.',
+        enemyIds: ['mask-keeper'],
+        canFlee: false,
+      },
+    ],
+  },
 ];
 
 export const SHIOMACHI_JOB_IDS = SHIOMACHI_JOBS.map((j) => j.id);

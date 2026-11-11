@@ -52,4 +52,12 @@ describe('retinue validation', () => {
       'enemy "handler" retinue "poacher" has a retinue of its own',
     );
   });
+
+  it('reports a foe who drives a retinue it hasn’t got', () => {
+    const pack = withRetinue(
+      [],
+      [{ ...ORIGINAL_PACK.enemies[0]!, id: 'lone-keeper', drives: true }],
+    );
+    expect(validateRetinues(pack)).toContain('enemy "lone-keeper" drives a retinue it hasn’t got');
+  });
 });

@@ -76,6 +76,11 @@ export interface EnemyDef {
   readonly carries?: CarriedKit;
   /** Bodies that fight beside them (`docs/design/retinue-plan.md`): a hound at heel. */
   readonly retinue?: readonly RetinueEntry[];
+  /**
+   * They drive their retinue as one mind from off the field (`mindContract.ts`): hidden until
+   * found, they take no turns, and their bodies fall with them (`validateRetinues.ts`).
+   */
+  readonly drives?: true;
   /** Summons they can call into the fight, from a contract of the pack. */
   readonly summons?: readonly FoeSummon[];
   /** A full hive of a pack strain in their body; `hidden` from a glance unless told otherwise. */
