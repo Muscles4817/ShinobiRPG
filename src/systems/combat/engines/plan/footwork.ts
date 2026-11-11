@@ -14,6 +14,7 @@ import { swapLine } from './sceneVoice';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
 import { tell } from '../../rules/telling';
+import { bandOf } from './distance';
 
 /**
  * Move and substitute in a planned fight. A move is footwork no one contests: its user is
@@ -45,7 +46,7 @@ const FLICKER = '{a} blink{a.s} out and reappear{a.s} at {where} range.';
 
 export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
   if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
-  const to = moveDestination(actor, t) ?? round.range;
+  const to = moveDestination(actor, t) ?? bandOf(round, actor);
   const where = RANGE_LABEL[to].toLowerCase();
   // An entry carries its user in to strike; a body flicker simply puts them there.
   const told = isHarmful(t)

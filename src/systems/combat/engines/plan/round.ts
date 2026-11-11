@@ -60,6 +60,7 @@ import { tracedLine } from './sceneVoice';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';
+import { bandOf, distanceBetween, sameSpacing, spacingOf } from './distance';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -89,7 +90,7 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
   const foe = readsInTheMoment(actor) ? bestTarget(actor, seen) : there;
   const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
   const moment = {
-    band: round.range,
+    band: foe ? distanceBetween(round, actor.id, foe.id) : bandOf(round, actor),
     foe,
     hiddenFoe,
     opening: round.opening ?? false,
@@ -98,7 +99,7 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
     exchange: round.number,
     ...(round.reads ? { reads: round.reads } : {}),
   };
-  const intended = intendedCard(actor, round.intents, round.range);
+  const intended = intendedCard(actor, round.intents, bandOf(round, actor));
   const card =
     intended && keepsTo(actor, intended, round) ? intended : chooseCard(actor, moment, rng);
   // A finisher that needs an opening goes for an open foe (`finishers.ts`).
@@ -178,7 +179,7 @@ function afterTheCast(played: Round, { round, after }: Charged): Round {
 
 /** A step that moved the fight springs any foe's trap waiting where it now stands. */
 function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Round {
-  return after.range === before.range ? after : springTraps(after, actorId, rng, true);
+  return sameSpacing(before, after) ? after : springTraps(after, actorId, rng, true);
 }
 
 /**
@@ -282,7 +283,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
         rng.next() * 4 +
         (f.side === ahead ? FIRST_MOVER_LEAD : 0) +
         // A drawn blade's reach strikes first up close (`blades.ts`).
-        reachLead(f, opponentsOf(state.fighters, f), state.range),
+        reachLead(f, opponentsOf(state.fighters, f), bandOf(state, f)),
     }))
     .sort((a, b) => b.initiative - a.initiative);
   const start: Round = {
@@ -290,6 +291,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     opening: state.exchange === 0,
     fighters: [...state.fighters],
     range: state.range,
+    ...(state.distances ? { distances: state.distances } : {}),
     lines: [],
     recent: state.log.slice(-SCENE_MEMORY),
     seen: state.seen,
@@ -326,6 +328,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     exchange: state.exchange + 1,
     fighters,
     range: end.range,
+    ...spacingOf(end),
     seen: end.seen,
     ...(end.reads ? { reads: end.reads } : {}),
     log: story.slice(-LOG_LIMIT),

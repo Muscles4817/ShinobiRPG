@@ -18,6 +18,7 @@ import { taken, wound } from './wound';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
 import { seesTheRealBody } from '../../rules/eyes';
+import { distanceBetween } from './distance';
 
 /**
  * Clones taking hits in a planned fight. A hit only gets here once it has reached its target
@@ -111,7 +112,8 @@ function struckClone(round: Round, { hit, maker, clones }: Struck): Round {
     { ...round, fighters: patch(round.fighters, maker.id, { clones: oneBurst(clones) }) },
     at('which bursts.'),
   );
-  const close = hit.physical === true && round.range === 'close';
+  const close =
+    hit.physical === true && distanceBetween(round, hit.attacker.id, maker.id) === 'close';
   if (rule.shock <= 0 || !close) return burst;
   const raw = strikeDamage(maker, hit.attacker, hit.rng.next()) * rule.shock;
   const damage = taken(hit.attacker, Math.max(1, Math.round(raw)));

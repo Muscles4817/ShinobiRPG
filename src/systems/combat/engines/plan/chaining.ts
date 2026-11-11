@@ -11,6 +11,7 @@ import { jutsu, strikeScore, styleArt } from './repertoire';
 import { opponentsOf, type Turn } from './senses';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
+import { distanceBetween } from './distance';
 
 /**
  * Chains in a fight (`rules/chains.ts`): when a strike plays, a chain whose opener suits the
@@ -64,7 +65,8 @@ export function opened(round: Round, turn: Turn, planned: Card, single: Card): O
   const spare = breathOf(actor) - maxBreath(actor.attributes) * SPARE_SHARE;
   const ready = chainsOf(actor).flatMap(([opener, ...rest]) => {
     const card = opener && jutsu(opener);
-    const fits = card && fitsBand(card, round.range) && playable(actor, card);
+    const fits =
+      card && fitsBand(card, distanceBetween(round, actor.id, foe.id)) && playable(actor, card);
     return fits && breathFor(actor, [opener, ...rest]) <= spare ? [{ opener, rest }] : [];
   });
   const worth = (c: ReadyChain) =>
@@ -96,7 +98,7 @@ function breakOf({ prev, now, actor, target }: Link, link: CombatTechnique): Cha
   const self = fighterIn(prev, actor.id);
   if (self && actor.health < self.health) return 'countered';
   if (!landed(prev, now, target.id)) return 'missed';
-  if (!reachesAfter(link, now.range)) return 'out-of-reach';
+  if (!reachesAfter(link, distanceBetween(now, actor.id, target.id))) return 'out-of-reach';
   return playable(actor, jutsu(link)) ? null : 'winded';
 }
 

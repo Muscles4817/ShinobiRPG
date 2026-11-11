@@ -225,6 +225,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     breaks under one that overpowers it, and an elemental attack aimed at someone about to throw one
     back is met in a **clash** (`plan/clash.ts`: if they see it and are quick enough), the
     overpowering element carrying through; between even elements the clearly stronger technique.
+    Every pair of foes keeps a **distance** of its own (`plan/distance.ts`,
+    `docs/design/range-per-foe-plan.md`): a pair with none stands at the fight's `range`, where
+    everyone starts; ask a pair with `distanceBetween` and a fighter (their distance to the foe
+    they face, the nearest) with `bandOf`, never `range` for one fighter's sake.
     Each side stands in a front and a back **row** (`rules/rows.ts`, placed by kit or
     `CombatantSetup.row`): a blow up close can't reach the back row while the front stands;
     throws, longer-reach techniques and area effects can. Ask `canReach`, never test rows inline.

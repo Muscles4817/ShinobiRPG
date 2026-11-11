@@ -18,6 +18,7 @@ import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { dazeLine, momentOf } from './voice';
 import { tell } from '../../rules/telling';
+import { bandOf, distanceBetween } from './distance';
 
 /**
  * Traps in a planned fight. A trap is set at the distance the fight stands at; the first foe of
@@ -29,9 +30,10 @@ import { tell } from '../../rules/telling';
 
 export function setTrap(round: Round, actor: PlanFighter, use: EffectUse<'trap'>): Round {
   const craft = driveOf(actor, use);
-  const trap = trapAt(use.technique.id, round.range, { craft, exchange: round.number });
+  const band = bandOf(round, actor);
+  const trap = trapAt(use.technique.id, band, { craft, exchange: round.number });
   const fighters = round.fighters.map((f) => (f.id === actor.id ? { ...f, trap } : f));
-  const where = RANGE_LABEL[round.range].toLowerCase();
+  const where = RANGE_LABEL[band].toLowerCase();
   const line = tell('{a} set{a.s} a trap at {where} range.', { a: actor, where });
   return say({ ...round, fighters }, line);
 }
@@ -88,11 +90,12 @@ function spring(start: Round, setter: PlanFighter, victim: PlanFighter, rng: Rng
  * (`moved` false) or once their step has moved the fight (`moved` true).
  */
 export function springTraps(round: Round, victimId: string, rng: Rng, moved: boolean): Round {
-  const at = { band: round.range, exchange: round.number, moved };
   return round.fighters.reduce((r, f) => {
     const setter = fighterIn(r, f.id);
     const victim = fighterIn(r, victimId);
     if (!setter?.trap || !victim || !alive(victim) || setter.side === victim.side) return r;
+    // A trap waits at a distance from its setter: it springs on a foe who stands there.
+    const at = { band: distanceBetween(r, setter.id, victim.id), exchange: round.number, moved };
     return springs(setter.trap, at) ? spring(r, setter, victim, rng) : r;
   }, round);
 }
