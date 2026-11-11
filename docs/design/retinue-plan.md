@@ -938,9 +938,11 @@ Each step proves one property and is its own PR.
 3. **Summons and contracts:** called bodies, the `summon` verb, chakra upkeep, one huge or
    many small, the signed path.
 4. **Swarms:** pools, kinds, swarm costs, area and fire against them, the born path for hosts.
-5. **Puppetry** (5a built, Part 5; 5b the workshop next): a discipline or not, driven bodies, strings and
+5. **Puppetry** (built, Part 5): a discipline or not, driven bodies, strings and
    attention, design and the workshop, the taught path.
-6. **Shared mind and the taken path:** pooled reads, a hidden controller, revival, the arc.
+6. **Shared mind and the taken path** (6a built, Part 5): pooled reads, a hidden controller,
+   revival, the arc. 6a the engine; 6b the showcase (the fan pack's Part 1 Reanimation, the
+   original pack's mask-keeper); 6c the taken path (a transplanted eye, an arc).
 7. **The original pack's equivalents** (planning discussion first). Until then each PR ships
    engine rules with a plain placeholder in the original pack and its fan content in the fan
    pack, so `check:release` stays honest.
@@ -1502,3 +1504,31 @@ rebuilt; you keep three, more with a bigger home (5b-ii-b).
   homes (`puppetRoom`).
 - **Screens**: the bench says where you are working, what that bench gives and how many
   puppets your home keeps, and offers your techniques as seals with why any can't go in yet.
+
+### Step 6a: one mind in several bodies
+
+Decided in the planning discussion: the fan pack shows it with what Part 1 has (Orochimaru's
+Reanimation), not the six paths; the player's taken path is a transplanted eye; a hidden source
+can be found and struck in the fight; the original pack keeps a plain placeholder (a mask-keeper
+whose masks walk) until step 7.
+
+- **The contract** (`mindContract.ts`): `CombatantSetup.mind` (a mind's id, and `source` for the
+  one driving it), a call that is `shared` (of its caller's mind), and the `raises` perk.
+- **One mind** (`plan/oneMind.ts`, `plan/sharedMind.ts`): bodies of one mind think with the
+  sharpest of them (so a mind with a sharp source fights as a team, `foeTeam.ts`), aim at their
+  side's mark when left to their judgement, and have no blind spots: an attacker hidden from one
+  body isn't unseen while another body of the mind stands in sight, so no killing blow or hold
+  from hiding catches one off guard.
+- **The source**: in the back row, hidden, as hard to find as its illusions or wits allow plus
+  the distance it keeps (`SOURCE_DISTANCE`). A Dispel never finds it (it isn't in an illusion),
+  so a default plan brings a Search against it. It takes no turns. Its fall takes its bodies down
+  at once, and with every body down it gives up the fight.
+- **Raising** (`raises`): at the end of an exchange, a raiser brings back one body of its mind
+  that fell in it, at half health, for a fifth of its full chakra; a hidden raiser gives itself
+  away a little each time (a glimpse, `EXPOSURE_STEP`). A body that fell under a seal stays down.
+  Revival is a perk rather than a technique verb: the Reanimation's bodies reform on their own,
+  and the counter (seal them as they fall, find the source, or drain it) is the same for both.
+- **Bench** (a fighter of 15 against a source of 15 and two masks of 10, 40 fights): found
+  every time by a Search, won 80%. Fights of ordinary fighters are untouched.
+- **Left for 6b**: the fan pack's Reanimation (Orochimaru calling the First and Second Hokage as
+  bodies of his mind that reform unless sealed) and the original pack's mask-keeper.

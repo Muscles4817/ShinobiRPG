@@ -59,6 +59,7 @@ import {
 import { tracedLine } from './sceneVoice';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
+import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -109,7 +110,7 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
   if (!alive(playerOf({ fighters }))) return 'defeat';
-  return fighters.some((f) => f.side === 'enemy' && alive(f)) ? null : 'victory';
+  return fighters.some((f) => f.side === 'enemy' && stillFighting(fighters, f)) ? null : 'victory';
 }
 
 function remember(seen: Round['seen'], fighterId: string, id: string): Round['seen'] {
@@ -197,12 +198,18 @@ function offPlanOf(actor: PlanFighter, play: Play): Pick<Round, 'offPlan'> {
   return actor.isPlayer && play.offPlan ? { offPlan: play.offPlan } : {};
 }
 
+/**
+ * Whether a fighter takes a turn now: up, the fight undecided, not already spent in a clash,
+ * and not a mind's source or a body its mind has left (`sharedMind.ts`).
+ */
+function hasTurn(start: Round, before: PlanFighter): boolean {
+  if (!alive(before) || decide(start.fighters) || start.acted?.includes(before.id)) return false;
+  return !keepsOffField(before) && stillFighting(start.fighters, before);
+}
+
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
-  // A fighter who met an attack in a clash has spent their turn already.
-  if (!before || !alive(before) || decide(start.fighters) || start.acted?.includes(actorId)) {
-    return start;
-  }
+  if (!before || !hasTurn(start, before)) return start;
   // Last turn's Evade or Brace holds until now (`commitment.ts`).
   // A turn of stillness opens Sage Mode now, unless it was broken (`meditation.ts`).
   const sprung = springTraps(
@@ -291,7 +298,8 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   };
   const name = EXCHANGE_NAMES[state.exchange] ?? 'Another';
   const opened: Round = { ...start, lines: [exchangeDivider(name, start, state.exchange === 0)] };
-  const played = order.reduce((round, { id }) => stagedTurn(round, id, rng), opened);
+  // Fallen bodies of a mind are raised before summons are reckoned (`sharedMind.ts`).
+  const played = mindsAfter(order.reduce((round, { id }) => stagedTurn(round, id, rng), opened));
   const kept = plannedSummons(
     veilsAfter(
       shadowsAfter(summonsAfter(clonesAfter(shroudsAfter(afterEmpowers(played, state.round))))),

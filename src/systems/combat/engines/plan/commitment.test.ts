@@ -63,7 +63,7 @@ function committed(round: Round, kind: 'evade' | 'brace'): Round {
 
 function slipOdds(round: Round): number {
   const [hero, foe] = round.fighters;
-  const incoming = techniqueIncoming(hero!, foe!, bolt, round.range);
+  const incoming = techniqueIncoming(hero!, foe!, bolt, round);
   return incoming ? avoidOdds(round, incoming) : 0;
 }
 

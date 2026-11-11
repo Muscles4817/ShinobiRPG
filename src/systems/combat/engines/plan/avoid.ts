@@ -1,6 +1,6 @@
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
-import type { CombatTechnique, RangeBand } from '../../contract';
+import type { CombatTechnique } from '../../contract';
 import {
   avoidCeiling,
   avoidChance,
@@ -41,6 +41,7 @@ import { techniqueDamage } from '../../rules/damage';
 import { strikesToKill, type KillingMoment } from '../../rules/lethal';
 import { isOpen } from './finishers';
 import { seesThroughIllusions } from '../../rules/eyes';
+import { watched } from './sharedMind';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -155,8 +156,9 @@ export function techniqueIncoming(
   attacker: PlanFighter,
   target: PlanFighter,
   t: CombatTechnique,
-  band: RangeBand,
+  round: Pick<Round, 'range' | 'fighters'>,
 ): Incoming | null {
+  const band = round.range;
   const use = landingUse(t);
   if (!use) return null;
   const [area] = effectsOf(t, 'area');
@@ -178,13 +180,20 @@ export function techniqueIncoming(
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
     threat: threatOf(attacker, target, t),
     ...(body ? { paceSpeed: attacker.attributes.speed } : {}),
-    ...(strikesToKill(t, killingMoment(attacker, target)) ? { sure: true } : {}),
+    ...(strikesToKill(t, killingMoment(attacker, target, round.fighters)) ? { sure: true } : {}),
   };
 }
 
-/** Whether a target can meet a killing blow: they see its user, and can move. */
-export function killingMoment(attacker: PlanFighter, target: PlanFighter): KillingMoment {
-  return { unseen: attacker.hidden, open: isOpen(target) };
+/**
+ * Whether a target can meet a killing blow: they see its user (or another of their mind does,
+ * `sharedMind.ts`), and can move.
+ */
+export function killingMoment(
+  attacker: PlanFighter,
+  target: PlanFighter,
+  fighters: readonly PlanFighter[],
+): KillingMoment {
+  return { unseen: attacker.hidden && !watched(fighters, target), open: isOpen(target) };
 }
 
 /**

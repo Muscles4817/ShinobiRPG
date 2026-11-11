@@ -2,6 +2,7 @@ import type { Rng } from '@/core';
 
 import { alive, targetable } from '../../rules/body';
 import { seesTheHidden } from '../../rules/eyes';
+import { isSource } from '../../rules/minds';
 import {
   DISPEL_CHAKRA,
   dispelChance,
@@ -105,7 +106,8 @@ export function search(round: Round, { actor, rng }: Turn): Round {
 export function dispel(round: Round, { actor, rng }: Turn): Round {
   const change = { ...paying(actor, DISPEL_CHAKRA), confused: 0 };
   const paid = { ...round, fighters: patch(round.fighters, actor.id, change) };
-  const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden);
+  // A mind's source isn't hidden in an illusion but off the field: only a Search finds it.
+  const hidden = opponentsOf(round.fighters, actor).filter((f) => f.hidden && !isSource(f));
   const strongest = [...hidden].sort((a, b) => b.attributes.genjutsu - a.attributes.genjutsu)[0];
   const moment = momentOf(round, actor.id);
   const cast = dispelLine(moment, actor);

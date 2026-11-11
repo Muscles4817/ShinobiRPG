@@ -30,7 +30,7 @@ export interface Ranked {
   readonly hidden: boolean;
 }
 
-type Placed = Pick<CombatantSetup, 'traits' | 'techniques' | 'row'>;
+type Placed = Pick<CombatantSetup, 'traits' | 'techniques' | 'row' | 'mind'>;
 
 /** Healers who heal more than they hurt keep to the back. */
 function supports(f: Placed): boolean {
@@ -44,6 +44,8 @@ function supports(f: Placed): boolean {
  */
 export function preferredRow(f: Placed): CombatRow {
   if (f.row) return f.row;
+  // A mind's source keeps behind the bodies it drives (`minds.ts`).
+  if (f.mind?.source) return 'back';
   const kit = { traits: f.traits ?? [] };
   if (hasTrait(kit, 'brawler') || hasTrait(kit, 'armoured')) return 'front';
   if (hasTrait(kit, 'archer') || hasTrait(kit, 'illusionist') || supports(f)) return 'back';

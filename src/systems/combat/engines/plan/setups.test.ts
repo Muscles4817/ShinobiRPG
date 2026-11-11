@@ -88,7 +88,7 @@ describe('a killing blow', () => {
     const seen = round();
     const unseen = round({ hidden: true });
     const odds = (r: Round) =>
-      avoidOdds(r, techniqueIncoming(one(r, 'kakashi'), one(r, 'guy'), blade, 'close')!);
+      avoidOdds(r, techniqueIncoming(one(r, 'kakashi'), one(r, 'guy'), blade, r)!);
     expect(odds(seen)).toBeGreaterThan(0);
     expect(odds(unseen)).toBe(0);
   });

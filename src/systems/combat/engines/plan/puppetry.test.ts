@@ -162,7 +162,7 @@ describe('a puppet on its master’s threads', () => {
 
   it('has no mind for an illusion to fool', () => {
     const up = unsealed();
-    const incoming = techniqueIncoming(foe(up), crow(up), ILLUSION, 'close');
+    const incoming = techniqueIncoming(foe(up), crow(up), ILLUSION, { ...up, range: 'close' });
     expect(incoming && avoidOdds(up, incoming)).toBe(1);
   });
 });

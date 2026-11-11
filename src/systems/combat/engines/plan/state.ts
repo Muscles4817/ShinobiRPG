@@ -27,6 +27,7 @@ import type { Footing } from './footing';
 import type { Dusty } from './dustBody';
 import type { Hive } from './hive';
 import type { ShroudMemory } from '../../rules/shrouds';
+import { withOneMind } from './oneMind';
 import { sizedBody } from './sizing';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -291,12 +292,14 @@ function fighterFrom(
 
 /** Everyone in the fight, each side in formation. */
 export function initialFighters(setup: CombatSetup): PlanFighter[] {
-  return formed(
-    numberedNames([
-      fighterFrom(setup.player, 'player', true),
-      ...setup.allies.map((a) => fighterFrom(a, 'player')),
-      ...setup.enemies.map((e) => fighterFrom(e, 'enemy')),
-    ]),
+  return withOneMind(
+    formed(
+      numberedNames([
+        fighterFrom(setup.player, 'player', true),
+        ...setup.allies.map((a) => fighterFrom(a, 'player')),
+        ...setup.enemies.map((e) => fighterFrom(e, 'enemy')),
+      ]),
+    ),
   );
 }
 

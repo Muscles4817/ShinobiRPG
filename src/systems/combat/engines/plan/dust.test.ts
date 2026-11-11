@@ -158,8 +158,8 @@ describe('dust in a planned fight', () => {
     const novice = { ...user(r), attributes: { ...user(r).attributes, ninjutsu: 5 } };
     const pace = dustArrival(master, BURIAL);
     expect(pace).toBeDefined();
-    expect(techniqueIncoming(master, foe(r), BURIAL, 'mid')?.skill).toBe(pace);
-    expect(techniqueIncoming(novice, foe(r), BURIAL, 'mid')?.skill).toBe(pace);
+    expect(techniqueIncoming(master, foe(r), BURIAL, { ...r, range: 'mid' })?.skill).toBe(pace);
+    expect(techniqueIncoming(novice, foe(r), BURIAL, { ...r, range: 'mid' })?.skill).toBe(pace);
     expect(dustArrival(foe(r), BURIAL)).toBeUndefined();
   });
 });
