@@ -133,7 +133,7 @@ function PersonHead({ p }: { readonly p: Sheet }) {
   return (
     <header className="person-top">
       <span className={photoClass(p.relation)}>
-        <Portrait appearance={p.appearance} size={84} />
+        <Portrait appearance={p.appearance} size={132} />
       </span>
       <div>
         {kicker && <p className="profile-kicker">{kicker}</p>}

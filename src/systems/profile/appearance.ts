@@ -61,8 +61,27 @@ export interface Appearance {
   readonly face?: Partial<FaceParts>;
 }
 
-/** An appearance with its face settled: what a portrait draws. */
-export type Look = Appearance & { readonly face: FaceParts };
+/** What someone is dressed as: a shinobi's jacket, a senior's flak vest, a villager's robe. */
+export const DRESSES = ['jacket', 'flak', 'robe'] as const;
+export type Dress = (typeof DRESSES)[number];
+
+/**
+ * How someone carries who they are, beyond their looks: what they wear for their rank, the
+ * art they are known for, the character on their name tag. Read from the person when a look
+ * is settled, never stored.
+ */
+export interface Bearing {
+  readonly dress: Dress;
+  /** The art they are known for, as its id; none for a villager. */
+  readonly art?: string;
+  /** One character for their name tag. */
+  readonly seal?: string;
+  /** Drawn with lashes. */
+  readonly lashes?: boolean;
+}
+
+/** An appearance with its face settled, and how they carry themselves: what a portrait draws. */
+export type Look = Appearance & { readonly face: FaceParts; readonly bearing?: Bearing };
 
 /** Settles an appearance's face: its own parts, the rest read from `key`. */
 export function lookOf(appearance: Appearance, key: string, age: Age): Look {

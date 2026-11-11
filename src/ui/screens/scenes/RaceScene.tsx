@@ -12,7 +12,7 @@ export function RaceScene({ ctx, state, perform }: ScreenProps) {
     <>
       <header className="scene-head talk-head">
         <span className="person-photo rival">
-          <Portrait appearance={person.appearance} size={56} />
+          <Portrait appearance={person.appearance} size={96} />
         </span>
         <div>
           <p className="label">{view.leg}</p>

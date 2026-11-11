@@ -10,7 +10,7 @@ export function CaughtStep({ view, draft }: StepProps) {
   return (
     <div className="step">
       <div className="file-summary">
-        <Portrait appearance={draft.appearance} size={72} />
+        <Portrait appearance={draft.appearance} size={100} />
         <dl className="kv">
           <dt>Name</dt>
           <dd>{[draft.name, family].filter(Boolean).join(' ')}</dd>

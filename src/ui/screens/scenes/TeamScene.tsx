@@ -29,7 +29,7 @@ function SenseiCard({ offer, onChoose }: SenseiCardProps) {
     <article className={`sensei-card ${discipline}`}>
       <div className="person-top">
         <span className="person-photo">
-          <Portrait appearance={offer.appearance} size={64} />
+          <Portrait appearance={offer.appearance} size={96} />
         </span>
         <div>
           <p className="label">{offer.title}</p>

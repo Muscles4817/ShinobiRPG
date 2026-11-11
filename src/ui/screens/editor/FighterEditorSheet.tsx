@@ -72,7 +72,7 @@ export function FighterEditorSheet(props: FighterEditorSheetProps) {
     <article className="versus-profile editor-sheet" aria-label={`Editing ${fighter.name}`}>
       <div className="editor-sheet-main">
         <header className="versus-profile-head">
-          {fighter.look && <Portrait appearance={fighter.look} size={72} />}
+          {fighter.look && <Portrait appearance={fighter.look} size={96} />}
           <div>
             <h2>{fighter.name}</h2>
             <p>{fighter.title}</p>

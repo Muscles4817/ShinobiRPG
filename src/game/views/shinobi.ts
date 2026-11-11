@@ -1,12 +1,7 @@
 import { listed, round1 } from '@/core';
-import {
-  GRADE_INFO,
-  STANDING_INFO,
-  lookOf,
-  type Grade,
-  type Look,
-  type Pronouns,
-} from '@/systems/profile';
+import { GRADE_INFO, STANDING_INFO, type Grade, type Look, type Pronouns } from '@/systems/profile';
+
+import { playerLook } from '../people/looks';
 import { RANK_LABELS } from '@/systems/standing';
 import {
   aptitudeBand,
@@ -134,8 +129,7 @@ export function shinobiView(state: GameState, ctx: GameContext): ShinobiView {
     name: character.name,
     familyName: character.familyName,
     pronouns: character.pronouns,
-    // A save from before faces were chosen reads one from the character's name.
-    appearance: lookOf(character.appearance, `player:${character.name}`, 'young'),
+    appearance: playerLook({ ...character, rank: state.standing.rank }),
     rank: RANK_LABELS[state.standing.rank],
     village: content.locations.require(homeVillageId(state, ctx)).name,
     clan: clan?.name ?? 'No clan',

@@ -64,7 +64,7 @@ export function RecordStep({ view, draft, update }: StepProps) {
   return (
     <div className="step">
       <div className="record-head">
-        <Portrait appearance={draft.appearance} size={88} />
+        <Portrait appearance={draft.appearance} size={120} />
         <div className="record-fields">
           <label className="field">
             <span className="label">Given name</span>

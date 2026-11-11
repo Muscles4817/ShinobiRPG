@@ -101,6 +101,8 @@ export interface PersonDef {
   readonly clanId?: string;
   readonly traitIds: readonly string[];
   readonly appearance: Appearance;
+  /** One character for their name tag (a kanji of their name). Left out, it is the first kana. */
+  readonly seal?: string;
   readonly specialty?: Discipline;
   readonly bio: string;
   /**

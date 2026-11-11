@@ -1325,9 +1325,19 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `tokens.css` sets per time slot; glows are gradients, never blur filters. An icon
   (`ui/art/icons/`) is two-tone: its outline is `currentColor`, so it takes the ink of where it
   sits, over fills from the icon palette; discipline signs fill with a tint of that ink. A
-  portrait (`ui/art/portrait/`) is put together from an appearance's `FaceParts` (shape, figure,
-  eyes, brows, nose, ears, expression, age, facial hair, a mark): a new part is a union member in
-  `systems/profile/face.ts` and a drawing in the matching `Record`.
+  portrait (`ui/art/Portrait.tsx`) is drawn from a `Look` two ways: where there is room, a bust
+  in ink on paper (`portrait/InkBust.tsx`: a head turned three-quarters, every line a brush line
+  from `brush.ts` that swells and thins, flat shadow, hair in layers); narrower than `INK_FROM`,
+  or framed as a face, a lantern shadow (`Shadow.tsx`: their profile cut from black paper), which
+  holds up small where a face doesn't. Both are put together from the appearance's `FaceParts`
+  (shape, figure, eyes, brows, nose, ears, expression, age, facial hair, a mark) and hair style:
+  a new part is a union member in `systems/profile/face.ts` and a drawing in the matching
+  `Record` (hair in `Hair.tsx` and the shadow's `HAIR`). A look also carries a **bearing**, read
+  from the person and never stored (`personLook`, `playerLook` in `game/people/looks.ts`): what
+  they wear for their rank (`Dress`: a jacket, a senior's flak vest, a villager's robe), their
+  art, and the character on their wooden name tag (`PersonDef.seal`, a kanji of their name, else
+  the first kana read from how it is spelled: `people/seal.ts`). Point lists are written flat
+  (`points([x, y, …])`) so a drawing's data stays on a few lines. No blur filters.
 - **Run in a native shell (the desktop or phone app):** implement a `StorageBackend`
   (`platform/storageBackend.ts`: read, write and remove the `save`, `prefs`, `edits` and `rescue`
   slots, writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in

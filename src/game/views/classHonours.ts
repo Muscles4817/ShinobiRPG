@@ -1,11 +1,11 @@
 import type { PersonDef } from '@/content';
-import { lookOf, type ClassStanding, type Look } from '@/systems/profile';
+import type { ClassStanding, Look } from '@/systems/profile';
 import { fightingPower, STAT_INFO, type Stats } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { everyone } from '../people/cast';
-import { personLook } from '../people/looks';
+import { personLook, playerLook } from '../people/looks';
 import { personStats } from '../people/progress';
 import type { GameState } from '../state';
 
@@ -100,7 +100,7 @@ function you(state: GameState): Member {
   return {
     id: YOU,
     name: character.name,
-    appearance: lookOf(character.appearance, `player:${character.name}`, 'young'),
+    appearance: playerLook({ ...character, rank: state.standing.rank, art: best }),
     stats: character.stats,
     specialty: best,
     clanId: character.clanId === 'none' ? null : character.clanId,

@@ -247,3 +247,17 @@ summary.label {
     animation: none;
   }
 }
+
+/* Portraits: an ink bust is a slip of paper; a lantern shadow is a round of lit paper. */
+.portrait {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+.portrait.shadow {
+  border-radius: 50%;
+}
+.portrait-seal {
+  font-family: var(--font-story);
+  font-weight: 800;
+}

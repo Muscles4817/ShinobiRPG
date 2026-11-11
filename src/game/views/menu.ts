@@ -1,4 +1,6 @@
-import { lookOf, type Look } from '@/systems/profile';
+import type { Look } from '@/systems/profile';
+
+import { playerLook } from '../people/looks';
 import { RANK_LABELS } from '@/systems/standing';
 import { slotName } from '@/systems/time';
 
@@ -24,7 +26,7 @@ export interface SaveSummary {
 }
 
 export function saveSummary(state: GameState, ctx: GameContext): SaveSummary {
-  const { name, familyName, appearance } = state.character;
+  const { name, familyName } = state.character;
   const rank = RANK_LABELS[state.standing.rank];
   return {
     name: [name, familyName].filter(Boolean).join(' '),
@@ -33,6 +35,6 @@ export function saveSummary(state: GameState, ctx: GameContext): SaveSummary {
     place: currentLocation(state, ctx).name,
     day: state.time.day,
     slot: slotName(state.time),
-    appearance: lookOf(appearance, `player:${name}`, 'young'),
+    appearance: playerLook({ ...state.character, rank: state.standing.rank }),
   };
 }
