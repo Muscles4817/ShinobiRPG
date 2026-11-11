@@ -43,6 +43,8 @@ export interface SummonDef {
   readonly mount?: true;
   /** A sage: it answers onto its caller's shoulder and helps them into Sage Mode, never fighting itself. */
   readonly perch?: true;
+  /** Of its caller's mind, with none of its own (the Reanimation's bodies; `mindContract.ts`). */
+  readonly shared?: true;
 }
 
 export interface ContractDef {

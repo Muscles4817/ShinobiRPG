@@ -170,6 +170,7 @@ export function summonCall(summon: SummonDef, ctx: GameContext): CombatCall {
     ...(summon.price?.blood ? { bloodPrice: summon.price.blood } : {}),
     ...(summon.mount ? { mount: true as const } : {}),
     ...(summon.perch ? { perch: true as const } : {}),
+    ...(summon.shared ? { shared: true as const } : {}),
   };
 }
 
@@ -249,10 +250,14 @@ export function retinueCombatantId(unitId: string, index: number, k: number): st
  * by default a companion is simply one more fighter on their side.
  */
 export function enemyParty(def: EnemyDef, index: number, ctx: GameContext): CombatantSetup[] {
+  const master = enemyCombatant(def, index, ctx);
+  // A foe who drives their retinue is its mind's source, off the field (`mindContract.ts`).
+  const mind = def.drives ? { id: master.id } : undefined;
   const units = (def.retinue ?? []).map((entry, k) => {
     const unit = ctx.content.enemies.require(entry.enemyId);
     const id = retinueCombatantId(entry.enemyId, index, k);
-    return { ...enemyCombatant(unit, index, ctx), id, grammar: foeGrammar(unit, id) };
+    const body = { ...enemyCombatant(unit, index, ctx), id, grammar: foeGrammar(unit, id) };
+    return mind ? { ...body, mind } : body;
   });
-  return [enemyCombatant(def, index, ctx), ...units];
+  return [mind ? { ...master, mind: { ...mind, source: true as const } } : master, ...units];
 }

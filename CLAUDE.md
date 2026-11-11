@@ -467,7 +467,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     turns, its fall takes every body down, and with every body down it gives up. A fighter with
     the `raises` perk brings a body of its mind that fell this exchange back up at the end of it
     (`RAISED_SHARE`, for `RAISE_COST_SHARE` of its chakra, a glimpse of a hidden raiser), unless a
-    seal was on the body as it fell. **Your puppets** (`systems/puppets`, `GameState.puppetry`,
+    seal was on the body as it fell. A body of its caller's mind never goes home hurt, and a
+    summoner calls such bodies at once against anyone strong (`plan/calling.ts`): a contract's
+    `SummonDef.shared` (the fan pack's Reanimation, a contract only Orochimaru keeps), or a foe
+    who `drives` its retinue from off the field (`EnemyDef.drives`: the source of its retinue's
+    mind, `enemyParty`; the original pack's mask-keeper). **Your puppets** (`systems/puppets`, `GameState.puppetry`,
     `game/puppetry/`): learning a technique that unseals one of the pack's puppets gives you that
     puppet (`notePuppetsLearned` in `dispatch`); each rides into mission fights as whole as it is
     and a broken one stays home (`withYourPuppets`); each comes home as whole as it ended the

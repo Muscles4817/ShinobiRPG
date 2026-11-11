@@ -168,4 +168,41 @@ export const ENEMIES: readonly EnemyDef[] = [
     techniqueIds: ['dust-glass-shards', 'dust-glass-squall'],
     dust: { dustId: 'glass-sand' },
   },
+  // A placeholder for the original pack's shared minds until step 7 (`retinue-plan.md`):
+  // the keeper stays out of sight and moves the masks as one, raising any that fall.
+  {
+    id: 'mask-keeper',
+    kind: 'Rogue',
+    danger: 'armed',
+    name: 'Mask-Keeper',
+    description:
+      'An old festival carver who never shows his face. His masks walk without anyone inside them, and he watches through all of them at once.',
+    baseStat: 7,
+    statBonuses: { intellect: 5, genjutsu: 4, chakraControl: 3, perception: 2 },
+    maxChakra: 80,
+    techniqueIds: [],
+    perks: ['raises'],
+    retinue: [
+      { enemyId: 'walking-mask', tell: 'open' },
+      { enemyId: 'walking-mask', tell: 'open' },
+    ],
+    drives: true,
+  },
+  {
+    id: 'walking-mask',
+    kind: 'Construct',
+    pronouns: 'it',
+    // Moved like a dancer, not an animal: a person's words for its blows and falls.
+    form: 'person',
+    danger: 'armed',
+    name: 'Walking Mask',
+    description:
+      'A festival mask on a body of lacquered sticks and paper. It strikes hard and doesn’t flinch.',
+    baseStat: 6,
+    statBonuses: { strength: 2, stamina: 3, taijutsu: 3, speed: 1 },
+    healthScale: 0.8,
+    maxChakra: 0,
+    techniqueIds: [],
+    traits: ['brawler'],
+  },
 ];

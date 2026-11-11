@@ -940,7 +940,7 @@ Each step proves one property and is its own PR.
 4. **Swarms:** pools, kinds, swarm costs, area and fire against them, the born path for hosts.
 5. **Puppetry** (built, Part 5): a discipline or not, driven bodies, strings and
    attention, design and the workshop, the taught path.
-6. **Shared mind and the taken path** (6a built, Part 5): pooled reads, a hidden controller,
+6. **Shared mind and the taken path** (6a and 6b built, Part 5): pooled reads, a hidden controller,
    revival, the arc. 6a the engine; 6b the showcase (the fan pack's Part 1 Reanimation, the
    original pack's mask-keeper); 6c the taken path (a transplanted eye, an arc).
 7. **The original pack's equivalents** (planning discussion first). Until then each PR ships
@@ -1530,5 +1530,23 @@ whose masks walk) until step 7.
   and the counter (seal them as they fall, find the source, or drain it) is the same for both.
 - **Bench** (a fighter of 15 against a source of 15 and two masks of 10, 40 fights): found
   every time by a Search, won 80%. Fights of ordinary fighters are untouched.
-- **Left for 6b**: the fan pack's Reanimation (Orochimaru calling the First and Second Hokage as
-  bodies of his mind that reform unless sealed) and the original pack's mask-keeper.
+
+### Step 6b: the showcase
+
+- **The Reanimation** (fan pack, `duelists/orochimaru.ts`): Orochimaru as he stood at the
+  invasion, a versus duelist with snakes, a seal and the body he sheds, and the Impure World
+  Reanimation, a contract no one signs (one a person's arsenal keeps counts as held,
+  `validateContracts.ts`). One technique calls both Hokage, `shared` (of his mind: his wits,
+  his mark), held back by his restraint a step below what they were. He `raises` one that falls,
+  so the answers are a seal on it as it falls, his chakra, or Orochimaru himself, whose fall
+  sends them back. Bench (20 fights each, Orochimaru on the foe side): Hiruzen alone, who beat
+  him every time before he called them, wins 1 in 20; Kakashi and Guy together 3 in 20. In
+  canon only the Reaper Death Seal ended it.
+- **Calling them** (`plan/calling.ts`): bodies of the summoner's own mind are the style itself,
+  so against anyone strong (`STRONG_SHARE`) they come out at once; and a body of its caller's
+  mind has no fear of its own, so it never goes home hurt (`summons.ts`), fighting until it falls.
+- **The mask-keeper** (original pack placeholder, `enemies.ts`, fought in Shiomachi's C-rank
+  "The Empty Masks"): a foe who `drives` its retinue (`EnemyDef.drives`, validated to have one;
+  `enemyParty` makes it the source and its two walking masks its bodies), hidden off the field,
+  raising masks as they fall. A plain C fighter wins every time, a D never (40 fights each):
+  the keeper's chakra runs out raising them.

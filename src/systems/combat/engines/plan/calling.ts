@@ -32,7 +32,8 @@ interface Table {
  * outmatched or hurt, else the cheapest that answers, and another, bigger one if the need is
  * still there once it is out. Calls that can't be kept a few exchanges (`UPKEEP_HORIZON`) wait;
  * and what is out goes home as it is hurt or the chakra runs low (`summons.ts`), so the
- * summoner calls and unsummons what the fight needs.
+ * summoner calls and unsummons what the fight needs. Bodies of the summoner's own mind (the
+ * Reanimation's, `sharedMind.ts`) are the style itself, and come out with it.
  */
 
 /** From this share of their own power, a foe is worth the whole style from the start. */
@@ -157,6 +158,11 @@ export function kitCall(self: PlanFighter, moment: CallingMoment): Card | undefi
   if (needed || foeShare(self, moment.fighters) >= STRONG_SHARE) {
     const sage = towardsSage(self, moment);
     if (sage) return sage;
+    // Bodies of their own mind are the style itself (the Reanimation): out at once.
+    const bodies = callers(self, moment).find((t) =>
+      callsOf(t).every((id) => callOf(self, id)?.shared),
+    );
+    if (bodies) return jutsu(bodies);
   }
   return needed ? forTheNeed(self, moment) : undefined;
 }

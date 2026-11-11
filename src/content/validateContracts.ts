@@ -44,9 +44,15 @@ function offeredIds(pack: ContentPack): string[] {
   ];
 }
 
-/** Contracts some foe calls from. */
+/** Contracts some foe calls from, or someone keeps for their own (a duelist's Reanimation). */
 function foeHeld(pack: ContentPack): Set<string> {
-  const called = new Set(pack.enemies.flatMap((e) => (e.summons ?? []).map((s) => s.summonId)));
+  const arsenals = [...pack.people, ...(pack.duelists ?? [])].flatMap(
+    (p) => p.arsenal?.summons ?? [],
+  );
+  const called = new Set([
+    ...pack.enemies.flatMap((e) => (e.summons ?? []).map((s) => s.summonId)),
+    ...arsenals,
+  ]);
   return new Set(
     pack.contracts.filter((c) => c.summons.some((s) => called.has(s.id))).map((c) => c.id),
   );
