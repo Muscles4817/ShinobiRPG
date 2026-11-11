@@ -6,11 +6,10 @@ import type {
   CombatOption,
   CombatOutcome,
   CombatState,
-  CombatantView,
   CombatView,
 } from '../../contract';
 import type { CombatUsage } from '../../teamContract';
-import { alive, hasPerk, viewOf } from '../../rules/body';
+import { alive, hasPerk } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { RANGE_LABEL } from '../../rules/range';
 import { costsOwed } from '../../rules/trumps';
@@ -18,9 +17,9 @@ import { empowerCostsOwed, isPinned } from '../../rules/verbs';
 import { survivalWarning } from './survival';
 import { slotLimit } from './cards';
 import { fieldMeter } from './field';
-import { seenByPlayer, statuses, statusesShown } from './statusView';
+import { seenByPlayer } from './statusView';
 import { betweenRounds } from './adapt';
-import { intentLine, knownLine, rollIntents } from './intent';
+import { rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { groundNote } from './groundPlay';
@@ -37,7 +36,7 @@ import {
 } from './state';
 import { editTeam, teamOptions } from './orders';
 import { summonFatesOf, summonSharesOf } from './summons';
-import { metersOf, onStage, poolsLeft } from './swarmView';
+import { metersOf, poolsLeft } from './swarmView';
 import { editPlan, tableOptions } from './table';
 import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
@@ -45,6 +44,7 @@ import { squareUpLine } from '../../rules/narration';
 import { fightSummary } from './summary';
 import { humanHealth } from './sizing';
 import { bandOf } from './distance';
+import { combatantView } from './combatantView';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -236,12 +236,6 @@ function prompt(state: PlanState): string {
   return ground ? `${where}. ${ground}` : where;
 }
 
-/** The cards you know a foe holds, for its view (only when there are any). */
-function knownOf(plan: PlanState, f: PlanFighter, insight: boolean): Pick<CombatantView, 'known'> {
-  const known = knownLine(plan, f, insight);
-  return known ? { known } : {};
-}
-
 export function createPlanEngine(): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
@@ -300,13 +294,7 @@ export function createPlanEngine(): CombatEngine {
       const meters = metersOf(fieldMeter(plan), playerOf(plan));
       return {
         round: plan.bout,
-        combatants: plan.fighters.map((f) => ({
-          ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
-          ...knownOf(plan, f, insight),
-          // A hidden foe the player sees anyway is shown, and aimed at, as seen.
-          ...(seenByPlayer(plan, f) ? { statuses: statusesShown(plan, f), targetable: true } : {}),
-          ...onStage(f),
-        })),
+        combatants: plan.fighters.map((f) => combatantView(plan, f, insight)),
         log: plan.log,
         ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),
         options: options(plan),

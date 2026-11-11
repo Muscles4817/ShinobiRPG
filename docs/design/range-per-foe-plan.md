@@ -40,7 +40,7 @@ Kakashi ── close ── Zabuza (unchanged)
 - Saves need nothing. `distances` is optional, and a fight saved without it resumes with every
   pair at `range`.
 
-## Stage 2: movement per foe (this change)
+## Stage 2: movement per foe (done)
 
 Every writer of `range` now writes pairs (`pairMoves.ts`, `pairsMoved` in `groundPlay.ts`):
 
@@ -68,10 +68,19 @@ Rules that keep a crowd a crowd:
 The benches held after these two rules (the gang 9%, the bandit chief 63% for a ninjutsu
 graduate, against 5% and 65% before).
 
-## Stage 3: the screens
+## Stage 3: the screens (this change)
 
-- **The formation** shows each foe's distance to you.
-- **"You are here"** on the plan's distance tabs follows your own distance.
-- **Foe cards** say "close to you" or "at mid range".
-- **The watch screen** tags each line with the distance between the one acting and their
-  target. The "why" strip gains a row when a foe kept their distance.
+- **Every fighter's distance** reaches the screen on its view (`CombatantView.distance`,
+  `plan/combatantView.ts`): a foe's from you, and anyone on your side's from the foe they face.
+- **The formation** tags each foe with its own distance beneath its seal, on the plan screen,
+  whenever a foe still standing is at a distance other than yours (`foesSpread`). The watch
+  screen leaves the tags off: its gap says the distance of the beat being shown.
+- **A foe's read** (tapped in the formation) says "Close to you", "At mid range from you" or
+  "Far off from you".
+- **"You are here"** on the plan's distance tabs follows your own distance (`view.range`, your
+  `bandOf`), and a teammate's tab follows theirs.
+- **The watch screen** tags each turn's lines with the distance between the one acting and whom
+  the turn was aimed at (`Round.aimedAt`, read in `staged`); a turn aimed at no foe (or at a
+  teammate) is told from the foe its maker faces.
+- **The "why" strip** gains a row, "Kept a distance of their own", naming each foe still
+  standing at a distance other than yours.

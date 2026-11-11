@@ -1,6 +1,6 @@
 import { STAT_GRADES, statTier } from '@/systems/stats';
 
-import type { CombatTechnique } from '../../contract';
+import type { CombatTechnique, RangeBand } from '../../contract';
 import {
   forceLine,
   offPlanLine,
@@ -16,7 +16,7 @@ import { findCard, type Card } from './cards';
 import type { CardId, PlanFighter, Round } from './state';
 import { statusesShown } from './statusView';
 import { poolAmounts } from './swarmView';
-import { bandOf } from './distance';
+import { bandOf, distanceBetween } from './distance';
 
 /**
  * Staging a turn for the screen. How big a turn was, for its sound (`forceLine`): the grade of its maker in the art
@@ -96,6 +96,15 @@ function poolsMoved(before: Round, after: Round): NarrationPools {
   );
 }
 
+/** How far a fighter stands from whom they aim at, else from the foe they face. */
+function standing(round: Round, id: string, aimedAt: string | undefined): RangeBand {
+  const fighter = round.fighters.find((f) => f.id === id);
+  if (!fighter) return round.range;
+  // Only a foe stands at a distance of their own: a teammate helped is beside them.
+  const foe = round.fighters.find((f) => f.id === aimedAt && f.side !== fighter.side);
+  return foe ? distanceBetween(round, id, foe.id) : bandOf(round, fighter);
+}
+
 /**
  * A turn as the screen stages it: every line it wrote tagged as its maker's, the first with
  * the distance the turn began at and the last with the new one if the turn moved the fight,
@@ -103,15 +112,15 @@ function poolsMoved(before: Round, after: Round): NarrationPools {
  * turn changed them for. The tags are narration only: the turn plays exactly as untagged.
  */
 export function staged(before: Round, after: Round, id: string): Round {
-  const { played, offPlan, ...turn } = after;
+  const { played, offPlan, aimedAt, ...turn } = after;
   const actor = turn.fighters.find((f) => f.id === id);
   const force = actor ? turnForce(actor, played) : null;
   const added = turn.lines.slice(before.lines.length);
   const last = added.length - 1;
-  // Where the fight stands for the one whose turn it is: the foe they face (`distance.ts`).
-  const was = before.fighters.find((f) => f.id === id);
-  const startedAt = was ? bandOf(before, was) : before.range;
-  const endedAt = actor ? bandOf(turn, actor) : turn.range;
+  // Where the fight stands for the one whose turn it is: from whom they aim at, else the foe
+  // they face (`distance.ts`).
+  const startedAt = standing(before, id, aimedAt);
+  const endedAt = standing(turn, id, aimedAt);
   const rangeAt = (i: number) => {
     if (i === last && endedAt !== startedAt) return endedAt;
     return i === 0 ? startedAt : undefined;
