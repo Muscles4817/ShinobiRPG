@@ -23,6 +23,7 @@ import { drawnByClones } from './screening';
 import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
+import { distanceBetween } from './distance';
 
 /**
  * Holding a foe off in a planned fight (`rules/zoning.ts`). At mid and far range a fighter may
@@ -94,7 +95,7 @@ function areaOf(card: Card) {
 /** Someone on the other side ready to hold the closer off, and what with. */
 function holderFor(round: Round, closer: PlanFighter): { holder: PlanFighter; card: Card } | null {
   for (const f of opponentsOf(round.fighters, closer)) {
-    const card = holdOffAt(f, round.range);
+    const card = holdOffAt(f, distanceBetween(round, f.id, closer.id));
     const ready = alive(f) && f.stunned === 0 && !isDazed(f) && !round.acted?.includes(f.id);
     if (card && ready && playable(f, card) && inSight(f, closer)) return { holder: f, card };
   }

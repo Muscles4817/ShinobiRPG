@@ -42,6 +42,7 @@ import { strikesToKill, type KillingMoment } from '../../rules/lethal';
 import { isOpen } from './finishers';
 import { seesThroughIllusions } from '../../rules/eyes';
 import { watched } from './sharedMind';
+import { distanceBetween } from './distance';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -156,9 +157,9 @@ export function techniqueIncoming(
   attacker: PlanFighter,
   target: PlanFighter,
   t: CombatTechnique,
-  round: Pick<Round, 'range' | 'fighters'>,
+  round: Pick<Round, 'range' | 'distances' | 'fighters'>,
 ): Incoming | null {
-  const band = round.range;
+  const band = distanceBetween(round, attacker.id, target.id);
   const use = landingUse(t);
   if (!use) return null;
   const [area] = effectsOf(t, 'area');

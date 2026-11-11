@@ -15,6 +15,7 @@ import { canDaze } from './daze';
 import { readsInTheMoment } from './judgement';
 import { opponentsOf } from './senses';
 import type { PlanFighter, Round } from './state';
+import { distanceBetween } from './distance';
 
 /**
  * Survival, as judgement (`docs/design/defence-plan.md` 3.7). A fighter who reads the fight sees
@@ -40,7 +41,10 @@ export type Threat =
   | { readonly kind: 'lethal'; readonly foe: PlanFighter; readonly technique: CombatTechnique };
 
 /** What a fighter sees of the exchange when judging whether to fight for time. */
-export interface SurvivalMoment extends Pick<Round, 'range' | 'intents' | 'number' | 'watching'> {
+export interface SurvivalMoment extends Pick<
+  Round,
+  'range' | 'distances' | 'intents' | 'number' | 'watching'
+> {
   readonly fighters: readonly PlanFighter[];
 }
 
@@ -127,7 +131,7 @@ function holdOn(self: PlanFighter, killer: PlanFighter, moment: SurvivalMoment):
   return self.techniques
     .filter(holds)
     .map((technique): Card => ({ kind: 'jutsu', technique }))
-    .find((c) => fitsBand(c, moment.range) && playable(self, c));
+    .find((c) => fitsBand(c, distanceBetween(moment, self.id, killer.id)) && playable(self, c));
 }
 
 /**
@@ -156,10 +160,12 @@ export function survivalPlay(self: PlanFighter, moment: SurvivalMoment): Surviva
   // The player's own plan is theirs, unless the fight is only watched.
   if ((self.isPlayer && moment.watching !== true) || !readsInTheMoment(self)) return undefined;
   const threat = killerOf(self, moment);
-  if (!threat || outraces(self, threat, moment.range)) return undefined;
+  if (!threat) return undefined;
+  const band = distanceBetween(moment, self.id, threat.foe.id);
+  if (outraces(self, threat, band)) return undefined;
   const hold = holdOn(self, threat.foe, moment);
   if (hold) return { card: hold, target: threat.foe };
-  const clear = keepsPace(threat, self) ? getClear(self, threat, moment.range) : undefined;
+  const clear = keepsPace(threat, self) ? getClear(self, threat, band) : undefined;
   if (clear) return { card: clear, target: undefined };
   return braces(self, threat) ? { card: { kind: 'brace' }, target: undefined } : undefined;
 }

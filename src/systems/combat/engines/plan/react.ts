@@ -34,6 +34,7 @@ import { confusedLine } from './sceneVoice';
 import { dustGuard } from './dust';
 import { shieldUp } from './shield';
 import { foundBlindSpot, throughBlindSpot } from './blindSpot';
+import { distanceBetween } from './distance';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -250,8 +251,8 @@ function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Read
     has('counter') &&
     blow.physical &&
     !blow.followUp &&
-    round.range === 'close' &&
-    canAttackFrom(target, round.range) &&
+    distanceBetween(round, attacker.id, target.id) === 'close' &&
+    canAttackFrom(target, 'close') &&
     canHit({ kind: 'counter' }, attacker, round.fighters)
   );
 }
@@ -319,7 +320,7 @@ export function react(start: Round, struck: Hit): Round {
   const blind = throughBlindSpot(decoyed.round, hit);
   const ready = blind ? [] : readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.
-  const band = decoyed.round.range;
+  const band = distanceBetween(decoyed.round, attacker.id, target.id);
   const seen = blind ? foundBlindSpot(decoyed.round, attacker, target) : decoyed.round;
   const round = noteDefence(seen, target.id, band, shown(ready, blow, band));
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);

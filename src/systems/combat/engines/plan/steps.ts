@@ -14,6 +14,7 @@ import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
 import { sizeGap, STEP_PER_SIZE, walksThrough } from '../../rules/size';
+import { bandOf, distanceBetween } from './distance';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -33,15 +34,21 @@ const NO_FURTHER: Readonly<Record<RangeBand, string>> = {
   far: '{a} keep{a.s} well back, as far off as the ground allows.',
 };
 
+/** How far the stepper stands from the foe they step on (else from the foe they face). */
+function from(round: Round, { actor, target }: Pick<Turn, 'actor' | 'target'>): RangeBand {
+  return target ? distanceBetween(round, actor.id, target.id) : bandOf(round, actor);
+}
+
 function arrive(round: Round, { actor, target }: Turn, to: RangeBand): Round {
-  const closing = RANGE_BANDS.indexOf(to) < RANGE_BANDS.indexOf(round.range);
+  const closing = RANGE_BANDS.indexOf(to) < RANGE_BANDS.indexOf(from(round, { actor, target }));
   const told = { actor, to, closing, ...(target ? { foe: target } : {}) };
   return { ...say(round, stepLine(momentOf(round, actor.id), told)), range: to };
 }
 
 /** The step's own contest, when nobody holds the fighter off. */
 function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back'): Round {
-  const to = direction === 'in' ? stepIn(round.range) : stepBack(round.range);
+  const at = from(round, { actor, target: foe });
+  const to = direction === 'in' ? stepIn(at) : stepBack(at);
   if (withinGround(round.ground, to) !== to) {
     const line = '{a} back{a.s} away, but there’s a wall behind {a.them}.';
     return say(round, tell(line, { a: actor }));
@@ -72,14 +79,15 @@ function walkedThrough(before: Round, after: Round, turn: Turn): Round | null {
   if (!was || !now || !alive(now)) return null;
   if (!walksThrough(now, was.health - now.health, now.maxHealth)) return null;
   const told = say(after, tell('{a} take{a.s} it and keep{a.s} coming.', { a: now }));
-  return arrive(told, { ...turn, actor: now }, stepIn(before.range));
+  return arrive(told, { ...turn, actor: now }, stepIn(from(before, turn)));
 }
 
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const { actor } = turn;
   if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
-  const to = direction === 'in' ? stepIn(round.range) : stepBack(round.range);
-  if (to === round.range) return say(round, tell(NO_FURTHER[to], { a: actor }));
+  const at = from(round, turn);
+  const to = direction === 'in' ? stepIn(at) : stepBack(at);
+  if (to === at) return say(round, tell(NO_FURTHER[to], { a: actor }));
   const moving = {
     ...round,
     fighters: patch(round.fighters, actor.id, { movedAt: round.number }),
@@ -90,7 +98,7 @@ export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round 
     case 'stopped':
       return walkedThrough(round, met.round, turn) ?? met.round;
     case 'through':
-      return arrive(met.round, turn, stepIn(round.range));
+      return arrive(met.round, turn, stepIn(at));
     case 'unopposed':
       return stride(met.round, turn, direction);
   }
@@ -109,7 +117,7 @@ export interface Charged {
  * technique is lost (`round` is what became of it); otherwise it goes on to land.
  */
 export function charge(round: Round, turn: Turn, card: Card): Charged {
-  if (!isEntry(turn.actor, card, round.range) || isPinned(turn.actor)) {
+  if (!isEntry(turn.actor, card, from(round, turn)) || isPinned(turn.actor)) {
     return { round, stopped: false, after: [] };
   }
   const met = holdOff(round, turn);

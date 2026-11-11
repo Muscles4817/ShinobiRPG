@@ -32,6 +32,7 @@ import { knockLine } from './sceneVoice';
 import { dustGrip } from './dust';
 import { momentOf } from './voice';
 import { tell } from '../../rules/telling';
+import { distanceBetween } from './distance';
 
 /**
  * The verbs that leave something behind in a planned fight (`rules/verbs/lingering.ts`): a
@@ -167,7 +168,7 @@ function answers(round: Round, { attacker, target, blow }: Incoming): boolean {
     blow.physical &&
     !blow.followUp &&
     // Only a blow thrown up close can be answered: a throw from across the field is out of reach.
-    round.range === 'close' &&
+    distanceBetween(round, attacker.id, target.id) === 'close' &&
     canHit({ kind: 'counter' }, attacker, round.fighters)
   );
 }

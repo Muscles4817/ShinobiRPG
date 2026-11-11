@@ -24,6 +24,7 @@ import { inSight, opponentsOf } from './senses';
 import { attacksFrom } from './stepping';
 import { cardLabel } from './wording';
 import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } from './state';
+import { bandOf } from './distance';
 
 /**
  * Telegraphs, as Deck fights had them: when an exchange ends, each foe settles on the card it
@@ -38,7 +39,7 @@ export type Intents = Readonly<Record<string, CardId>>;
 
 type Table = Pick<
   PlanState,
-  'fighters' | 'range' | 'exchange' | 'field' | 'round' | 'reads' | 'foeMark'
+  'fighters' | 'range' | 'distances' | 'exchange' | 'field' | 'round' | 'reads' | 'foeMark'
 >;
 
 /** The table as a round about to be played, for a foe weighing its plan. */
@@ -48,6 +49,7 @@ function asRound(table: Table): Round {
     opening: table.exchange === 0,
     fighters: [...table.fighters],
     range: table.range,
+    ...(table.distances ? { distances: table.distances } : {}),
     lines: [],
     seen: {},
     intents: {},
@@ -64,7 +66,7 @@ function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
   const foes = opponentsOf(table.fighters, self);
   const inSight = foes.filter(targetable);
   const moment = {
-    band: table.range,
+    band: bandOf(table, self),
     foe: inSight.length > 0 ? rng.pick(inSight) : undefined,
     hiddenFoe: foes.some((f) => f.hidden),
     opening: table.exchange === 0,
@@ -105,7 +107,7 @@ export function intendedCard(
 export function keepsTo(actor: PlanFighter, card: Card, round: Round): boolean {
   if (!needed(actor, card, round)) return false;
   if (!round.field || ownField(round.field, actor) || !readsInTheMoment(actor)) return true;
-  const raises = slotted(actor, round.range).some(
+  const raises = slotted(actor, bandOf(round, actor)).some(
     (c) => c.kind === 'jutsu' && hasVerb(c.technique, 'field') && playable(actor, c),
   );
   return !raises || (card.kind === 'jutsu' && hasVerb(card.technique, 'field'));
@@ -167,13 +169,14 @@ function nextMove(state: PlanState, f: PlanFighter, insight: boolean): string | 
 
 /** The cards you know of: all of them at this distance with insight, else what you've seen. */
 function knownCards(state: PlanState, f: PlanFighter, insight: boolean): string | undefined {
-  const ids = insight ? f.loadout[state.range].map((s) => s.card) : (state.seen[f.id] ?? []);
+  const band = bandOf(state, f);
+  const ids = insight ? f.loadout[band].map((s) => s.card) : (state.seen[f.id] ?? []);
   const names = ids.flatMap((id) => {
     const card = findCard(f, id);
     return card ? [cardLabel(card, f)] : [];
   });
   if (names.length === 0) return undefined;
-  return `${insight ? `${RANGE_LABEL[state.range]} cards` : 'Seen'}: ${names.join(', ')}`;
+  return `${insight ? `${RANGE_LABEL[band]} cards` : 'Seen'}: ${names.join(', ')}`;
 }
 
 function told(state: PlanState, f: PlanFighter): boolean {

@@ -12,6 +12,7 @@ import { beatsWeight, readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { opponentsOf, type Turn } from './senses';
 import type { PlanFighter, Round } from './state';
+import { bandOf, distanceBetween } from './distance';
 
 /**
  * A trained fighter's style: the body moves their plain strike plays from. Nobody past the
@@ -133,7 +134,9 @@ const STRIKE_POWER = 8;
 function fitness(round: Round, self: PlanFighter, foe: PlanFighter, card: Card): number {
   const power = card.kind === 'jutsu' ? techniquePower(card.technique) : STRIKE_POWER;
   const reads = READS_DEFENCES.includes(feelOf(self));
-  const seen = reads ? seenDefence(round.reads, foe, round.range) : undefined;
+  const seen = reads
+    ? seenDefence(round.reads, foe, distanceBetween(round, self.id, foe.id))
+    : undefined;
   const lean = !seen
     ? 1
     : beats(card, seen)
@@ -172,10 +175,11 @@ export function styled(round: Round, turn: Turn, card: Card): Card {
   if (card.kind !== 'strike') return card;
   const foe = turn.target ?? opponentsOf(round.fighters, actor)[0];
   const winded = breathOf(actor) < maxBreath(actor.attributes) * WINDED_SHARE;
+  const band = foe ? distanceBetween(round, actor.id, foe.id) : bandOf(round, actor);
   const moves = styleMoves(actor)
     .filter((t) => !winded || effortOf(actor, t).amount <= CHEAP_BREATH)
     .map(jutsu)
-    .filter((c) => fitsBand(c, round.range) && playable(actor, c));
+    .filter((c) => fitsBand(c, band) && playable(actor, c));
   if (!foe || moves.length === 0) return card;
   const score = (c: Card) => strikeScore(round, actor, foe, c);
   const best = moves.reduce((a, b) => (score(b) > score(a) ? b : a));
