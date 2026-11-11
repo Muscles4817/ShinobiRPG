@@ -38,7 +38,7 @@ import type { PlanFighter, Round } from './state';
 import { sizeSlips } from '../../rules/size';
 import { hasPerk } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
-import { strikesToKill, type KillingMoment } from '../../rules/lethal';
+import { killingSlipScale, type KillingMoment } from '../../rules/lethal';
 import { isOpen } from './finishers';
 import { seesThroughIllusions } from '../../rules/eyes';
 import { watched } from './sharedMind';
@@ -73,8 +73,11 @@ export interface Incoming {
   readonly threat?: number;
   /** The attacker's speed behind a body's attack, which may outpace the target (`pace.ts`). */
   readonly paceSpeed?: number;
-  /** A killing blow on a target who can't meet it (`rules/lethal.ts`): nothing slips it. */
-  readonly sure?: boolean;
+  /**
+   * A killing blow on a target who can't meet it (`rules/lethal.ts`): held, nothing slips it
+   * (0); unseen, far less often.
+   */
+  readonly killing?: number;
 }
 
 /** A Dodge is the target's ready defence here. */
@@ -103,7 +106,7 @@ function avoidRoll(round: Round, incoming: Incoming): number {
   if (mount) return avoidRoll(round, { ...incoming, target: leapingClear(mount) });
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
-  if (isDazed(target) || incoming.sure === true) return 0;
+  if (isDazed(target) || incoming.killing === 0) return 0;
   const dodging = dodgesHere(round, target);
   const evading = committedTo(target, 'evade');
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
@@ -130,14 +133,14 @@ function avoidRoll(round: Round, incoming: Incoming): number {
   const dust = blindedSlips(attacker);
   // A big body is a big target (`size.ts`).
   const held =
-    chance *
-    insects *
-    dust *
-    (isPinned(target) ? PIN_SLIP : 1) *
-    footingOf(round.ground, target) *
-    sizeSlips(target);
+    chance * insects * dust * footingOf(round.ground, target) * bodyScale(target, incoming);
   const scale = foresightScale(incoming);
   return foreseen(held, target, { scale, ceiling: avoidCeiling(evading, seesAll) });
+}
+
+/** How the target's own body bears on a slip: held, big, or unable to see a killing blow. */
+function bodyScale(target: PlanFighter, incoming: Incoming): number {
+  return (isPinned(target) ? PIN_SLIP : 1) * sizeSlips(target) * (incoming.killing ?? 1);
 }
 
 /** Share of the target's health a technique's wounding effects would take, mid-roll. */
@@ -181,8 +184,13 @@ export function techniqueIncoming(
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),
     threat: threatOf(attacker, target, t),
     ...(body ? { paceSpeed: attacker.attributes.speed } : {}),
-    ...(strikesToKill(t, killingMoment(attacker, target, round.fighters)) ? { sure: true } : {}),
+    ...killingOf(t, killingMoment(attacker, target, round.fighters)),
   };
+}
+
+function killingOf(t: CombatTechnique, moment: KillingMoment): Pick<Incoming, 'killing'> {
+  const killing = killingSlipScale(t, moment);
+  return killing === 1 ? {} : { killing };
 }
 
 /**

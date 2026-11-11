@@ -84,13 +84,20 @@ describe('a killing blow', () => {
     expect(strikesToKill(fang, { unseen: true, open: true })).toBe(false);
   });
 
-  it('can’t be slipped from hiding', () => {
+  it('is far harder to slip from hiding, but not impossible', () => {
     const seen = round();
     const unseen = round({ hidden: true });
     const odds = (r: Round) =>
       avoidOdds(r, techniqueIncoming(one(r, 'kakashi'), one(r, 'guy'), blade, r)!);
-    expect(odds(seen)).toBeGreaterThan(0);
-    expect(odds(unseen)).toBe(0);
+    expect(odds(unseen)).toBeGreaterThan(0);
+    expect(odds(unseen)).toBeLessThan(odds(seen) / 2);
+  });
+
+  it('can’t be slipped by a target who can’t move', () => {
+    const held = round({}, { stunned: 1 });
+    expect(
+      avoidOdds(held, techniqueIncoming(one(held, 'kakashi'), one(held, 'guy'), blade, held)!),
+    ).toBe(0);
   });
 });
 
