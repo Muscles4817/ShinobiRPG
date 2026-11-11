@@ -13,6 +13,7 @@ import { canHit } from './rows';
 import { inSight, type Turn } from './senses';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { damage } from './wounding';
+import { distanceBetween } from './distance';
 
 /**
  * Clashes: an elemental attack meets one coming the other way. When a technique with an element
@@ -46,7 +47,8 @@ function elemental(card: Card | undefined): card is JutsuCard {
 /** What the answerer was about to throw at the attacker this exchange, if anything. */
 function pendingAt(round: Round, answerer: PlanFighter, attacker: PlanFighter): Card | undefined {
   if (answerer.side === 'enemy') {
-    const card = intendedCard(answerer, round.intents, round.range);
+    const band = distanceBetween(round, answerer.id, attacker.id);
+    const card = intendedCard(answerer, round.intents, band);
     return card && canHit(card, attacker, round.fighters) ? card : undefined;
   }
   const play = plannedPlay(answerer, round);

@@ -13,6 +13,7 @@ import {
 } from './cards';
 import { CHANGE_UP_AFTER } from '../../rules/familiarity';
 import type { NarrationOffPlan } from '../../rules/narration';
+import { bandOf, distanceBetween } from './distance';
 import { beats, seenDefence, walksInto } from './adapt';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
@@ -162,7 +163,7 @@ function knockTo(t: CombatTechnique): RangeBand | undefined {
 /** A riposte while one is ready, or a throw that only moves a foe to where they are. */
 function wasted(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
   if (hasVerb(t, 'counter') && self.riposte) return true;
-  return !isWounding(t) && knockTo(t) === round.range;
+  return !isWounding(t) && knockTo(t) === bandOf(round, self);
 }
 
 function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
@@ -172,7 +173,7 @@ function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boole
   if (hasVerb(t, 'heal') && !opensOf(t) && self.health >= self.maxHealth) return false;
   if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
   if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
-  if (moveDestination(self, t) === round.range) return false;
+  if (moveDestination(self, t) === bandOf(round, self)) return false;
   if (!partnered(round.fighters, self, t)) return false;
   const foes = opponentsOf(round.fighters, self);
   const foeInSight = foes.some((f) => inSight(self, f));
@@ -217,7 +218,7 @@ export function needed(self: PlanFighter, card: Card, round: Round): boolean {
 /** Whether a card would do something now: it can be played, it reaches, and it's needed. */
 function useful(self: PlanFighter, card: Card, round: Round): boolean {
   if (!playable(self, card) || spendsReserve(self, card)) return false;
-  if (isOffence(card) && !attacksFrom(self, card, round.range)) return false;
+  if (isOffence(card) && !attacksFrom(self, card, bandOf(round, self))) return false;
   return needed(self, card, round);
 }
 
@@ -244,7 +245,7 @@ function free(foe: PlanFighter, card: Card, exchange: number): boolean {
 
 function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
   const card = findCard(self, slot.card);
-  if (!card || !fitsBand(card, round.range) || !useful(self, card, round)) return null;
+  if (!card || !fitsBand(card, bandOf(round, self)) || !useful(self, card, round)) return null;
   const held = whenHolds(self, round, slot.when);
   // Dazing, sealing or confusing a foe already held is wasted: such a card looks for a fresh one.
   const fresh = held && holdsOnly(card) ? held.filter((f) => free(f, card, round.number)) : held;
@@ -270,8 +271,9 @@ function firstPlay(self: PlanFighter, round: Round, slots: readonly Slot[]): Pla
 }
 
 /** How a play fares against the defence its target has shown: 1 beats it, -1 walks into it. */
-function against(play: Play, round: Round): number {
-  const defence = seenDefence(round.reads, play.target, round.range);
+function against(self: PlanFighter, play: Play, round: Round): number {
+  const band = play.target ? distanceBetween(round, self.id, play.target.id) : bandOf(round, self);
+  const defence = seenDefence(round.reads, play.target, band);
   if (!defence) return 0;
   if (beats(play.card, defence)) return 1;
   return walksInto(play.card, defence) ? -1 : 0;
@@ -282,16 +284,16 @@ function against(play: Play, round: Round): number {
  * later slot that gets past it, or at least one that doesn't walk into it (`adapt.ts`).
  */
 function counterPick(self: PlanFighter, round: Round, first: Play): Play {
-  const fares = against(first, round);
+  const fares = against(self, first, round);
   if (self.side !== 'enemy' || !readsInTheMoment(self)) return first;
   if (fares === 1 || styleOf(first.card) === null) return first;
-  const attacks = self.loadout[round.range].flatMap((slot) => {
+  const attacks = self.loadout[bandOf(round, self)].flatMap((slot) => {
     const play = fromSlot(self, round, slot);
     return play && styleOf(play.card) !== null ? [play] : [];
   });
-  const beating = attacks.find((p) => against(p, round) === 1);
+  const beating = attacks.find((p) => against(self, p, round) === 1);
   if (beating) return beating;
-  return fares < 0 ? (attacks.find((p) => against(p, round) === 0) ?? first) : first;
+  return fares < 0 ? (attacks.find((p) => against(self, p, round) === 0) ?? first) : first;
 }
 
 /**
@@ -314,7 +316,9 @@ function changeUp(self: PlanFighter, round: Round, play: Play): Play {
   ) {
     return play;
   }
-  const others = self.loadout[round.range].filter((s) => s.card !== streak.card && !urgent(s));
+  const others = self.loadout[bandOf(round, self)].filter(
+    (s) => s.card !== streak.card && !urgent(s),
+  );
   const other = firstPlay(self, round, others);
   return other && isOffence(other.card) ? other : play;
 }
@@ -334,7 +338,7 @@ function climbing(self: PlanFighter, round: Round): Play | null {
 function kitFor(self: PlanFighter, round: Round): Card | undefined {
   return kitCall(self, {
     fighters: round.fighters,
-    band: round.range,
+    band: bandOf(round, self),
     ...(round.reads ? { reads: round.reads } : {}),
     exchange: round.number,
   });
@@ -352,7 +356,7 @@ function kitPlay(self: PlanFighter, round: Round): Play | null {
   if (climb) return climb;
   // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
   const foes = opponentsOf(round.fighters, self);
-  const setup = setupPlay(self, { band: round.range, foes });
+  const setup = setupPlay(self, { band: bandOf(round, self), foes });
   // A killer coming: the set-up is its own answer, else play for time (`survival.ts`).
   const survival = survivalPlay(self, round);
   if (survival) return setup ?? survival;
@@ -368,17 +372,17 @@ function kitPlay(self: PlanFighter, round: Round): Play | null {
  * first slot at this distance that qualifies; else an improvised blow or step (at the mark).
  */
 export function plannedPlay(self: PlanFighter, round: Round): Play {
-  const slots = self.loadout[round.range];
+  const slots = self.loadout[bandOf(round, self)];
   const emergency = firstPlay(self, round, slots.filter(urgent));
   if (emergency) return emergency;
   const kit = kitPlay(self, round);
   if (kit) return kit;
-  const footwork = isPinned(self) ? null : makingFor(self, round.range);
+  const footwork = isPinned(self) ? null : makingFor(self, bandOf(round, self));
   if (footwork) {
     // Ready the charge first: power up or make clones, or go in with an entry.
     const charging = slots.filter((s) => {
       const card = findCard(self, s.card);
-      return card !== null && readiesTheCharge(self, card, round.range);
+      return card !== null && readiesTheCharge(self, card, bandOf(round, self));
     });
     return firstPlay(self, round, charging) ?? { card: footwork, target: undefined };
   }
@@ -390,7 +394,7 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
   if (seen.length === 0 && foes.some((f) => f.hidden)) {
     return { card: { kind: 'search' }, target: undefined, offPlan: 'looking' };
   }
-  const card = improvise(self, round.range);
+  const card = improvise(self, bandOf(round, self));
   const target = aimAt(hittable(card, seen, round.fighters), 'marked', self, round);
   return { card, target, offPlan: 'improvised' };
 }

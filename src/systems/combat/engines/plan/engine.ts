@@ -44,6 +44,7 @@ import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
 import { fightSummary } from './summary';
 import { humanHealth } from './sizing';
+import { bandOf } from './distance';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -132,7 +133,8 @@ function fleeChance(state: PlanState): number {
   const runner = playerOf(state);
   const chasers = state.fighters.filter((f) => f.side === 'enemy' && alive(f));
   const fastest = Math.max(...chasers.map((c) => c.attributes.speed));
-  const distance = state.range === 'far' ? 0.2 : state.range === 'mid' ? 0.1 : 0;
+  const band = bandOf(state, runner);
+  const distance = band === 'far' ? 0.2 : band === 'mid' ? 0.1 : 0;
   return clamp(0.4 + (runner.attributes.speed - fastest) * 0.05 + distance, 0.1, 0.9);
 }
 
@@ -228,7 +230,7 @@ function prompt(state: PlanState): string {
     const killer = survivalWarning(playerOf(state), state);
     return [pick, killer, hiding, ground].filter((part) => part !== null).join(' ');
   }
-  const where = `${RANGE_LABEL[state.range]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
+  const where = `${RANGE_LABEL[bandOf(state, playerOf(state))]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
   // A watched fight has no card table to show the ground on.
   const ground = state.watching ? groundNote(state.ground) : null;
   return ground ? `${where}. ${ground}` : where;
@@ -308,7 +310,7 @@ export function createPlanEngine(): CombatEngine {
         log: plan.log,
         ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),
         options: options(plan),
-        range: plan.range,
+        range: bandOf(plan, playerOf(plan)),
         prompt: prompt(plan),
         ...(meters.length > 0 ? { meters } : {}),
         ...(plan.watching ? { watched: true as const } : {}),

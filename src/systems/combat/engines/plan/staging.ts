@@ -16,6 +16,7 @@ import { findCard, type Card } from './cards';
 import type { CardId, PlanFighter, Round } from './state';
 import { statusesShown } from './statusView';
 import { poolAmounts } from './swarmView';
+import { bandOf } from './distance';
 
 /**
  * Staging a turn for the screen. How big a turn was, for its sound (`forceLine`): the grade of its maker in the art
@@ -107,9 +108,13 @@ export function staged(before: Round, after: Round, id: string): Round {
   const force = actor ? turnForce(actor, played) : null;
   const added = turn.lines.slice(before.lines.length);
   const last = added.length - 1;
+  // Where the fight stands for the one whose turn it is: the foe they face (`distance.ts`).
+  const was = before.fighters.find((f) => f.id === id);
+  const startedAt = was ? bandOf(before, was) : before.range;
+  const endedAt = actor ? bandOf(turn, actor) : turn.range;
   const rangeAt = (i: number) => {
-    if (i === last && turn.range !== before.range) return turn.range;
-    return i === 0 ? before.range : undefined;
+    if (i === last && endedAt !== startedAt) return endedAt;
+    return i === 0 ? startedAt : undefined;
   };
   const moved = poolsMoved(before, turn);
   const changed = statusesMoved(before, turn);

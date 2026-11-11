@@ -5,6 +5,7 @@ import { cardId, findCard, fitsBand, isReaction, reactionsFor, type Card } from 
 import { isDazed } from './daze';
 import { hangsSlack } from './puppets';
 import type { CardId, PlanFighter, Reactions, Round } from './state';
+import { bandOf } from './distance';
 
 export type { Reactions } from './state';
 
@@ -79,9 +80,9 @@ export function cleanReactions(fighter: Ready, reactions: Reactions): Reactions 
  */
 export function readyDefences(
   target: PlanFighter,
-  round: Pick<Round, 'range' | 'number' | 'fighters'>,
+  round: Pick<Round, 'range' | 'distances' | 'number' | 'fighters'>,
 ): Card[] {
-  const kept = reactionAt(target, round.range);
+  const kept = reactionAt(target, bandOf(round, target));
   // Hands on a channelled hold leave none for a defence, and slack threads none for a puppet.
   if (!kept || target.holding || hangsSlack(round, target)) return [];
   // Reeling, or gathering their strength, only a Guard still comes up (`gather.ts`).

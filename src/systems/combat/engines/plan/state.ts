@@ -199,7 +199,10 @@ export interface PlanState {
   /** Exchanges already fought in this round. */
   readonly exchange: number;
   readonly fighters: readonly PlanFighter[];
+  /** The fight's distance: where everyone starts, and every pair not in `distances`. */
   readonly range: RangeBand;
+  /** Pairs of foes standing at a distance of their own (`distance.ts`). */
+  readonly distances?: Distances;
   /** Cards each fighter has been seen to use, so you can adapt between rounds. */
   readonly seen: Readonly<Record<string, readonly CardId[]>>;
   /** The card each foe has announced for the next exchange (see `intent.ts`). */
@@ -235,6 +238,9 @@ export interface ElementHit {
 }
 
 /** One exchange in progress. */
+/** Pairs of foes standing at a distance of their own, by `pairKey` (`distance.ts`). */
+export type Distances = Readonly<Record<string, RangeBand>>;
+
 export interface Round {
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
   readonly number: number;
@@ -242,6 +248,7 @@ export interface Round {
   readonly opening?: boolean;
   readonly fighters: PlanFighter[];
   readonly range: RangeBand;
+  readonly distances?: Distances;
   readonly lines: readonly string[];
   readonly seen: PlanState['seen'];
   readonly intents: PlanState['intents'];

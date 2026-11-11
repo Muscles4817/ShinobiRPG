@@ -6,6 +6,7 @@ import { concealmentOf } from '../../rules/verbs';
 import { RANGE_LABEL } from '../../rules/range';
 import { say, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
+import { bandOf } from './distance';
 
 /**
  * The ground in a planned fight (`rules/ground.ts`): the opening line that names it, and the
@@ -21,7 +22,7 @@ export function inCover(ground: CombatGround | undefined, hider: PlanFighter): P
 
 /** An attack from far off lost among the trees or walls, for anyone not sure-footed there. */
 export function lostToGround(round: Round, actor: PlanFighter, rng: Rng): string | null {
-  const miss = groundMiss(round.ground, actor, round.range);
+  const miss = groundMiss(round.ground, actor, bandOf(round, actor));
   if (miss <= 0 || !rng.chance(miss)) return null;
   return tell('{a.poss} attack is lost among the cover.', { a: actor });
 }

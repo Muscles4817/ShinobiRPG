@@ -18,6 +18,7 @@ import { makeShadows, makesShadows } from './shadows';
 import type { Turn } from './senses';
 import { tell } from '../../rules/telling';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { distanceBetween } from './distance';
 
 /**
  * Clones in a planned fight: a clone technique sets clones beside its user (replacing any left
@@ -53,7 +54,7 @@ export function cloneFollowUp(round: Round, { actor, target, rng }: Turn, card: 
   const foe = target && fighterIn(round, target.id);
   if (!self || !alive(self) || !self.clones?.strikes || clonesLeft(self) === 0) return round;
   if (!foe || !alive(foe) || !isOffence(card)) return round;
-  const thrown = round.range !== 'close';
+  const thrown = distanceBetween(round, self.id, foe.id) !== 'close';
   if (!canHit({ kind: thrown ? 'throw' : 'strike' }, foe, round.fighters)) return round;
   const blow: Blow = {
     raw: strikeDamage(self, foe, rng.next()) * cloneBlowScale(self.clones),

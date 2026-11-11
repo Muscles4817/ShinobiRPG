@@ -41,6 +41,7 @@ import { setTrap } from './traps';
 import { linkLine } from './chainVoice';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
+import { distanceBetween } from './distance';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether each target slips it (the
@@ -278,7 +279,7 @@ function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
     return say(round, reactionLine(seenLine(moment, slip, t.discipline === 'genjutsu'), 'missed'));
   }
   const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
-  const noted = noteDefence(round, foe.id, round.range, 'dodge');
+  const noted = noteDefence(round, foe.id, distanceBetween(round, actor.id, foe.id), 'dodge');
   const told = missLine(moment, why, slip);
   return say(noted, reactionLine(told, 'dodged'));
 }
