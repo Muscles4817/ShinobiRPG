@@ -1,3 +1,4 @@
+import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 import type { TechniqueEffect } from '@/systems/techniques';
 
@@ -71,13 +72,21 @@ describe('verbs that leave something behind, in plan & watch', () => {
       { verb: 'damage', power: 6 },
       { verb: 'knock', power: 6, to: 'far' },
     ]);
-    expect(landed(roundAt('close'), shove, (r) => r.range === 'far').lines.join(' ')).toMatch(
-      /thrown back to far range/,
-    );
+    expect(
+      landed(
+        roundAt('close'),
+        shove,
+        (r) => distanceBetween(r, 'hero', 'bandit') === 'far',
+      ).lines.join(' '),
+    ).toMatch(/thrown back to far range/);
     const pull = technique([{ verb: 'knock', power: 6, to: 'close' }]);
-    expect(landed(roundAt('far'), pull, (r) => r.range === 'close').lines.join(' ')).toMatch(
-      /dragged in close/,
-    );
+    expect(
+      landed(
+        roundAt('far'),
+        pull,
+        (r) => distanceBetween(r, 'hero', 'bandit') === 'close',
+      ).lines.join(' '),
+    ).toMatch(/dragged in close/);
   });
 
   it('a pin holds for a few exchanges, and shows on the fight screen', () => {

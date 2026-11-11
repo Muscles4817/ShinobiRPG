@@ -1,3 +1,4 @@
+import { joinedBeside } from './distance';
 import type { CombatTechnique } from '../../contract';
 import type { Rng } from '@/core';
 
@@ -107,7 +108,12 @@ export function makeShadows(round: Round, actor: PlanFighter, use: EffectUse<'cl
     bodies === 1
       ? '{a} split{a.s} {a.their} chakra, and a clone of {a.them} bursts out of the smoke to fight.'
       : '{a} split{a.s} {a.their} chakra, and clones of {a.them} burst out of the smoke to fight.';
-  return say({ ...round, fighters }, tell(line, { a: actor }));
+  const beside = joinedBeside(
+    round,
+    clones.map((c) => c.id),
+    maker,
+  );
+  return say({ ...round, fighters, ...beside }, tell(line, { a: actor }));
 }
 
 /**

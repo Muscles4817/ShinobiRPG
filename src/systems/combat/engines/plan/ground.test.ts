@@ -1,3 +1,4 @@
+import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 
 import type { CombatGround, CombatantSetup, CombatTechnique } from '../../contract';
@@ -67,7 +68,7 @@ describe('the ground in a fight', () => {
   it('in a room, nobody backs away to far range: there is a wall', () => {
     const [hero, , bandit] = on('room').fighters;
     const after = step(on('room'), { actor: hero!, target: bandit, rng: createRng(1) }, 'back');
-    expect(after.range).toBe('mid');
+    expect(distanceBetween(after, 'hero', 'bandit')).toBe('mid');
     expect(after.lines.join(' ')).toMatch(/wall behind them/);
   });
 
@@ -82,7 +83,7 @@ describe('the ground in a fight', () => {
     );
     expect(caught.length).toBeGreaterThan(0);
     // And the blast can't throw anyone further than the walls allow.
-    for (const r of casts) expect(r.range).not.toBe('far');
+    for (const r of casts) expect(distanceBetween(r, 'hero', 'bandit')).not.toBe('far');
     const open = useJutsu(
       on('arena', 'close'),
       { actor: hero!, target: bandit, rng: createRng(3) },
@@ -98,7 +99,8 @@ describe('the ground in a fight', () => {
         const round = on('lake', 'far', { perks: perks ?? [] });
         const [hero, , bandit] = round.fighters;
         const after = step(round, { actor: hero!, target: bandit, rng: createRng(seed) }, 'back');
-        if (after.range !== round.range) moved++;
+        if (distanceBetween(after, 'hero', 'bandit') !== distanceBetween(round, 'hero', 'bandit'))
+          moved++;
       }
       return moved;
     };
@@ -108,7 +110,7 @@ describe('the ground in a fight', () => {
         const round = on('lake', 'mid', { perks: perks ?? [] });
         const [hero, , bandit] = round.fighters;
         const after = step(round, { actor: hero!, target: bandit, rng: createRng(seed) }, 'back');
-        if (after.range === 'far') moved++;
+        if (distanceBetween(after, 'hero', 'bandit') === 'far') moved++;
       }
       return moved;
     };

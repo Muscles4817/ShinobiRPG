@@ -5,7 +5,8 @@ import { commit } from './commitment';
 import { gather } from './gather';
 import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
-import { dispel, opponentsOf, search, type Turn } from './senses';
+import { facing } from './distance';
+import { dispel, search, type Turn } from './senses';
 import { fighterIn, patch, type PlanFighter, type Round } from './state';
 import { step } from './steps';
 
@@ -28,7 +29,7 @@ export function play(round: Round, turn: Turn, card: Card): Round {
     case 'step':
       return step(
         practise(round, turn.actor, 'footwork'),
-        { ...turn, target: turn.target ?? opponentsOf(round.fighters, turn.actor)[0] },
+        { ...turn, target: turn.target ?? facing(round, turn.actor) },
         card.direction,
       );
     case 'search':

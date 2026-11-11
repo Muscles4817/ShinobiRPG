@@ -9,12 +9,13 @@ import type { Card } from './cards';
 import type { Turn } from './senses';
 import { isEntry } from './stepping';
 import { alive } from '../../rules/body';
-import { fighterIn, patch, say, type Round } from './state';
+import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
 import { sizeGap, STEP_PER_SIZE, walksThrough } from '../../rules/size';
-import { bandOf, distanceBetween } from './distance';
+import { bandOf, distanceBetween, withMoves } from './distance';
+import { movesFor } from './pairMoves';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -39,34 +40,90 @@ function from(round: Round, { actor, target }: Pick<Turn, 'actor' | 'target'>): 
   return target ? distanceBetween(round, actor.id, target.id) : bandOf(round, actor);
 }
 
-function arrive(round: Round, { actor, target }: Turn, to: RangeBand): Round {
+function arrive(
+  round: Round,
+  { actor, target }: Turn,
+  to: RangeBand,
+  keptUp: readonly string[] = [],
+): Round {
   const closing = RANGE_BANDS.indexOf(to) < RANGE_BANDS.indexOf(from(round, { actor, target }));
   const told = { actor, to, closing, ...(target ? { foe: target } : {}) };
-  return { ...say(round, stepLine(momentOf(round, actor.id), told)), range: to };
+  // Only the pairs the step concerns move (`pairMoves.ts`); the ground was asked by the stride.
+  const moves = movesFor(round, actor, target, to).filter((m) => !keptUp.includes(m.b));
+  const stepped: Round = {
+    ...say(round, stepLine(momentOf(round, actor.id), told)),
+    distances: withMoves(round, moves),
+  };
+  return keptUp.reduce((r, id) => {
+    const foe = fighterIn(r, id);
+    return foe ? say(r, tell(KEPT_UP, { a: actor, b: foe })) : r;
+  }, stepped);
 }
 
-/** The step's own contest, when nobody holds the fighter off. */
-function stride(round: Round, { actor, target: foe, rng }: Turn, direction: 'in' | 'back'): Round {
-  const at = from(round, { actor, target: foe });
-  const to = direction === 'in' ? stepIn(at) : stepBack(at);
-  if (withinGround(round.ground, to) !== to) {
-    const line = '{a} back{a.s} away, but there’s a wall behind {a.them}.';
-    return say(round, tell(line, { a: actor }));
-  }
-  const speedGap = actor.attributes.speed - (foe?.attributes.speed ?? 0);
+const KEPT_UP = '{b} keep{b.s} pace with {a.them}.';
+
+/** Whether someone else on the stepper's side is already up close with `foe`, keeping them busy. */
+function engaged(round: Round, actor: PlanFighter, foe: PlanFighter): boolean {
+  return round.fighters.some(
+    (f) =>
+      f.side === actor.side &&
+      f.id !== actor.id &&
+      alive(f) &&
+      distanceBetween(round, f.id, foe.id) === 'close',
+  );
+}
+
+/**
+ * The chance a step past `foe` is made: speed against speed, size, clones and footing. Someone
+ * already fighting another up close can't keep a second away: stepping in on them is sure.
+ */
+function stepChance(
+  round: Round,
+  actor: PlanFighter,
+  foe: PlanFighter,
+  direction: 'in' | 'back',
+): number {
+  if (direction === 'in' && engaged(round, actor, foe)) return 1;
+  const speedGap = actor.attributes.speed - foe.attributes.speed;
   // A bigger body leans its weight into a step in (`size.ts`).
-  const weight = direction === 'in' && foe ? Math.max(0, sizeGap(actor, foe)) * STEP_PER_SIZE : 0;
+  const weight = direction === 'in' ? Math.max(0, sizeGap(actor, foe)) * STEP_PER_SIZE : 0;
   // Clones crowding round the one stepping make them harder to cut off.
   const contest =
     clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) +
     cloneStepBonus(actor) +
     weight;
   // Off their footing (on water they can't stand on), every step is harder.
-  const chance = foe ? contest * footingOf(round.ground, actor) : 1;
+  return contest * footingOf(round.ground, actor);
+}
+
+/**
+ * Drawing back from more than one foe up close, each of the others gets a chance to keep pace
+ * (the same contest as the step): one step never shakes off a whole gang.
+ */
+function keepingPace(round: Round, { actor, target, rng }: Turn, to: RangeBand): string[] {
+  const near = movesFor(round, actor, target, to).filter((m) => m.b !== target?.id);
+  return near
+    .map((m) => fighterIn(round, m.b))
+    .filter(
+      (f): f is PlanFighter => f !== undefined && !rng.chance(stepChance(round, actor, f, 'back')),
+    )
+    .map((f) => f.id);
+}
+
+/** The step's own contest, when nobody holds the fighter off. */
+function stride(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
+  const { actor, target: foe, rng } = turn;
+  const at = from(round, { actor, target: foe });
+  const to = direction === 'in' ? stepIn(at) : stepBack(at);
+  if (withinGround(round.ground, to) !== to) {
+    const line = '{a} back{a.s} away, but there’s a wall behind {a.them}.';
+    return say(round, tell(line, { a: actor }));
+  }
   // The roll is made even with no foe to stop them (a sure step), as it always was.
-  const made = rng.chance(chance);
-  if (made || !foe) return arrive(round, { actor, target: foe, rng }, to);
-  return say(round, blockedStepLine(momentOf(round, actor.id), actor, to, foe));
+  const made = rng.chance(foe ? stepChance(round, actor, foe, direction) : 1);
+  if (!foe) return arrive(round, turn, to);
+  if (!made) return say(round, blockedStepLine(momentOf(round, actor.id), actor, to, foe));
+  return arrive(round, turn, to, direction === 'back' ? keepingPace(round, turn, to) : []);
 }
 
 /**

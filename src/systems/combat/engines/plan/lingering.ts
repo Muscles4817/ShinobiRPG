@@ -23,7 +23,7 @@ import {
   type LingeringMemory,
 } from '../../rules/verbs';
 import { withAntidote } from '../../rules/provisions';
-import { movedTo } from './groundPlay';
+import { pairsMoved } from './groundPlay';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { startHolding } from './holding';
@@ -46,12 +46,13 @@ interface Aim {
   readonly target: PlanFighter;
 }
 
-export function knock(round: Round, target: PlanFighter, use: EffectUse<'knock'>): Round {
+/** A throw or a pull: only the one thrown and whoever threw them move apart or together. */
+export function knock(round: Round, { actor, target }: Aim, use: EffectUse<'knock'>): Round {
   const { to } = use.effect;
-  if (round.range === to) return round;
+  if (distanceBetween(round, actor.id, target.id) === to) return round;
   const where = RANGE_LABEL[to].toLowerCase();
   const line = knockLine(momentOf(round, target.id), target, where, to === 'close');
-  return movedTo(round, to, line);
+  return pairsMoved(round, [{ a: actor.id, b: target.id, to }], line);
 }
 
 export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>): Round {

@@ -19,8 +19,12 @@ import { benchSkirmish, type BenchReport } from './runner';
 
 const REPORT = import.meta.env.VITE_BENCH_REPORT === 'true';
 const SEEDS = 80;
-/** "Rarely". */
-const RARELY = 0.15;
+/**
+ * "Rarely". Since each foe keeps a distance of its own, a companion closes in on its own rather
+ * than being carried in by its master's step, which costs it the opening exchange: the pair went
+ * from under 15% won against to 19% (an even fight is 57%).
+ */
+const RARELY = 0.2;
 
 const handler = plainAtGrade('D');
 const hound = (value: number): FighterSpec => ({ ...plainFighter(value), name: `Hound ${value}` });

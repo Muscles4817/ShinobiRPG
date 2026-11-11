@@ -8,7 +8,8 @@ import { reactionLine } from '../../rules/narration';
 import { RANGE_LABEL } from '../../rules/range';
 import { hasVerb, isHarmful, isPinned, moveGoal, spins, substitutable } from '../../rules/verbs';
 import type { Card } from './cards';
-import { movedTo } from './groundPlay';
+import { pairsMoved } from './groundPlay';
+import { movesFor } from './pairMoves';
 import { readyDefences } from './readiness';
 import { swapLine } from './sceneVoice';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
@@ -44,7 +45,11 @@ export function moveDestination(fighter: PlanFighter, t: CombatTechnique): Range
 const FLICKER_IN = '{a} {a.is} suddenly right in close.';
 const FLICKER = '{a} blink{a.s} out and reappear{a.s} at {where} range.';
 
-export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Round {
+/**
+ * A move puts its user at the distance it takes them to from the foe they go for (else the foe
+ * they face); other foes keep theirs (`pairMoves.ts`).
+ */
+export function move(round: Round, { actor, target }: Mover, t: CombatTechnique): Round {
   if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
   const to = moveDestination(actor, t) ?? bandOf(round, actor);
   const where = RANGE_LABEL[to].toLowerCase();
@@ -52,7 +57,13 @@ export function move(round: Round, actor: PlanFighter, t: CombatTechnique): Roun
   const told = isHarmful(t)
     ? tell('{a} cross{a.es} the distance in a blink.', { a: actor })
     : tell(to === 'close' ? FLICKER_IN : FLICKER, { a: actor, where });
-  return movedTo(round, to, told);
+  return pairsMoved(round, movesFor(round, actor, target, to), told);
+}
+
+/** Who moves, and the foe they go for, if any. */
+interface Mover {
+  readonly actor: PlanFighter;
+  readonly target: PlanFighter | undefined;
 }
 
 const SPUN = '{t} spin{t.s} in place and turn{t.s} {a.poss} {what} aside.';

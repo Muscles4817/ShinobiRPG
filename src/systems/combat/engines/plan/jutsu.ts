@@ -149,7 +149,7 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
     case 'confuse':
       return confuse(round, aimed, { technique, effect });
     case 'knock':
-      return knock(round, aimed.target, { technique, effect });
+      return knock(round, aimed, { technique, effect });
     case 'pin':
       return pin(round, aimed, { technique, effect });
     case 'drain':
@@ -187,7 +187,7 @@ function onSelf(round: Round, turn: Turn, { technique, effect }: EffectUse): Rou
     case 'field':
       return castField(round, actor, { technique, effect });
     case 'move':
-      return move(round, actor, technique);
+      return move(round, { actor, target: turn.target }, technique);
     case 'counter':
       return readyRiposte(round, actor, { technique, effect });
     case 'summon':
@@ -301,7 +301,9 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   if (isHarmful(t) && targets.length === 0) return paid;
   const seen = targets.filter((foe) => slips(paid, turn, foe, t));
   const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t }), paid);
-  if (isHarmful(t) && seen.length === targets.length) return aftermath(told, turn, t);
+  if (isHarmful(t) && seen.length === targets.length) {
+    return aftermath(told, turn, { t, caught: targets });
+  }
   // An elemental attack may be met by one coming back the other way.
   const aimedAt = turn.target && !seen.includes(turn.target) ? clash(told, turn, t) : null;
   if (aimedAt && !aimedAt.through) return aimedAt.round;
@@ -313,5 +315,5 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
     (flight, effect) => applyEffect(flight, carrying, { technique: t, effect }),
     start,
   );
-  return aftermath(settleOn(end.round, actor.id, end.reaching, t), turn, t);
+  return aftermath(settleOn(end.round, actor.id, end.reaching, t), turn, { t, caught: targets });
 }
