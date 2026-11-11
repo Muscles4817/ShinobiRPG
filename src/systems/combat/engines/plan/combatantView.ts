@@ -2,6 +2,7 @@ import type { CombatantView } from '../../contract';
 import { viewOf } from '../../rules/body';
 import { bandOf, distanceBetween } from './distance';
 import { intentLine, knownLine } from './intent';
+import { formOf } from './scene';
 import { playerOf, type PlanFighter, type PlanState } from './state';
 import { seenByPlayer, statuses, statusesShown } from './statusView';
 import { onStage } from './swarmView';
@@ -28,6 +29,7 @@ function knownOf(plan: PlanState, f: PlanFighter, insight: boolean): Pick<Combat
 export function combatantView(plan: PlanState, f: PlanFighter, insight: boolean): CombatantView {
   return {
     ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
+    form: formOf(f),
     ...knownOf(plan, f, insight),
     ...distanceOf(plan, f),
     // A hidden foe the player sees anyway is shown, and aimed at, as seen.

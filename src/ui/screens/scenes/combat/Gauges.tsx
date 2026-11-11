@@ -8,7 +8,7 @@ import {
 } from '@/game';
 
 import { HealthBar } from './HealthBar';
-import { shortName } from './Formation';
+import { FighterSeal } from './FighterSeal';
 import type { HealthPulse } from './useHealthPulses';
 
 /**
@@ -62,9 +62,7 @@ function FighterGauges({ fighter: f, pulse, sight }: FighterProps) {
   return (
     <article className={down ? `gauge-card ${f.side} down` : `gauge-card ${f.side}`}>
       <header>
-        <span className={`token-seal small ${f.side}`} aria-hidden="true">
-          {shortName(f.name).mark}
-        </span>
+        <FighterSeal fighter={f} small />
         <b>{f.name}</b>
       </header>
       <div className="gauge-rows">

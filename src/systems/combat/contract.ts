@@ -1,4 +1,5 @@
 import type { Grammar, Result, Rng } from '@/core';
+import type { Look } from '@/systems/profile';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
 
@@ -161,6 +162,8 @@ export interface CombatantSetup {
   readonly grammar?: CombatGrammar;
   /** Short descriptor such as "Spirit" or "Bandit", shown on the combatant's banner. */
   readonly tag?: string;
+  /** How a person looks, for the screen to draw them; a common foe or a creature has none. */
+  readonly look?: Look;
   /** What they are, for the story's words (`CombatForm`); absent: read from traits and grammar. */
   readonly form?: CombatForm;
   /** What the story calls their plain strike ("tusk", "claw"); absent: their form's word. */
@@ -311,6 +314,9 @@ export interface CombatantView {
   readonly id: string;
   readonly name: string;
   readonly tag?: string;
+  /** A person's look, and what kind of body anyone else is, for the screen to draw them. */
+  readonly look?: Look;
+  readonly form?: CombatForm;
   readonly side: CombatSide;
   readonly health: number;
   readonly maxHealth: number;

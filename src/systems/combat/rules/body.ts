@@ -1,3 +1,4 @@
+import type { Look } from '@/systems/profile';
 import { clamp } from '@/core';
 
 import type {
@@ -34,6 +35,8 @@ export interface Body {
   readonly called?: string;
   readonly grammar?: CombatGrammar;
   readonly tag?: string;
+  /** How a person looks (`CombatantSetup.look`), for the screen. */
+  readonly look?: Look;
   /** What they are and what their plain strike is called, for the story only. */
   readonly form?: CombatForm;
   readonly blow?: string;
@@ -127,6 +130,8 @@ export function viewOf(b: Body, statuses: readonly string[], intent?: string): C
     id: b.id,
     name: b.name,
     ...(b.tag === undefined ? {} : { tag: b.tag }),
+    ...(b.look === undefined ? {} : { look: b.look }),
+    ...(b.form === undefined ? {} : { form: b.form }),
     side: b.side,
     health: b.health,
     maxHealth: b.maxHealth,

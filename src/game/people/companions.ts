@@ -8,6 +8,7 @@ import { carriedInto } from '../carried';
 import { walkingByRank } from '../footing';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
+import { personLook } from './looks';
 import { doableNow } from './capable';
 import { personStats } from './progress';
 import { pronounsOf } from './pronouns';
@@ -90,6 +91,7 @@ export function companionCombatant(
     name: person.name,
     grammar: pronounsOf(person),
     tag,
+    look: personLook(person),
     attributes: attributesOf(stats),
     health: MAX_HEALTH,
     maxHealth: MAX_HEALTH,

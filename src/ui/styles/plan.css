@@ -285,3 +285,42 @@
   gap: 8px;
   margin-bottom: 10px;
 }
+
+/* A seal holds its fighter's lantern shadow; several of a kind carry their number. */
+.token-seal {
+  overflow: visible;
+}
+.token-seal .portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--radius-sm) - 1px);
+}
+.seal-number {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  min-width: 15px;
+  padding: 0 3px;
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+}
+.token-seal.small .seal-number {
+  right: -6px;
+  bottom: -6px;
+  min-width: 12px;
+  font-size: 0.55rem;
+  line-height: 12px;
+}
+/* The other side faces yours. */
+.token-seal.enemy .portrait {
+  transform: scaleX(-1);
+}

@@ -1,7 +1,7 @@
 import type { CombatantView, ScoutingRead } from '@/game';
 
 import { Read } from './Foes';
-import { shortName } from './Formation';
+import { FighterSeal } from './FighterSeal';
 
 const DISTANCE_LINE = {
   close: 'Close to you.',
@@ -51,9 +51,7 @@ export function FoeMoves({ foes }: { readonly foes: readonly CombatantView[] }) 
       <ul>
         {moving.map((f) => (
           <li key={f.id}>
-            <span className="token-seal small enemy" aria-hidden="true">
-              {shortName(f.name).mark}
-            </span>
+            <FighterSeal fighter={f} small />
             <b>{f.name}</b> <span>{f.intent}</span>
           </li>
         ))}

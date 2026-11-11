@@ -23,6 +23,7 @@ import { carriedInto, pouchFrom } from './carried';
 import { combatGear, combatStats } from './gear';
 import type { GameState } from './state';
 import { clanSize } from './bodySize';
+import { playerLook } from './people/looks';
 import { chakraBody, foeHive, hiveSwarm } from './hives/hive';
 import { dustPool, personDust } from './dust/dust';
 
@@ -103,6 +104,7 @@ export function playerCombatant(state: GameState, ctx: GameContext): CombatantSe
     // The fight is told to the player: "You close in."
     called: 'you',
     grammar: 'you',
+    look: playerLook({ ...state.character, rank: state.standing.rank }),
     attributes: attributesOf(armed),
     health: vitals.health,
     maxHealth: MAX_HEALTH,

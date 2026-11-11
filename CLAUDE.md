@@ -1338,6 +1338,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   art, and the character on their wooden name tag (`PersonDef.seal`, a kanji of their name, else
   the first kana read from how it is spelled: `people/seal.ts`). Point lists are written flat
   (`points([x, y, …])`) so a drawing's data stays on a few lines. No blur filters.
+  In a fight every fighter is a lantern shadow (`portrait/Figure.tsx`, `combat/FighterSeal.tsx`):
+  a person carries their look in on `CombatantSetup.look` (so clones, exam rivals and versus
+  fighters have one), and anyone else is cut by the `form` their view says (a common foe in a
+  hood or a straw hat by their name, a beast, a swarm, a spirit); your side stands against a
+  warm lantern and the other, facing yours, against a red one.
 - **Run in a native shell (the desktop or phone app):** implement a `StorageBackend`
   (`platform/storageBackend.ts`: read, write and remove the `save`, `prefs`, `edits` and `rescue`
   slots, writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in

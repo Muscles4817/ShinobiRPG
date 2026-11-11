@@ -4,7 +4,9 @@ import type { CombatantView, RangeBand, ScoutingRead } from '@/game';
 
 import type { HoverHandlers } from '../../../layout/useHoverPreview';
 
+import { FighterSeal } from './FighterSeal';
 import { HealthBar } from './HealthBar';
+import { shortName } from './shortName';
 import type { HealthPulse } from './useHealthPulses';
 
 /**
@@ -21,21 +23,6 @@ const PACE_TAG = { faster: 'Faster', slower: 'Slower', even: null } as const;
 
 /** A column with more fighters than this pairs them up, so the strip stays short. */
 const COLUMN_MAX = 3;
-
-/**
- * The word that tells a fighter apart, and their seal's letter: "Bandit Archer" is Archer (A),
- * "Hungry Ghost 2" is Ghost 2 (G2), "Kaen" is Kaen (K).
- */
-export function shortName(name: string): { readonly label: string; readonly mark: string } {
-  const words = name.split(' ');
-  const last = words.at(-1) ?? name;
-  const numbered = /^\d+$/.test(last) && words.length > 1;
-  const word = numbered ? (words.at(-2) ?? last) : last;
-  return {
-    label: numbered ? `${word} ${last}` : word,
-    mark: numbered ? `${word.charAt(0)}${last}` : word.charAt(0),
-  };
-}
 
 interface FormationProps {
   readonly fighters: readonly CombatantView[];
@@ -102,10 +89,9 @@ function Token({ fighter: f, spread, ...rest }: TokenProps) {
       }}
       {...previewFor?.(f.id)}
     >
-      <span className="token-seal" aria-hidden="true">
-        {short.mark}
+      <FighterSeal fighter={f}>
         {pace && <span className={`pace ${pace.toLowerCase()}`}>{pace}</span>}
-      </span>
+      </FighterSeal>
       <span className="token-name">{short.label}</span>
       {spread && f.side === 'enemy' && f.distance && f.health > 0 && (
         <span className="token-distance">{DISTANCE_TAG[f.distance]}</span>
