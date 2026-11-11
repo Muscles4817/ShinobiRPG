@@ -113,8 +113,8 @@ export function PlansByOwner({
 }: {
   readonly options: readonly CombatOption[];
   readonly names: Readonly<Record<string, string>>;
-  /** The distance the fight is at, opened first and marked. */
-  readonly here?: string | undefined;
+  /** Where each owner of cards stands ('' for you), opened first and marked. */
+  readonly here?: (owner: string) => string | undefined;
   readonly onPick: Pick;
 }) {
   const owners = [...new Set(options.map((o) => o.owner ?? ''))];
@@ -141,7 +141,7 @@ export function PlansByOwner({
           ))}
         </div>
       )}
-      <PlanPicker key={shown} options={mine} here={here} onPick={onPick} />
+      <PlanPicker key={shown} options={mine} here={here?.(shown)} onPick={onPick} />
     </>
   );
 }

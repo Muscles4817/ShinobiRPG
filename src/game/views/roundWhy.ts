@@ -15,7 +15,8 @@ import { amountOwner, lineTarget } from './fightReplay';
  * Why the last round went as it did, for the plan screen: a few rows read from the round's
  * own lines (from the divider that opens it, `roundStart`), each a short phrase with its
  * numbers in chips. Turns of yours that went off your plan and why, how your attacks fared,
- * who hurt you and how much, which of your defences worked, and what the round cost you.
+ * who hurt you and how much, foes who kept a distance other than yours, which of your defences
+ * worked, and what the round cost you.
  * Everything is read from what the engine told, so the strip says only what happened.
  */
 
@@ -124,6 +125,21 @@ function hurtRows({ hurtBy }: Tally, fighters: readonly CombatantView[]): WhyRow
     }));
 }
 
+const DISTANCE_CHIP = { close: 'Close', mid: 'Mid range', far: 'Far' } as const;
+
+/** Foes still standing at a distance other than yours: who kept off, or got in, and where. */
+function distanceRow(view: CombatView): WhyRow[] {
+  const apart = view.combatants.filter(
+    (f) => f.side === 'enemy' && f.health > 0 && f.distance && f.distance !== view.range,
+  );
+  if (apart.length === 0) return [];
+  const chips = apart.map((f): JournalChip => {
+    const where = f.distance ? DISTANCE_CHIP[f.distance] : '';
+    return { label: `${f.name}: ${where}`, tone: 'info' };
+  });
+  return [{ text: 'Kept a distance of their own', chips }];
+}
+
 function defenceRow({ defences }: Tally): WhyRow[] {
   if (defences.size === 0) return [];
   const chips = [...defences.entries()].map(([r, n]): JournalChip => {
@@ -168,6 +184,7 @@ export function roundWhy(view: CombatView): WhyRow[] {
     ...offPlan,
     ...attackRow(tally),
     ...hurtRows(tally, view.combatants),
+    ...(lines.length > 0 ? distanceRow(view) : []),
     ...defenceRow(tally),
     ...costRow(lines, you),
   ];

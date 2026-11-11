@@ -10,7 +10,8 @@ import type { HealthPulse } from './useHealthPulses';
 /**
  * Both sides as they stand, read left to right: your back row, your front row, the distance
  * between the sides, their front row, their back row. Each fighter is a seal you can tap to
- * read them; a foe likely to act before you says so. As a stage (the watch screen), whoever is
+ * read them; a foe likely to act before you says so. When the foes don't all stand at your
+ * distance, each says its own beneath its seal. As a stage (the watch screen), whoever is
  * acting is lit, whoever they act on is marked, and a line of ink runs between them.
  */
 
@@ -54,14 +55,32 @@ export interface StageMarks {
   readonly targetId: string | null;
 }
 
-type TokenProps = Omit<FormationProps, 'fighters' | 'range'> & { readonly fighter: CombatantView };
+type TokenProps = Omit<FormationProps, 'fighters' | 'range'> & {
+  readonly fighter: CombatantView;
+  /** Say how far this fighter stands, because the foes stand at distances of their own. */
+  readonly spread?: boolean;
+};
+
+const DISTANCE_TAG: Readonly<Record<RangeBand, string>> = {
+  close: 'Close',
+  mid: 'Mid',
+  far: 'Far',
+};
+
+/** Whether any foe still standing is at a distance other than yours. */
+function foesSpread(fighters: readonly CombatantView[], range: RangeBand | undefined): boolean {
+  return fighters.some(
+    (f) => f.side === 'enemy' && f.health > 0 && f.distance && f.distance !== range,
+  );
+}
 
 function stageRole(id: string, stage: StageMarks | undefined): string | false {
   if (stage?.actorId === id) return 'acting';
   return stage?.targetId === id && 'struck';
 }
 
-function Token({ fighter: f, reads, pulses, selected, onSelect, previewFor, stage }: TokenProps) {
+function Token({ fighter: f, spread, ...rest }: TokenProps) {
+  const { reads, pulses, selected, onSelect, previewFor, stage } = rest;
   const pace = PACE_TAG[reads[f.id]?.pace ?? 'even'];
   const short = shortName(f.name);
   const state = [
@@ -88,6 +107,9 @@ function Token({ fighter: f, reads, pulses, selected, onSelect, previewFor, stag
         {pace && <span className={`pace ${pace.toLowerCase()}`}>{pace}</span>}
       </span>
       <span className="token-name">{short.label}</span>
+      {spread && f.side === 'enemy' && f.distance && f.health > 0 && (
+        <span className="token-distance">{DISTANCE_TAG[f.distance]}</span>
+      )}
       <HealthBar fighter={f} pulse={pulses[f.id]} mine={f.side === 'player'} />
     </button>
   );
@@ -170,6 +192,8 @@ export function Formation({ fighters, range, ...rest }: FormationProps) {
   const inRow = (side: CombatantView['side'], back: boolean) =>
     fighters.filter((f) => f.side === side && (f.row === 'back') === back);
   const { strip, line } = useStageLine(rest.stage);
+  // On the stage the gap says the distance of the beat; tags would say the round's end.
+  const spread = !rest.stage && foesSpread(fighters, range);
   return (
     <section ref={strip} className="formation" aria-label="Both sides">
       {line && (
@@ -180,8 +204,20 @@ export function Formation({ fighters, range, ...rest }: FormationProps) {
       <Column label="Your back row" row="Back" fighters={inRow('player', true)} {...rest} />
       <Column label="Your front row" row="Front" fighters={inRow('player', false)} {...rest} />
       <Gap range={range} />
-      <Column label="Their front row" row="Front" fighters={inRow('enemy', false)} {...rest} />
-      <Column label="Their back row" row="Back" fighters={inRow('enemy', true)} {...rest} />
+      <Column
+        label="Their front row"
+        row="Front"
+        fighters={inRow('enemy', false)}
+        spread={spread}
+        {...rest}
+      />
+      <Column
+        label="Their back row"
+        row="Back"
+        fighters={inRow('enemy', true)}
+        spread={spread}
+        {...rest}
+      />
     </section>
   );
 }

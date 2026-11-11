@@ -92,7 +92,7 @@ ui ──► game ──► content ──► systems ──► core
    the game says your bonds have earned (`game/people/teamOrders.ts`); a fight's purpose (mission,
    spar) is game state (`people.sparringWith`), never the engine's concern. The player's
    choice is a `CombatChoice` (option id + optional target); the view may add `range`,
-   `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move, and only that; a dazed foe's says it loses the turn) and `known` (the cards you know they hold, said apart from it), and options say their `kind` so one fight
+   `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move, and only that; a dazed foe's says it loses the turn) `known` (the cards you know they hold, said apart from it) and `distance` (a foe's from you, your side's from the foe each faces), and options say their `kind` so one fight
    screen can lay out any engine.
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
    `ActionOption`s that already carry the `GameAction` to dispatch and the blocker reason.

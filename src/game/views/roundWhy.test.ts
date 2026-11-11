@@ -77,4 +77,24 @@ describe('why the last round went as it did', () => {
       { text: 'Your defences', chips: [{ label: 'Guarded ×1', tone: 'info' }] },
     ]);
   });
+
+  it('names foes who kept a distance other than yours', () => {
+    const fighter = { health: 100, maxHealth: 100, chakra: 50, maxChakra: 50, statuses: [] };
+    const view: CombatView = {
+      round: 2,
+      range: 'close',
+      combatants: [
+        { id: 'aoi', name: 'Aoi', side: 'player', ...fighter, distance: 'close' },
+        { id: 'goro', name: 'Goro', side: 'enemy', ...fighter, distance: 'close' },
+        { id: 'kaen', name: 'Kaen', side: 'enemy', ...fighter, distance: 'mid' },
+        { id: 'ryu', name: 'Ryu', side: 'enemy', ...fighter, health: 0, distance: 'far' },
+      ],
+      options: [],
+      log: ['— First exchange — ⟦rs⟧', 'Goro hits Aoi. ⟦by:goro⟧ ⟦-4⟧'],
+    };
+    expect(roundWhy(view)).toContainEqual({
+      text: 'Kept a distance of their own',
+      chips: [{ label: 'Kaen: Mid range', tone: 'info' }],
+    });
+  });
 });

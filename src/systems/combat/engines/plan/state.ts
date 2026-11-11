@@ -266,6 +266,8 @@ export interface Round {
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
+  /** Whom the turn just taken was aimed at, so the screen says the distance between them. */
+  readonly aimedAt?: string;
   /** The turn just taken was the player's and played off their plan, and why (`staging.ts`). */
   readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */

@@ -35,6 +35,12 @@ interface PlanScreenProps {
   readonly sightOf: SightOf;
 }
 
+/** Where the owner of a set of cards stands: you at your distance, a teammate at theirs. */
+function hereFor(view: CombatView) {
+  return (owner: string) =>
+    (owner ? view.combatants.find((c) => c.id === owner)?.distance : undefined) ?? view.range;
+}
+
 /** How many lines of the story so far the plan screen keeps in view. */
 const RECENT_LINES = 5;
 
@@ -201,7 +207,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
   const cards = (
     <section className="your-cards" aria-label="Your cards">
       <h3 className="plan-heading">Your cards</h3>
-      <PlansByOwner options={plans} names={names} here={view.range} onPick={pickCard} />
+      <PlansByOwner options={plans} names={names} here={hereFor(view)} onPick={pickCard} />
     </section>
   );
   const head = (

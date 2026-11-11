@@ -249,7 +249,8 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const turns = actor.streak?.card === id ? actor.streak.turns + 1 : 1;
   const fighters = patch(noted.fighters, actor.id, { streak: { card: id, turns } });
   const seen = remember(noted.seen, actor.id, id);
-  return { ...noted, fighters, acted, seen, played: id, ...offPlanOf(actor, chosen) };
+  const at = aimed.target ? { aimedAt: aimed.target.id } : {};
+  return { ...noted, fighters, acted, seen, played: id, ...at, ...offPlanOf(actor, chosen) };
 }
 
 /** A fighter's turn, its lines tagged for the screen (`staging.ts`). */

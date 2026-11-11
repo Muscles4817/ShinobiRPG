@@ -110,6 +110,12 @@
 .token.down {
   opacity: 0.4;
 }
+.token-distance {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
 .token-seal.small {
   display: inline-grid;
   width: 24px;

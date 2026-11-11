@@ -326,6 +326,11 @@ export interface CombatantView {
   readonly targetable?: boolean;
   /** Their row, for engines with formations. */
   readonly row?: CombatRow;
+  /**
+   * How far they stand, for engines that keep a distance per pair: a foe from you, anyone on
+   * your side from the foe they face.
+   */
+  readonly distance?: RangeBand;
   /** Pools of their own besides health and chakra (breath, a hive, dust), when they have any. */
   readonly meters?: readonly CombatMeter[];
 }
