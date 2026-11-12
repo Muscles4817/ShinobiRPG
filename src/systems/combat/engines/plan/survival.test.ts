@@ -2,7 +2,7 @@ import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { seenDefence } from './adapt';
 import { empowerSelf } from './empower';
 import { initialFighters, type PlanFighter, type Round } from './state';
-import { survivalPlay, survivalWarning, threatFrom } from './survival';
+import { killerOf, survivalPlay, survivalWarning, threatFrom } from './survival';
 
 /** Survival, as judgement: a mind that reads the fight plays for time against a killer. */
 
@@ -106,6 +106,34 @@ describe('seeing a killer', () => {
     const r = fight({}, { techniques: [blade] });
     const announced = { guy: 'jutsu:blade' };
     expect(threatFrom(fighter(r, 'me'), fighter(r, 'guy'), announced)?.kind).toBe('lethal');
+  });
+});
+
+describe('the worst killer', () => {
+  it('is the one whose blow is heaviest, not the first in line', () => {
+    const fighters = initialFighters({
+      player: setup('me', { health: 60 }),
+      allies: [],
+      enemies: [
+        setup('lesser', { techniques: [life, view, wonder, kick] }),
+        setup('greater', {
+          techniques: [life, view, wonder, kick],
+          attributes: { ...attributes, strength: 45, taijutsu: 45 },
+        }),
+      ],
+      canFlee: false,
+    });
+    const opened = (['lesser', 'greater'] as const).reduce(
+      (r, id) =>
+        [life, view, wonder].reduce(
+          (at, t) =>
+            empowerSelf(at, fighter(at, id), { technique: t, effect: t.effects[0] as never }),
+          r,
+        ),
+      { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} } as Round,
+    );
+    expect(threatFrom(fighter(opened, 'me'), fighter(opened, 'lesser'), {})).toBeDefined();
+    expect(killerOf(fighter(opened, 'me'), opened)?.foe.id).toBe('greater');
   });
 });
 
