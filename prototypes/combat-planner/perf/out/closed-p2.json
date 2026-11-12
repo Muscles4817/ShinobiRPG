@@ -1,0 +1,42 @@
+[
+  {
+    "approach": "racing 2→16 keep 2",
+    "scenario": "daze-finish",
+    "won": 6,
+    "fights": 30,
+    "dealt": 50.46666666666667,
+    "taken": 52.13333333333333,
+    "msPerDecision": 199.73436887234033,
+    "openings": "step-back > step-back ×18, step-back > spark ×12"
+  },
+  {
+    "approach": "racing 2→16 keep 2",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 207.31045299999977,
+    "openings": "veil > blade ×30"
+  },
+  {
+    "approach": "d2 w1 r4",
+    "scenario": "daze-finish",
+    "won": 19,
+    "fights": 30,
+    "dealt": 87.13333333333334,
+    "taken": 76.4,
+    "msPerDecision": 34.8315160176993,
+    "openings": "flash > burst ×22, flash > flash ×8"
+  },
+  {
+    "approach": "d2 w1 r4",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 30.31161388732361,
+    "openings": "veil > blade ×30"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "approach": "default plan",
+    "scenario": "daze-finish",
+    "won": 2,
+    "fights": 30,
+    "dealt": 66.93333333333334,
+    "taken": 98.8,
+    "msPerDecision": 0,
+    "openings": ""
+  },
+  {
+    "approach": "default plan",
+    "scenario": "hide-lethal",
+    "won": 11,
+    "fights": 30,
+    "dealt": 87.3,
+    "taken": 65.76666666666667,
+    "msPerDecision": 0,
+    "openings": ""
+  },
+  {
+    "approach": "E1 prefix sharing (d2 w4 r16)",
+    "scenario": "daze-finish",
+    "won": 6,
+    "fights": 30,
+    "dealt": 51.2,
+    "taken": 50.43333333333333,
+    "msPerDecision": 411.2429666025641,
+    "openings": "step-back > step-back ×18, step-back > spark ×12"
+  },
+  {
+    "approach": "E1 prefix sharing (d2 w4 r16)",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 544.0389315774646,
+    "openings": "veil > blade ×30"
+  }
+]

@@ -84,6 +84,12 @@ and far too slow to ship. Part 7's options for closing the gap are:
 - generating candidates with GOAP preconditions;
 - limiting depth to the art in play.
 
+## Making it cheaper
+
+`perf/` compares ways to cut the cost (exact savings, width and depth, goal-directed candidates,
+an approximate model, caching) on speed and on decision quality against a generous real-engine
+reference. See `perf/RESULTS.md`.
+
 ## Limits
 
 - **One-on-one, one objective.** Teams, objectives and identities aren't in it.

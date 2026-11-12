@@ -1,0 +1,42 @@
+[
+  {
+    "approach": "GOAP pairs r8",
+    "scenario": "daze-finish",
+    "won": 15,
+    "fights": 30,
+    "dealt": 80.46666666666667,
+    "taken": 61,
+    "msPerDecision": 103.77619463043477,
+    "openings": "flash > burst ×22, flash > flash ×8"
+  },
+  {
+    "approach": "GOAP pairs r8",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 88.09399445070372,
+    "openings": "veil > blade ×30"
+  },
+  {
+    "approach": "approx model d2",
+    "scenario": "daze-finish",
+    "won": 4,
+    "fights": 30,
+    "dealt": 78.46666666666667,
+    "taken": 68.16666666666667,
+    "msPerDecision": 2.0003294181034765,
+    "openings": "flash > burst ×22, flash > flash ×8"
+  },
+  {
+    "approach": "approx model d2",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 5.015215028168467,
+    "openings": "veil > blade ×30"
+  }
+]
