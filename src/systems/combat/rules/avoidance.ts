@@ -5,7 +5,7 @@ import type { CombatAttributes } from '../contract';
 import { evadeFocus, EVADE_MAX, EVADE_STANCE } from './commitment';
 import { paceLeft } from './pace';
 import { gapRatio } from './damage';
-import { slipChance } from './defence';
+import { SLIP_MAX, slipChance } from './defence';
 import { AREA_RULES, driveOf, resistOf, type EffectUse } from './verbs';
 
 /**
@@ -43,8 +43,8 @@ const READ_EXPONENT: Readonly<Record<AttackForm, number>> = { technique: 0.4, bl
 /** A read never makes slipping less likely than this share, nor more than this many times. */
 const READ_MIN = 0.75;
 const READ_MAX = 1.6;
-/** However sharp the defender, some attacks still land. */
-export const AVOID_MAX = 0.75;
+/** However sharp the defender, some attacks still land: the same ceiling as a slip's. */
+export const AVOID_MAX = SLIP_MAX;
 /**
  * Eyes that see movement before it comes (`foresight`, an eye uncovered) slip up to this much of
  * what comes at them, and this much committed to Evade: still never all of it.
