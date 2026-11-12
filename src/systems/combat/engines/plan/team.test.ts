@@ -159,6 +159,15 @@ describe('plan & watch team: orders', () => {
     const dodging = choose(after, 'for:kiba|ready:close:dodge');
     expect(ally(dodging).reactions?.close).toBe('dodge');
   });
+
+  it('keeps the cards you set for them when you change their stance', () => {
+    const edited = choose(started(), 'for:kiba|slot:close:search');
+    const had = ally(edited).loadout.close.some((s) => s.card === 'search');
+    const after = choose(edited, 'stance:kiba|support');
+    expect(ally(after).stance).toEqual({ kind: 'support' });
+    expect(ally(after).loadout.close.some((s) => s.card === 'search')).toBe(had);
+    expect(ally(after).loadout).toEqual(ally(edited).loadout);
+  });
 });
 
 describe('plan & watch team: the mark', () => {

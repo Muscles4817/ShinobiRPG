@@ -153,12 +153,24 @@ function parseStance(rest: string): { allyId: string; stance: CombatStance } | n
   return null;
 }
 
-/** A new stance brings the cards and the readiness that go with it. */
+/** Whether you have set this teammate's cards yourself: they differ from their stance's own. */
+function cardsEdited(ally: PlanFighter, fighters: readonly PlanFighter[]): boolean {
+  if (!ally.stance) return false;
+  const own = stanceLoadout(ally, ally.stance, fighters);
+  return JSON.stringify(own) !== JSON.stringify(ally.loadout);
+}
+
+/**
+ * A new stance brings the readiness that goes with it, and its cards, unless you have set
+ * their cards yourself: those are yours, and stay.
+ */
 function setStance(state: PlanState, rest: string): PlanState | null {
   const parsed = parseStance(rest);
   const ally = parsed && state.fighters.find((f) => f.id === parsed.allyId);
   if (!parsed || !ally) return null;
-  const loadout = stanceLoadout(ally, parsed.stance, state.fighters);
+  const loadout = cardsEdited(ally, state.fighters)
+    ? ally.loadout
+    : stanceLoadout(ally, parsed.stance, state.fighters);
   const { keepAt: _was, ...unset } = ally;
   const updated = {
     ...unset,
