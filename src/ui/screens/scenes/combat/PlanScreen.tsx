@@ -215,7 +215,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
   );
   const head = (
     <header className="scene-head plan-head">
-      <h1>Plan round {view.round}</h1>
+      <h1>{view.called ? `Round ${view.round}, stopped` : `Plan round ${view.round}`}</h1>
       {view.prompt && <p className="muted small">{view.prompt}</p>}
     </header>
   );

@@ -3,7 +3,6 @@ import { clamp, err, ok, type Result, type Rng } from '@/core';
 import type {
   CombatChoice,
   CombatEngine,
-  CombatOption,
   CombatOutcome,
   CombatState,
   CombatView,
@@ -11,21 +10,14 @@ import type {
 import type { CombatUsage } from '../../teamContract';
 import { alive, hasPerk } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
-import { RANGE_LABEL } from '../../rules/range';
 import { costsOwed } from '../../rules/trumps';
-import { empowerCostsOwed, isPinned } from '../../rules/verbs';
-import { survivalWarning } from './survival';
-import { slotLimit } from './cards';
+import { empowerCostsOwed } from '../../rules/verbs';
 import { fieldMeter } from './field';
-import { seenByPlayer } from './statusView';
-import { withTraceNotes } from './slotTrace';
-import { endOfRound, ROUND_EXCHANGES } from './roundEnd';
-
-export { ROUND_EXCHANGES } from './roundEnd';
+import { endOfRound } from './roundEnd';
+import { CALLED_FOR, calledBack, callOwn } from './roundCalls';
 import { rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
-import { groundNote } from './groundPlay';
 import { withinGround } from '../../rules/ground';
 import { decide, resolveExchange } from './round';
 import {
@@ -37,10 +29,10 @@ import {
   type PlanFighter,
   type PlanState,
 } from './state';
-import { editTeam, teamOptions } from './orders';
+import { editTeam } from './orders';
 import { summonFatesOf, summonSharesOf } from './summons';
 import { metersOf, poolsLeft } from './swarmView';
-import { editPlan, tableOptions } from './table';
+import { editPlan } from './table';
 import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
@@ -48,6 +40,9 @@ import { fightSummary } from './summary';
 import { humanHealth } from './sizing';
 import { bandOf } from './distance';
 import { combatantView } from './combatantView';
+import { options, prompt } from './engineOptions';
+
+export { ROUND_EXCHANGES } from './roundEnd';
 
 /**
  * Plan & Watch, after Punch Club: before each round you slot a few cards for each distance
@@ -60,52 +55,10 @@ import { combatantView } from './combatantView';
 /** The most rounds one "watch to the end" plays, so a fight no one can win still hands back. */
 const WATCHED_ROUNDS_MAX = 20;
 
-/** A fight only watched: play on, a round, or to the end. */
-const WATCH_OPTIONS: readonly CombatOption[] = [
-  { id: 'next', label: 'Next exchange', detail: '', kind: 'continue' },
-  { id: 'round', label: 'Watch the round', detail: '', kind: 'continue' },
-  { id: 'finish', label: 'Watch to the end', detail: '', kind: 'continue' },
-];
-
 const FIGHT_BEGINS = '— The fight begins —';
 
 function read(state: CombatState): PlanState {
   return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
-}
-
-function fleeBlocker(state: PlanState): { disabledReason?: string } {
-  if (!state.canFlee) return { disabledReason: 'You cannot flee this fight' };
-  return isPinned(playerOf(state))
-    ? { disabledReason: 'You are pinned. Wait for the hold to loosen.' }
-    : {};
-}
-
-function options(state: PlanState): readonly CombatOption[] {
-  if (state.result) return [];
-  if (state.watching) return WATCH_OPTIONS;
-  const flee: CombatOption = { id: 'flee', label: 'Flee', detail: 'Try to escape', kind: 'escape' };
-  const escape = { ...flee, ...fleeBlocker(state) };
-  if (state.phase === 'loadout') {
-    const player = playerOf(state);
-    const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
-    return [
-      ...withTraceNotes(
-        tableOptions(
-          player,
-          state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
-        ),
-        state.slotTrace,
-      ),
-      ...teamOptions(state),
-      { id: 'begin', label: begin, detail: '', kind: 'continue' },
-      escape,
-    ];
-  }
-  return [
-    { id: 'next', label: 'Next exchange', detail: '', kind: 'continue' },
-    { id: 'round', label: 'Watch the round', detail: '', kind: 'continue' },
-    escape,
-  ];
 }
 
 /** How each fighter on the player's side but the player ends the fight. */
@@ -144,7 +97,9 @@ function fleeChance(state: PlanState): number {
 /** Fights an exchange, then foes announce their next move. */
 function exchange(state: PlanState, rng: Rng): PlanState {
   const next = endOfRound(resolveExchange(state, rng));
-  return next.result ? next : { ...next, intents: rollIntents(next, rng) };
+  const told = next.result ? next : { ...next, intents: rollIntents(next, rng) };
+  // Something the player would want to answer stops the round (`roundCalls.ts`).
+  return calledBack(state, told);
 }
 
 function watchRound(state: PlanState, rng: Rng): PlanState {
@@ -188,11 +143,16 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const planned = editPlan(state, optionId) ?? editTeam(state, optionId);
   if (planned) return ok(planned);
   switch (optionId) {
+    case 'halt':
+      return ok(callOwn(state));
     case 'begin': {
+      // A round stopped by a call plays on where it stopped (`roundCalls.ts`).
+      const { called: _why, ...resumed } = state;
+      if (state.exchange > 0) return ok({ ...resumed, phase: 'fight' });
       // Dividers are story text too: no numbers (the round number shows above the log).
       const divider = state.bout === 1 ? FIGHT_BEGINS : '— The next round begins —';
       // Each round's slot trace starts afresh (`slotTrace.ts`).
-      const { slotTrace: _last, ...fresh } = state;
+      const { slotTrace: _last, ...fresh } = resumed;
       return ok({ ...fresh, phase: 'fight', log: [...state.log, divider] });
     }
     case 'flee':
@@ -204,25 +164,6 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
     default:
       return ok(exchange(state, rng));
   }
-}
-
-function prompt(state: PlanState): string {
-  if (state.phase === 'loadout') {
-    const over = state.bout > 1 ? 'The round is over. ' : '';
-    const pick = `${over}Round ${state.bout}: pick up to ${slotLimit(playerOf(state))} actions for each distance, higher first, and the defence you keep ready there.`;
-    const hidden = state.fighters.some(
-      (f) => f.side === 'enemy' && alive(f) && f.hidden && !seenByPlayer(state, f),
-    );
-    const ground = groundNote(state.ground);
-    const hiding = hidden ? 'Someone is hidden: Search or Dispel finds them.' : null;
-    // A killer facing you is said plainly: the choice of how to meet them is yours (`survival.ts`).
-    const killer = survivalWarning(playerOf(state), state);
-    return [pick, killer, hiding, ground].filter((part) => part !== null).join(' ');
-  }
-  const where = `${RANGE_LABEL[bandOf(state, playerOf(state))]} range, round ${state.bout}, exchange ${state.exchange + 1} of ${ROUND_EXCHANGES}`;
-  // A watched fight has no card table to show the ground on.
-  const ground = state.watching ? groundNote(state.ground) : null;
-  return ground ? `${where}. ${ground}` : where;
 }
 
 export function createPlanEngine(): CombatEngine {
@@ -291,6 +232,7 @@ export function createPlanEngine(): CombatEngine {
         prompt: prompt(plan),
         ...(meters.length > 0 ? { meters } : {}),
         ...(plan.watching ? { watched: true as const } : {}),
+        ...(plan.called && plan.phase === 'loadout' ? { called: CALLED_FOR[plan.called] } : {}),
       };
     },
 

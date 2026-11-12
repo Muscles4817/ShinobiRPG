@@ -91,7 +91,7 @@ function NextSteps({
     return (
       <nav className="choices watch-next" aria-label="What next">
         <button type="button" className="choice primary" onClick={only}>
-          {onLeave ? 'Continue' : 'Plan the next round'}
+          {onLeave ? 'Continue' : view.called ? 'Change your plan' : 'Plan the next round'}
         </button>
       </nav>
     );

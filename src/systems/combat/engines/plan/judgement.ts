@@ -58,7 +58,7 @@ const WORTH_SHARPNESS: Readonly<Record<StatGrade, number>> = {
 /** The lowest grade that turns a read into a planned counter-pick in the moment. */
 const READS_IN_THE_MOMENT: readonly StatGrade[] = ['D', 'C', 'B', 'A', 'S'];
 
-function gradeOf(fighter: Judged): StatGrade {
+export function gradeOf(fighter: Judged): StatGrade {
   return statTier(fighter.attributes.intellect).grade;
 }
 

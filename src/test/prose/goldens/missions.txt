@@ -429,6 +429,16 @@ view:
   Your senses lie to you, and the attack goes wide.
   The storehouse wraith reaches for Whispering Dread again.
   The storehouse wraith catches you with its Whispering Dread. [Guarded] [−9]
+  prompt: You are badly hurt. Change your plan for the rest of the round, or play on.
+
+>>> combatAct (Play on)
+
+--- combat (day 2, slot 1) ---
+  prompt: Close range, round 2, exchange 2 of 4
+
+>>> combatAct (Watch the round)
+
+--- combat (day 2, slot 1) ---
   —— Second exchange ——
   You break free of the illusion.
   You go in with Gale Heel.
@@ -461,14 +471,24 @@ view:
 >>> combatAct (Watch the round)
 
 --- combat (day 2, slot 1) ---
-  You shake your head, still reeling.
-  The storehouse wraith’s touch comes slower than it did at the start and only brushes you. [Guarded] [−1]
-  You blink, and the field is no longer where it was.
-  —— Last exchange ——
-  Your senses lie to you, and the attack goes wide.
-  The storehouse wraith is gone again, and the air where it stood is empty.
-  You are a shade too slow, and the storehouse wraith’s touch grazes you. [Guarded] [−1]
-  The storehouse wraith’s illusion folds the world around you.
+  The storehouse wraith fades out of sight again.
+  The air around the storehouse wraith wavers as Whispering Dread takes hold.
+  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−11]
+  —— Second exchange ——
+  You press your palms together and push the illusions back.
+  The illusion tears like wet paper.
+  The air around the storehouse wraith turns cold, and Shadow Feint comes with it.
+  You are dazed, and the ground tilts under you.
+  prompt: They have shown a technique you hadn’t seen. Change your plan for the rest of the round, or play on.
+
+>>> combatAct (Play on)
+
+--- combat (day 2, slot 1) ---
+  prompt: Close range, round 3, exchange 3 of 4
+
+>>> combatAct (Watch the round)
+
+--- combat (day 2, slot 1) ---
   prompt: The round is over. Round 4: pick up to 2 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 4)
@@ -476,6 +496,16 @@ view:
 --- combat (day 2, slot 1) ---
   —— The next round begins ——
   prompt: Close range, round 4, exchange 1 of 4
+
+>>> combatAct (Watch the round)
+
+--- combat (day 2, slot 1) ---
+  prompt: You are caught: dazed, held or sealed. Change your plan for the rest of the round, or play on.
+
+>>> combatAct (Play on)
+
+--- combat (day 2, slot 1) ---
+  prompt: Close range, round 4, exchange 4 of 4
 
 >>> combatAct (Watch the round)
 
