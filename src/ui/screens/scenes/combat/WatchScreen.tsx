@@ -68,7 +68,7 @@ function ActingOrder({
         const state = id === now ? 'now' : firstBeat(id) < at ? 'done' : 'waiting';
         return (
           <span key={id} className={`token-seal small ${f?.side ?? ''} ${state}`} title={f?.name}>
-            {shortName(f?.name ?? '?', fighters).mark}
+            {shortName(f?.name ?? '?', fighters, id).mark}
           </span>
         );
       })}

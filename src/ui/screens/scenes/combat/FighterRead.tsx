@@ -59,7 +59,7 @@ export function FoeMoves({
         {moving.map((f) => (
           <li key={f.id}>
             <span className="token-seal small enemy" aria-hidden="true">
-              {shortName(f.name, field).mark}
+              {shortName(f.name, field, f.id).mark}
             </span>
             <b>{f.name}</b> <span>{f.intent}</span>
           </li>

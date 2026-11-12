@@ -70,7 +70,7 @@ function stageRole(id: string, stage: StageMarks | undefined): string | false {
 function Token({ fighter: f, field, spread, ...rest }: TokenProps) {
   const { reads, pulses, selected, onSelect, previewFor, stage } = rest;
   const pace = PACE_TAG[reads[f.id]?.pace ?? 'even'];
-  const short = shortName(f.name, field);
+  const short = shortName(f.name, field, f.id);
   const state = [
     f.health <= 0 && 'down',
     f.targetable === false && 'hidden',

@@ -64,7 +64,7 @@ function FighterGauges({ fighter: f, pulse, sight, field }: FighterProps) {
     <article className={down ? `gauge-card ${f.side} down` : `gauge-card ${f.side}`}>
       <header>
         <span className={`token-seal small ${f.side}`} aria-hidden="true">
-          {shortName(f.name, field).mark}
+          {shortName(f.name, field, f.id).mark}
         </span>
         <b>{f.name}</b>
       </header>

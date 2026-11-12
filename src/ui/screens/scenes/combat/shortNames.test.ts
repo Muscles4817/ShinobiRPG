@@ -25,6 +25,17 @@ describe('short names on the stage', () => {
     expect(shortName('Kiba', all).mark).toBe('Ki');
   });
 
+  it('numbers fighters who share a whole name', () => {
+    const all = [
+      { id: 'a', name: 'Hiruzen' },
+      { id: 'b', name: 'Hiruzen’s shadow clone' },
+      { id: 'c', name: 'Hiruzen’s shadow clone' },
+    ];
+    expect(shortName('Hiruzen’s shadow clone', all, 'b')).toEqual({ label: 'clone 1', mark: 'C1' });
+    expect(shortName('Hiruzen’s shadow clone', all, 'c').mark).toBe('C2');
+    expect(shortName('Hiruzen', all, 'a').mark).toBe('H');
+  });
+
   it('keeps every seal in a crowded fight apart', () => {
     const all = field('Bandit Archer', 'Ronin Archer', 'Aoi', 'Hungry Ghost 1', 'Hungry Ghost 2');
     const marks = all.map((f) => shortName(f.name, all).mark);
