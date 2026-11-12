@@ -34,7 +34,8 @@ export function combatScouting(
 
 /**
  * A technique your card plays, as its card in the Jutsu deck reads it: what the desktop shows
- * beside the plan while the card is pointed at. Null for a technique the pack doesn't have.
+ * beside the plan while the card is pointed at. It is on your card, so you know it, even where
+ * the character never studied it (a versus fighter's kit). Null for one the pack doesn't have.
  */
 export function fightTechnique(
   state: GameState,
@@ -42,5 +43,9 @@ export function fightTechnique(
   techniqueId: string,
 ): JutsuCard | null {
   const def = ctx.content.techniques.get(techniqueId);
-  return def ? jutsuCard(state, ctx, def) : null;
+  if (!def) return null;
+  const card = jutsuCard(state, ctx, def);
+  return card.status === 'known'
+    ? card
+    : { ...card, status: 'known', ready: true, progressPct: 100 };
 }
