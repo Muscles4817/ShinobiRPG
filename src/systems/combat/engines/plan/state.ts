@@ -211,6 +211,12 @@ export interface PlanState {
   /** Lines let go from the front of `log` to keep it to `LOG_LIMIT` (absent: none). */
   readonly logDropped?: number;
   readonly result: CombatResult | null;
+  /** Rounds in a row that ended with no one worse off (`tiring.ts`); none when absent. */
+  readonly quietRounds?: number;
+  /** Everyone's health together as the round began (`tiring.ts`); unknown when absent. */
+  readonly roundHealth?: number;
+  /** Both sides have tired, and nothing comes back between exchanges (`tiring.ts`). */
+  readonly tired?: true;
   readonly canFlee: boolean;
   /** The side that moved first (from the fight's opening) acts first in exchange 1. */
   readonly firstMover?: CombatSide;

@@ -48,7 +48,12 @@ const NATURE_SEALS: Readonly<Record<Element, string>> = {
   water: '水',
 };
 
-const SPAR_TITLE = { won: 'You won', lost: 'You lost', yielded: 'You yielded' } as const;
+const SPAR_TITLE = {
+  won: 'You won',
+  lost: 'You lost',
+  drawn: 'A draw',
+  yielded: 'You yielded',
+} as const;
 
 export function peopleCardContent(report: PeopleReport): CardContent {
   switch (report.kind) {

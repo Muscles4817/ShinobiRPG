@@ -88,6 +88,13 @@ const CLOSINGS: Closings = {
     ],
   },
   escaped: { id: 'fled', lines: ['{a} {a.is} away, and no one follows.'] },
+  stalemate: {
+    id: 'drawn',
+    lines: [
+      'Neither side can finish it. {a} and {f} draw back, spent, and the fight is over.',
+      'It has gone on too long for either of them, and {a} and {f} break off.',
+    ],
+  },
 };
 
 const CALLED_OFF: Bank = {
@@ -113,6 +120,10 @@ const OCCASION_CLOSINGS: Readonly<Record<CombatOccasion, Closings>> = {
       ],
     },
     escaped: CALLED_OFF,
+    stalemate: {
+      id: 'drawn-spar',
+      lines: ['{a} and {f} stand there breathing hard until one of them laughs and calls it even.'],
+    },
   },
   teammate: {
     victory: {
@@ -130,6 +141,10 @@ const OCCASION_CLOSINGS: Readonly<Record<CombatOccasion, Closings>> = {
       ],
     },
     escaped: CALLED_OFF,
+    stalemate: {
+      id: 'drawn-teammate',
+      lines: ['Neither gives an inch, and in the end {a} and {f} call it a draw.'],
+    },
   },
   rival: {
     victory: {
@@ -150,6 +165,10 @@ const OCCASION_CLOSINGS: Readonly<Record<CombatOccasion, Closings>> = {
       id: 'fled-rival',
       lines: ['{f} let{f.s} {a} go, and make{f.s} sure everyone watching saw it.'],
     },
+    stalemate: {
+      id: 'drawn-rival',
+      lines: ['Neither of them can finish it, and {f} won’t be the one to say so.'],
+    },
   },
   bout: {
     victory: {
@@ -169,6 +188,10 @@ const OCCASION_CLOSINGS: Readonly<Record<CombatOccasion, Closings>> = {
     escaped: {
       id: 'fled-bout',
       lines: ['{a} step{a.s} out of the ring, and the proctor calls it.'],
+    },
+    stalemate: {
+      id: 'drawn-bout',
+      lines: ['The proctor calls the bout: neither of them can finish it.'],
     },
   },
 };

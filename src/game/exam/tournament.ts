@@ -132,6 +132,7 @@ function signalFor(outcome: CombatOutcome, health: number): ConductSignal | null
       if (share < SENSIBLE_YIELD) return 'sensible-yield';
       return share >= EARLY_YIELD ? 'early-yield' : null;
     case 'defeat':
+    case 'stalemate':
       return null;
   }
 }
@@ -144,6 +145,7 @@ function lineFor(stage: TournamentStageDef, outcome: CombatOutcome, champion: bo
     case 'escaped':
       return stage.yielded;
     case 'defeat':
+    case 'stalemate':
       return stage.lost;
   }
 }
