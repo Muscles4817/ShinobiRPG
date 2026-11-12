@@ -100,4 +100,29 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
         'The temples light their lamps again by the first snow. Kōun sweeps the training ground at dawn as he always has, and does not ask how it ended.',
     },
   },
+  {
+    id: 'the-kiln-abbess',
+    templateId: 's-hunt',
+    minMissionsCompleted: 40,
+    reward: { ryo: 2200, reputation: 32 },
+    values: {
+      title: 'The Kiln Abbess',
+      client: 'The Tōrokage’s Office',
+      quarry: 'the Kiln Abbess, who keeps the salamanders without the Kiln Mother’s leave',
+      briefing:
+        'Farms along the falls road have been burned out in the night, and the ash in the fields is still warm at noon. Rokuro of the Haibara came to the office himself to say the heat is salamander heat, and that whoever is calling them does not feed the kilns.',
+      trail:
+        'The burned farms make no line on the map, and the salamanders leave no tracks a dog will follow, only scorched stones and the smell of a kiln.',
+      found:
+        'You find the old kiln temple above the falls with smoke at one chimney only, and the Abbess asleep in the warm ash, before anything in the coals stirs.',
+      cold: 'You find the old kiln temple above the falls, but every chimney is smoking. Something in the coals has told her you are on the stair.',
+      lair: 'The Abbess sits cross-legged in the temple yard with her eyes half shut and the heat coming off her, and a missing-nin in ember colours keeps the kiln door.',
+      foe: 'kiln-abbess',
+      second: 'ember-missing-nin',
+      surrender:
+        'The Abbess lets the heat go out of her, and the coals go grey around her knees. “Tell the Mother I am sorry. She will not remember me either way.”',
+      ending:
+        'The kilns above the falls go cold again, and the farms along the road rebuild before the rains. Rokuro feeds the great kilns that night as on every other, and says nothing to anyone.',
+    },
+  },
 ];

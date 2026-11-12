@@ -35,3 +35,19 @@ export const NIGHT_WATCH_ARSENAL: PersonArsenal = {
     'arm-lock',
   ],
 };
+
+/**
+ * Rokuro fights as the kilns are kept: ash and cinders, and against anyone strong a newt of the
+ * old kilns called to sit with while he draws in the kiln calm, then the kiln's mouth opened.
+ */
+export const KILN_KEEPER_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'haibara-ash-puff',
+    'haibara-ash-pall',
+    'haibara-cinder-bind',
+    'haibara-kiln-storm',
+    'kiln-calm',
+    'kiln-mouth',
+  ],
+  summons: ['kiln-newt', 'ember-salamander'],
+};

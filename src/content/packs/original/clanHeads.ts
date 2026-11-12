@@ -2,6 +2,8 @@ import { look } from '../../look';
 import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
 
+import { KILN_KEEPER_ARSENAL } from './arsenals';
+
 /**
  * The heads of Tōrōgakure's clans, all jōnin. Each keeps the clan's own techniques and
  * teaches them only to their own; anyone may still train with them.
@@ -280,6 +282,7 @@ export const CLAN_HEADS: readonly PersonDef[] = [
     }),
     specialty: 'ninjutsu',
     bio: 'Has fed the great kilns every night for thirty years. The ash on his sleeves never quite settles.',
+    arsenal: KILN_KEEPER_ARSENAL,
     schedule: {
       morning: 'haibara-compound',
       afternoon: 'training-grounds',
@@ -293,6 +296,8 @@ export const CLAN_HEADS: readonly PersonDef[] = [
         'haibara-ash-pall',
         'haibara-cinder-bind',
         'haibara-kiln-storm',
+        'kiln-calm',
+        'kiln-mouth',
       ],
       price: { kind: 'bond', minStage: 1 },
     },
