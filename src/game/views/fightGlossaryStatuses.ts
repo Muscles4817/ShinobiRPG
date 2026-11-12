@@ -65,6 +65,12 @@ const GATES = Array.from({ length: LADDER_TOP.gates }, (_, i) =>
 const SAGE_STEPS = Array.from({ length: LADDER_TOP.sage }, (_, i) =>
   stepStatus({ ladder: 'sage', step: i + 1 }),
 );
+const WICKS = Array.from({ length: LADDER_TOP.wicks }, (_, i) =>
+  stepStatus({ ladder: 'wicks', step: i + 1 }),
+);
+const KILN_STEPS = Array.from({ length: LADDER_TOP.kiln }, (_, i) =>
+  stepStatus({ ladder: 'kiln', step: i + 1 }),
+);
 
 export const STATUS_ENTRIES: readonly GlossaryEntry[] = [
   condition(
@@ -133,6 +139,24 @@ export const STATUS_ENTRIES: readonly GlossaryEntry[] = [
     ),
     id: 'sage-open',
     also: SAGE_STEPS,
+  },
+  {
+    ...readied(
+      'A wick lit',
+      'An inner lamp burns the body hotter, paid in breath and then health every exchange; the last one lit brings it down.',
+      'Outlast it: Evade, back off, keep them at a distance. The wicks burn their user out.',
+    ),
+    id: 'wick-open',
+    also: WICKS,
+  },
+  {
+    ...readied(
+      'Kiln calm open',
+      'Heat drawn in from stillness beside a summoned newt lifts body and arts for a few exchanges, at no cost to the body.',
+      'Outlast it, or catch them while they sit still to draw it in.',
+    ),
+    id: 'kiln-open',
+    also: KILN_STEPS,
   },
   readied(
     'Meditating',
