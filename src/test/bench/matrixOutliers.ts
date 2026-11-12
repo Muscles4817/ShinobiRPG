@@ -19,9 +19,9 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   areaCaster:
     'powerhouse versatile illusionist trapper medic sensor cloner counterer summoner puppeteer hive dust foresight mimic',
   sealer:
-    'rusher powerhouse versatile illusionist stalker mistBlade medic sensor cloner counterer shrouded puppeteer hive dust gates assassin foresight mimic',
+    'rusher powerhouse versatile illusionist stalker mistBlade medic sensor cloner counterer shrouded summoner puppeteer hive dust gates assassin foresight mimic',
   trapper:
-    'versatile illusionist stalker mistBlade areaCaster sealer medic cloner counterer shrouded puppeteer hive dust foresight mimic',
+    'versatile illusionist stalker mistBlade areaCaster sealer medic cloner counterer shrouded summoner puppeteer hive dust foresight mimic',
   medic:
     'rusher powerhouse versatile stalker mistBlade sealer trapper summoner puppeteer hive dust gates foresight mimic',
   sensor:
