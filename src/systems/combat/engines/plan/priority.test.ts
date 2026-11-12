@@ -261,6 +261,18 @@ describe('plan & watch priorities: the engine', () => {
     expect(of('jutsu:blast').some((o) => o.setting === 'Target')).toBe(true);
   });
 
+  it('moves a slot down as well as up, but never past the end', () => {
+    const plan = { close: [], mid: ['search', 'jutsu:blast'], far: [] };
+    const begun = engine.start({ ...setup, plan }, createRng(1));
+    const options = engine.view(begun).options;
+    expect(options.some((o) => o.id === 'lower:mid:search')).toBe(true);
+    expect(options.some((o) => o.id === 'lower:mid:jutsu:blast')).toBe(false);
+    expect(midOf(act(begun, 'lower:mid:search'))).toEqual([
+      { card: 'jutsu:blast' },
+      { card: 'search' },
+    ]);
+  });
+
   it('offers the back row and the team mark as targets only when a team fights', () => {
     const plan = { close: [], mid: ['jutsu:blast'], far: [] };
     const targets = (allies: CombatantSetup[]) =>

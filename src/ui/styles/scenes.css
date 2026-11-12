@@ -473,6 +473,12 @@ button.foe {
   align-items: center;
   gap: 4px 6px;
 }
+/* Move up and Move down, stacked beside the card they move. */
+.plan-moves {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .plan-rank {
   font-family: var(--font-story);
   font-size: 1.05rem;
