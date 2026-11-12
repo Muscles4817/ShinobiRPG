@@ -26,9 +26,13 @@ import type { CardId, PlanFighter } from './state';
  * Which actions sit where is the whole plan, and a sharper mind holds more of them.
  */
 
-/** Action slots per distance by intellect grade: a strategist plans deeper than a brawler. */
+/**
+ * Action slots per distance by intellect grade: a strategist plans deeper than a brawler. Even a
+ * dull mind holds three, so a fresh graduate's plan has room for an opener, a punish and an
+ * escape; intellect buys the fourth and fifth.
+ */
 const SLOTS_BY_INTELLECT: Readonly<Record<StatGrade, number>> = {
-  E: 2,
+  E: 3,
   D: 3,
   C: 4,
   B: 5,

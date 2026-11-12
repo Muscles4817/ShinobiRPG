@@ -60,9 +60,13 @@ describe('plan & watch default plan: actions only', () => {
   it('keeps its best attack when a small plan fills with emergencies', () => {
     const mend: CombatTechnique = { ...bolt('mend', 0), effects: [{ verb: 'heal', power: 12 }] };
     const sense: CombatTechnique = { ...bolt('sense', 0), effects: [{ verb: 'sense', power: 10 }] };
-    // Two slots at intellect E: heal and sense would fill them, but the attack stays.
-    const mid = cards(hero([mend, sense, bolt('bolt', 14)]), 'mid');
-    expect(mid).toHaveLength(2);
+    const rally: CombatTechnique = {
+      ...bolt('rally', 0),
+      effects: [{ verb: 'empower', power: 8 }],
+    };
+    // Three slots at intellect E: heal, sense and an empower would fill them, but the attack stays.
+    const mid = cards(hero([mend, sense, rally, bolt('bolt', 14)]), 'mid');
+    expect(mid).toHaveLength(3);
     expect(mid).toContain('jutsu:bolt');
   });
 });
