@@ -60,9 +60,10 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
     oneScreenShare: 1,
   },
   'fresh genin v their mirror': {
-    planScreens: 7.95,
-    repeatShare: 0.875,
-    lostShare: 0.228,
+    // 7.95, 0.875 and 0.228 before three slots, the academy swap and pouch (P2.4).
+    planScreens: 8.167,
+    repeatShare: 0.867,
+    lostShare: 0.225,
     oneScreenShare: 0,
   },
 };
