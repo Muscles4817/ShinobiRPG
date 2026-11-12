@@ -8,7 +8,12 @@ import type { GameState } from './state';
 import { missionBoardView } from './views/boards';
 import { gearShopView, loadoutView } from './views/shops';
 
-const rich = (state: GameState = newGame()): GameState => ({ ...state, wallet: { ryo: 2000 } });
+/** Money to spend, and the academy's pouch emptied, so what's bought is all it holds. */
+const rich = (state: GameState = newGame()): GameState => ({
+  ...state,
+  wallet: { ryo: 2000 },
+  inventory: { ...state.inventory, tools: {} },
+});
 const FORGE = 'kurogane-forge';
 
 function atHall(state: GameState): GameState {

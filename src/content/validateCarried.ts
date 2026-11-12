@@ -32,7 +32,10 @@ export function carriedProblems(
   ];
 }
 
-/** Every foe's gear and pouch. */
+/** Every foe's gear and pouch, and the pouch a graduate starts with. */
 export function validateFoesCarried(pack: ContentPack): string[] {
-  return pack.enemies.flatMap((e) => carriedProblems(pack, `enemy "${e.id}"`, e.carries));
+  return [
+    ...pack.enemies.flatMap((e) => carriedProblems(pack, `enemy "${e.id}"`, e.carries)),
+    ...carriedProblems(pack, 'the starting pouch', { tools: pack.startingTools }),
+  ];
 }

@@ -43,7 +43,7 @@ import { DESERT_FOX } from '../../shared/wildKinds';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
-import { TOOLS } from '../../shared/tools';
+import { STARTING_POUCH, TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
 import { DEEP_WILDS } from '../../shared/deepWilds';
 import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
@@ -151,6 +151,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   description: 'Konohagakure in the Land of Fire, with names from Naruto. Fan pack.',
   startLocationId: 'konohagakure',
   startingRyo: 300,
+  startingTools: STARTING_POUCH,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
   routes: NARUTO_ROUTES,

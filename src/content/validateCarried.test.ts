@@ -29,4 +29,11 @@ describe('what foes carry', () => {
       'enemy "samurai" knows "sword" at 2, not 0 to 1',
     ]);
   });
+
+  it('checks the pouch a graduate starts with', () => {
+    const startingTools = { 'smoke-bomb': 2, 'moon-rock': 1 };
+    expect(validateFoesCarried({ ...ORIGINAL_PACK, startingTools })).toEqual([
+      'the starting pouch carries unknown tool "moon-rock"',
+    ]);
+  });
 });

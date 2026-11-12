@@ -320,6 +320,8 @@ export interface ContentPack {
   readonly description: string;
   readonly startLocationId: string;
   readonly startingRyo: number;
+  /** The fight tools a graduate's pouch holds on the first day, by id, and how many. */
+  readonly startingTools: Readonly<Record<string, number>>;
   readonly text: SettingText;
   readonly locations: readonly LocationDef[];
   /** The roads between locations. */
