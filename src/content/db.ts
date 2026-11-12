@@ -127,6 +127,7 @@ export interface ContentDb {
   readonly team: TeamText;
   readonly village: VillageLife;
   readonly academyTechniques: readonly string[];
+  readonly academyBasics: readonly string[];
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;
 }
 
@@ -199,6 +200,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     team: pack.team,
     village: pack.village,
     academyTechniques: pack.academyTechniques,
+    academyBasics: pack.academyBasics,
     disciplineStarters: pack.disciplineStarters,
   };
 }

@@ -138,6 +138,7 @@ function techniqueReferenceProblems(pack: ContentPack): string[] {
   const known = new Set(pack.techniques.map((t) => t.id));
   const owners: [string, readonly string[]][] = [
     ['academyTechniques', pack.academyTechniques],
+    ['academyBasics', pack.academyBasics],
     ['disciplineStarters', Object.values(pack.disciplineStarters)],
     ...pack.clans.map((c): [string, readonly string[]] => [
       `clan "${c.id}"`,
