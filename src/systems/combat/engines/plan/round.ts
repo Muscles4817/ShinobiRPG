@@ -22,8 +22,9 @@ import { play } from './play';
 import { chooseCard } from './choose';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
-import { fieldAfter, lostInField, ownField } from './field';
+import { fieldAfter, lostInField } from './field';
 import { intendedCard, keepsTo } from './intent';
+import { momentIn } from './moment';
 import { exchangeDivider, staged } from './staging';
 import { lingerAfter } from './lingering';
 import { secondWinds } from './provisions';
@@ -60,7 +61,7 @@ import { tracedLine } from './sceneVoice';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';
-import { bandOf, distanceBetween, sameSpacing, spacingOf } from './distance';
+import { bandOf, sameSpacing, spacingOf } from './distance';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -88,17 +89,7 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
   // A mind that reads the fight picks whom to go for; a dull one goes for whoever is there.
   const there = targetFor(seen, rng);
   const foe = readsInTheMoment(actor) ? bestTarget(actor, seen) : there;
-  const hiddenFoe = opponentsOf(round.fighters, actor).some((f) => f.hidden);
-  const moment = {
-    band: foe ? distanceBetween(round, actor.id, foe.id) : bandOf(round, actor),
-    foe,
-    hiddenFoe,
-    opening: round.opening ?? false,
-    fieldUp: ownField(round.field, actor),
-    fighters: round.fighters,
-    exchange: round.number,
-    ...(round.reads ? { reads: round.reads } : {}),
-  };
+  const moment = momentIn(round, actor, foe);
   const intended = intendedCard(actor, round.intents, bandOf(round, actor));
   const card =
     intended && keepsTo(actor, intended, round) ? intended : chooseCard(actor, moment, rng);

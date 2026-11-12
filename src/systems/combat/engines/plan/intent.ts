@@ -18,6 +18,7 @@ import {
 } from './cards';
 import { chooseCard, desperate } from './choose';
 import { ownField } from './field';
+import { momentIn } from './moment';
 import { planAdherence, readsInTheMoment } from './judgement';
 import { needed, plannedPlay } from './priority';
 import { inSight, opponentsOf } from './senses';
@@ -62,18 +63,10 @@ function asRound(table: Table): Round {
 function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
   // A foe plays its plan in priority order as often as its judgement keeps it to it (its
   // default plan already holds its instincts as slot conditions); otherwise it follows instinct.
-  if (rng.chance(planAdherence(self))) return cardId(plannedPlay(self, asRound(table)).card);
-  const foes = opponentsOf(table.fighters, self);
-  const inSight = foes.filter(targetable);
-  const moment = {
-    band: bandOf(table, self),
-    foe: inSight.length > 0 ? rng.pick(inSight) : undefined,
-    hiddenFoe: foes.some((f) => f.hidden),
-    opening: table.exchange === 0,
-    fieldUp: ownField(table.field, self),
-    exchange: table.round,
-    ...(table.reads ? { reads: table.reads } : {}),
-  };
+  const round = asRound(table);
+  if (rng.chance(planAdherence(self))) return cardId(plannedPlay(self, round).card);
+  const inSight = opponentsOf(table.fighters, self).filter(targetable);
+  const moment = momentIn(round, self, inSight.length > 0 ? rng.pick(inSight) : undefined);
   return cardId(chooseCard(self, moment, rng));
 }
 
