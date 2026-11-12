@@ -96,9 +96,9 @@ describe('plan & watch cards', () => {
     expect(ids(reactionsFor(hero!, 'far'))).toEqual(['guard', 'dodge']);
   });
 
-  it('a sharper mind holds more actions: three at grades E and D up to five from B', () => {
+  it('a sharper mind holds more actions: three at grades E and D, five from B, six at S', () => {
     const at = (intellect: number) => slotLimit({ attributes: { ...attributes, intellect } });
-    expect([at(5), at(8), at(13), at(20), at(40)]).toEqual([3, 3, 4, 5, 5]);
+    expect([at(5), at(8), at(13), at(20), at(32), at(40)]).toEqual([3, 3, 4, 5, 5, 6]);
   });
 
   it('the default plan walks a brawler in and keeps a jutsu user at range', () => {
