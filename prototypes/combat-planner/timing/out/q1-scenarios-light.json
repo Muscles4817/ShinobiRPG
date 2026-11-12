@@ -1,0 +1,148 @@
+[
+ {
+  "label": "daze-finish · round + light decisions between (invalid: replan)",
+  "fights": 30,
+  "won": 1,
+  "lost": 1,
+  "dealt": 35.733333333333334,
+  "taken": 56.06666666666667,
+  "exchanges": 8,
+  "rounds": 2,
+  "msPerFight": 411.53697886666595,
+  "msPerRound": 205.76848943333297,
+  "msPerRoundP95": 535.4661970000016,
+  "plansPerRound": 1.05,
+  "lightPerRound": 2.95,
+  "exchangesSimPerRound": 237.03333333333333,
+  "kept": 0,
+  "defaulted": 0,
+  "skipped": 0,
+  "warmPlans": 0,
+  "invalid": {
+   "trigger": 3
+  },
+  "audits": 0,
+  "agreed": 1,
+  "regretMean": 0,
+  "regretP90": 0,
+  "combos": {
+   "flash>burst": 23
+  },
+  "openings": {
+   "flash>step-back": 20,
+   "flash>burst": 10
+  },
+  "allMsPerRound": 205.76848943333297,
+  "allMsPerRoundP95": 535.4661970000016,
+  "group": "daze-finish",
+  "policy": "round + light decisions between (invalid: replan)"
+ },
+ {
+  "label": "hide-lethal · round + light decisions between (invalid: replan)",
+  "fights": 30,
+  "won": 30,
+  "lost": 0,
+  "dealt": 100,
+  "taken": 6.266666666666667,
+  "exchanges": 2.3666666666666667,
+  "rounds": 1,
+  "msPerFight": 195.09812079999963,
+  "msPerRound": 195.09812079999963,
+  "msPerRoundP95": 376.02193599999737,
+  "plansPerRound": 1,
+  "lightPerRound": 1.3666666666666667,
+  "exchangesSimPerRound": 177,
+  "kept": 0,
+  "defaulted": 0,
+  "skipped": 0,
+  "warmPlans": 0,
+  "invalid": {},
+  "audits": 0,
+  "agreed": 1,
+  "regretMean": 0,
+  "regretP90": 0,
+  "combos": {
+   "veil>blade": 33
+  },
+  "openings": {
+   "veil>blade": 30
+  },
+  "allMsPerRound": 195.09812079999963,
+  "allMsPerRoundP95": 376.02193599999737,
+  "group": "hide-lethal",
+  "policy": "round + light decisions between (invalid: replan)"
+ },
+ {
+  "label": "daze-finish · round + light decisions between (invalid: light)",
+  "fights": 30,
+  "won": 1,
+  "lost": 1,
+  "dealt": 35.03333333333333,
+  "taken": 56.06666666666667,
+  "exchanges": 7.966666666666667,
+  "rounds": 2,
+  "msPerFight": 267.7198619,
+  "msPerRound": 133.85993095,
+  "msPerRoundP95": 396.2723890000125,
+  "plansPerRound": 1,
+  "lightPerRound": 2.9833333333333334,
+  "exchangesSimPerRound": 229.43333333333334,
+  "kept": 0,
+  "defaulted": 0,
+  "skipped": 0,
+  "warmPlans": 0,
+  "invalid": {
+   "trigger": 3
+  },
+  "audits": 0,
+  "agreed": 1,
+  "regretMean": 0,
+  "regretP90": 0,
+  "combos": {
+   "flash>burst": 22
+  },
+  "openings": {
+   "flash>step-back": 20,
+   "flash>burst": 10
+  },
+  "allMsPerRound": 133.85993095,
+  "allMsPerRoundP95": 396.2723890000125,
+  "group": "daze-finish",
+  "policy": "round + light decisions between (invalid: light)"
+ },
+ {
+  "label": "hide-lethal · round + light decisions between (invalid: light)",
+  "fights": 30,
+  "won": 30,
+  "lost": 0,
+  "dealt": 100,
+  "taken": 6.266666666666667,
+  "exchanges": 2.3666666666666667,
+  "rounds": 1,
+  "msPerFight": 113.03793053333212,
+  "msPerRound": 113.03793053333212,
+  "msPerRoundP95": 202.5835369999986,
+  "plansPerRound": 1,
+  "lightPerRound": 1.3666666666666667,
+  "exchangesSimPerRound": 177,
+  "kept": 0,
+  "defaulted": 0,
+  "skipped": 0,
+  "warmPlans": 0,
+  "invalid": {},
+  "audits": 0,
+  "agreed": 1,
+  "regretMean": 0,
+  "regretP90": 0,
+  "combos": {
+   "veil>blade": 33
+  },
+  "openings": {
+   "veil>blade": 30
+  },
+  "allMsPerRound": 113.03793053333212,
+  "allMsPerRoundP95": 202.5835369999986,
+  "group": "hide-lethal",
+  "policy": "round + light decisions between (invalid: light)"
+ }
+]
