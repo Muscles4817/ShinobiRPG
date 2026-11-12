@@ -8,6 +8,7 @@ import { defaultLoadout, defaultReadiness } from './defaults';
 import { plannedPlay } from './priority';
 import { chooseCard } from './choose';
 import { createPlanEngine } from './engine';
+import { slotLimit } from './cards';
 import { rememberedPlan } from './memory';
 import { react, type Blow } from './react';
 import { decide, resolveExchange } from './round';
@@ -248,6 +249,22 @@ describe('plan & watch kits: saves', () => {
       far: [],
     };
     expect(rememberedPlan(plan, hero!)?.loadout).toEqual(plan);
+  });
+
+  it('a plan remembered when a dull mind held two actions loads as it was, a slot to spare', () => {
+    const [hero] = pair([], { techniques: [blast] });
+    const plan = {
+      loadout: {
+        close: plainSlots(['search', 'dispel']),
+        mid: plainSlots(['dispel', 'jutsu:blast']),
+        far: plainSlots(['search']),
+      },
+      reactions: { close: 'guard', mid: 'guard', far: 'dodge' },
+    };
+    const kept = rememberedPlan(plan, hero!);
+    expect(kept?.loadout).toEqual(plan.loadout);
+    expect(kept?.reactions).toEqual(plan.reactions);
+    expect(slotLimit(hero!)).toBeGreaterThan(plan.loadout.mid.length);
   });
 
   it('a fight saved before kits and tools still views and plays', () => {
