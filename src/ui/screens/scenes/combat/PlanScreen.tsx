@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import {
   combatLog,
+  roundAdvice,
   roundWhy,
   type CombatOption,
   type CombatView,
@@ -66,10 +67,11 @@ function LastLines({ view }: { readonly view: CombatView }) {
 
 /**
  * How the fight has gone so far: the opening's last lines, or why the round just played went as
- * it did (`roundWhy`), with its last lines folded under it.
+ * it did (`roundWhy`) and one thing to try (`roundAdvice`), with its last lines folded under it.
  */
 function HowItWent({ view }: { readonly view: CombatView }) {
   const why = view.round > 1 ? roundWhy(view) : [];
+  const advice = view.round > 1 ? roundAdvice(view) : null;
   if (view.log.length === 0) return null;
   if (why.length === 0) {
     return (
@@ -89,6 +91,7 @@ function HowItWent({ view }: { readonly view: CombatView }) {
           </li>
         ))}
       </ul>
+      {advice && <p className="round-advice">{advice}</p>}
       <details className="round-lines">
         <summary>Its last lines</summary>
         <LastLines view={view} />

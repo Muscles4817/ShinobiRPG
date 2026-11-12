@@ -1,6 +1,7 @@
 import {
   splitNarration,
   type CombatantView,
+  type NarrationCause,
   type CombatView,
   type Narration,
   type NarrationOffPlan,
@@ -8,7 +9,7 @@ import {
 } from '@/systems/combat';
 import type { JournalChip } from '@/systems/journal';
 
-import { OFF_PLAN_LABEL, REACTION_LABEL } from './combatLog';
+import { CAUSE_LABEL, OFF_PLAN_LABEL, REACTION_LABEL } from './combatLog';
 import { amountOwner, lineTarget } from './fightReplay';
 
 /**
@@ -16,7 +17,9 @@ import { amountOwner, lineTarget } from './fightReplay';
  * own lines (from the divider that opens it, `roundStart`), each a short phrase with its
  * numbers in chips. Turns of yours that went off your plan and why, how your attacks fared,
  * who hurt you and how much, foes who kept a distance other than yours, which of your defences
- * worked, and what the round cost you.
+ * worked, and what the round cost you. Where the engine said why (`rules/causes.ts`), the rows
+ * say it too: why your attacks were slipped, why your steps failed and why your holds didn't
+ * take, each cause a stamp.
  * Everything is read from what the engine told, so the strip says only what happened.
  */
 
@@ -35,7 +38,19 @@ const POOLS_SHOWN = [
 /** How many of those who hurt you get a row of their own. */
 const HURT_ROWS = 3;
 
-interface Line {
+/** Causes that tell why a step of yours failed. */
+const STEP_CAUSES: readonly NarrationCause[] = [
+  'held',
+  'no-room',
+  'outpaced',
+  'cut-off',
+  'kept-pace',
+  'held-off',
+];
+/** Causes that tell why a hold of yours didn't take. */
+const HOLD_CAUSES: readonly NarrationCause[] = ['braced', 'resisted'];
+
+export interface Line {
   readonly said: Narration;
   readonly target: string | null;
   readonly owner: string | null;
@@ -52,7 +67,7 @@ interface Tally {
 }
 
 /** The round's lines: everything from the last round's opening divider on. */
-function lastRound(log: readonly string[]): Narration[] {
+export function lastRound(log: readonly string[]): Narration[] {
   const said = log.map(splitNarration);
   const start = said.map((s) => s.roundStart === true).lastIndexOf(true);
   return start < 0 ? [] : said.slice(start);
@@ -65,7 +80,7 @@ function counted<K>(entries: readonly (readonly [K, number])[]): Map<K, number> 
   return counts;
 }
 
-function read(said: Narration, fighters: readonly CombatantView[]): Line {
+export function read(said: Narration, fighters: readonly CombatantView[]): Line {
   const target = lineTarget(said, fighters);
   const harm = said.amounts.reduce((sum, a) => sum + (a.kind === 'harm' ? a.amount : 0), 0);
   return { said, target, owner: amountOwner(said, target), harm };
@@ -171,6 +186,33 @@ function costRow(lines: readonly Line[], you: CombatantView): WhyRow[] {
   return chips.length > 0 ? [{ text: 'What it cost you', chips }] : [];
 }
 
+/** A row of causes for your lines that carry one of these, if any do. */
+function causeRow(lines: readonly Line[], you: string, row: CauseRow): WhyRow[] {
+  const causes = lines.flatMap((l) => {
+    const cause = l.said.cause;
+    return l.said.actorId === you && cause && row.causes(cause) ? [[cause, 1] as const] : [];
+  });
+  if (causes.length === 0) return [];
+  const chips = [...counted(causes).entries()].map(([c, n]): JournalChip => {
+    return { label: `${CAUSE_LABEL[c]} ×${n}`, tone: 'info' };
+  });
+  return [{ text: row.text, chips }];
+}
+
+interface CauseRow {
+  readonly text: string;
+  readonly causes: (cause: NarrationCause) => boolean;
+}
+
+const CAUSE_ROWS: readonly CauseRow[] = [
+  {
+    text: 'Why your attacks were slipped',
+    causes: (c) => !STEP_CAUSES.includes(c) && !HOLD_CAUSES.includes(c),
+  },
+  { text: 'Why your steps failed', causes: (c) => STEP_CAUSES.includes(c) },
+  { text: 'Why your holds didn’t take', causes: (c) => HOLD_CAUSES.includes(c) },
+];
+
 /** The strip for the round just played; empty before any round has been. */
 export function roundWhy(view: CombatView): WhyRow[] {
   const you = view.combatants.find((c) => c.side === 'player');
@@ -183,6 +225,7 @@ export function roundWhy(view: CombatView): WhyRow[] {
   return [
     ...offPlan,
     ...attackRow(tally),
+    ...CAUSE_ROWS.flatMap((row) => causeRow(lines, you.id, row)),
     ...hurtRows(tally, view.combatants),
     ...(lines.length > 0 ? distanceRow(view) : []),
     ...defenceRow(tally),
