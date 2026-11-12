@@ -221,13 +221,31 @@ not the schema.
   clones, reach). It would need to grow towards the engine to be trusted, and then it isn't
   cheap.
 
-### Open item from this experiment
+### Open item from this experiment: resolved
 
-With narration mocked to return empty strings, 5.4% of simulated outcomes changed. Non-empty
-constants changed nothing. So some rule depends on whether a story line is empty. The engine
-slices and re-tags story lines in a few places (`steps.ts`, `zoning.ts`, `staging.ts`), and
-template choice depends on the lines already said (`fresh.ts`). It hasn't been pinned down. It
-must be before a production silent mode, and it may be a small correctness bug in its own right.
+With narration mocked to return empty strings, 5.4% of simulated outcomes changed.
+
+**How it was found** (`perf/silent/diverge*.test.ts`), with fixed seeds and identical states:
+
+1. Every random draw was traced with its call site. The first differing draw was a symptom: a
+   technique rolled in one run where the other did something else.
+2. The whole fight state, story text excluded, was compared after each exchange. Every
+   divergence was in the Stalker against the Mist Blade: an extra Moonfall Slash.
+3. Each of the 50 story templates seen in those fights was blanked on its own. Exactly one
+   reproduced every divergence: "{a} strike{a.s} at a shape in the {where} and find{a.s} no one."
+
+**The cause:** `attempt()` in `round.ts` asked whether an attack was lost in a field (or to the
+ground's cover) by getting back the _story line_ for the miss, and treated it as lost only if that
+line was truthy. An empty line let the attack land.
+
+**The fix, on its own branch** (`combat/narration-determinism`):
+
+- One line: the roll decides (`lost !== null`). No rule changed.
+- A regression test plays seeded fights with every line told and told empty, and requires them to
+  end alike. It fails without the fix.
+- A one-time sweep of all 462 matrix pairings, 6 seeds each, found no other divergence.
+- Ordinary fights are unchanged: no story line was ever empty in normal play, so the goldens and
+  benches don't move.
 
 ### Recommendation
 
