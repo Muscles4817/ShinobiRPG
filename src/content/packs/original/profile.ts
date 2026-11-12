@@ -5,6 +5,12 @@ import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
 /** Techniques every graduate knows, regardless of specialty. */
 export const ACADEMY_TECHNIQUES: readonly string[] = ['palm-strike', 'shadow-feint'];
 
+/**
+ * What the academy teaches a graduate last, beside a blow to open with and a feint that leaves a
+ * foe open for it: a husk to step out of a blow.
+ */
+export const ACADEMY_BASICS: readonly string[] = ['lantern-husk'];
+
 export const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
   taijutsu: 'gale-heel',
   ninjutsu: 'pebble-volley',

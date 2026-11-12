@@ -5,6 +5,12 @@ import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
 /** Techniques every academy graduate knows. */
 export const ACADEMY_TECHNIQUES: readonly string[] = ['shuriken-jutsu', 'clone-jutsu'];
 
+/**
+ * The rest of what the graduation exam asks for, beside thrown steel and clones: a body
+ * swapped for a log to escape a blow, and a disguise to hide in.
+ */
+export const ACADEMY_BASICS: readonly string[] = ['substitution-jutsu', 'transformation'];
+
 export const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
   taijutsu: 'basic-strike-combination',
   ninjutsu: 'phoenix-flower',

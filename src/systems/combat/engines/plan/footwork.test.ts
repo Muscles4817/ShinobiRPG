@@ -243,6 +243,11 @@ describe('plan & watch verbs: substitute', () => {
     expect(defaultReactions(hero(round)).close).toBe('jutsu:swap');
   });
 
+  it('is kept ready by default only by a mind that reads the fight; a duller one guards', () => {
+    const dull = { ...hero(roundOf()), attributes: { ...attributes, intellect: 3 } };
+    expect(defaultReactions(dull)).toEqual({ close: 'guard', mid: 'guard', far: 'guard' });
+  });
+
   it('swaps out of the first hit each round that would land, for chakra', () => {
     const round = withCards(roundOf(), 'hero', ready);
     const hit = (r: Round) =>
