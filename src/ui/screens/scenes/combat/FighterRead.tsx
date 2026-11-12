@@ -9,9 +9,24 @@ const DISTANCE_LINE = {
   far: 'Far off from you.',
 } as const;
 
+/** What a fighter still standing is doing: how far off, what next, what you know, what it knows. */
+function StandingNotes({ fighter: f }: { readonly fighter: CombatantView }) {
+  return (
+    <>
+      {f.side === 'enemy' && f.distance && (
+        <p className="muted small fighter-distance">{DISTANCE_LINE[f.distance]}</p>
+      )}
+      {f.intent && <p className="intent">{f.intent}</p>}
+      {f.known && <p className="muted small known-cards">{f.known}</p>}
+      {f.learned && <p className="muted small learned">{f.learned}</p>}
+    </>
+  );
+}
+
 /**
  * What you know of the fighter you tapped in the formation: for a foe, what they are about to
- * do, how far off they stand, the cards you know they hold and your read on them; for one of yours, how they stand.
+ * do, how far off they stand, the cards you know they hold, what they have learned of you and
+ * your read on them; for one of yours, how they stand.
  */
 export function FighterRead({
   fighter: f,
@@ -30,11 +45,7 @@ export function FighterRead({
           {f.health} / {f.maxHealth}
         </span>
       </p>
-      {f.side === 'enemy' && f.distance && f.health > 0 && (
-        <p className="muted small fighter-distance">{DISTANCE_LINE[f.distance]}</p>
-      )}
-      {f.intent && f.health > 0 && <p className="intent">{f.intent}</p>}
-      {f.known && f.health > 0 && <p className="muted small known-cards">{f.known}</p>}
+      {f.health > 0 && <StandingNotes fighter={f} />}
       {conditions && <p className="muted small">{conditions}</p>}
       {read && f.health > 0 && <Read read={read} />}
     </section>

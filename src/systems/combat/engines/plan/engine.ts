@@ -23,6 +23,7 @@ import { foesRestanced } from './restance';
 import { quietAfter } from './tiring';
 import { closingLine } from './falls';
 import { withTraceNotes } from './slotTrace';
+import { adaptLines } from './learned';
 import { asRound, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
@@ -158,15 +159,19 @@ function endOfRound(ended: PlanState): PlanState {
   const next = { ...ended, ...quietAfter(ended) };
   if (next.result) return { ...next, log: [...next.log, closingLine(asRound(next), next.result)] };
   const watching = next.watching ?? false;
+  const restanced = foesRestanced(next.fighters);
+  const fighters = betweenRounds(restanced, next.reads, watching);
+  // A foe that changes the defence it keeps says so (`learned.ts`).
+  const adapted = adaptLines(restanced, fighters, playerOf(next));
   return {
     ...next,
     phase: watching ? 'fight' : 'loadout',
     bout: next.bout + 1,
     exchange: 0,
-    fighters: betweenRounds(foesRestanced(next.fighters), next.reads, watching),
+    fighters,
     ...foeMarkFor(next.fighters),
     // Between rounds the plan screen says what to do; the story only marks the new round.
-    log: watching ? [...next.log, '— The next round begins —'] : next.log,
+    log: [...next.log, ...adapted, ...(watching ? ['— The next round begins —'] : [])],
   };
 }
 
