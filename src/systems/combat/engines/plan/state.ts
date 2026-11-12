@@ -38,8 +38,10 @@ export const LOG_LIMIT = 60;
 export type CardId = string;
 
 /**
- * When a slotted card may play (see `priority.ts`): a foe is dazed or sealed, a foe is readying
- * a jutsu, I'm below a third of my health, my chakra is low, a foe is hidden.
+ * When a slotted card may play (`conditions.ts`): a foe is dazed or sealed, a foe is readying a
+ * jutsu, I'm below a third of my health, my chakra is low, a foe is hidden; a foe is held, a foe
+ * is open (dazed or held), a foe is closing in, a foe is about to attack, I am hidden, my clones
+ * or summons are out, a teammate is held, it's a round's first exchange, my breath is low.
  */
 export const SLOT_CONDITIONS = [
   'foe-dazed',
@@ -47,15 +49,32 @@ export const SLOT_CONDITIONS = [
   'low-health',
   'low-chakra',
   'foe-hidden',
+  'foe-held',
+  'foe-open',
+  'foe-closing',
+  'foe-attacking',
+  'self-hidden',
+  'bodies-out',
+  'ally-held',
+  'first-exchange',
+  'low-breath',
 ] as const;
 export type SlotCondition = (typeof SLOT_CONDITIONS)[number];
 
 /**
- * Whom a slotted attack aims at: the weakest foe, the strongest, the one threatening my back
+ * Whom a slotted attack aims at: the weakest foe, the strongest, the nearest, one open (dazed or
+ * held: whoever I'm set up on), the one threatening my back
  * row (its telegraphed attack can reach someone there), or the team's mark (the foe the player
  * marked between rounds; with none, or the mark down, it aims like `weakest`).
  */
-export const TARGET_RULES = ['weakest', 'strongest', 'threat', 'marked'] as const;
+export const TARGET_RULES = [
+  'weakest',
+  'strongest',
+  'nearest',
+  'open',
+  'threat',
+  'marked',
+] as const;
 export type TargetRule = (typeof TARGET_RULES)[number];
 
 /** One slot of a plan: the card, and optionally when it plays and whom it aims at. */

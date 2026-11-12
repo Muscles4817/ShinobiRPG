@@ -196,7 +196,7 @@ describe('plan & watch priorities: memory', () => {
 
   it('drops entries it cannot read and forgets unknown conditions', () => {
     const messy = {
-      close: [7, null, { card: 'search', when: 'full-moon', target: 'nearest' }],
+      close: [7, null, { card: 'search', when: 'full-moon', target: 'furthest' }],
       mid: ['dispel', { when: 'foe-dazed' }, 'dispel'],
       far: [],
     };
@@ -268,10 +268,17 @@ describe('plan & watch priorities: the engine', () => {
         .view(engine.start({ ...setup, allies, plan }, createRng(1)))
         .options.filter((o) => o.adjusts === 'slot:mid:jutsu:blast' && o.setting === 'Target')
         .map((o) => o.label);
-    expect(targets([])).toEqual(['Weakest foe', 'Strongest foe']);
+    expect(targets([])).toEqual([
+      'Weakest foe',
+      'Strongest foe',
+      'Nearest foe',
+      'A foe who is open',
+    ]);
     expect(targets([fighter('mate')])).toEqual([
       'Weakest foe',
       'Strongest foe',
+      'Nearest foe',
+      'A foe who is open',
       'Back-row threat',
       'The team mark',
     ]);
@@ -280,7 +287,7 @@ describe('plan & watch priorities: the engine', () => {
   it('hands the plan back with its conditions, for the next fight', () => {
     const begun = act(
       engine.start({ ...setup, plan: { close: [], mid: ['jutsu:blast'], far: [] } }, createRng(1)),
-      'when:mid:low-chakra:jutsu:blast',
+      'when:mid:low-health:jutsu:blast',
     );
     const fled = engine.act(act(begun, 'begin'), { optionId: 'flee' }, createRng(1));
     if (!fled.ok) throw new Error(fled.error);

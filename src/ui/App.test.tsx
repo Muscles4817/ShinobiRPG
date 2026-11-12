@@ -501,10 +501,10 @@ describe('App (smoke test)', () => {
     // How a card plays reads as a sentence; tapping it opens the pickers.
     await user.click(first.querySelector('.plan-when summary')!);
     const when = within(first).getByRole('combobox', { name: /^When for/ });
-    await user.selectOptions(when, 'A foe is hidden');
+    await user.selectOptions(when, 'Below a third of my health');
     const now = order().getAllByRole('listitem')[0]!;
     expect(within(now).getByRole('combobox', { name: /^When for/ })).toHaveDisplayValue(
-      'A foe is hidden',
+      'Below a third of my health',
     );
     await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
     await skipWatching(user);
