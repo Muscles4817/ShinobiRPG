@@ -1,0 +1,1625 @@
+[
+  {
+    "id": "daze@0",
+    "firsts": 6,
+    "actions": 12,
+    "q": {
+      "strike": -12.515625,
+      "step-back": -7.421875,
+      "evade": -16.5625,
+      "brace": -10.59375,
+      "jutsu:spark": -7.984375,
+      "jutsu:flash": 1.4375
+    },
+    "qA": {
+      "strike": -12.625,
+      "step-back": -6.375,
+      "evade": -16.53125,
+      "brace": -9.65625,
+      "jutsu:spark": -7.53125,
+      "jutsu:flash": 2.9375
+    },
+    "qB": {
+      "strike": -12.40625,
+      "step-back": -8.46875,
+      "evade": -16.59375,
+      "brace": -11.53125,
+      "jutsu:spark": -8.4375,
+      "jutsu:flash": -0.0625
+    },
+    "best": "jutsu:flash",
+    "bestSequence": ["jutsu:flash", "jutsu:burst"],
+    "exchanges": 4992,
+    "ms": 4873.607451
+  },
+  {
+    "id": "daze@2",
+    "firsts": 7,
+    "actions": 12,
+    "q": {
+      "strike": -13.265625,
+      "step-back": -9.140625,
+      "evade": -17.3125,
+      "brace": -11.34375,
+      "gather": -18.921875,
+      "jutsu:spark": -8.953125,
+      "jutsu:flash": 1.4375
+    },
+    "qA": {
+      "strike": -13.125,
+      "step-back": -7.875,
+      "evade": -17.03125,
+      "brace": -10.15625,
+      "gather": -17.9375,
+      "jutsu:spark": -8.46875,
+      "jutsu:flash": 2.9375
+    },
+    "qB": {
+      "strike": -13.40625,
+      "step-back": -10.40625,
+      "evade": -17.59375,
+      "brace": -12.53125,
+      "gather": -19.90625,
+      "jutsu:spark": -9.4375,
+      "jutsu:flash": -0.0625
+    },
+    "best": "jutsu:flash",
+    "bestSequence": ["jutsu:flash", "jutsu:burst"],
+    "exchanges": 5824,
+    "ms": 3185.569243
+  },
+  {
+    "id": "daze@5",
+    "firsts": 7,
+    "actions": 12,
+    "q": {
+      "strike": -88.734375,
+      "step-back": -58.875,
+      "evade": -83.53125,
+      "brace": -17.6875,
+      "gather": -94.390625,
+      "jutsu:spark": -85.40625,
+      "jutsu:flash": -47.96875
+    },
+    "qA": {
+      "strike": -113.46875,
+      "step-back": -59.46875,
+      "evade": -103.40625,
+      "brace": -18.28125,
+      "gather": -113.625,
+      "jutsu:spark": -110.28125,
+      "jutsu:flash": -53.625
+    },
+    "qB": {
+      "strike": -64,
+      "step-back": -54.25,
+      "evade": -63.65625,
+      "brace": -17.09375,
+      "gather": -75.15625,
+      "jutsu:spark": -60.53125,
+      "jutsu:flash": -40.625
+    },
+    "best": "brace",
+    "bestSequence": ["brace", "brace"],
+    "exchanges": 5824,
+    "ms": 2170.1357890000036
+  },
+  {
+    "id": "hide@0",
+    "firsts": 7,
+    "actions": 12,
+    "q": {
+      "strike": -0.578125,
+      "step-back": -14.625,
+      "evade": -3.390625,
+      "brace": -4.546875,
+      "jutsu:spark": 4.046875,
+      "jutsu:veil": 183.953125,
+      "jutsu:blade": 7.6875
+    },
+    "qA": {
+      "strike": 1.90625,
+      "step-back": -12.9375,
+      "evade": -0.0625,
+      "brace": -2.375,
+      "jutsu:spark": 6.6875,
+      "jutsu:veil": 179.4375,
+      "jutsu:blade": 10.53125
+    },
+    "qB": {
+      "strike": -3.0625,
+      "step-back": -16.3125,
+      "evade": -6.71875,
+      "brace": -6.71875,
+      "jutsu:spark": 1.40625,
+      "jutsu:veil": 188.46875,
+      "jutsu:blade": 4.84375
+    },
+    "best": "jutsu:veil",
+    "bestSequence": ["jutsu:veil", "jutsu:blade"],
+    "exchanges": 5824,
+    "ms": 4207.789295999999
+  },
+  {
+    "id": "hide@2",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "strike": 0.421875,
+      "step-back": -12.921875,
+      "evade": -3.109375,
+      "brace": -3.546875,
+      "gather": -7.3125,
+      "jutsu:spark": 4.84375,
+      "jutsu:veil": 202.9375,
+      "jutsu:blade": 8.125
+    },
+    "qA": {
+      "strike": 2.75,
+      "step-back": -11.40625,
+      "evade": -0.65625,
+      "brace": -1.53125,
+      "gather": -7.1875,
+      "jutsu:spark": 7.125,
+      "jutsu:veil": 199.15625,
+      "jutsu:blade": 10.25
+    },
+    "qB": {
+      "strike": -1.90625,
+      "step-back": -14.4375,
+      "evade": -5.5625,
+      "brace": -5.5625,
+      "gather": -7.4375,
+      "jutsu:spark": 2.5625,
+      "jutsu:veil": 206.71875,
+      "jutsu:blade": 6
+    },
+    "best": "jutsu:veil",
+    "bestSequence": ["jutsu:veil", "jutsu:blade"],
+    "exchanges": 6656,
+    "ms": 4960.098365000002
+  },
+  {
+    "id": "hide@5",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "strike": 1.453125,
+      "step-back": -11.078125,
+      "evade": -2.546875,
+      "brace": -2.546875,
+      "gather": -6.40625,
+      "jutsu:spark": 6.28125,
+      "jutsu:veil": 161,
+      "jutsu:blade": 8.828125
+    },
+    "qA": {
+      "strike": 2.78125,
+      "step-back": -8.5625,
+      "evade": -0.625,
+      "brace": -0.625,
+      "gather": -6.46875,
+      "jutsu:spark": 7.96875,
+      "jutsu:veil": 167.09375,
+      "jutsu:blade": 10.25
+    },
+    "qB": {
+      "strike": 0.125,
+      "step-back": -13.59375,
+      "evade": -4.46875,
+      "brace": -4.46875,
+      "gather": -6.34375,
+      "jutsu:spark": 4.59375,
+      "jutsu:veil": 154.90625,
+      "jutsu:blade": 7.40625
+    },
+    "best": "jutsu:veil",
+    "bestSequence": ["jutsu:veil", "jutsu:blade"],
+    "exchanges": 6656,
+    "ms": 2791.012949
+  },
+  {
+    "id": "rusher-v-powerhouse@0",
+    "firsts": 4,
+    "actions": 12,
+    "q": {
+      "step-back": -19.609375,
+      "evade": -19.609375,
+      "brace": -19.609375,
+      "step-in": -19.609375
+    },
+    "qA": {
+      "step-back": -20.53125,
+      "evade": -20.53125,
+      "brace": -20.53125,
+      "step-in": -20.53125
+    },
+    "qB": {
+      "step-back": -18.6875,
+      "evade": -18.6875,
+      "brace": -18.6875,
+      "step-in": -18.6875
+    },
+    "best": "step-back",
+    "bestSequence": ["step-back", "strike"],
+    "exchanges": 3328,
+    "ms": 3050.1470960000006
+  },
+  {
+    "id": "rusher-v-powerhouse@2",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "strike": -3.953125,
+      "step-back": -14.625,
+      "evade": -13.890625,
+      "brace": -6.96875,
+      "gather": -19.21875,
+      "jutsu:palm-strike": -6.859375,
+      "jutsu:gale-heel": -4,
+      "jutsu:crescent-drop": -3.953125
+    },
+    "qA": {
+      "strike": -4.8125,
+      "step-back": -17.5,
+      "evade": -13.03125,
+      "brace": -7.75,
+      "gather": -20.4375,
+      "jutsu:palm-strike": -8.34375,
+      "jutsu:gale-heel": -5.21875,
+      "jutsu:crescent-drop": -4.8125
+    },
+    "qB": {
+      "strike": -2.3125,
+      "step-back": -11.625,
+      "evade": -14.5,
+      "brace": -5.875,
+      "gather": -17.6875,
+      "jutsu:palm-strike": -5.15625,
+      "jutsu:gale-heel": -2.5625,
+      "jutsu:crescent-drop": -2.3125
+    },
+    "best": "strike",
+    "bestSequence": ["strike", "jutsu:gale-heel"],
+    "exchanges": 6656,
+    "ms": 4830.943936999996
+  },
+  {
+    "id": "rusher-v-powerhouse@5",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "strike": -10.890625,
+      "step-back": -18.171875,
+      "evade": -16.8125,
+      "brace": -8.234375,
+      "gather": -25.0625,
+      "jutsu:palm-strike": -10.890625,
+      "jutsu:gale-heel": -8.03125,
+      "jutsu:crescent-drop": -7.984375
+    },
+    "qA": {
+      "strike": -10.40625,
+      "step-back": -22.90625,
+      "evade": -16.0625,
+      "brace": -6.71875,
+      "gather": -23.40625,
+      "jutsu:palm-strike": -10.40625,
+      "jutsu:gale-heel": -7.28125,
+      "jutsu:crescent-drop": -6.59375
+    },
+    "qB": {
+      "strike": -11.375,
+      "step-back": -12.9375,
+      "evade": -17.5625,
+      "brace": -8.3125,
+      "gather": -26.71875,
+      "jutsu:palm-strike": -11.375,
+      "jutsu:gale-heel": -8.78125,
+      "jutsu:crescent-drop": -9.375
+    },
+    "best": "jutsu:crescent-drop",
+    "bestSequence": ["jutsu:crescent-drop", "brace"],
+    "exchanges": 6656,
+    "ms": 4269.089222000002
+  },
+  {
+    "id": "versatile-v-illusionist@0",
+    "firsts": 6,
+    "actions": 14,
+    "q": {
+      "step-back": -21.0625,
+      "evade": -12.203125,
+      "brace": -14.125,
+      "search": -10.65625,
+      "dispel": -10.953125,
+      "step-in": -25.890625
+    },
+    "qA": {
+      "step-back": -18.78125,
+      "evade": -10.28125,
+      "brace": -13.0625,
+      "search": -9.375,
+      "dispel": -9.6875,
+      "step-in": -26.96875
+    },
+    "qB": {
+      "step-back": -23.34375,
+      "evade": -14.125,
+      "brace": -15.1875,
+      "search": -11.9375,
+      "dispel": -12.03125,
+      "step-in": -24.0625
+    },
+    "best": "search",
+    "bestSequence": ["search", "jutsu:tide-lash"],
+    "exchanges": 5760,
+    "ms": 4126.353928000004
+  },
+  {
+    "id": "versatile-v-illusionist@2",
+    "firsts": 10,
+    "actions": 14,
+    "q": {
+      "step-back": -18.234375,
+      "evade": -10.34375,
+      "brace": -12.40625,
+      "gather": -14.96875,
+      "jutsu:shadow-feint": 1.28125,
+      "jutsu:lantern-cut": -2.75,
+      "throw": -3.875,
+      "step-in": -17.53125,
+      "jutsu:ember-breath": 5.296875,
+      "jutsu:tide-lash": 7.78125
+    },
+    "qA": {
+      "step-back": -16.1875,
+      "evade": -8.3125,
+      "brace": -11.4375,
+      "gather": -14.625,
+      "jutsu:shadow-feint": 2.59375,
+      "jutsu:lantern-cut": -2.40625,
+      "throw": -2.59375,
+      "step-in": -19.03125,
+      "jutsu:ember-breath": 3.90625,
+      "jutsu:tide-lash": 7.34375
+    },
+    "qB": {
+      "step-back": -20.28125,
+      "evade": -12.375,
+      "brace": -13.375,
+      "gather": -15.3125,
+      "jutsu:shadow-feint": -0.03125,
+      "jutsu:lantern-cut": -3.09375,
+      "throw": -5.15625,
+      "step-in": -16.03125,
+      "jutsu:ember-breath": 6.6875,
+      "jutsu:tide-lash": 8.21875
+    },
+    "best": "jutsu:tide-lash",
+    "bestSequence": ["jutsu:tide-lash", "jutsu:ember-breath"],
+    "exchanges": 9600,
+    "ms": 7673.881653000004
+  },
+  {
+    "id": "versatile-v-illusionist@5",
+    "firsts": 9,
+    "actions": 14,
+    "q": {
+      "evade": -6.234375,
+      "brace": -10.421875,
+      "gather": -12.84375,
+      "dispel": -3.4375,
+      "jutsu:shadow-feint": 2.875,
+      "throw": -3.109375,
+      "step-in": -4.515625,
+      "jutsu:ember-breath": 11.28125,
+      "jutsu:tide-lash": 10.703125
+    },
+    "qA": {
+      "evade": -5.40625,
+      "brace": -10.5,
+      "gather": -11.5625,
+      "dispel": -3.21875,
+      "jutsu:shadow-feint": 5.6875,
+      "throw": -2.875,
+      "step-in": -8.375,
+      "jutsu:ember-breath": 12.78125,
+      "jutsu:tide-lash": 12.6875
+    },
+    "qB": {
+      "evade": -6.25,
+      "brace": -9.5625,
+      "gather": -13.375,
+      "dispel": -2.84375,
+      "jutsu:shadow-feint": 0.0625,
+      "throw": -2.75,
+      "step-in": -0.65625,
+      "jutsu:ember-breath": 10.46875,
+      "jutsu:tide-lash": 8.71875
+    },
+    "best": "jutsu:ember-breath",
+    "bestSequence": ["jutsu:ember-breath", "jutsu:ember-breath"],
+    "exchanges": 8640,
+    "ms": 6041.991129000002
+  },
+  {
+    "id": "stalker-v-mistBlade@0",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "step-back": 5.75,
+      "evade": 12.234375,
+      "brace": 12.234375,
+      "jutsu:lantern-cut": 20.34375,
+      "jutsu:moonfall-slash": 22.5625,
+      "throw": 12.234375,
+      "step-in": 11.78125,
+      "jutsu:tide-lash": 8.65625
+    },
+    "qA": {
+      "step-back": 5.71875,
+      "evade": 11.59375,
+      "brace": 11.59375,
+      "jutsu:lantern-cut": 19.375,
+      "jutsu:moonfall-slash": 21.4375,
+      "throw": 12.78125,
+      "step-in": 10.625,
+      "jutsu:tide-lash": 7.9375
+    },
+    "qB": {
+      "step-back": 5.8125,
+      "evade": 12.875,
+      "brace": 12.875,
+      "jutsu:lantern-cut": 21.3125,
+      "jutsu:moonfall-slash": 23.6875,
+      "throw": 11.6875,
+      "step-in": 12.9375,
+      "jutsu:tide-lash": 9.375
+    },
+    "best": "jutsu:moonfall-slash",
+    "bestSequence": ["jutsu:moonfall-slash", "jutsu:moonfall-slash"],
+    "exchanges": 6656,
+    "ms": 3509.815343999995
+  },
+  {
+    "id": "stalker-v-mistBlade@2",
+    "firsts": 9,
+    "actions": 12,
+    "q": {
+      "step-back": -10.34375,
+      "evade": -10.203125,
+      "brace": -9.328125,
+      "gather": -10.28125,
+      "jutsu:lantern-cut": -14.34375,
+      "jutsu:moonfall-slash": -13.359375,
+      "throw": -18.078125,
+      "step-in": -10.125,
+      "jutsu:tide-lash": -20.984375
+    },
+    "qA": {
+      "step-back": -10.4375,
+      "evade": -9.34375,
+      "brace": -8.65625,
+      "gather": -9.5,
+      "jutsu:lantern-cut": -16.28125,
+      "jutsu:moonfall-slash": -15.40625,
+      "throw": -19.28125,
+      "step-in": -10.1875,
+      "jutsu:tide-lash": -21.375
+    },
+    "qB": {
+      "step-back": -9,
+      "evade": -11.0625,
+      "brace": -10,
+      "gather": -11.0625,
+      "jutsu:lantern-cut": -12.40625,
+      "jutsu:moonfall-slash": -11.3125,
+      "throw": -16.875,
+      "step-in": -10.0625,
+      "jutsu:tide-lash": -20.59375
+    },
+    "best": "brace",
+    "bestSequence": ["brace", "jutsu:moonfall-slash"],
+    "exchanges": 7488,
+    "ms": 4067.52162900001
+  },
+  {
+    "id": "stalker-v-mistBlade@5",
+    "firsts": 9,
+    "actions": 12,
+    "q": {
+      "step-back": -9.875,
+      "evade": -9.125,
+      "brace": -8.625,
+      "gather": -9.5,
+      "jutsu:lantern-cut": -9.078125,
+      "jutsu:moonfall-slash": -8.59375,
+      "throw": -17.75,
+      "step-in": -8.90625,
+      "jutsu:tide-lash": -19.5625
+    },
+    "qA": {
+      "step-back": -10.90625,
+      "evade": -8.625,
+      "brace": -7.9375,
+      "gather": -8.625,
+      "jutsu:lantern-cut": -16.5,
+      "jutsu:moonfall-slash": -10.03125,
+      "throw": -19.5,
+      "step-in": -9.1875,
+      "jutsu:tide-lash": -20.40625
+    },
+    "qB": {
+      "step-back": -7.5625,
+      "evade": -9.625,
+      "brace": -9.3125,
+      "gather": -10.375,
+      "jutsu:lantern-cut": -1.65625,
+      "jutsu:moonfall-slash": -7.15625,
+      "throw": -16,
+      "step-in": -8.625,
+      "jutsu:tide-lash": -18.71875
+    },
+    "best": "jutsu:moonfall-slash",
+    "bestSequence": ["jutsu:moonfall-slash", "jutsu:moonfall-slash"],
+    "exchanges": 7488,
+    "ms": 5057.848789999989
+  },
+  {
+    "id": "assassin-v-sensor@0",
+    "firsts": 8,
+    "actions": 13,
+    "q": {
+      "step-back": -26.59375,
+      "evade": -26.59375,
+      "brace": -26.59375,
+      "jutsu:paper-veil": -26.59375,
+      "jutsu:sticking-tag": -26.59375,
+      "jutsu:binding-ward": -26.59375,
+      "throw": -26.59375,
+      "step-in": -26.59375
+    },
+    "qA": {
+      "step-back": -26.09375,
+      "evade": -26.09375,
+      "brace": -26.09375,
+      "jutsu:paper-veil": -26.09375,
+      "jutsu:sticking-tag": -26.09375,
+      "jutsu:binding-ward": -26.09375,
+      "throw": -26.09375,
+      "step-in": -26.09375
+    },
+    "qB": {
+      "step-back": -27.09375,
+      "evade": -27.09375,
+      "brace": -27.09375,
+      "jutsu:paper-veil": -27.09375,
+      "jutsu:sticking-tag": -27.09375,
+      "jutsu:binding-ward": -27.09375,
+      "throw": -27.09375,
+      "step-in": -27.09375
+    },
+    "best": "step-back",
+    "bestSequence": ["step-back", "jutsu:pinched-flame"],
+    "exchanges": 7168,
+    "ms": 4098.971691000013
+  },
+  {
+    "id": "assassin-v-sensor@2",
+    "firsts": 8,
+    "actions": 13,
+    "q": {
+      "strike": 4.21875,
+      "step-back": -5.65625,
+      "evade": 0.484375,
+      "brace": -0.296875,
+      "jutsu:paper-veil": 18.125,
+      "jutsu:sticking-tag": 11.6875,
+      "jutsu:binding-ward": 0.765625,
+      "jutsu:pinched-flame": 5.25
+    },
+    "qA": {
+      "strike": 1.8125,
+      "step-back": -8.625,
+      "evade": -0.90625,
+      "brace": -1.6875,
+      "jutsu:paper-veil": 12,
+      "jutsu:sticking-tag": 10.375,
+      "jutsu:binding-ward": 0.125,
+      "jutsu:pinched-flame": 3.28125
+    },
+    "qB": {
+      "strike": 6.625,
+      "step-back": -2.6875,
+      "evade": 1.875,
+      "brace": 1.09375,
+      "jutsu:paper-veil": 24.25,
+      "jutsu:sticking-tag": 13,
+      "jutsu:binding-ward": 1.40625,
+      "jutsu:pinched-flame": 7.21875
+    },
+    "best": "jutsu:paper-veil",
+    "bestSequence": ["jutsu:paper-veil", "jutsu:pinched-flame"],
+    "exchanges": 7168,
+    "ms": 3437.0885140000028
+  },
+  {
+    "id": "assassin-v-sensor@5",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "strike": 4.21875,
+      "step-back": -5.65625,
+      "evade": 0.484375,
+      "brace": -0.296875,
+      "gather": -1.09375,
+      "jutsu:paper-veil": 56.265625,
+      "jutsu:sticking-tag": 11.90625,
+      "jutsu:binding-ward": 0.765625,
+      "jutsu:pinched-flame": 4.890625
+    },
+    "qA": {
+      "strike": 1.8125,
+      "step-back": -8.625,
+      "evade": -0.90625,
+      "brace": -1.6875,
+      "gather": -2.5,
+      "jutsu:paper-veil": 39,
+      "jutsu:sticking-tag": 10.625,
+      "jutsu:binding-ward": 0.125,
+      "jutsu:pinched-flame": 2.5625
+    },
+    "qB": {
+      "strike": 6.625,
+      "step-back": -2.6875,
+      "evade": 1.875,
+      "brace": 1.09375,
+      "gather": 0.3125,
+      "jutsu:paper-veil": 73.53125,
+      "jutsu:sticking-tag": 13.1875,
+      "jutsu:binding-ward": 1.40625,
+      "jutsu:pinched-flame": 7.21875
+    },
+    "best": "jutsu:paper-veil",
+    "bestSequence": ["jutsu:paper-veil", "jutsu:pinched-flame"],
+    "exchanges": 8064,
+    "ms": 4387.378334000008
+  },
+  {
+    "id": "sealer-v-trapper@0",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "step-back": -8.5625,
+      "evade": -13.859375,
+      "brace": -13.953125,
+      "jutsu:binding-ward": -10.859375,
+      "jutsu:ink-chain-seal": -3.890625,
+      "jutsu:cut-the-wick": -5.09375,
+      "jutsu:lantern-cut": -8.140625,
+      "throw": -10.59375,
+      "step-in": -12.15625
+    },
+    "qA": {
+      "step-back": -7.75,
+      "evade": -13.40625,
+      "brace": -14.0625,
+      "jutsu:binding-ward": -10.90625,
+      "jutsu:ink-chain-seal": -4.6875,
+      "jutsu:cut-the-wick": -4.65625,
+      "jutsu:lantern-cut": -8.125,
+      "throw": -10.21875,
+      "step-in": -11.09375
+    },
+    "qB": {
+      "step-back": -9.375,
+      "evade": -14.3125,
+      "brace": -13.84375,
+      "jutsu:binding-ward": -10.8125,
+      "jutsu:ink-chain-seal": -3.09375,
+      "jutsu:cut-the-wick": -5.53125,
+      "jutsu:lantern-cut": -8.15625,
+      "throw": -10.65625,
+      "step-in": -13.09375
+    },
+    "best": "jutsu:ink-chain-seal",
+    "bestSequence": ["jutsu:ink-chain-seal", "jutsu:lantern-cut"],
+    "exchanges": 8064,
+    "ms": 5316.461207999993
+  },
+  {
+    "id": "sealer-v-trapper@2",
+    "firsts": 10,
+    "actions": 13,
+    "q": {
+      "step-back": -8.5625,
+      "evade": -13.71875,
+      "brace": -13.8125,
+      "gather": -15.265625,
+      "jutsu:binding-ward": -9.953125,
+      "jutsu:ink-chain-seal": -3.484375,
+      "jutsu:cut-the-wick": -4.25,
+      "jutsu:lantern-cut": -8.140625,
+      "throw": -10.59375,
+      "step-in": -12.15625
+    },
+    "qA": {
+      "step-back": -7.75,
+      "evade": -13.125,
+      "brace": -13.78125,
+      "gather": -15.8125,
+      "jutsu:binding-ward": -9.71875,
+      "jutsu:ink-chain-seal": -4.125,
+      "jutsu:cut-the-wick": -3.6875,
+      "jutsu:lantern-cut": -8.125,
+      "throw": -10.21875,
+      "step-in": -11.09375
+    },
+    "qB": {
+      "step-back": -9.375,
+      "evade": -14.3125,
+      "brace": -13.84375,
+      "gather": -14.71875,
+      "jutsu:binding-ward": -10.1875,
+      "jutsu:ink-chain-seal": -2.84375,
+      "jutsu:cut-the-wick": -4.8125,
+      "jutsu:lantern-cut": -8.15625,
+      "throw": -10.75,
+      "step-in": -13.1875
+    },
+    "best": "jutsu:ink-chain-seal",
+    "bestSequence": ["jutsu:ink-chain-seal", "jutsu:lantern-cut"],
+    "exchanges": 8960,
+    "ms": 6861.964401999998
+  },
+  {
+    "id": "sealer-v-trapper@5",
+    "firsts": 8,
+    "actions": 13,
+    "q": {
+      "step-back": -2.3125,
+      "evade": -3.125,
+      "brace": -1.625,
+      "gather": -4.203125,
+      "jutsu:cut-the-wick": 3.71875,
+      "jutsu:lantern-cut": 4.484375,
+      "throw": 0.625,
+      "step-in": -3.96875
+    },
+    "qA": {
+      "step-back": -2.375,
+      "evade": -4.03125,
+      "brace": -2.6875,
+      "gather": -5.71875,
+      "jutsu:cut-the-wick": 4.15625,
+      "jutsu:lantern-cut": 5.4375,
+      "throw": 1.5,
+      "step-in": -4.5625
+    },
+    "qB": {
+      "step-back": -1.875,
+      "evade": -2.21875,
+      "brace": -0.5625,
+      "gather": -2.6875,
+      "jutsu:cut-the-wick": 3.28125,
+      "jutsu:lantern-cut": 3.53125,
+      "throw": -0.25,
+      "step-in": -3.375
+    },
+    "best": "jutsu:lantern-cut",
+    "bestSequence": ["jutsu:lantern-cut", "jutsu:lantern-cut"],
+    "exchanges": 7168,
+    "ms": 3858.361981000009
+  },
+  {
+    "id": "medic-v-counterer@0",
+    "firsts": 5,
+    "actions": 13,
+    "q": {
+      "step-back": -14.75,
+      "evade": -14.75,
+      "brace": -14.75,
+      "throw": -14.75,
+      "step-in": -14.75
+    },
+    "qA": {
+      "step-back": -13.8125,
+      "evade": -13.8125,
+      "brace": -13.8125,
+      "throw": -13.8125,
+      "step-in": -13.8125
+    },
+    "qB": {
+      "step-back": -15.6875,
+      "evade": -15.6875,
+      "brace": -15.6875,
+      "throw": -15.6875,
+      "step-in": -15.6875
+    },
+    "best": "step-back",
+    "bestSequence": ["step-back", "jutsu:mending-glow"],
+    "exchanges": 4480,
+    "ms": 3318.1233930000017
+  },
+  {
+    "id": "medic-v-counterer@2",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "strike": 17.9375,
+      "step-back": -6.59375,
+      "evade": 11.609375,
+      "brace": 15.375,
+      "gather": 8.78125,
+      "jutsu:mending-glow": 22.125,
+      "jutsu:moss-mend": 22.125,
+      "jutsu:palm-strike": 17.9375,
+      "jutsu:gale-heel": 20.1875
+    },
+    "qA": {
+      "strike": 18.625,
+      "step-back": -4.90625,
+      "evade": 12.8125,
+      "brace": 15.8125,
+      "gather": 9.59375,
+      "jutsu:mending-glow": 22,
+      "jutsu:moss-mend": 22,
+      "jutsu:palm-strike": 18.625,
+      "jutsu:gale-heel": 20.6875
+    },
+    "qB": {
+      "strike": 17.25,
+      "step-back": -8.28125,
+      "evade": 10.40625,
+      "brace": 14.9375,
+      "gather": 7.96875,
+      "jutsu:mending-glow": 22.25,
+      "jutsu:moss-mend": 22.25,
+      "jutsu:palm-strike": 17.25,
+      "jutsu:gale-heel": 19.6875
+    },
+    "best": "jutsu:mending-glow",
+    "bestSequence": ["jutsu:mending-glow", "jutsu:mending-glow"],
+    "exchanges": 8064,
+    "ms": 5145.532214000006
+  },
+  {
+    "id": "medic-v-counterer@5",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "strike": 20,
+      "step-back": -3.328125,
+      "evade": 13.484375,
+      "brace": 17.359375,
+      "gather": 10.734375,
+      "jutsu:mending-glow": 41.921875,
+      "jutsu:moss-mend": 41.921875,
+      "jutsu:palm-strike": 20,
+      "jutsu:gale-heel": 21.890625
+    },
+    "qA": {
+      "strike": 20.59375,
+      "step-back": -0.28125,
+      "evade": 14.21875,
+      "brace": 17.59375,
+      "gather": 11.28125,
+      "jutsu:mending-glow": 42.28125,
+      "jutsu:moss-mend": 42.28125,
+      "jutsu:palm-strike": 20.59375,
+      "jutsu:gale-heel": 22.75
+    },
+    "qB": {
+      "strike": 19.40625,
+      "step-back": -6.375,
+      "evade": 12.75,
+      "brace": 17.125,
+      "gather": 10.1875,
+      "jutsu:mending-glow": 41.5625,
+      "jutsu:moss-mend": 41.5625,
+      "jutsu:palm-strike": 19.40625,
+      "jutsu:gale-heel": 21.03125
+    },
+    "best": "jutsu:mending-glow",
+    "bestSequence": ["jutsu:mending-glow", "jutsu:mending-glow"],
+    "exchanges": 8064,
+    "ms": 5806.451765000005
+  },
+  {
+    "id": "areaCaster-v-cloner@0",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "step-back": 13.515625,
+      "evade": 13.515625,
+      "brace": 13.515625,
+      "throw": 16.4375,
+      "step-in": 7.5,
+      "jutsu:lantern-scatter": 29.015625,
+      "jutsu:ember-rain": 49.671875,
+      "jutsu:great-gale": 43.375
+    },
+    "qA": {
+      "step-back": 14.71875,
+      "evade": 14.71875,
+      "brace": 14.71875,
+      "throw": 17.75,
+      "step-in": 6.1875,
+      "jutsu:lantern-scatter": 31.71875,
+      "jutsu:ember-rain": 51.1875,
+      "jutsu:great-gale": 44.6875
+    },
+    "qB": {
+      "step-back": 12.3125,
+      "evade": 12.3125,
+      "brace": 12.3125,
+      "throw": 15.125,
+      "step-in": 8.8125,
+      "jutsu:lantern-scatter": 26.3125,
+      "jutsu:ember-rain": 48.15625,
+      "jutsu:great-gale": 42.0625
+    },
+    "best": "jutsu:ember-rain",
+    "bestSequence": ["jutsu:ember-rain", "jutsu:ember-rain"],
+    "exchanges": 6656,
+    "ms": 6953.059791000007
+  },
+  {
+    "id": "areaCaster-v-cloner@2",
+    "firsts": 9,
+    "actions": 12,
+    "q": {
+      "step-back": 32.171875,
+      "evade": 32.171875,
+      "brace": 32.3125,
+      "gather": 31.859375,
+      "throw": 32.203125,
+      "step-in": 32.171875,
+      "jutsu:lantern-scatter": 33.15625,
+      "jutsu:ember-rain": 33.71875,
+      "jutsu:great-gale": 33.984375
+    },
+    "qA": {
+      "step-back": 30.75,
+      "evade": 30.75,
+      "brace": 30.75,
+      "gather": 30.75,
+      "throw": 30.75,
+      "step-in": 30.75,
+      "jutsu:lantern-scatter": 30.75,
+      "jutsu:ember-rain": 30.75,
+      "jutsu:great-gale": 30.75
+    },
+    "qB": {
+      "step-back": 33.59375,
+      "evade": 33.59375,
+      "brace": 33.875,
+      "gather": 32.96875,
+      "throw": 33.65625,
+      "step-in": 33.59375,
+      "jutsu:lantern-scatter": 35.5625,
+      "jutsu:ember-rain": 36.6875,
+      "jutsu:great-gale": 37.21875
+    },
+    "best": "jutsu:great-gale",
+    "bestSequence": ["jutsu:great-gale", "jutsu:ember-rain"],
+    "exchanges": 7488,
+    "ms": 9002.975652000008
+  },
+  {
+    "id": "areaCaster-v-cloner@5",
+    "firsts": 9,
+    "actions": 12,
+    "q": {
+      "step-back": 124.75,
+      "evade": 124.75,
+      "brace": 124.75,
+      "gather": 124.75,
+      "throw": 129.5,
+      "step-in": 124.75,
+      "jutsu:lantern-scatter": 129.5,
+      "jutsu:ember-rain": 129.5,
+      "jutsu:great-gale": 129.5
+    },
+    "qA": {
+      "step-back": 129.53125,
+      "evade": 129.53125,
+      "brace": 129.53125,
+      "gather": 129.53125,
+      "throw": 129.53125,
+      "step-in": 129.53125,
+      "jutsu:lantern-scatter": 129.53125,
+      "jutsu:ember-rain": 129.53125,
+      "jutsu:great-gale": 129.53125
+    },
+    "qB": {
+      "step-back": 120,
+      "evade": 120,
+      "brace": 120,
+      "gather": 120,
+      "throw": 129.5,
+      "step-in": 120,
+      "jutsu:lantern-scatter": 129.5,
+      "jutsu:ember-rain": 129.5,
+      "jutsu:great-gale": 129.5
+    },
+    "best": "throw",
+    "bestSequence": ["throw", "jutsu:lantern-scatter"],
+    "exchanges": 2556,
+    "ms": 2400.8207140000013
+  },
+  {
+    "id": "gates-v-shrouded@0",
+    "firsts": 4,
+    "actions": 14,
+    "q": {
+      "step-back": 6.015625,
+      "evade": 6.78125,
+      "brace": 6.78125,
+      "step-in": 12.765625
+    },
+    "qA": {
+      "step-back": 9.625,
+      "evade": 9.3125,
+      "brace": 9.3125,
+      "step-in": 16.125
+    },
+    "qB": {
+      "step-back": 2.40625,
+      "evade": 4.25,
+      "brace": 4.25,
+      "step-in": 9.40625
+    },
+    "best": "step-in",
+    "bestSequence": ["step-in", "strike"],
+    "exchanges": 3840,
+    "ms": 2729.418009999994
+  },
+  {
+    "id": "gates-v-shrouded@2",
+    "firsts": 8,
+    "actions": 14,
+    "q": {
+      "strike": -4.40625,
+      "step-back": -13.171875,
+      "evade": -12.6875,
+      "brace": -8.390625,
+      "gather": -16.828125,
+      "jutsu:palm-strike": -8.015625,
+      "jutsu:gale-heel": -5.6875,
+      "jutsu:crescent-drop": -4.40625
+    },
+    "qA": {
+      "strike": -4.375,
+      "step-back": -12.21875,
+      "evade": -11.8125,
+      "brace": -7.375,
+      "gather": -16.6875,
+      "jutsu:palm-strike": -7.4375,
+      "jutsu:gale-heel": -4.9375,
+      "jutsu:crescent-drop": -4.375
+    },
+    "qB": {
+      "strike": -4.28125,
+      "step-back": -13.78125,
+      "evade": -13.375,
+      "brace": -9.0625,
+      "gather": -16.03125,
+      "jutsu:palm-strike": -8.4375,
+      "jutsu:gale-heel": -6.1875,
+      "jutsu:crescent-drop": -4.28125
+    },
+    "best": "strike",
+    "bestSequence": ["strike", "strike"],
+    "exchanges": 7680,
+    "ms": 6239.235240000009
+  },
+  {
+    "id": "gates-v-shrouded@5",
+    "firsts": 9,
+    "actions": 14,
+    "q": {
+      "strike": 38.671875,
+      "step-back": 2.3125,
+      "evade": 16.453125,
+      "brace": 17.96875,
+      "gather": 14.890625,
+      "jutsu:palm-strike": 30.9375,
+      "jutsu:gale-heel": 35.703125,
+      "jutsu:crescent-drop": 38.671875,
+      "jutsu:white-flame-heel": 22.6875
+    },
+    "qA": {
+      "strike": 38.59375,
+      "step-back": 2.25,
+      "evade": 17.0625,
+      "brace": 18.46875,
+      "gather": 15.21875,
+      "jutsu:palm-strike": 31.65625,
+      "jutsu:gale-heel": 36.46875,
+      "jutsu:crescent-drop": 38.59375,
+      "jutsu:white-flame-heel": 24.96875
+    },
+    "qB": {
+      "strike": 38.75,
+      "step-back": 2.375,
+      "evade": 15.84375,
+      "brace": 17.46875,
+      "gather": 14.5625,
+      "jutsu:palm-strike": 30.21875,
+      "jutsu:gale-heel": 34.9375,
+      "jutsu:crescent-drop": 38.75,
+      "jutsu:white-flame-heel": 20.40625
+    },
+    "best": "strike",
+    "bestSequence": ["strike", "jutsu:white-flame-heel"],
+    "exchanges": 8640,
+    "ms": 5964.845704000007
+  },
+  {
+    "id": "illusionist-v-rusher@0",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "step-back": 9.359375,
+      "evade": 9.359375,
+      "brace": 9.359375,
+      "jutsu:lantern-mirage": 17.90625,
+      "jutsu:whispering-dread": 19.078125,
+      "throw": 10.59375,
+      "step-in": 8.734375,
+      "jutsu:ember-breath": 14.65625
+    },
+    "qA": {
+      "step-back": 9.40625,
+      "evade": 9.40625,
+      "brace": 9.40625,
+      "jutsu:lantern-mirage": 17.90625,
+      "jutsu:whispering-dread": 19.03125,
+      "throw": 10.4375,
+      "step-in": 8.875,
+      "jutsu:ember-breath": 14.0625
+    },
+    "qB": {
+      "step-back": 9.3125,
+      "evade": 9.3125,
+      "brace": 9.3125,
+      "jutsu:lantern-mirage": 17.90625,
+      "jutsu:whispering-dread": 19.125,
+      "throw": 10.75,
+      "step-in": 8.59375,
+      "jutsu:ember-breath": 15.25
+    },
+    "best": "jutsu:whispering-dread",
+    "bestSequence": ["jutsu:whispering-dread", "jutsu:whispering-dread"],
+    "exchanges": 6656,
+    "ms": 2194.9733379999816
+  },
+  {
+    "id": "illusionist-v-rusher@2",
+    "firsts": 9,
+    "actions": 12,
+    "q": {
+      "step-back": -1.578125,
+      "evade": -1.578125,
+      "brace": -1.578125,
+      "gather": -1.578125,
+      "jutsu:lantern-mirage": -1.578125,
+      "jutsu:whispering-dread": -1.578125,
+      "throw": -1.578125,
+      "step-in": -1.578125,
+      "jutsu:ember-breath": -1.578125
+    },
+    "qA": {
+      "step-back": 2.9375,
+      "evade": 2.9375,
+      "brace": 2.9375,
+      "gather": 2.9375,
+      "jutsu:lantern-mirage": 2.9375,
+      "jutsu:whispering-dread": 2.9375,
+      "throw": 2.9375,
+      "step-in": 2.9375,
+      "jutsu:ember-breath": 2.9375
+    },
+    "qB": {
+      "step-back": -6.09375,
+      "evade": -6.09375,
+      "brace": -6.09375,
+      "gather": -6.09375,
+      "jutsu:lantern-mirage": -6.09375,
+      "jutsu:whispering-dread": -6.09375,
+      "throw": -6.09375,
+      "step-in": -6.09375,
+      "jutsu:ember-breath": -6.09375
+    },
+    "best": "step-back",
+    "bestSequence": ["step-back", "jutsu:whispering-dread"],
+    "exchanges": 7488,
+    "ms": 4536.672414000001
+  },
+  {
+    "id": "illusionist-v-rusher@5",
+    "firsts": 7,
+    "actions": 12,
+    "q": {
+      "strike": -1.78125,
+      "step-back": -3.140625,
+      "evade": -3.140625,
+      "brace": -3.140625,
+      "gather": -3.140625,
+      "jutsu:lantern-mirage": 8.015625,
+      "jutsu:whispering-dread": 7.875
+    },
+    "qA": {
+      "strike": -1.1875,
+      "step-back": -4.3125,
+      "evade": -4.3125,
+      "brace": -4.3125,
+      "gather": -4.3125,
+      "jutsu:lantern-mirage": 6.78125,
+      "jutsu:whispering-dread": 5.5625
+    },
+    "qB": {
+      "strike": -2.375,
+      "step-back": -1.96875,
+      "evade": -1.96875,
+      "brace": -1.96875,
+      "gather": -1.96875,
+      "jutsu:lantern-mirage": 9.25,
+      "jutsu:whispering-dread": 10.1875
+    },
+    "best": "jutsu:lantern-mirage",
+    "bestSequence": ["jutsu:lantern-mirage", "jutsu:whispering-dread"],
+    "exchanges": 5824,
+    "ms": 2990.2916389999737
+  },
+  {
+    "id": "mistBlade-v-versatile@0",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "step-back": -22.71875,
+      "evade": -16.96875,
+      "brace": -21.328125,
+      "jutsu:river-fog": -22.5,
+      "jutsu:lantern-cut": -9.1875,
+      "jutsu:moonfall-slash": -8.171875,
+      "jutsu:snuffed-wick-step": -7.078125,
+      "throw": -18.078125,
+      "step-in": -18.5625
+    },
+    "qA": {
+      "step-back": -25.8125,
+      "evade": -14.53125,
+      "brace": -20,
+      "jutsu:river-fog": -22.90625,
+      "jutsu:lantern-cut": -11.71875,
+      "jutsu:moonfall-slash": -10.6875,
+      "jutsu:snuffed-wick-step": -9.0625,
+      "throw": -17.625,
+      "step-in": -19.3125
+    },
+    "qB": {
+      "step-back": -19.625,
+      "evade": -19.40625,
+      "brace": -22.65625,
+      "jutsu:river-fog": -22.09375,
+      "jutsu:lantern-cut": -6.65625,
+      "jutsu:moonfall-slash": -5.65625,
+      "jutsu:snuffed-wick-step": -5.09375,
+      "throw": -17.9375,
+      "step-in": -17.8125
+    },
+    "best": "jutsu:snuffed-wick-step",
+    "bestSequence": ["jutsu:snuffed-wick-step", "jutsu:moonfall-slash"],
+    "exchanges": 8064,
+    "ms": 6298.908468000009
+  },
+  {
+    "id": "mistBlade-v-versatile@2",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "step-back": -26.5,
+      "evade": -10.28125,
+      "brace": -14.5625,
+      "gather": -21.5,
+      "jutsu:lantern-cut": -5.03125,
+      "jutsu:moonfall-slash": -3.671875,
+      "jutsu:snuffed-wick-step": -6.875,
+      "throw": -12.609375,
+      "step-in": -15.453125
+    },
+    "qA": {
+      "step-back": -27.125,
+      "evade": -6.84375,
+      "brace": -13.4375,
+      "gather": -23.78125,
+      "jutsu:lantern-cut": -4.34375,
+      "jutsu:moonfall-slash": -3.21875,
+      "jutsu:snuffed-wick-step": -8.875,
+      "throw": -11.375,
+      "step-in": -16.625
+    },
+    "qB": {
+      "step-back": -25.875,
+      "evade": -13.71875,
+      "brace": -15.6875,
+      "gather": -19.21875,
+      "jutsu:lantern-cut": -5.71875,
+      "jutsu:moonfall-slash": -4.125,
+      "jutsu:snuffed-wick-step": -4.875,
+      "throw": -13.84375,
+      "step-in": -14.28125
+    },
+    "best": "jutsu:moonfall-slash",
+    "bestSequence": ["jutsu:moonfall-slash", "jutsu:moonfall-slash"],
+    "exchanges": 8064,
+    "ms": 6327.016937999986
+  },
+  {
+    "id": "mistBlade-v-versatile@5",
+    "firsts": 6,
+    "actions": 13,
+    "q": {
+      "evade": -51.25,
+      "brace": -60.828125,
+      "gather": -70.015625,
+      "jutsu:snuffed-wick-step": -9.6875,
+      "throw": -57.859375,
+      "step-in": -54.0625
+    },
+    "qA": {
+      "evade": -50.5625,
+      "brace": -68.4375,
+      "gather": -80.90625,
+      "jutsu:snuffed-wick-step": -11.65625,
+      "throw": -56.53125,
+      "step-in": -52.59375
+    },
+    "qB": {
+      "evade": -51.9375,
+      "brace": -53.21875,
+      "gather": -59.125,
+      "jutsu:snuffed-wick-step": -7.46875,
+      "throw": -59.1875,
+      "step-in": -55.53125
+    },
+    "best": "jutsu:snuffed-wick-step",
+    "bestSequence": ["jutsu:snuffed-wick-step", "jutsu:moonfall-slash"],
+    "exchanges": 5376,
+    "ms": 3409.716924999986
+  },
+  {
+    "id": "trapper-v-stalker@0",
+    "firsts": 9,
+    "actions": 13,
+    "q": {
+      "step-back": -26.4375,
+      "evade": -22.390625,
+      "brace": -17.9375,
+      "search": -21.9375,
+      "dispel": -22.796875,
+      "jutsu:snare-ward": -4.796875,
+      "jutsu:kiln-mine": -18.796875,
+      "jutsu:blast-ring": -17.609375,
+      "step-in": -18.8125
+    },
+    "qA": {
+      "step-back": -26.40625,
+      "evade": -19.84375,
+      "brace": -17.3125,
+      "search": -22,
+      "dispel": -23.125,
+      "jutsu:snare-ward": -3.6875,
+      "jutsu:kiln-mine": -20.6875,
+      "jutsu:blast-ring": -19.125,
+      "step-in": -18.65625
+    },
+    "qB": {
+      "step-back": -26.46875,
+      "evade": -24.9375,
+      "brace": -18.5625,
+      "search": -21.875,
+      "dispel": -22.46875,
+      "jutsu:snare-ward": -5.90625,
+      "jutsu:kiln-mine": -16.90625,
+      "jutsu:blast-ring": -16.09375,
+      "step-in": -18.96875
+    },
+    "best": "jutsu:snare-ward",
+    "bestSequence": ["jutsu:snare-ward", "jutsu:blast-ring"],
+    "exchanges": 8064,
+    "ms": 5818.2877429999935
+  },
+  {
+    "id": "trapper-v-stalker@2",
+    "firsts": 8,
+    "actions": 13,
+    "q": {
+      "step-back": -18.34375,
+      "evade": -11.203125,
+      "brace": -6.96875,
+      "gather": -17.78125,
+      "jutsu:blast-ring": -6.359375,
+      "jutsu:lantern-cut": -9.859375,
+      "throw": -10.6875,
+      "step-in": -8.546875
+    },
+    "qA": {
+      "step-back": -16.1875,
+      "evade": -9.09375,
+      "brace": -6.1875,
+      "gather": -18.46875,
+      "jutsu:blast-ring": -7.8125,
+      "jutsu:lantern-cut": -8.90625,
+      "throw": -9.3125,
+      "step-in": -9.53125
+    },
+    "qB": {
+      "step-back": -20.125,
+      "evade": -13.3125,
+      "brace": -7.75,
+      "gather": -17.09375,
+      "jutsu:blast-ring": -4.90625,
+      "jutsu:lantern-cut": -10.8125,
+      "throw": -12.0625,
+      "step-in": -7.5625
+    },
+    "best": "jutsu:blast-ring",
+    "bestSequence": ["jutsu:blast-ring", "jutsu:blast-ring"],
+    "exchanges": 7168,
+    "ms": 5873.919354999991
+  },
+  {
+    "id": "trapper-v-stalker@5",
+    "firsts": 8,
+    "actions": 13,
+    "q": {
+      "step-back": -18.015625,
+      "evade": -9.140625,
+      "brace": -6.234375,
+      "gather": -17.484375,
+      "jutsu:blast-ring": -5.640625,
+      "jutsu:lantern-cut": -9.28125,
+      "throw": -10.109375,
+      "step-in": -7.890625
+    },
+    "qA": {
+      "step-back": -15.40625,
+      "evade": -6.84375,
+      "brace": -5.3125,
+      "gather": -18.46875,
+      "jutsu:blast-ring": -6.96875,
+      "jutsu:lantern-cut": -7.75,
+      "throw": -8.15625,
+      "step-in": -8.21875
+    },
+    "qB": {
+      "step-back": -19.53125,
+      "evade": -11.4375,
+      "brace": -7.15625,
+      "gather": -16.5,
+      "jutsu:blast-ring": -4.3125,
+      "jutsu:lantern-cut": -10.8125,
+      "throw": -12.0625,
+      "step-in": -7.5625
+    },
+    "best": "jutsu:blast-ring",
+    "bestSequence": ["jutsu:blast-ring", "jutsu:blast-ring"],
+    "exchanges": 7168,
+    "ms": 5759.671732999996
+  },
+  {
+    "id": "counterer-v-powerhouse@0",
+    "firsts": 8,
+    "actions": 12,
+    "q": {
+      "step-back": 8.984375,
+      "evade": 10.953125,
+      "brace": 9.15625,
+      "jutsu:still-water": 9.609375,
+      "jutsu:return-current": 23.28125,
+      "jutsu:lantern-cut": 22.28125,
+      "throw": 16.203125,
+      "step-in": 2.359375
+    },
+    "qA": {
+      "step-back": 10.53125,
+      "evade": 12.625,
+      "brace": 10.8125,
+      "jutsu:still-water": 10.875,
+      "jutsu:return-current": 25.375,
+      "jutsu:lantern-cut": 24.15625,
+      "throw": 16.9375,
+      "step-in": 4.90625
+    },
+    "qB": {
+      "step-back": 7.4375,
+      "evade": 9.28125,
+      "brace": 7.5,
+      "jutsu:still-water": 8.34375,
+      "jutsu:return-current": 21.1875,
+      "jutsu:lantern-cut": 20.40625,
+      "throw": 15.46875,
+      "step-in": -0.1875
+    },
+    "best": "jutsu:return-current",
+    "bestSequence": ["jutsu:return-current", "jutsu:lantern-cut"],
+    "exchanges": 6656,
+    "ms": 4207.345567000011
+  },
+  {
+    "id": "counterer-v-powerhouse@2",
+    "firsts": 7,
+    "actions": 12,
+    "q": {
+      "strike": -10.65625,
+      "step-back": -2.1875,
+      "evade": -6.609375,
+      "brace": -3.84375,
+      "jutsu:still-water": 2.171875,
+      "jutsu:return-current": 12.4375,
+      "jutsu:lantern-cut": -6
+    },
+    "qA": {
+      "strike": -9.90625,
+      "step-back": -4.0625,
+      "evade": -4.65625,
+      "brace": -4.46875,
+      "jutsu:still-water": 1.8125,
+      "jutsu:return-current": 11,
+      "jutsu:lantern-cut": -5.90625
+    },
+    "qB": {
+      "strike": -11.40625,
+      "step-back": -0.3125,
+      "evade": -8.5625,
+      "brace": -3.21875,
+      "jutsu:still-water": 2.53125,
+      "jutsu:return-current": 13.875,
+      "jutsu:lantern-cut": -6.09375
+    },
+    "best": "jutsu:return-current",
+    "bestSequence": ["jutsu:return-current", "jutsu:return-current"],
+    "exchanges": 5824,
+    "ms": 5420.957714999997
+  },
+  {
+    "id": "counterer-v-powerhouse@5",
+    "firsts": 7,
+    "actions": 12,
+    "q": {
+      "strike": -114.078125,
+      "step-back": -66.5,
+      "evade": -106.875,
+      "brace": -125.875,
+      "jutsu:still-water": -108.03125,
+      "jutsu:return-current": -90.828125,
+      "jutsu:lantern-cut": -108.5625
+    },
+    "qA": {
+      "strike": -114,
+      "step-back": -76,
+      "evade": -99.75,
+      "brace": -114,
+      "jutsu:still-water": -97.875,
+      "jutsu:return-current": -93.5625,
+      "jutsu:lantern-cut": -110.96875
+    },
+    "qB": {
+      "strike": -114.15625,
+      "step-back": -57,
+      "evade": -114,
+      "brace": -128.25,
+      "jutsu:still-water": -110.0625,
+      "jutsu:return-current": -88.09375,
+      "jutsu:lantern-cut": -106.15625
+    },
+    "best": "step-back",
+    "bestSequence": ["step-back", "step-back"],
+    "exchanges": 2524,
+    "ms": 1593.6026060000004
+  }
+]

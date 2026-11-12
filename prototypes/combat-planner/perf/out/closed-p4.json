@@ -1,0 +1,42 @@
+[
+  {
+    "approach": "greedy d1 r16",
+    "scenario": "daze-finish",
+    "won": 2,
+    "fights": 30,
+    "dealt": 60.8,
+    "taken": 98.7,
+    "msPerDecision": 45.29801529870135,
+    "openings": "spark > spark ×30"
+  },
+  {
+    "approach": "greedy d1 r16",
+    "scenario": "hide-lethal",
+    "won": 12,
+    "fights": 30,
+    "dealt": 86.86666666666666,
+    "taken": 65.76666666666667,
+    "msPerDecision": 56.337220796459945,
+    "openings": "blade > blade ×30"
+  },
+  {
+    "approach": "d2 w4 r32",
+    "scenario": "daze-finish",
+    "won": 19,
+    "fights": 30,
+    "dealt": 87.6,
+    "taken": 76.8,
+    "msPerDecision": 635.211728402655,
+    "openings": "flash > burst ×22, flash > flash ×8"
+  },
+  {
+    "approach": "d2 w4 r32",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 718.7455649014086,
+    "openings": "veil > blade ×30"
+  }
+]
