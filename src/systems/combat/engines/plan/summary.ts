@@ -5,6 +5,7 @@ import { alive } from '../../rules/body';
 import { tell } from '../../rules/telling';
 import { splitNarration } from '../../rules/narration';
 import { playerOf, type PlanFighter, type PlanState } from './state';
+import { ROUND_EXCHANGES } from './roundEnd';
 
 /**
  * A fight in a sentence or two, for its result card: how long it lasted, and then its turning
@@ -14,8 +15,6 @@ import { playerOf, type PlanFighter, type PlanState } from './state';
  * `guardBrokenBy`), never from its dice, and in words: story text carries no numbers.
  */
 
-/** Exchanges in a round, to say which round someone fell in (`engine.ts` plays four). */
-const EXCHANGES_PER_ROUND = 4;
 /** A daze or a smashed guard this many exchanges or fewer before a fall is what swung it. */
 const SWING_WINDOW = 3;
 
@@ -39,7 +38,7 @@ function fallen(fighters: readonly PlanFighter[]): PlanFighter[] {
 
 /** Which round of the fight an exchange fell in. */
 function roundOf(exchange: number): number {
-  return Math.floor((exchange - 1) / EXCHANGES_PER_ROUND) + 1;
+  return Math.floor((exchange - 1) / ROUND_EXCHANGES) + 1;
 }
 
 /** Who on the other side went down, and how: the turning points of a won fight. */

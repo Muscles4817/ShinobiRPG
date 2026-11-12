@@ -32,8 +32,8 @@ const COUNTER_MIN = 0.15;
 const COUNTER_MAX = 0.65;
 /** How a technique's accuracy scales the chance of slipping it (a Dodge, or swift instinct). */
 const ACCURACY_EVASION: Readonly<Record<Accuracy, number>> = { sure: 0.8, steady: 1, wild: 1.3 };
-/** However wild the swing, some blows still land. */
-const SLIP_MAX = 0.75;
+/** However wild the swing or sharp the defender, some attacks still land (`AVOID_MAX`). */
+export const SLIP_MAX = 0.75;
 /** Resistance never rises above this, nor falls below the floor. */
 const RESIST_MAX = 0.6;
 const RESIST_FLOOR = 0.05;
