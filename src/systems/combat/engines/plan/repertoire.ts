@@ -3,7 +3,7 @@ import { statTier, type StatGrade } from '@/systems/stats';
 import type { CombatTechnique } from '../../contract';
 import { shapeOf } from '../../gearContract';
 import { isBodyMove, maxBreath, type BodyArt } from '../../rules/breath';
-import { familiarScale, repeatWeight } from '../../rules/familiarity';
+import { familiarScale, repeatWeight, runOf } from '../../rules/familiarity';
 import { hasVerb, techniquePower } from '../../rules/verbs';
 import { beats, seenDefence, walksInto } from './adapt';
 import { cardId, fitsBand, playable, type Card } from './cards';
@@ -148,17 +148,14 @@ function fitness(round: Round, self: PlanFighter, foe: PlanFighter, card: Card):
 }
 
 /**
- * How fresh a card is: against a foe who reads the fight, a move thrown turns running, or leaned
- * on all fight, weighs less, so the style changes up before it is read (`rules/familiarity.ts`:
- * only such a foe reads a move more easily for seeing it again). Against anyone else the best
- * move is as good the fifth time as the first.
+ * How fresh a card is: against a foe who reads the fight, a move thrown turns running weighs
+ * less, so the style changes up before it is read (`rules/familiarity.ts`). Against a duller foe
+ * a feel for the fight doesn't bother: they read it slowly.
  */
 function freshness(self: PlanFighter, foe: PlanFighter, card: Card): number {
   if (!CHANGES_UP.includes(feelOf(self)) || !readsInTheMoment(foe)) return 1;
-  const id = card.kind === 'jutsu' ? card.technique.id : undefined;
-  const running = self.streak?.card === cardId(card) ? self.streak.turns : 0;
-  const leaned = id === undefined ? 1 : familiarScale(self.uses?.[id] ?? 0);
-  return repeatWeight(running) / leaned;
+  const running = runOf(self, cardId(card));
+  return repeatWeight(running) / familiarScale(running);
 }
 
 /** How well a card would serve a strike now: its fitness, and how fresh it is against this foe. */

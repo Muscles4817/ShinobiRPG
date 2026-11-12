@@ -1,11 +1,12 @@
 import { alive } from '../../rules/body';
-import { clonesLeft, hasVerb, isPinned } from '../../rules/verbs';
+import { clonesLeft, hasVerb, isPinned, isWounding } from '../../rules/verbs';
 import { findCard, isOffence, type Card } from './cards';
 import { isDazed } from './daze';
 import { isOpen } from './finishers';
 import { opponentsOf, inSight } from './senses';
-import type { PlanFighter, Round, SlotCondition } from './state';
-import { maxBreath } from '../../rules/breath';
+import type { CardId, PlanFighter, Round, SlotCondition } from './state';
+import { FRESH_RUN, runOf } from '../../rules/familiarity';
+import { isBodyMove, maxBreath } from '../../rules/breath';
 
 /**
  * When a slot may play (audit P2.2): one registry the player's plan and every default plan
@@ -38,6 +39,8 @@ function closing(foe: PlanFighter, round: Round): boolean {
 
 interface Where {
   readonly self: PlanFighter;
+  /** The slot's own card, for a condition about it. */
+  readonly card: CardId | undefined;
   readonly round: Round;
   readonly foes: Foes;
   readonly seen: Foes;
@@ -73,9 +76,22 @@ const HOLDS: Readonly<Record<SlotCondition, (at: Where) => Foes | null>> = {
       seen,
     ),
   'first-exchange': ({ round, seen }) => ifSo(round.opening === true, seen),
+  fresh: ({ self, card, seen }) =>
+    ifSo(card === undefined || runOfSlot(self, card) < FRESH_RUN, seen),
   'low-breath': ({ self, seen }) =>
     ifSo(self.breath !== undefined && self.breath < maxBreath(self.attributes) * LOW_POOL, seen),
 };
+
+/**
+ * How many turns running a slot's card has played: for the strike that plays your style, the
+ * body move it last became (`repertoire.ts`), since that is what a foe sees again.
+ */
+function runOfSlot(self: PlanFighter, card: CardId): number {
+  if (card !== 'strike') return runOf(self, card);
+  const last = self.streak?.card;
+  const styled = self.techniques.some((t) => `jutsu:${t.id}` === last && isBodyMove(t));
+  return styled || last === 'strike' ? (self.streak?.turns ?? 0) : 0;
+}
 
 function bodiesOut(self: PlanFighter, round: Round): boolean {
   if (clonesLeft(self) > 0 || (self.summonsOut ?? []).length > 0) return true;
@@ -89,11 +105,12 @@ function bodiesOut(self: PlanFighter, round: Round): boolean {
 export function whenHolds(
   self: PlanFighter,
   round: Round,
-  when: SlotCondition | undefined,
+  slot: { readonly when?: SlotCondition; readonly card?: CardId },
 ): Foes | null {
   const foes = opponentsOf(round.fighters, self);
   const seen = foes.filter((f) => inSight(self, f));
-  return when === undefined ? seen : HOLDS[when]({ self, round, foes, seen });
+  const { when, card } = slot;
+  return when === undefined ? seen : HOLDS[when]({ self, round, foes, seen, card });
 }
 
 /** The kit a slot is set in: the fighter's own techniques, and whether a team fights too. */
@@ -122,6 +139,7 @@ const OFFERED: Readonly<Record<SlotCondition, (kit: KitAt) => boolean>> = {
   'ally-held': ({ team }) => team,
   'first-exchange': () => true,
   'low-breath': () => true,
+  fresh: ({ self }) => self.techniques.filter(isWounding).length > 1,
 };
 
 /** A kit this small sees only the plainest conditions: room to grow into the rest. */
@@ -130,6 +148,9 @@ const PLAIN: readonly SlotCondition[] = ['foe-dazed', 'foe-readying', 'low-healt
 
 /** The conditions worth offering for a slot in this kit, plainest first. */
 export function offeredConditions(all: readonly SlotCondition[], kit: KitAt): SlotCondition[] {
-  if (kit.self.techniques.length <= FEW_TECHNIQUES) return all.filter((c) => PLAIN.includes(c));
+  if (kit.self.techniques.length <= FEW_TECHNIQUES) {
+    // Even a small kit with two attacks may say when to change from one to the other.
+    return all.filter((c) => PLAIN.includes(c) || (c === 'fresh' && OFFERED.fresh(kit)));
+  }
   return all.filter((c) => OFFERED[c](kit));
 }

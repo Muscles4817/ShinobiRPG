@@ -2,7 +2,7 @@ import { listed } from '@/core';
 
 import type { RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
-import { familiarScale } from '../../rules/familiarity';
+import { familiarScale, runOf } from '../../rules/familiarity';
 import { RANGE_BANDS } from '../../rules/range';
 import { tell } from '../../rules/telling';
 import { findCard } from './cards';
@@ -39,10 +39,12 @@ function seenDefences(state: PlanState, you: PlanFighter): string[] {
   });
 }
 
-/** Your techniques a foe now reads more easily for how often you've used them. */
+/** Your technique a foe now reads more easily for your throwing it turns running. */
 function readMoves(you: PlanFighter, foe: PlanFighter): string[] {
-  if (!readsInTheMoment(foe)) return [];
-  return you.techniques.filter((t) => familiarScale(you.uses?.[t.id] ?? 0) > 1).map((t) => t.name);
+  const reader = readsInTheMoment(foe);
+  return you.techniques
+    .filter((t) => familiarScale(runOf(you, `jutsu:${t.id}`), reader) > 1)
+    .map((t) => t.name);
 }
 
 /** What the screen says a foe has learned of you, if anything. */

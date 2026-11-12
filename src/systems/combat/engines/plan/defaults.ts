@@ -249,6 +249,7 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   const finisher = damage.filter((c) => c.kind === 'jutsu' && c.technique.needsOpen).slice(0, 1);
   const ready = climb.length > 0 ? finisher : strongest(pool, readies).slice(0, 1);
   const plain = (cards: readonly Card[]) => plainSlots(cards.map(cardId));
+  const lead = leadAttacks(damage, strongest(pool, isHindering)[0]);
   const hold = holdSlot(pool, facing);
   const search = finder(fighter, pool, facing);
   const ordered: Slot[] = [
@@ -269,18 +270,32 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
     ...hold.early,
     // Readying (an empower, clones) is worth it anywhere: before a charge most of all.
     ...plain([...ready, ...(reaches ? best('trap') : [])]),
-    ...plain(damage.slice(0, 1)),
+    ...lead,
     // An explosive tag is a fixed blast: a strong attack beside a genin's jutsu, spent once.
     ...plain(reaches ? tools(pool, 'blast') : []),
     // Tools that wait play only when they help (`pouch.ts`: a salve or pill when running low, a
     // charm when confused), but they still take a slot, so a small plan keeps its attacks first.
     ...plain([...tools(pool, 'heal'), ...tools(pool, 'clarity'), ...tools(pool, 'chakra')]),
     ...hold.late,
-    ...plain([...damage.slice(1), ...best('conceal'), ...tools(pool, 'smoke')]),
+    ...plain([...damage.slice(lead.length), ...best('conceal'), ...tools(pool, 'smoke')]),
   ];
   // The best attack may be the strike that plays your style (`withStyle`).
   const unlocked = damage.find((c) => c.kind !== 'jutsu' || !c.technique.needsOpen);
   return fitted(ordered, plain(unlocked ? [unlocked] : damage.slice(0, 1))[0], slotLimit(fighter));
+}
+
+/**
+ * The attacks a plan leads with: the best until a foe has it read (thrown turns running,
+ * `rules/familiarity.ts`), and right behind it the change-up: the next best attack, or with only
+ * one, a hold (a daze leaves them open to the best one, fresh again). So the plan changes up on
+ * its own and back; a kit with nothing to change to leads with its one attack.
+ */
+function leadAttacks(damage: readonly Card[], hold: Card | undefined): Slot[] {
+  const [best, attack] = damage;
+  const next = attack ?? hold;
+  if (!best) return [];
+  if (!next) return [{ card: cardId(best) }];
+  return [{ card: cardId(best), when: 'fresh' }, { card: cardId(next) }];
 }
 
 /** How a teammate's stance bends the plan (`team.ts`). */

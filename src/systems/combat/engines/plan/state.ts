@@ -42,7 +42,8 @@ export type CardId = string;
  * When a slotted card may play (`conditions.ts`): a foe is dazed or sealed, a foe is readying a
  * jutsu, I'm below a third of my health, my chakra is low, a foe is hidden; a foe is held, a foe
  * is open (dazed or held), a foe is closing in, a foe is about to attack, I am hidden, my clones
- * or summons are out, a teammate is held, it's a round's first exchange, my breath is low.
+ * or summons are out, a teammate is held, it's a round's first exchange, my breath is low, the
+ * card is still fresh (not thrown turns running enough to be read, `rules/familiarity.ts`).
  */
 export const SLOT_CONDITIONS = [
   'foe-dazed',
@@ -59,6 +60,7 @@ export const SLOT_CONDITIONS = [
   'ally-held',
   'first-exchange',
   'low-breath',
+  'fresh',
 ] as const;
 export type SlotCondition = (typeof SLOT_CONDITIONS)[number];
 

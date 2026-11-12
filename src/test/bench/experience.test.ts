@@ -48,9 +48,11 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
     oneScreenShare: 0,
   },
   'fresh genin v a classmate': {
+    // 0.823 repeats and 0.077 lost before plans and foes changed up off a read move: foes now
+    // use their dazes too, so more of your turns are lost to one.
     planScreens: 3.95,
-    repeatShare: 0.823,
-    lostShare: 0.077,
+    repeatShare: 0.33,
+    lostShare: 0.13,
     oneScreenShare: 0,
   },
   'fresh genin v a D-rank foe': {
@@ -60,9 +62,10 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
     oneScreenShare: 1,
   },
   'fresh genin v their mirror': {
-    // 7.95, 0.875 and 0.228 before three slots, the academy swap and pouch (P2.4).
-    planScreens: 8.167,
-    repeatShare: 0.867,
+    // 7.95, 0.875 and 0.228 before three slots, the academy swap and pouch (P2.4); 8.167 plan
+    // screens and 0.867 repeats before plans changed up off a read move, which ends it sooner.
+    planScreens: 7.75,
+    repeatShare: 0.34,
     lostShare: 0.225,
     oneScreenShare: 0,
   },

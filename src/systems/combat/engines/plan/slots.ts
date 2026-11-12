@@ -134,7 +134,7 @@ export function slotVerdict(self: PlanFighter, round: Round, slot: Slot): SlotVe
   if (!fitsBand(card, bandOf(round, self))) return { passed: 'out-of-reach' };
   const useless = uselessBecause(self, card, round);
   if (useless) return { passed: useless };
-  const held = whenHolds(self, round, slot.when);
+  const held = whenHolds(self, round, slot);
   if (!held) return { passed: 'condition' };
   // Dazing, sealing or confusing a foe already held is wasted: such a card looks for a fresh one.
   const fresh = holdsOnly(card) ? held.filter((f) => free(f, card, round.number)) : held;

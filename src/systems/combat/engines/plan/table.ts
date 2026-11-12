@@ -57,6 +57,7 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
   'ally-held': 'A teammate is held',
   'first-exchange': 'The round’s first exchange',
   'low-breath': 'My breath is low',
+  fresh: 'Until they’ve read it',
 };
 
 /**

@@ -11,7 +11,7 @@ import {
   type AttackForm,
 } from '../../rules/avoidance';
 import { FORESIGHT_SEES, FORESIGHT_SEES_THROUGH, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
-import { familiarScale } from '../../rules/familiarity';
+import { familiarScale, runOf } from '../../rules/familiarity';
 import { handsFull, HANDS_FULL_ARRIVAL, HANDS_FULL_READ } from '../../rules/blades';
 import { footingOf } from '../../rules/ground';
 import { weaponSkill } from '../../rules/weapons';
@@ -167,8 +167,8 @@ export function techniqueIncoming(
   if (!use) return null;
   const [area] = effectsOf(t, 'area');
   const body = t.discipline === 'taijutsu' || t.discipline === 'kenjutsu';
-  // Only a mind that reads the fight picks up on a technique leaned on.
-  const familiar = readsInTheMoment(target) ? familiarScale(attacker.uses?.[t.id] ?? 0) : 1;
+  // A technique thrown turns running is read more easily, by a sharp mind most (`familiarity.ts`).
+  const familiar = familiarScale(runOf(attacker, `jutsu:${t.id}`), readsInTheMoment(target));
   // Signs made around a drawn blade come slower and give more away (`blades.ts`).
   const full = handsFull(attacker, t.discipline, band);
   return {

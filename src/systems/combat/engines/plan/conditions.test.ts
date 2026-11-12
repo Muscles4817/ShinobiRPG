@@ -56,18 +56,22 @@ const hero = (r: Round) => r.fighters.find((f) => f.isPlayer)!;
 describe('conditions', () => {
   it('a foe held, or open, gives the slot that foe to aim at', () => {
     const pinned = round((f) => (f.id === 'foe' ? { ...f, pinned: 2 } : f));
-    expect(whenHolds(hero(pinned), pinned, 'foe-held')?.map((f) => f.id)).toEqual(['foe']);
-    expect(whenHolds(hero(pinned), pinned, 'foe-open')?.map((f) => f.id)).toEqual(['foe']);
+    expect(whenHolds(hero(pinned), pinned, { when: 'foe-held' })?.map((f) => f.id)).toEqual([
+      'foe',
+    ]);
+    expect(whenHolds(hero(pinned), pinned, { when: 'foe-open' })?.map((f) => f.id)).toEqual([
+      'foe',
+    ]);
     const free = round();
-    expect(whenHolds(hero(free), free, 'foe-held')).toBeNull();
+    expect(whenHolds(hero(free), free, { when: 'foe-held' })).toBeNull();
   });
 
   it('a teammate held, the first exchange, and being hidden hold of you and your side', () => {
     const mateHeld = round((f) => (f.id === 'mate' ? { ...f, pinned: 2 } : f));
-    expect(whenHolds(hero(mateHeld), mateHeld, 'ally-held')).not.toBeNull();
+    expect(whenHolds(hero(mateHeld), mateHeld, { when: 'ally-held' })).not.toBeNull();
     const opening = { ...round(), opening: true };
-    expect(whenHolds(hero(opening), opening, 'first-exchange')).not.toBeNull();
-    expect(whenHolds(hero(round()), round(), 'self-hidden')).toBeNull();
+    expect(whenHolds(hero(opening), opening, { when: 'first-exchange' })).not.toBeNull();
+    expect(whenHolds(hero(round()), round(), { when: 'self-hidden' })).toBeNull();
   });
 });
 
