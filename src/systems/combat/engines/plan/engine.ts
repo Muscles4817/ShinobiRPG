@@ -22,6 +22,7 @@ import { betweenRounds } from './adapt';
 import { foesRestanced } from './restance';
 import { quietAfter } from './tiring';
 import { closingLine } from './falls';
+import { withTraceNotes } from './slotTrace';
 import { asRound, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
@@ -92,9 +93,12 @@ function options(state: PlanState): readonly CombatOption[] {
     const player = playerOf(state);
     const begin = state.bout === 1 ? 'Begin the fight' : `Begin round ${state.bout}`;
     return [
-      ...tableOptions(
-        player,
-        state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+      ...withTraceNotes(
+        tableOptions(
+          player,
+          state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+        ),
+        state.slotTrace,
       ),
       ...teamOptions(state),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },
@@ -210,7 +214,9 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
     case 'begin': {
       // Dividers are story text too: no numbers (the round number shows above the log).
       const divider = state.bout === 1 ? FIGHT_BEGINS : '— The next round begins —';
-      return ok({ ...state, phase: 'fight', log: [...state.log, divider] });
+      // Each round's slot trace starts afresh (`slotTrace.ts`).
+      const { slotTrace: _last, ...fresh } = state;
+      return ok({ ...fresh, phase: 'fight', log: [...state.log, divider] });
     }
     case 'flee':
       return ok(flee(state, rng));

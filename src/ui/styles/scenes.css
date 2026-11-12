@@ -482,6 +482,12 @@ button.foe {
 .plan-slot .plan-card {
   min-width: 0;
 }
+.plan-trace {
+  grid-column: 2 / -1;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
 .plan-settings {
   grid-column: 2 / -1;
   display: grid;

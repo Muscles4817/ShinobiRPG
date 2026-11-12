@@ -24,11 +24,13 @@ import { fieldAfter, lostInField } from './field';
 import { intendedCard, keepsTo } from './intent';
 import { momentIn } from './moment';
 import { recovered } from './tiring';
+import { tracedTurn } from './slotTrace';
 import { exchangeDivider, staged } from './staging';
 import { lingerAfter } from './lingering';
 import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
-import { plannedPlay, type Play } from './priority';
+import { plannedPlay } from './priority';
+import type { Play } from './slots';
 import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
 import { bestTarget } from './targeting';
@@ -245,7 +247,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
 
 /** A fighter's turn, its lines tagged for the screen (`staging.ts`). */
 function stagedTurn(round: Round, id: string, rng: Rng): Round {
-  return staged(round, turn(round, id, rng), id);
+  return staged(round, tracedTurn(round, turn(round, id, rng), id), id);
 }
 
 /** What an exchange carries in from the fight as it stands: reads, the field, the ground, marks. */
@@ -258,6 +260,7 @@ function carriedIn(state: PlanState): Partial<Round> {
     ...(state.mark ? { mark: state.mark } : {}),
     ...(state.foeMark ? { foeMark: state.foeMark } : {}),
     ...(state.watching ? { watching: true as const } : {}),
+    ...(state.slotTrace ? { slotTrace: state.slotTrace } : {}),
   };
 }
 
@@ -325,5 +328,6 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...(dropped > 0 ? { logDropped: dropped } : {}),
     result,
     ...(field ? { field } : {}),
+    ...(end.slotTrace ? { slotTrace: end.slotTrace } : {}),
   };
 }

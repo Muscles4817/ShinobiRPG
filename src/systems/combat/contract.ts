@@ -382,6 +382,8 @@ export interface CombatOption {
   readonly setting?: string;
   /** Present when the option is shown but cannot be chosen right now. */
   readonly disabledReason?: string;
+  /** How a plan entry fared last round, in words (a slot that played, or why it passed). */
+  readonly note?: string;
 }
 
 export interface CombatView {

@@ -44,3 +44,15 @@ describe('cards you could add', () => {
     expect(couldAdd().open).toBe(true);
   });
 });
+
+describe('the slot trace', () => {
+  it('shows beside a slotted card how it fared last round', () => {
+    const traced = option('bolt', {
+      rank: 0,
+      selected: true,
+      note: 'Never played. Passed over twice: out of reach from here.',
+    });
+    render(<PlanPicker options={[traced]} here="close" onPick={onPick} />);
+    expect(screen.getByText(/Passed over twice: out of reach/)).toBeVisible();
+  });
+});

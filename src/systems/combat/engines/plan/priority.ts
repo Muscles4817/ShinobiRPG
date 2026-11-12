@@ -1,46 +1,19 @@
-import type { CombatTechnique, RangeBand } from '../../contract';
-import { alive, hasPerk } from '../../rules/body';
-import { effectsOf, hasVerb, isHindering, isPinned, isWounding, opensOf } from '../../rules/verbs';
-import {
-  cardId,
-  findCard,
-  fitsBand,
-  isDefenceCard,
-  isOffence,
-  needsAim,
-  playable,
-  type Card,
-} from './cards';
 import { CHANGE_UP_AFTER } from '../../rules/familiarity';
-import type { NarrationOffPlan } from '../../rules/narration';
+import { isPinned } from '../../rules/verbs';
+import { cardId, findCard, isOffence, type Card } from './cards';
 import { bandOf, distanceBetween } from './distance';
 import { beats, seenDefence, walksInto } from './adapt';
-import { partnered } from './combo';
-import { spendsReserve } from './pacing';
-import { bestTarget } from './targeting';
-import { finisherTargets, needsOpenTarget } from './finishers';
 import { kitCall } from './calling';
 import { nextOpening } from './climbing';
 import { setupPlay } from './setups';
 import { survivalPlay } from './survival';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
-import { ownField } from './field';
-import { moveDestination } from './footwork';
-import { toolInstinct } from './pouch';
-import { prepNeeded } from './prep';
 import { hittable } from './rows';
-import { attacksFrom, improvise, makingFor, readiesTheCharge } from './stepping';
+import { improvise, makingFor, readiesTheCharge } from './stepping';
 import { inSight, opponentsOf } from './senses';
-import { canDaze, isDazed } from './daze';
-import {
-  type PlanFighter,
-  type Round,
-  type Slot,
-  type SlotCondition,
-  type TargetRule,
-} from './state';
-import { mindsMark } from './sharedMind';
+import { aimAt, fromSlot, useful, type Play } from './slots';
+import type { PlanFighter, Round, Slot } from './state';
 
 /**
  * How the player's plan plays: slot order is priority. Each exchange the player plays the
@@ -53,209 +26,6 @@ import { mindsMark } from './sharedMind';
  * Teammates play their cards this way too (`team.ts`); foes follow their instincts
  * (`choose.ts`).
  */
-
-/** "Below a third of my health." */
-const LOW_HEALTH = 1 / 3;
-/** "My chakra is low": below a quarter. */
-const LOW_CHAKRA = 1 / 4;
-
-type Intents = Round['intents'];
-
-/** The card a foe has telegraphed, if any. */
-function announced(foe: PlanFighter, intents: Intents): Card | null {
-  const id = intents[foe.id];
-  return id === undefined ? null : findCard(foe, id);
-}
-
-function dazed(foe: PlanFighter): boolean {
-  return isDazed(foe) || foe.sealed > 0;
-}
-
-function readying(foe: PlanFighter, intents: Intents): boolean {
-  return announced(foe, intents)?.kind === 'jutsu';
-}
-
-/**
- * A foe whose telegraphed attack can reach my side's back row; with no one standing there, any
- * foe about to attack.
- */
-function threatening(foe: PlanFighter, self: PlanFighter, round: Round): boolean {
-  const card = announced(foe, round.intents);
-  if (card === null || !isOffence(card)) return false;
-  const backRow = round.fighters.filter(
-    (f) => f.side === self.side && alive(f) && f.row === 'back',
-  );
-  return backRow.length === 0 || hittable(card, backRow, round.fighters).length > 0;
-}
-
-function nonEmpty(foes: readonly PlanFighter[]): readonly PlanFighter[] | null {
-  return foes.length > 0 ? foes : null;
-}
-
-/**
- * The foes a slot may aim at when its condition holds, or null when it doesn't. A condition
- * about you leaves every foe in sight to aim at.
- */
-function whenHolds(
-  self: PlanFighter,
-  round: Round,
-  when: SlotCondition | undefined,
-): readonly PlanFighter[] | null {
-  const foes = opponentsOf(round.fighters, self);
-  const seen = foes.filter((f) => inSight(self, f));
-  switch (when) {
-    case undefined:
-      return seen;
-    case 'foe-dazed':
-      return nonEmpty(seen.filter(dazed));
-    case 'foe-readying':
-      return nonEmpty(seen.filter((f) => readying(f, round.intents)));
-    case 'low-health':
-      return self.health < self.maxHealth * LOW_HEALTH ? seen : null;
-    case 'low-chakra':
-      return self.chakra < self.maxChakra * LOW_CHAKRA ? seen : null;
-    case 'foe-hidden':
-      return foes.some((f) => f.hidden) ? seen : null;
-  }
-}
-
-function byHealth(foes: readonly PlanFighter[], most: boolean): PlanFighter | undefined {
-  return [...foes].sort((a, b) => (most ? b.health - a.health : a.health - b.health))[0];
-}
-
-/** Whom a slot aims at among the foes it may target; the mark, when it's among them. */
-export function aimAt(
-  foes: readonly PlanFighter[],
-  rule: TargetRule | undefined,
-  self: PlanFighter,
-  round: Round,
-): PlanFighter | undefined {
-  switch (rule) {
-    case 'strongest':
-      return byHealth(foes, true);
-    case 'threat':
-      return byHealth(nonEmpty(foes.filter((f) => threatening(f, self, round))) ?? foes, false);
-    case 'marked': {
-      const mark = self.side === 'enemy' ? round.foeMark : round.mark;
-      return foes.find((f) => f.id === mark) ?? byHealth(foes, false);
-    }
-    case 'weakest':
-      return byHealth(foes, false);
-    case undefined:
-      // Left to their judgement (foes, teammates), a fighter goes for whoever is most worth it.
-      // A body of a mind aims at its side's mark, as one (`sharedMind.ts`).
-      if (self.isPlayer) return byHealth(foes, false);
-      return mindsMark(self, foes, round) ?? bestTarget(self, foes);
-  }
-}
-
-/**
- * No healing at full health, no sensing with no one hidden (or foes already read), no hiding
- * twice, no raising a field while yours is up, no move to where you already are, no
- * combination without a partner ready to join it, no riposte while one is ready, no throw
- * that only moves a foe to where they already are.
- */
-/** Where a technique's throw or pull leaves the distance, if it has one. */
-function knockTo(t: CombatTechnique): RangeBand | undefined {
-  return effectsOf(t, 'knock')[0]?.to;
-}
-
-/** A riposte while one is ready, or a throw that only moves a foe to where they are. */
-function wasted(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
-  if (hasVerb(t, 'counter') && self.riposte) return true;
-  return !isWounding(t) && knockTo(t) === bandOf(round, self);
-}
-
-function jutsuNeeded(self: PlanFighter, t: CombatTechnique, round: Round): boolean {
-  const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
-  if (wasted(self, t, round)) return false;
-  // A gate that also heals is opened for the gate, not the healing.
-  if (hasVerb(t, 'heal') && !opensOf(t) && self.health >= self.maxHealth) return false;
-  if (hasVerb(t, 'sense') && (!hiddenFoe || hasPerk(self, 'insight'))) return false;
-  if (hasVerb(t, 'field') && ownField(round.field, self)) return false;
-  if (moveDestination(self, t) === bandOf(round, self)) return false;
-  if (!partnered(round.fighters, self, t)) return false;
-  const foes = opponentsOf(round.fighters, self);
-  const foeInSight = foes.some((f) => inSight(self, f));
-  const facing = {
-    foeInSight,
-    foes,
-    exchange: round.number,
-    ...(round.reads ? { reads: round.reads } : {}),
-  };
-  if (!prepNeeded(self, t, facing)) return false;
-  return !(hasVerb(t, 'conceal') && self.hidden);
-}
-
-/**
- * Whether a card is needed now: no searching with no one hidden, no healing at full health, no
- * getting ready twice over or with no foe in sight (`prep.ts`). A foe's announced card is held
- * to it too, at its turn (`round.ts`).
- */
-export function needed(self: PlanFighter, card: Card, round: Round): boolean {
-  if (isDefenceCard(card)) return true;
-  const hiddenFoe = opponentsOf(round.fighters, self).some((f) => f.hidden);
-  switch (card.kind) {
-    case 'search':
-      return hiddenFoe;
-    case 'dispel':
-      return hiddenFoe || self.confused > 0;
-    case 'item':
-      return (
-        card.item.effect === 'blast' ||
-        toolInstinct(self, [card], { hiddenFoe, opening: round.opening ?? false }) !== undefined
-      );
-    case 'jutsu':
-      return jutsuNeeded(self, card.technique, round);
-    case 'strike':
-    case 'throw':
-    case 'step':
-    case 'gather':
-      return true;
-  }
-}
-
-/** Whether a card would do something now: it can be played, it reaches, and it's needed. */
-function useful(self: PlanFighter, card: Card, round: Round): boolean {
-  if (!playable(self, card) || spendsReserve(self, card)) return false;
-  if (isOffence(card) && !attacksFrom(self, card, bandOf(round, self))) return false;
-  return needed(self, card, round);
-}
-
-/** What the player plays this exchange, and at whom. */
-export interface Play {
-  readonly card: Card;
-  readonly target: PlanFighter | undefined;
-  /** Nothing slotted played: why the turn went off the plan (stamped for the player). */
-  readonly offPlan?: NarrationOffPlan;
-}
-
-/** A technique that only holds a foe back (daze, seal, confuse), without wounding them. */
-function holdsOnly(card: Card): boolean {
-  return card.kind === 'jutsu' && isHindering(card.technique) && !isWounding(card.technique);
-}
-
-/** Not dazed, sealed or confused; for a daze, not steady after one; for a pin, not pinned. */
-function free(foe: PlanFighter, card: Card, exchange: number): boolean {
-  const has = (verb: 'daze' | 'pin') => card.kind === 'jutsu' && hasVerb(card.technique, verb);
-  const steady = has('daze') && !canDaze(foe, exchange);
-  const held = has('pin') && isPinned(foe);
-  return !dazed(foe) && foe.confused === 0 && !steady && !held;
-}
-
-function fromSlot(self: PlanFighter, round: Round, slot: Slot): Play | null {
-  const card = findCard(self, slot.card);
-  if (!card || !fitsBand(card, bandOf(round, self)) || !useful(self, card, round)) return null;
-  const held = whenHolds(self, round, slot.when);
-  // Dazing, sealing or confusing a foe already held is wasted: such a card looks for a fresh one.
-  const fresh = held && holdsOnly(card) ? held.filter((f) => free(f, card, round.number)) : held;
-  // A finisher that needs an opening waits for an open foe (`finishers.ts`).
-  const foes = fresh && finisherTargets(card, fresh);
-  if (!foes || (needsOpenTarget(card) && foes.length === 0)) return null;
-  const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
-  const target = aimAt(inReach, slot.target, self, round);
-  return needsAim(card) && !target ? null : { card, target };
-}
 
 /** Slots that answer an emergency: healing when badly hurt, finding a hidden foe. */
 function urgent(slot: Slot): boolean {

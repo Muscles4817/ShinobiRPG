@@ -78,7 +78,10 @@ function playsAs(pickers: readonly [string, CombatOption[]][]): string {
   return [when, aim].filter(Boolean).join(', ') || 'Choose when it plays';
 }
 
-/** One slotted entry: its place, the card (tap to take it out) and how it plays. */
+/**
+ * One slotted entry: its place, the card (tap to take it out), how it fared last round (the
+ * slot trace, when there is one) and how it plays.
+ */
 function SlotRow({
   entry,
   adjustments,
@@ -114,6 +117,7 @@ function SlotRow({
       {buttons.map(([name, choices]) => (
         <Setting key={name} name={name} choices={choices} entry={entry} onPick={onPick} />
       ))}
+      {entry.note && <p className="plan-trace">{entry.note}</p>}
       {pickers.length > 0 && (
         <details className="plan-when">
           <summary>{playsAs(pickers)}</summary>
