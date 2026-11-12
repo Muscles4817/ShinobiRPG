@@ -18,12 +18,11 @@ import { survivalWarning } from './survival';
 import { slotLimit } from './cards';
 import { fieldMeter } from './field';
 import { seenByPlayer } from './statusView';
-import { betweenRounds } from './adapt';
-import { foesRestanced } from './restance';
-import { quietAfter } from './tiring';
-import { closingLine } from './falls';
 import { withTraceNotes } from './slotTrace';
-import { asRound, rollIntents } from './intent';
+import { endOfRound, ROUND_EXCHANGES } from './roundEnd';
+
+export { ROUND_EXCHANGES } from './roundEnd';
+import { rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { groundNote } from './groundPlay';
@@ -57,9 +56,6 @@ import { combatantView } from './combatantView';
  * card that is ready and whose condition holds (see `priority.ts`). Between rounds you see what
  * worked and re-plan.
  */
-
-/** Exchanges per round; the cards can be changed between rounds. */
-export const ROUND_EXCHANGES = 4;
 
 /** The most rounds one "watch to the end" plays, so a fight no one can win still hands back. */
 const WATCHED_ROUNDS_MAX = 20;
@@ -149,25 +145,6 @@ function fleeChance(state: PlanState): number {
 function exchange(state: PlanState, rng: Rng): PlanState {
   const next = endOfRound(resolveExchange(state, rng));
   return next.result ? next : { ...next, intents: rollIntents(next, rng) };
-}
-
-/** When the round is over, back to the card table. */
-function endOfRound(ended: PlanState): PlanState {
-  if (ended.result || ended.exchange < ROUND_EXCHANGES) return ended;
-  // A fight no one is winning ends in a stalemate (`tiring.ts`).
-  const next = { ...ended, ...quietAfter(ended) };
-  if (next.result) return { ...next, log: [...next.log, closingLine(asRound(next), next.result)] };
-  const watching = next.watching ?? false;
-  return {
-    ...next,
-    phase: watching ? 'fight' : 'loadout',
-    bout: next.bout + 1,
-    exchange: 0,
-    fighters: betweenRounds(foesRestanced(next.fighters), next.reads, watching),
-    ...foeMarkFor(next.fighters),
-    // Between rounds the plan screen says what to do; the story only marks the new round.
-    log: watching ? [...next.log, '— The next round begins —'] : next.log,
-  };
 }
 
 function watchRound(state: PlanState, rng: Rng): PlanState {

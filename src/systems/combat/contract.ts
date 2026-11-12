@@ -322,6 +322,8 @@ export interface CombatantView {
   readonly intent?: string;
   /** The cards you know they hold (all of them here, to eyes that read foes; else those seen). */
   readonly known?: string;
+  /** What a foe has learned of you: defences it has seen you keep, moves it reads (`learned`). */
+  readonly learned?: string;
   /** False while they can't be picked as a target (hidden in an illusion). */
   readonly targetable?: boolean;
   /** Their row, for engines with formations. */

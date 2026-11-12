@@ -2,6 +2,7 @@ import type { CombatantView } from '../../contract';
 import { viewOf } from '../../rules/body';
 import { bandOf, distanceBetween } from './distance';
 import { intentLine, knownLine } from './intent';
+import { learnedLine } from './learned';
 import { playerOf, type PlanFighter, type PlanState } from './state';
 import { seenByPlayer, statuses, statusesShown } from './statusView';
 import { onStage } from './swarmView';
@@ -25,10 +26,17 @@ function knownOf(plan: PlanState, f: PlanFighter, insight: boolean): Pick<Combat
   return known ? { known } : {};
 }
 
+/** What a foe has learned of you, for its view (only when it has learned anything). */
+function learnedOf(plan: PlanState, f: PlanFighter): Pick<CombatantView, 'learned'> {
+  const learned = learnedLine(plan, f);
+  return learned ? { learned } : {};
+}
+
 export function combatantView(plan: PlanState, f: PlanFighter, insight: boolean): CombatantView {
   return {
     ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
     ...knownOf(plan, f, insight),
+    ...learnedOf(plan, f),
     ...distanceOf(plan, f),
     // A hidden foe the player sees anyway is shown, and aimed at, as seen.
     ...(seenByPlayer(plan, f) ? { statuses: statusesShown(plan, f), targetable: true } : {}),
