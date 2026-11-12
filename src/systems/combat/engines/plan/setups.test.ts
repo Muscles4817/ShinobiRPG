@@ -142,7 +142,7 @@ describe('a set-up and the player’s own plan', () => {
     const close = defaultLoadout(one(r, 'kakashi'), r.fighters).close;
     expect(close).toEqual(
       expect.arrayContaining([
-        { card: 'jutsu:blade', when: 'foe-dazed' },
+        { card: 'jutsu:blade', when: 'foe-open' },
         { card: 'jutsu:mole' },
         { card: 'jutsu:fang' },
       ]),

@@ -25,6 +25,7 @@ import {
   type SlotCondition,
   type TargetRule,
 } from './state';
+import { offeredConditions } from './conditions';
 
 /**
  * The card table between rounds: for each distance, its defence and where you fight
@@ -46,6 +47,15 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
   'low-health': 'Below a third of my health',
   'low-chakra': 'My chakra is low',
   'foe-hidden': 'A foe is hidden',
+  'foe-held': 'A foe is held',
+  'foe-open': 'A foe is open (dazed or held)',
+  'foe-closing': 'A foe is closing in',
+  'foe-attacking': 'A foe is about to attack',
+  'self-hidden': 'I am hidden',
+  'bodies-out': 'My clones or summons are out',
+  'ally-held': 'A teammate is held',
+  'first-exchange': 'The round’s first exchange',
+  'low-breath': 'My breath is low',
 };
 
 /**
@@ -55,6 +65,8 @@ const WHEN_LABEL: Readonly<Record<SlotCondition | typeof ALWAYS, string>> = {
 const AIM_LABEL: Readonly<Record<TargetRule, string>> = {
   weakest: 'Weakest foe',
   strongest: 'Strongest foe',
+  nearest: 'Nearest foe',
+  open: 'A foe who is open',
   threat: 'Back-row threat',
   marked: 'The team mark',
 };
@@ -76,16 +88,19 @@ function rankOf(player: PlanFighter, band: RangeBand, id: CardId): number {
 }
 
 /** Setting choices for one slotted card: move up, when it plays, whom it aims at. */
-const SOLO_AIMS: readonly TargetRule[] = ['weakest', 'strongest'];
+const SOLO_AIMS: readonly TargetRule[] = ['weakest', 'strongest', 'nearest', 'open'];
 
 /** Where a slot sits: its distance, its place in the order, and whether a team fights too. */
 interface SlotAt {
   readonly band: RangeBand;
   readonly rank: number;
   readonly team: boolean;
+  /** The conditions worth offering in this kit (`conditions.ts`). */
+  readonly offered: readonly SlotCondition[];
 }
 
-function adjustments({ band, rank, team }: SlotAt, slot: Slot, card: Card | null): CombatOption[] {
+function adjustments(at: SlotAt, slot: Slot, card: Card | null): CombatOption[] {
+  const { band, rank, team, offered } = at;
   const adjusts = entryId(band, slot.card);
   const base = { detail: '', kind: 'plan', group: RANGE_LABEL[band], adjusts } as const;
   const raise: CombatOption[] =
@@ -93,7 +108,9 @@ function adjustments({ band, rank, team }: SlotAt, slot: Slot, card: Card | null
       ? [{ ...base, id: `${RAISE_PREFIX}${band}:${slot.card}`, label: 'Move up', setting: 'Order' }]
       : [];
   const timed = card === null || !isReaction(card);
-  const conditions: readonly (SlotCondition | typeof ALWAYS)[] = [ALWAYS, ...SLOT_CONDITIONS];
+  // A condition already chosen stays on the list, offered or not.
+  const kept = slot.when && !offered.includes(slot.when) ? [slot.when] : [];
+  const conditions: readonly (SlotCondition | typeof ALWAYS)[] = [ALWAYS, ...offered, ...kept];
   const when = (timed ? conditions : []).map((c): CombatOption => ({
     ...base,
     id: `${WHEN_PREFIX}${band}:${c}:${slot.card}`,
@@ -151,8 +168,9 @@ function slotOptions(player: PlanFighter, band: RangeBand, team: boolean): Comba
       ...(blocker ? { disabledReason: blocker } : {}),
     };
   });
+  const offered = offeredConditions(SLOT_CONDITIONS, { self: player, team });
   const settings = player.loadout[band].flatMap((slot, rank) =>
-    adjustments({ band, rank, team }, slot, findCard(player, slot.card)),
+    adjustments({ band, rank, team, offered }, slot, findCard(player, slot.card)),
   );
   return [
     ...readinessOptions(player, band),

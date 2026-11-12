@@ -46,8 +46,8 @@ export function kitSlots(fighter: PlanFighter, usable: readonly Card[]): Slot[] 
     ? [...jutsuIn(usable, hiding).slice(0, 1), ...jutsuIn(usable, holding).slice(0, 1)]
     : [];
   return [
-    // The killing blow waits for a foe who can't move (`rules/lethal.ts`).
-    ...kill.map((c): Slot => ({ card: cardId(c), when: 'foe-dazed' })),
+    // The killing blow waits for a foe who can't move: dazed or held (`rules/lethal.ts`).
+    ...kill.map((c): Slot => ({ card: cardId(c), when: 'foe-open' })),
     ...plainSlots([...openings(fighter, usable), ...meditation, ...calls, ...unseen].map(cardId)),
   ];
 }
