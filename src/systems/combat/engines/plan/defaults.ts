@@ -188,7 +188,7 @@ function trumpSlot(trumps: readonly Card[], facing: Facing): Slot[] {
 }
 
 /**
- * The slots that fit. A small plan (a dull mind holds two actions) keeps an attack: a plan of
+ * The slots that fit. A small plan (a dull mind holds three actions) keeps an attack: a plan of
  * nothing but emergencies would leave its owner swinging plain blows.
  */
 function fitted(ordered: readonly Slot[], attack: Slot | undefined, limit: number): Slot[] {

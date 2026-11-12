@@ -8,7 +8,12 @@ describe('new game', () => {
   it('starts a genin in the pack’s home village', () => {
     const state = newGame();
     expect(state).toMatchObject({ packId: 'original', locationId: 'torogakure' });
-    expect(state.techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
+    expect(state.techniques.known).toEqual([
+      'palm-strike',
+      'shadow-feint',
+      'lantern-husk',
+      'gale-heel',
+    ]);
     expect(state.standing.rank).toBe('genin');
     expect(state.housing).toEqual({
       owned: [],

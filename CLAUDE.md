@@ -284,7 +284,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the fight; what stands between a fighter and that is what they do about it. A daze costs the target their
     next turn and leaves them open (no dodge, a finisher target, though a Guard still works);
     afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. A plan is
-    **actions** per distance, two to five by intellect grade (`slotLimit`: E 2, D 3, C 4, B+ 5):
+    **actions** per distance, three to six by intellect grade (`slotLimit`: E–D 3, C 4, B–A 5, S 6):
     techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
     (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
     substitution; never stacked) that reacts on its own (a **spin**, a substitution that `spins`
@@ -563,7 +563,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     fights (`CombatOutcome.allies`), and knocked down it is laid up until mended, sooner at a
     `vet` place or with medicine.
     **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
-    `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
+    `gear` places' `toolIds`, kept in `inventory.tools`; a graduate starts with the pack's
+    `startingTools`) ride in as `CombatantSetup.items`;
     what they do lives once in `rules/items.ts`, every engine offers them, and
     `CombatOutcome.items` writes back what's left (`afterPouch`). A mission notice shows only
     the threat until you buy the client's report (`buyIntel`, `board.intel`), which names every

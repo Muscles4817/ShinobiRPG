@@ -164,7 +164,8 @@ function startingTechniques(draft: CreationDraft, grades: Grades, ctx: GameConte
   const { content } = ctx;
   const clan = content.clans.require(draft.clanId);
   const starters = topDisciplines(grades).map((d) => content.disciplineStarters[d]);
-  return [...new Set([...content.academyTechniques, ...clan.startingTechniqueIds, ...starters])];
+  const academy = [...content.academyTechniques, ...content.academyBasics];
+  return [...new Set([...academy, ...clan.startingTechniqueIds, ...starters])];
 }
 
 /** The arts graded highest on the file: the roll never voids them, and a genius's are gifted. */
@@ -258,7 +259,11 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
     board: newBoard(seed),
-    inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
+    inventory: withIssuedBlade(
+      { ...EMPTY_INVENTORY, tools: content.startingTools },
+      known,
+      content,
+    ),
     village: {
       lastSightDay: null,
       lastRoundDay: null,

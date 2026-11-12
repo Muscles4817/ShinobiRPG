@@ -9,7 +9,7 @@ import { plannedPlay } from './priority';
 import { decode, encode, initialFighters, plainSlots, type PlanFighter, type Round } from './state';
 
 const PROMPT =
-  'Round 1: pick up to 2 actions for each distance, higher first, and the defence you keep ready there.';
+  'Round 1: pick up to 3 actions for each distance, higher first, and the defence you keep ready there.';
 
 /** An exchange about to be played at a distance, for asking what a fighter plays. */
 function roundAt(fighters: PlanFighter[], range: Round['range']): Round {
@@ -96,9 +96,9 @@ describe('plan & watch cards', () => {
     expect(ids(reactionsFor(hero!, 'far'))).toEqual(['guard', 'dodge']);
   });
 
-  it('a sharper mind holds more actions: two at grade E up to five from B', () => {
+  it('a sharper mind holds more actions: three at grades E and D, five from B, six at S', () => {
     const at = (intellect: number) => slotLimit({ attributes: { ...attributes, intellect } });
-    expect([at(5), at(8), at(13), at(20), at(40)]).toEqual([2, 3, 4, 5, 5]);
+    expect([at(5), at(8), at(13), at(20), at(32), at(40)]).toEqual([3, 3, 4, 5, 5, 6]);
   });
 
   it('the default plan walks a brawler in and keeps a jutsu user at range', () => {
@@ -111,7 +111,7 @@ describe('plan & watch cards', () => {
     });
     const [caster, foe] = bodies();
     const plan = defaultLoadout(caster!);
-    // Two actions at grade E: the best attack leads and the daze follows it.
+    // The best attack leads and the daze follows it.
     expect(plan.mid).toEqual([
       { card: 'jutsu:blast' },
       { card: 'jutsu:daze', when: 'foe-readying' },
@@ -199,8 +199,9 @@ describe('plan & watch engine', () => {
   });
 
   it('cards toggle in and out, and full slots say so', () => {
-    // Against a bandit with no jutsu, the plan holds no daze: slotting it fills both slots.
-    const state = act(engine, start(), 'slot:mid:jutsu:daze');
+    // Against a bandit with no jutsu, the plan holds no daze: slotting it and a Dispel fills
+    // all three slots.
+    const state = act(engine, act(engine, start(), 'slot:mid:jutsu:daze'), 'slot:mid:dispel');
     const option = (s: CombatState, id: string) => engine.view(s).options.find((o) => o.id === id);
     expect(option(state, 'slot:mid:search')?.disabledReason).toBe(
       'Slots full. Take a card out first.',

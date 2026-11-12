@@ -1,16 +1,32 @@
 import type { Discipline } from '@/systems/techniques';
 
-import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
+import type { BreakInScene, ContentPack, NamePools, NindoDef, TeamText } from '../../types';
 
 /** Techniques every academy graduate knows. */
-export const ACADEMY_TECHNIQUES: readonly string[] = ['shuriken-jutsu', 'clone-jutsu'];
+const ACADEMY_TECHNIQUES: readonly string[] = ['shuriken-jutsu', 'clone-jutsu'];
 
-export const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
+/**
+ * The rest of what the graduation exam asks for, beside thrown steel and clones: a body
+ * swapped for a log to escape a blow, and a disguise to hide in.
+ */
+const ACADEMY_BASICS: readonly string[] = ['substitution-jutsu', 'transformation'];
+
+const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
   taijutsu: 'basic-strike-combination',
   ninjutsu: 'phoenix-flower',
   genjutsu: 'hell-viewing',
   kenjutsu: 'iaido-draw',
   fuuinjutsu: 'explosive-tag',
+};
+
+/** What the academy sends every graduate out knowing. */
+export const ACADEMY: Pick<
+  ContentPack,
+  'academyTechniques' | 'academyBasics' | 'disciplineStarters'
+> = {
+  academyTechniques: ACADEMY_TECHNIQUES,
+  academyBasics: ACADEMY_BASICS,
+  disciplineStarters: DISCIPLINE_STARTERS,
 };
 
 export const NINDOS: readonly NindoDef[] = [

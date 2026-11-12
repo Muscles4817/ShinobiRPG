@@ -320,6 +320,8 @@ export interface ContentPack {
   readonly description: string;
   readonly startLocationId: string;
   readonly startingRyo: number;
+  /** The fight tools a graduate's pouch holds on the first day, by id, and how many. */
+  readonly startingTools: Readonly<Record<string, number>>;
   readonly text: SettingText;
   readonly locations: readonly LocationDef[];
   /** The roads between locations. */
@@ -400,6 +402,12 @@ export interface ContentPack {
   readonly team: TeamText;
   readonly village: VillageLife;
   readonly academyTechniques: readonly string[];
+  /**
+   * Techniques a new graduate is taught beside `academyTechniques` (a swap to escape a blow).
+   * The player starts with them; generated classmates' fight kits don't carry them, since a
+   * swap in every classmate's hands moves the whole year's balance (the pacing bench).
+   */
+  readonly academyBasics: readonly string[];
   /** The technique a graduate starts with for their specialty discipline. */
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;
   /**

@@ -65,6 +65,7 @@ export interface ContentDb {
   readonly packName: string;
   readonly startLocationId: string;
   readonly startingRyo: number;
+  readonly startingTools: Readonly<Record<string, number>>;
   readonly text: SettingText;
   readonly locations: Catalog<LocationDef>;
   readonly routes: Catalog<RouteDef>;
@@ -127,6 +128,7 @@ export interface ContentDb {
   readonly team: TeamText;
   readonly village: VillageLife;
   readonly academyTechniques: readonly string[];
+  readonly academyBasics: readonly string[];
   readonly disciplineStarters: Readonly<Record<Discipline, string>>;
 }
 
@@ -136,6 +138,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     packName: pack.name,
     startLocationId: pack.startLocationId,
     startingRyo: pack.startingRyo,
+    startingTools: pack.startingTools,
     text: pack.text,
     locations: createCatalog('location', pack.locations),
     routes: createCatalog('route', pack.routes),
@@ -199,6 +202,7 @@ export function buildContentDb(pack: ContentPack): ContentDb {
     team: pack.team,
     village: pack.village,
     academyTechniques: pack.academyTechniques,
+    academyBasics: pack.academyBasics,
     disciplineStarters: pack.disciplineStarters,
   };
 }

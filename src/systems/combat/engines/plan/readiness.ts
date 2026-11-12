@@ -3,6 +3,7 @@ import { RANGE_BANDS } from '../../rules/range';
 import { spins } from '../../rules/verbs';
 import { cardId, findCard, fitsBand, isReaction, reactionsFor, type Card } from './cards';
 import { isDazed } from './daze';
+import { readsInTheMoment } from './judgement';
 import { hangsSlack } from './puppets';
 import type { CardId, PlanFighter, Reactions, Round } from './state';
 import { bandOf } from './distance';
@@ -22,7 +23,7 @@ export const NO_REACTIONS: Reactions = { close: null, mid: null, far: null };
 /** Where a fighter fights: a distance to make for, or null to fight wherever they stand. */
 export type KeepAt = RangeBand | null;
 
-type Ready = Pick<PlanFighter, 'loadout' | 'techniques' | 'items' | 'reactions'>;
+type Ready = Pick<PlanFighter, 'loadout' | 'techniques' | 'items' | 'reactions' | 'attributes'>;
 
 function fitting(fighter: Ready, id: CardId | null, band: RangeBand): Card | null {
   if (id === null) return null;
@@ -44,9 +45,12 @@ export function reactionChoices(fighter: Ready, band: RangeBand): Card[] {
 
 /**
  * The defence a plan keeps ready by default: a substitution when the kit has one (a spin
- * first), then a
- * Guard, then a Dodge. A plan with a defence beats one without far more often than any extra
- * attack makes up for (the content bench measures it), so every distance keeps one.
+ * first), then a Guard, then a Dodge. A plain swap escapes one hit a round and is spent on the
+ * first that comes, while a Guard meets every blow, so only a mind that reads the fight keeps a
+ * swap ready by default; a duller one keeps its Guard up (the content bench measured a fresh
+ * graduate keeping their academy swap ready winning far less often against D-rank foes). A plan
+ * with a defence beats one without far more often than any extra attack makes up for, so every
+ * distance keeps one.
  */
 export function defaultReactions(fighter: Ready): Reactions {
   const pick = (band: RangeBand): CardId | null => {
@@ -54,7 +58,7 @@ export function defaultReactions(fighter: Ready): Reactions {
     // A spin (Palm Rotation) is never spent, so it beats a plain swap.
     const swaps = choices.filter((c): c is Extract<Card, { kind: 'jutsu' }> => c.kind === 'jutsu');
     const spin = swaps.find((c) => spins(c.technique));
-    const swap = spin ?? swaps[0];
+    const swap = spin ?? (readsInTheMoment(fighter) ? swaps[0] : undefined);
     const best = swap ?? choices.find((c) => c.kind === 'guard') ?? choices[0];
     return best ? cardId(best) : null;
   };

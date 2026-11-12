@@ -43,7 +43,7 @@ import { DESERT_FOX } from '../../shared/wildKinds';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
-import { TOOLS } from '../../shared/tools';
+import { STARTING_POUCH, TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
 import { DEEP_WILDS } from '../../shared/deepWilds';
 import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
@@ -84,7 +84,7 @@ import {
 } from './people';
 import { ROSTER_CONVERSATIONS } from './rosterConversations';
 import { ROSTER_TECHNIQUES } from './rosterTechniques';
-import { ACADEMY_TECHNIQUES, BREAK_IN, DISCIPLINE_STARTERS, NAMES, NINDOS, TEAM } from './profile';
+import { ACADEMY, BREAK_IN, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { RENAMED_TECHNIQUES } from './techniques/renamed';
 import { TECHNIQUES } from './techniques';
@@ -143,6 +143,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   description: 'Konohagakure in the Land of Fire, with names from Naruto. Fan pack.',
   startLocationId: 'konohagakure',
   startingRyo: 300,
+  startingTools: STARTING_POUCH,
   text: NARUTO_TEXT,
   locations: NARUTO_LOCATIONS,
   routes: NARUTO_ROUTES,
@@ -297,7 +298,6 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   names: NAMES,
   team: TEAM,
   village: VILLAGE,
-  academyTechniques: ACADEMY_TECHNIQUES,
-  disciplineStarters: DISCIPLINE_STARTERS,
+  ...ACADEMY,
   renamedTechniques: RENAMED_TECHNIQUES,
 }))();

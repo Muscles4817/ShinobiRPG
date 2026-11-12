@@ -176,7 +176,9 @@ describe('ways past without a fight', () => {
 
 describe('setting the ground', () => {
   it('needs a trap or field technique, or a smoke bomb', () => {
-    const s = atEncounter(ESCORT);
+    const start = capable();
+    // The academy's smoke bombs spent.
+    const s = atEncounter(ESCORT, { ...start, inventory: { ...start.inventory, tools: {} } });
     expect(dispatch(s, { type: 'encounterApproach', approach: 'set-ground' }, ctx)).toEqual({
       ok: false,
       error: 'Needs a trap or field technique, or a smoke bomb in your pouch.',

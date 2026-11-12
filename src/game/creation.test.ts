@@ -61,8 +61,18 @@ describe('character creation', () => {
     );
   });
 
+  it('sends a graduate out with the academy pouch', () => {
+    expect(freshGame().inventory.tools).toEqual(ctx.content.startingTools);
+    expect(Object.keys(ctx.content.startingTools).length).toBeGreaterThan(0);
+  });
+
   it('starts with academy techniques plus a starter for each A grade', () => {
-    expect(freshGame().techniques.known).toEqual(['palm-strike', 'shadow-feint', 'gale-heel']);
+    expect(freshGame().techniques.known).toEqual([
+      'palm-strike',
+      'shadow-feint',
+      'lantern-husk',
+      'gale-heel',
+    ]);
   });
 
   it('the file, the frame and the special note shape starting stats', () => {
