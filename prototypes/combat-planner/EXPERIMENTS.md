@@ -5,6 +5,82 @@ whether a planner finds how to exploit it, where the planner's time goes and how
 why the planner preferred stepping out of reach to Daze → Finisher. Nothing here changes
 production combat code on `main`. The one rule tried (Experiment 1) lives only on this branch.
 
+## Experiment 1: a Dodge leaps clear
+
+### Choosing the mechanic
+
+The first candidate was the Counter: a riposte leaves its user exposed until their next turn.
+Checked against the turn order, it fails one-on-one:
+- A Counter fires during the attacker's turn.
+- The counterer's own turn, which closes the window, always comes before the attacker acts again.
+- With a steady initiative order, the attacker never gets a turn inside the window.
+
+It would only ever matter to a third fighter, a teammate. That may be worth having later, but the
+planner prototype couldn't test it fairly.
+
+The mechanic tested instead (`src/systems/combat/engines/plan/leap.ts`, on this branch only):
+**a fighter who slips an attack up close with a Dodge ready leaps clear, and that pair ends at
+mid.** In the world, dodging up close means jumping away.
+- **Narrow:**
+  - only a ready Dodge (a plain slip, an Evade or a substitution stays put);
+  - only from close;
+  - only the pair involved;
+  - never for an illusion seen through.
+- **Not a cost added for the planner's sake.** It is a positional consequence that cuts both ways:
+  - a dodger who fights from range gets clear for free;
+  - a close fighter who dodges must spend a turn coming back in, and may meet a hold-off;
+  - an attacker who wants mid can throw a blow up close to make a dodger give it to them.
+
+### Does the planner find how to exploit it? Yes, with nothing written for it
+
+The scenario (`leap.test.ts`): you hold a strong Stone Sling (mid and far) and poor hand-to-hand,
+starting up close. The foe is a quick, sharp-eyed brawler. Today's answer is to step back, a
+contested step that costs the turn.
+
+| Foe keeps | Rule | Planner's best pair at the start | Planner's first move, 20 fights | Planner won | Default plan won |
+| --- | --- | --- | --- | --- | --- |
+| Dodge | **leap on** | blow > blow (+0.3) | **blow up close, 20 of 20** | 16/20 | 15/20 |
+| Dodge | leap off | step back > blow (−4.3) | step back, 20 of 20 | 15/20 | 15/20 |
+| Guard | leap on | step back > blow (−5.7) | step back, 20 of 20 | 16/20 | 16/20 |
+| Guard | leap off | step back > blow (−5.7) | step back, 20 of 20 | 16/20 | 16/20 |
+
+The planner switches to throwing a blow up close **only** when both the rule and a dodging foe
+are present. The blow is worth something even when it misses, because the dodge hands over mid.
+Nothing in the planner names the dodge, the leap or the idea of a bait.
+
+The payoff in this scenario is small: one more win in twenty. The exploit is found, but it isn't
+decisive here.
+
+### Balance (benches, before and after, same seeds)
+
+- **Every combat bench passes with the rule**, except the archetype matrix's CI check: one pair,
+  Gates against the Assassin, crosses the band at the check's 8 seeds. At 100 seeds that pair was
+  already outside the band before the change (91%, now 93%).
+- **The full matrix at 100 seeds a pair:**
+  - 285 pairs outside the band before, and 285 after;
+  - the average cell moved 0.07 points;
+  - only the Gates build moved, from 80% overall to 79%. Its largest change is against the
+    Cloner, 73% to 65%.
+- **Leaps are rare between AI fighters:** 1% of 2,772 watched matrix fights, almost all of them
+  the Gates build, the only one whose default ready defence up close is a Dodge. The rule's
+  weight falls where players choose Dodge.
+- **The rest of the test suite:** one failure, a seeded versus fixture (`versus.test.ts`, a
+  puppeteer's opening) whose order of events the leap shifts. The story-text goldens are
+  unchanged.
+
+### Recommendation
+
+The rule is sound, narrow and nearly balance-neutral. It gives a capable planner something real
+to exploit, and the planner exploits it unprompted. But it is not decisive, and it moves the
+game's feel for anyone who keeps Dodge ready up close: they will find themselves at mid often.
+Keep it on this branch until the owner has played a few fights with it. If adopted:
+- update the versus fixture;
+- add Gates against the Assassin to the known outliers;
+- add a line to CLAUDE.md decision 16.
+
+The Counter version is worth revisiting once teammates are planned, since they are the ones who
+could use a riposte's opening.
+
 ## Experiment 3: the daze scenario
 
 The scenario:
