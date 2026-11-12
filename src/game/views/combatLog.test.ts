@@ -77,3 +77,17 @@ describe('combat log view', () => {
     expect(story.some((l) => l.chips.some((chip) => chip.tone === 'harm'))).toBe(true);
   });
 });
+
+describe('a cause on the line', () => {
+  it('shows as a stamp beside the reaction, in words', () => {
+    const [line] = combatLog(['Jin slips it. ⟦r:missed⟧ ⟦c:read-it⟧']);
+    expect(line).toEqual({
+      kind: 'story',
+      text: 'Jin slips it.',
+      chips: [
+        { label: 'Missed', tone: 'info' },
+        { label: 'Read it coming', tone: 'info' },
+      ],
+    });
+  });
+});

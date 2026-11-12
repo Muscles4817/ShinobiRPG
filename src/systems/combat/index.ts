@@ -105,6 +105,7 @@ export { focusScale } from './rules/focus';
 export { MAX_BLADES, weaponNumbers, type WeaponNumbers } from './rules/weapons';
 export { speedOf, strikeReach, weaponGuard } from './rules/weaponClasses';
 export { splitNarration } from './rules/narration';
+export { NARRATION_CAUSES, type NarrationCause } from './rules/causes';
 export { RANGE_BANDS, RANGE_LABEL, reachOf } from './rules/range';
 export { GROUND_RULES, type GroundRule } from './rules/ground';
 export { potencyOf as fieldPotencyOf } from './rules/verbs/field';

@@ -42,6 +42,8 @@ import { linkLine } from './chainVoice';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 import { distanceBetween } from './distance';
+import { slipCause, slipCauseBeside, withCause } from './causes';
+import type { NarrationCause } from '../../rules/causes';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether each target slips it (the
@@ -265,6 +267,12 @@ function misfired(turn: Turn, t: CombatTechnique): boolean {
   return chance > 0 && turn.rng.chance(chance);
 }
 
+/** Why a foe slipped a technique (`causes.ts`), from the same incoming the roll weighed. */
+function slipCauseOf(round: Round, { actor, foe, t }: Slipped): NarrationCause | null {
+  const incoming = techniqueIncoming(actor, foe, t, round);
+  return incoming ? slipCause(round, incoming) : null;
+}
+
 /** Whether one foe slips a technique: the avoid roll (`avoid.ts`). */
 function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): boolean {
   const incoming = techniqueIncoming(turn.actor, foe, t, round);
@@ -275,13 +283,15 @@ function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): 
 function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const moment = momentOf(round, foe.id);
   const slip = { target: foe, attacker: actor, what: t.name };
+  const cause = slipCauseOf(round, { actor, foe, t });
   if (!dodgesHere(round, foe)) {
-    return say(round, reactionLine(seenLine(moment, slip, t.discipline === 'genjutsu'), 'missed'));
+    const seen = reactionLine(seenLine(moment, slip, t.discipline === 'genjutsu'), 'missed');
+    return say(round, withCause(seen, cause));
   }
   const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
   const noted = noteDefence(round, foe.id, distanceBetween(round, actor.id, foe.id), 'dodge');
   const told = missLine(moment, why, slip);
-  return say(noted, reactionLine(told, 'dodged'));
+  return say(noted, withCause(reactionLine(told, 'dodged'), slipCauseBeside(cause, true)));
 }
 
 interface Slipped {

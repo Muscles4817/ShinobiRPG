@@ -24,6 +24,7 @@ import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
 import { distanceBetween } from './distance';
+import { causeLine } from '../../rules/causes';
 
 /**
  * Holding a foe off in a planned fight (`rules/zoning.ts`). At mid and far range a fighter may
@@ -162,7 +163,7 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
   const moment = momentOf(marked, holder.id);
   const why = holdOffReason(aim, closer.attributes.speed, areaOf(card));
   const told = say(
-    say(marked, heldOffLine(moment, holder, closer)),
+    say(marked, causeLine(heldOffLine(moment, holder, closer), 'held-off')),
     heldOffWhy(moment, { holder, closer, what: nameOf(card), why }),
   );
   const fired = fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn);
