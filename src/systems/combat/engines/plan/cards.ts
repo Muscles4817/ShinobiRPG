@@ -29,7 +29,8 @@ import type { CardId, PlanFighter } from './state';
 /**
  * Action slots per distance by intellect grade: a strategist plans deeper than a brawler. Even a
  * dull mind holds three, so a fresh graduate's plan has room for an opener, a punish and an
- * escape; intellect buys the fourth and fifth.
+ * escape; intellect buys the fourth and fifth. A genius's sixth is for the deepest kits (a dozen
+ * techniques and more): few minds below S ask the default plan for more than five a distance.
  */
 const SLOTS_BY_INTELLECT: Readonly<Record<StatGrade, number>> = {
   E: 3,
@@ -37,7 +38,7 @@ const SLOTS_BY_INTELLECT: Readonly<Record<StatGrade, number>> = {
   C: 4,
   B: 5,
   A: 5,
-  S: 5,
+  S: 6,
 };
 const JUTSU_PREFIX = 'jutsu:';
 export const ITEM_PREFIX = 'item:';
