@@ -1,7 +1,7 @@
 import type { CombatantView, ScoutingRead } from '@/game';
 
 import { Read } from './Foes';
-import { shortName } from './Formation';
+import { shortName } from './shortNames';
 
 const DISTANCE_LINE = {
   close: 'Close to you.',
@@ -42,7 +42,14 @@ export function FighterRead({
 }
 
 /** Every foe's telegraphed move at a glance, decided again after each exchange. */
-export function FoeMoves({ foes }: { readonly foes: readonly CombatantView[] }) {
+export function FoeMoves({
+  foes,
+  field = foes,
+}: {
+  readonly foes: readonly CombatantView[];
+  /** Everyone in the fight, so the seals match the formation's. */
+  readonly field?: readonly CombatantView[];
+}) {
   const moving = foes.filter((f) => f.health > 0 && f.intent);
   if (moving.length === 0) return null;
   return (
@@ -52,7 +59,7 @@ export function FoeMoves({ foes }: { readonly foes: readonly CombatantView[] }) 
         {moving.map((f) => (
           <li key={f.id}>
             <span className="token-seal small enemy" aria-hidden="true">
-              {shortName(f.name).mark}
+              {shortName(f.name, field, f.id).mark}
             </span>
             <b>{f.name}</b> <span>{f.intent}</span>
           </li>

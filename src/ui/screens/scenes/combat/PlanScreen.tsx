@@ -240,7 +240,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
             ) : (
               <>
                 {fighterRead}
-                <FoeMoves foes={foes} />
+                <FoeMoves foes={foes} field={view.combatants} />
               </>
             )}
           </Pane>
@@ -256,7 +256,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
         {reserves}
         {fighterRead}
         <HowItWent view={view} />
-        <FoeMoves foes={foes} />
+        <FoeMoves foes={foes} field={view.combatants} />
         {cards}
         <TeamPanel view={view} onPick={onPick} />
       </main>

@@ -103,13 +103,22 @@ export function threatFrom(
     : undefined;
 }
 
-/** The first killer among a fighter's foes. */
+/** How heavy a killer's blow would land on this fighter. */
+function blowOf(self: PlanFighter, threat: Threat): number {
+  return threat.kind === 'lethal'
+    ? wounds(threat.foe, self, threat.technique) * LETHAL_SCALE
+    : heaviest(threat.foe, self);
+}
+
+/** The worst killer among a fighter's foes: the one whose blow would land heaviest. */
 export function killerOf(self: PlanFighter, moment: SurvivalMoment): Threat | undefined {
+  let worst: { threat: Threat; blow: number } | undefined;
   for (const foe of opponentsOf(moment.fighters, self)) {
     const threat = threatFrom(self, foe, moment.intents);
-    if (threat) return threat;
+    const blow = threat ? blowOf(self, threat) : 0;
+    if (threat && (!worst || blow > worst.blow)) worst = { threat, blow };
   }
-  return undefined;
+  return worst?.threat;
 }
 
 /**
