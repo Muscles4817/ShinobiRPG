@@ -62,7 +62,7 @@ describe('plan & watch default plan: actions only', () => {
     const sense: CombatTechnique = { ...bolt('sense', 0), effects: [{ verb: 'sense', power: 10 }] };
     const rally: CombatTechnique = {
       ...bolt('rally', 0),
-      effects: [{ verb: 'empower', power: 8 }],
+      effects: [{ verb: 'empower', power: 8, boosts: ['speed'] }],
     };
     // Three slots at intellect E: heal, sense and an empower would fill them, but the attack stays.
     const mid = cards(hero([mend, sense, rally, bolt('bolt', 14)]), 'mid');
