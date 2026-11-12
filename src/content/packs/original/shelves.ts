@@ -43,4 +43,7 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'kiln-glaze',
   'dune-shell',
   'storm-mantle',
+  'lantern-fall',
+  'quenching-thrust',
+  'pinched-flame',
 ];

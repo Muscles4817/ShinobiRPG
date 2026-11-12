@@ -30,7 +30,13 @@ export const ELITE_ENEMIES: readonly EnemyDef[] = [
       kenjutsu: -2,
     },
     maxChakra: 185,
-    techniqueIds: ['seven-knot-seal', 'ink-chain-seal', 'kiln-mine', 'whispering-dread'],
+    techniqueIds: [
+      'seven-knot-seal',
+      'ink-chain-seal',
+      'kiln-mine',
+      'whispering-dread',
+      'pinched-flame',
+    ],
     traits: ['illusionist'],
   },
   {
@@ -59,7 +65,7 @@ export const ELITE_ENEMIES: readonly EnemyDef[] = [
       fuuinjutsu: -4,
     },
     maxChakra: 135,
-    techniqueIds: ['tile-splitting-cut', 'moonfall-slash', 'crescent-drop'],
+    techniqueIds: ['tile-splitting-cut', 'moonfall-slash', 'crescent-drop', 'quenching-thrust'],
     traits: ['swift'],
   },
   {
@@ -121,6 +127,7 @@ export const ELITE_ENEMIES: readonly EnemyDef[] = [
       'white-flame-heel',
       'night-watch-flurry',
       'kiln-door-kick',
+      'lantern-fall',
     ],
     traits: ['brawler'],
   },

@@ -1,6 +1,7 @@
 import type { TechniqueDef } from '@/systems/techniques';
 
 import { CAST_ARMOUR } from './armour';
+import { FINISHERS } from './finishers';
 import { FUUINJUTSU } from './fuuinjutsu';
 import { GENJUTSU } from './genjutsu';
 import { KENJUTSU } from './kenjutsu';
@@ -24,6 +25,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
   ...FUUINJUTSU,
   ...SCHOOL_TECHNIQUES,
   ...SEVEN_WICKS,
+  ...FINISHERS,
   ...SEALED_ARCHIVE,
   ...CAST_ARMOUR,
 ];
