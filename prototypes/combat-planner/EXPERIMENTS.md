@@ -61,7 +61,24 @@ the turn and leaves no Guard or Counter that exchange.
 
 ### What the planner actually does in fights to the end
 
-RESULTS_A
+The planner, re-planning every exchange, against the rangeless foe, 20 fights each, fought to
+the end (`closed.test.ts`):
+
+| Planner | First move | Won | Dealt | Taken | Time a decision |
+| --- | --- | --- | --- | --- | --- |
+| Depth 2, 16 rollouts, scored over 2 exchanges | step back, every fight | 15/20 | 83 | 68 | 0.7 s |
+| Depth 2, **80 rollouts**, scored over 2 | **Lantern Flash, every fight** | **16/20** | 94 | 81 | 4.7 s |
+| Depth 2, 32 rollouts, scored over **6** (default plan after) | step back, every fight | 10/20 | 73 | 81 | 4.8 s |
+
+Two things show here.
+- **With the noise taken out, the planner opens with the combo.** At 16 rollouts it opens by
+  stepping back, but still plays Flash and Burst from mid afterwards. Both versions beat every
+  fixed strategy (75–80% against 66%), because they mix kiting with the combo against a foe who
+  can't hit at range.
+- **Scoring further ahead made it worse.** The exchanges past the searched sequence are played
+  on the fighter's default plan, which never dazes, so a longer horizon weighs a bad policy more.
+  A longer horizon only helps with a decent follow-on policy, or with a terminal estimate of the
+  race instead of more simulated exchanges.
 
 ### Diagnosis
 
