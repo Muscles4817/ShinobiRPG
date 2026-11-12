@@ -8,7 +8,11 @@ export default defineConfig({
   test: {
     include: ['prototypes/combat-planner/**/*.test.ts'],
     // The perf comparison has its own configs (`perf/vitest.config.ts`, `perf/silent/`).
-    exclude: ['**/node_modules/**', 'prototypes/combat-planner/perf/**'],
+    exclude: [
+      '**/node_modules/**',
+      'prototypes/combat-planner/perf/**',
+      'prototypes/combat-planner/timing/**',
+    ],
     root: fileURLToPath(new URL('../..', import.meta.url)),
     globals: true,
     testTimeout: 600_000,
