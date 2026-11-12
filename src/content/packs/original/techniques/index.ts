@@ -8,6 +8,7 @@ import { ELEMENTAL_NINJUTSU } from './elements';
 import { NINJUTSU } from './ninjutsu';
 import { SCHOOL_TECHNIQUES } from './schools';
 import { SEALED_ARCHIVE } from './sealedArchive';
+import { SEVEN_WICKS } from './sevenWicks';
 import { TAIJUTSU } from './taijutsu';
 
 /**
@@ -22,6 +23,7 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
   ...KENJUTSU,
   ...FUUINJUTSU,
   ...SCHOOL_TECHNIQUES,
+  ...SEVEN_WICKS,
   ...SEALED_ARCHIVE,
   ...CAST_ARMOUR,
 ];

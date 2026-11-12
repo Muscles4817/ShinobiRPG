@@ -1,10 +1,11 @@
 import { MAX_HEALTH } from '@/systems/vitals';
-import { stepToll } from '@/systems/combat';
+import { stepToll, wearsBody } from '@/systems/combat';
 import { stepWords, type LadderStep } from '@/systems/techniques';
 
 /**
  * A ladder step's price as the technique sheet tells it (`combat/rules/verbs/tolls.ts`): what it
- * takes while open, and what it leaves once it shuts.
+ * takes while open, and what it leaves once it shuts. A stillness (Sage Mode, the kiln calm)
+ * takes nothing from the body: it is sat into, and runs out on its own.
  */
 
 /** What is left of you once the step shuts, in words. */
@@ -20,6 +21,12 @@ export function gateLine(
   step: LadderStep,
   raises: string,
 ): { readonly text: string; readonly chip: string | null } {
+  if (!wearsBody(step.ladder)) {
+    return {
+      text: `Sit still for a turn to open ${stepWords(step)}: raises ${raises} for a while, at no cost to the body`,
+      chip: null,
+    };
+  }
   const health = Math.round(stepToll(step).health * MAX_HEALTH);
   const after = afterwards(step);
   return {

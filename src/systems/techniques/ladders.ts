@@ -5,10 +5,12 @@
  * climbs at most `LADDER_REACH` steps past the one already open (the third gate, then the seventh), so the deep steps are reached
  * through the shallow ones. What each step does in a fight lives in `combat/rules/verbs/ladders.ts`.
  * Sage Mode is a ladder too: natural energy drawn in from stillness (an empower that is `still`),
- * imperfect (a toad's marks round the eyes) and then perfect.
+ * imperfect (a toad's marks round the eyes) and then perfect. The wicks are another body's
+ * gates: inner lamps lit one at a time, each burning hotter at the body's cost. The kiln calm is
+ * another stillness: heat drawn in sitting beside a summoned creature of the fire.
  */
 
-export const LADDERS = ['gates', 'sage'] as const;
+export const LADDERS = ['gates', 'sage', 'wicks', 'kiln'] as const;
 export type LadderId = (typeof LADDERS)[number];
 
 export interface LadderStep {
@@ -18,7 +20,12 @@ export interface LadderStep {
 }
 
 /** The last step of each ladder. */
-export const LADDER_TOP: Readonly<Record<LadderId, number>> = { gates: 8, sage: 2 };
+export const LADDER_TOP: Readonly<Record<LadderId, number>> = {
+  gates: 8,
+  sage: 2,
+  wicks: 7,
+  kiln: 1,
+};
 
 /** How many steps one opening may climb past the step already open. */
 export const LADDER_REACH = 4;
@@ -58,5 +65,9 @@ export function stepWords({ ladder, step }: LadderStep): string {
       return `the ${ORDINALS[step - 1] ?? 'last'} gate`;
     case 'sage':
       return SAGE_STEPS[step - 1] ?? 'the perfect sage mode';
+    case 'wicks':
+      return `the ${ORDINALS[step - 1] ?? 'last'} wick`;
+    case 'kiln':
+      return 'the kiln calm';
   }
 }

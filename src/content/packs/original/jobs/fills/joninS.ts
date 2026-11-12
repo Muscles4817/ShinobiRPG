@@ -75,4 +75,29 @@ export const JONIN_S_FILLS: readonly MissionFill[] = [
         'The strait is quiet by the next new moon. Port Shiomachi writes to thank the village, and the letter does not mention the Widow by any name.',
     },
   },
+  {
+    id: 'the-guttering-monk',
+    templateId: 's-hunt',
+    minMissionsCompleted: 36,
+    reward: { ryo: 2050, reputation: 30 },
+    values: {
+      title: 'The Guttering Monk',
+      client: 'The Tōrokage’s Office',
+      quarry: 'the Guttering Monk, the Lantern Wind student who lit the seventh wick',
+      briefing:
+        'The mountain temples have been going dark one by one, their monks beaten senseless and their lamps drunk dry. Kōun read the report twice and said only that he knows the student, and that he should have stopped teaching him sooner.',
+      trail:
+        'He keeps to the pilgrim paths at night and sleeps in the temples he empties, and the pilgrims who meet him on the stair remember a lantern, not a face.',
+      found:
+        'You find the last temple on the ridge with one lamp still lit, and the Monk asleep beside it, before he wakes.',
+      cold: 'You find the last temple on the ridge, but every lamp in it is lit. He has been sitting up for you.',
+      lair: 'The Monk stands in the temple yard with his sleeves tied back, and a Kurogane renegade who has been buying his fights for a season leans on the gate.',
+      foe: 'guttering-monk',
+      second: 'kurogane-renegade',
+      surrender:
+        'The Monk lets the heat go out of his hands and sits down in the yard. “Tell the old man I lit them all. Tell him it was worth it.”',
+      ending:
+        'The temples light their lamps again by the first snow. Kōun sweeps the training ground at dawn as he always has, and does not ask how it ended.',
+    },
+  },
 ];

@@ -1,4 +1,4 @@
-import { stepWords, type LadderStep } from '@/systems/techniques';
+import type { LadderStep } from '@/systems/techniques';
 
 import { alive } from '../../rules/body';
 import { maxBreath } from '../../rules/breath';
@@ -21,6 +21,7 @@ import {
 } from '../../rules/verbs';
 import { breathOf } from './effort';
 import { felled } from './falls';
+import { endLine, openingLine, shutLine } from './ladderWords';
 import { shadowsGone } from './shadows';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
@@ -54,30 +55,13 @@ export function empowerSelf(round: Round, actor: PlanFighter, use: EffectUse<'em
   return say({ ...round, fighters }, told);
 }
 
-function openingLine(actor: PlanFighter, opens: LadderStep): string {
-  switch (opens.ladder) {
-    case 'gates':
-      return tell('{a} force{a.s} open {gate}; chakra roars through {a.their} body.', {
-        a: actor,
-        gate: stepWords(opens),
-      });
-    case 'sage':
-      return tell(SAGE_OPENS, { a: actor });
-  }
-}
-
-const SAGE_OPENS =
-  'Natural energy floods into {a} out of the stillness, and a toad’s marks ring {a.their} eyes.';
-
-/** Sage toads perched on their summoner keep drawing natural energy in for them (`perching.ts`). */
+/**
+ * Summons perched on their caller keep a stillness going (`perching.ts`): sage toads drawing
+ * natural energy in with them.
+ */
 function renewed(f: PlanFighter): boolean {
-  return f.empowered?.opened?.ladder === 'sage' && (f.perched ?? []).length > 0;
-}
-
-function endLine(f: PlanFighter): string {
-  return f.empowered?.opened?.ladder === 'sage'
-    ? tell('The natural energy runs out of {a}, and {a.poss} sage mode fades.', { a: f })
-    : tell('{a.poss} surge of strength fades.', { a: f });
+  const opened = f.empowered?.opened;
+  return opened !== undefined && !wearsBody(opened.ladder) && (f.perched ?? []).length > 0;
 }
 
 function ended(f: PlanFighter): PlanFighter {
@@ -115,12 +99,6 @@ function paid(f: PlanFighter): PlanFighter {
   return { ...f, health, breath };
 }
 
-function shutLine(f: PlanFighter, opened: LadderStep): string {
-  return stepToll(opened).collapses
-    ? tell('The gates slam shut, and {a.poss} body gives out under {a.them}.', { a: f })
-    : tell('{a.poss} body gives out, and the gates slam shut.', { a: f });
-}
-
 /** Whether an open ladder step gives out: the Gates when the body does; Sage Mode never. */
 function givesOut(f: PlanFighter): boolean {
   const opened = f.empowered?.opened;
@@ -148,7 +126,7 @@ function tick(round: Round, id: string, exchange: number): Round {
   const price = f.health - after.health;
   const lines = [
     ...(price > 0 ? [harmLine(tell('The strain tells on {a.poss} body.', { a: f }), price)] : []),
-    ...(spent ? [shutLine(f, spent)] : over ? [endLine(f)] : []),
+    ...(spent ? [shutLine(f, spent, stepToll(spent).collapses)] : over ? [endLine(f)] : []),
   ];
   const told = say({ ...round, fighters }, ...lines);
   // Collapsed past the seventh gate: down like any fall, their clones with them.
