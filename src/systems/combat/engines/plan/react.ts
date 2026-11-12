@@ -35,6 +35,7 @@ import { dustGuard } from './dust';
 import { shieldUp } from './shield';
 import { foundBlindSpot, throughBlindSpot } from './blindSpot';
 import { distanceBetween } from './distance';
+import { slipCause, slipCauseBeside, withCause } from './causes';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -241,8 +242,10 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const slip = { target, attacker, what: blow.what };
   const line = missLine(momentOf(round, target.id), missWhy(hit, tried), slip);
+  const cause = slipCauseBeside(slipCause(round, blowIncoming(hit)), tried);
   // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
-  return { slipped: say(round, reactionLine(line, tried ? 'dodged' : 'missed')), tried };
+  const told = withCause(reactionLine(line, tried ? 'dodged' : 'missed'), cause);
+  return { slipped: say(round, told), tried };
 }
 
 /** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */

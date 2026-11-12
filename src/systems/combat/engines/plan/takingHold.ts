@@ -4,7 +4,9 @@ import { conditionResist } from '../../rules/avoidance';
 import { bracedResist, isBracedAgainst } from '../../rules/commitment';
 import { pointsSeenScale } from '../../rules/eyes';
 import { HIDDEN_HOLD_RESIST } from '../../rules/lethal';
+import { causeLine } from '../../rules/causes';
 import { tell } from '../../rules/telling';
+import { holdCause } from './causes';
 import type { EffectUse } from '../../rules/verbs';
 import { committedTo } from './commitment';
 import { say, type Round } from './state';
@@ -73,5 +75,5 @@ export function shakenOff(
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
   if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
-  return say(round, tell(SHAKEN_OFF[verb], { t: target }));
+  return say(round, causeLine(tell(SHAKEN_OFF[verb], { t: target }), holdCause(braced)));
 }

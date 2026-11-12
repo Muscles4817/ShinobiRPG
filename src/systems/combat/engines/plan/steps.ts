@@ -16,6 +16,8 @@ import { tell } from '../../rules/telling';
 import { sizeGap, STEP_PER_SIZE, walksThrough } from '../../rules/size';
 import { bandOf, distanceBetween, withMoves } from './distance';
 import { movesFor } from './pairMoves';
+import { causeLine } from '../../rules/causes';
+import { stepCause } from './causes';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -56,7 +58,7 @@ function arrive(
   };
   return keptUp.reduce((r, id) => {
     const foe = fighterIn(r, id);
-    return foe ? say(r, tell(KEPT_UP, { a: actor, b: foe })) : r;
+    return foe ? say(r, causeLine(tell(KEPT_UP, { a: actor, b: foe }), 'kept-pace')) : r;
   }, stepped);
 }
 
@@ -117,12 +119,15 @@ function stride(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const to = direction === 'in' ? stepIn(at) : stepBack(at);
   if (withinGround(round.ground, to) !== to) {
     const line = '{a} back{a.s} away, but there’s a wall behind {a.them}.';
-    return say(round, tell(line, { a: actor }));
+    return say(round, causeLine(tell(line, { a: actor }), 'no-room'));
   }
   // The roll is made even with no foe to stop them (a sure step), as it always was.
   const made = rng.chance(foe ? stepChance(round, actor, foe, direction) : 1);
   if (!foe) return arrive(round, turn, to);
-  if (!made) return say(round, blockedStepLine(momentOf(round, actor.id), actor, to, foe));
+  if (!made) {
+    const blocked = blockedStepLine(momentOf(round, actor.id), actor, to, foe);
+    return say(round, causeLine(blocked, stepCause(actor, foe)));
+  }
   return arrive(round, turn, to, direction === 'back' ? keepingPace(round, turn, to) : []);
 }
 
@@ -141,7 +146,9 @@ function walkedThrough(before: Round, after: Round, turn: Turn): Round | null {
 
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const { actor } = turn;
-  if (isPinned(actor)) return say(round, tell('{a} strain{a.s} against the hold.', { a: actor }));
+  if (isPinned(actor)) {
+    return say(round, causeLine(tell('{a} strain{a.s} against the hold.', { a: actor }), 'held'));
+  }
   const at = from(round, turn);
   const to = direction === 'in' ? stepIn(at) : stepBack(at);
   if (to === at) return say(round, tell(NO_FURTHER[to], { a: actor }));

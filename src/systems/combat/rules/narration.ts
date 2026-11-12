@@ -16,6 +16,7 @@ import { capitalise, listed, numberWord, ordinalWord, plural } from '@/core';
 import { AREA_SIZES, ELEMENTS, type AreaSize, type Element } from '@/systems/techniques';
 
 import type { RangeBand } from '../contract';
+import { CAUSE_MARKER, causeIn, type NarrationCause } from './causes';
 
 export type NarrationAmountKind = 'harm' | 'heal';
 
@@ -66,6 +67,8 @@ export interface Narration {
   readonly offPlan?: NarrationOffPlan;
   /** The line opens a round (`roundStartLine`): what follows is that round's story. */
   readonly roundStart?: true;
+  /** Why it went as it did (`causeLine`): a slip, a hold that didn't take, a failed step. */
+  readonly cause?: NarrationCause;
 }
 
 /** What the screen says of fighters, by fighter id ("Dazed", "Clones ×2"…; none is an empty list). */
@@ -261,6 +264,7 @@ export function splitNarration(line: string): Narration {
   const offPlan = OFF_PLAN_MARKER.exec(line)?.[1];
   const roundStart = ROUND_START_MARKER.test(line);
   const markers = [
+    CAUSE_MARKER,
     OFF_PLAN_MARKER,
     ROUND_START_MARKER,
     MARKER,
@@ -289,6 +293,7 @@ export function splitNarration(line: string): Narration {
     ...(statuses ? { statuses } : {}),
     ...(isOffPlan(offPlan) ? { offPlan } : {}),
     ...(roundStart ? { roundStart: true as const } : {}),
+    ...causeIn(line),
   };
 }
 
