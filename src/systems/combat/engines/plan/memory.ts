@@ -108,7 +108,8 @@ function holdOffFrom(value: unknown, fighter: PlanFighter): HoldOff {
 
 /** The defence each distance of an old, bare loadout had slotted first. */
 function slottedReactions(loadout: Loadout, fighter: PlanFighter): Reactions {
-  const old = { loadout, techniques: fighter.techniques, items: fighter.items };
+  const { techniques, items, attributes } = fighter;
+  const old = { loadout, techniques, items, attributes };
   const pick = (band: RangeBand) => {
     const card = reactionAt(old, band);
     return card ? cardId(card) : null;
