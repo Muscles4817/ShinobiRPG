@@ -20,5 +20,9 @@ describe('ladders', () => {
     expect(ladderStepProblem({ ladder: 'gates', step: 8 })).toBeNull();
     expect(ladderStepProblem({ ladder: 'gates', step: 0 })).toMatch(/runs 1 to 8/);
     expect(stepWords({ ladder: 'gates', step: 3 })).toBe('the third gate');
+    expect(ladderStepProblem({ ladder: 'wicks', step: 8 })).toMatch(/runs 1 to 7/);
+    expect(stepWords({ ladder: 'wicks', step: 6 })).toBe('the sixth wick');
+    expect(ladderStepProblem({ ladder: 'kiln', step: 2 })).toMatch(/runs 1 to 1/);
+    expect(stepWords({ ladder: 'kiln', step: 1 })).toBe('the kiln calm');
   });
 });

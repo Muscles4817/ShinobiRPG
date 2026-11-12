@@ -50,14 +50,32 @@ const GATE_TOLLS: readonly StepToll[] = [
   COLLAPSE(0.3, 0.3),
 ];
 
+/**
+ * Each wick's toll (index 0: nothing lit): less wind than a gate but health from the second wick
+ * on, the oil the lamp burns; the seventh, like the seventh gate, is the last thing the body does.
+ */
+const WICK_TOLLS: readonly StepToll[] = [
+  toll(0, 0, 0, 0),
+  toll(0.06, 0, 0.05, 0),
+  toll(0.08, 0.02, 0.06, 0),
+  toll(0.1, 0.03, 0.08, 0),
+  toll(0.12, 0.04, 0.1, 0.04),
+  toll(0.14, 0.05, 0.12, 0.06),
+  toll(0.18, 0.07, 0.2, 0.12),
+  COLLAPSE(0.2, 0.18),
+];
+
 const NO_TOLL = toll(0, 0, 0, 0);
 
-/** What a step costs while open and once it shuts. Sage Mode costs the body nothing. */
+/** What a step costs while open and once it shuts. Stillness costs the body nothing. */
 export function stepToll({ ladder, step }: LadderStep): StepToll {
   switch (ladder) {
     case 'gates':
       return GATE_TOLLS[step] ?? NO_TOLL;
+    case 'wicks':
+      return WICK_TOLLS[step] ?? NO_TOLL;
     case 'sage':
+    case 'kiln':
       return NO_TOLL;
   }
 }

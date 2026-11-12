@@ -23,4 +23,32 @@ describe('the original pack’s techniques', () => {
       expect(t.afterCost, t.id).toBeDefined();
     }
   });
+
+  it('give set-ups a payoff: killing blows and a finisher for an open foe', () => {
+    const lethal = ORIGINAL_PACK.techniques.filter((t) => t.lethal).map((t) => t.id);
+    expect(lethal).toEqual(
+      expect.arrayContaining(['last-moth', 'quenching-thrust', 'pinched-flame']),
+    );
+    const open = ORIGINAL_PACK.techniques.filter((t) => t.needsTarget === 'open');
+    expect(open.map((t) => t.id)).toContain('lantern-fall');
+  });
+
+  it('light the Seven Wicks, and keep an art that needs them lit', () => {
+    const wicks = ORIGINAL_PACK.techniques.flatMap((t) =>
+      t.effects.flatMap((e) =>
+        e.verb === 'empower' && e.opens?.ladder === 'wicks' ? [e.opens.step] : [],
+      ),
+    );
+    expect(wicks.sort((a, b) => a - b)).toEqual([3, 6, 7]);
+    expect(ORIGINAL_PACK.techniques.some((t) => t.needsOpen?.ladder === 'wicks')).toBe(true);
+  });
+
+  it('sit the kiln calm beside a salamander of the old kilns, and open its mouth after', () => {
+    const calm = ORIGINAL_PACK.techniques.find((t) => t.id === 'kiln-calm');
+    const newts = ORIGINAL_PACK.contracts.flatMap((c) => c.summons.map((s) => s.id));
+    expect(calm?.effects.some((e) => e.verb === 'empower' && e.still)).toBe(true);
+    expect(calm?.needsCalls?.every((id) => newts.includes(id))).toBe(true);
+    const mouth = ORIGINAL_PACK.techniques.find((t) => t.id === 'kiln-mouth');
+    expect(mouth?.needsOpen).toEqual({ ladder: 'kiln', step: 1 });
+  });
 });

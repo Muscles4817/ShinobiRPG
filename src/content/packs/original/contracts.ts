@@ -95,6 +95,44 @@ export const CONTRACT_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'B',
     difficulty: 100,
   },
+  {
+    id: 'kiln-calm',
+    name: 'Kiln Calm',
+    description:
+      'Sit down in the heat with a newt of the old kilns in your lap and breathe it in until the blood runs like glaze. Nothing hurts, for a while.',
+    discipline: 'ninjutsu',
+    // The salamanders' heat, drawn in through the smallest of them, out beside you.
+    needsCalls: ['kiln-newt'],
+    effects: [
+      {
+        verb: 'empower',
+        power: 1,
+        boosts: ['stamina', 'willpower', 'chakraControl', 'ninjutsu'],
+        opens: { ladder: 'kiln', step: 1 },
+        still: true,
+      },
+    ],
+    chakraCost: 18,
+    rank: 'B',
+    difficulty: 115,
+  },
+  {
+    id: 'kiln-mouth',
+    name: 'Kiln Mouth',
+    description:
+      'With the kiln calm in you, open both palms like a kiln door and let out what you have been breathing in.',
+    discipline: 'ninjutsu',
+    element: 'fire',
+    needsOpen: { ladder: 'kiln', step: 1 },
+    reach: ['close', 'mid'],
+    effects: [
+      { verb: 'damage', power: 24 },
+      { verb: 'afflict', power: 8, harm: 'burn' },
+    ],
+    chakraCost: 16,
+    rank: 'B',
+    difficulty: 110,
+  },
 ];
 
 export const CONTRACTS: readonly ContractDef[] = [

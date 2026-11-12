@@ -111,6 +111,7 @@ export { GROUND_RULES, type GroundRule } from './rules/ground';
 export { potencyOf as fieldPotencyOf } from './rules/verbs/field';
 export { AFFLICT_EXCHANGES } from './rules/verbs/lingering';
 export { stepToll, type StepToll } from './rules/verbs/tolls';
+export { wearsBody } from './rules/verbs/ladders';
 export type {
   Narration,
   NarrationAmount,

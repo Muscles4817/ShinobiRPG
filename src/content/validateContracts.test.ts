@@ -15,7 +15,16 @@ describe('contract validation', () => {
       const { contractId: _c, ...reward } = m.reward;
       return { ...m, reward };
     });
-    const problems = validateContracts({ ...ORIGINAL_PACK, contracts, missions });
+    // Nobody calls it either (a contract only foes hold needs no signing).
+    const enemies = ORIGINAL_PACK.enemies.map(({ summons: _s, ...e }) => e);
+    const people = ORIGINAL_PACK.people.map(({ arsenal: _a, ...p }) => p);
+    const problems = validateContracts({
+      ...ORIGINAL_PACK,
+      contracts,
+      missions,
+      enemies,
+      people,
+    });
     expect(problems).toContain(
       'summon "kiln-newt" of contract "kiln-salamanders" isn\'t called by its technique "summon-kiln-mother"',
     );

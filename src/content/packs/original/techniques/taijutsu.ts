@@ -49,7 +49,7 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     id: 'kindled-pulse',
     name: 'Kindled Pulse',
     description:
-      'Light the body’s inner lanterns one by one. Every muscle burns brighter, and so does the bill.',
+      'Light the body’s inner lanterns one by one, up to the third wick. Every muscle burns brighter, and so does the bill.',
     discipline: 'taijutsu',
     school: 'Lantern Wind',
     effects: [
@@ -57,8 +57,8 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
         verb: 'empower',
         power: 12,
         boosts: ['strength', 'speed', 'taijutsu'],
-        healthPerExchange: 3,
         afterCost: { kind: 'exhaustion', days: 1 },
+        opens: { ladder: 'wicks', step: 3 },
       },
     ],
     chakraCost: 8,
@@ -167,15 +167,15 @@ export const TAIJUTSU: readonly TechniqueDef[] = [
     id: 'every-lantern-lit',
     name: 'Every Lantern Lit',
     description:
-      'Light every inner lantern at once and burn as one bright thing. The hospital keeps a bed for those who learn it.',
+      'Light the seventh wick, and every inner lantern with it, and burn as one bright thing. The hospital keeps a bed for those who learn it.',
     discipline: 'taijutsu',
     school: 'Lantern Wind',
     effects: [
       {
         verb: 'empower',
         power: 26,
-        boosts: ['strength', 'speed', 'taijutsu'],
-        healthPerExchange: 5,
+        boosts: ['strength', 'speed', 'taijutsu', 'stamina'],
+        opens: { ladder: 'wicks', step: 7 },
       },
       { verb: 'damage', power: 24 },
     ],
