@@ -1,22 +1,32 @@
 import type { Discipline } from '@/systems/techniques';
 
-import type { BreakInScene, NamePools, NindoDef, TeamText } from '../../types';
+import type { BreakInScene, ContentPack, NamePools, NindoDef, TeamText } from '../../types';
 
 /** Techniques every graduate knows, regardless of specialty. */
-export const ACADEMY_TECHNIQUES: readonly string[] = ['palm-strike', 'shadow-feint'];
+const ACADEMY_TECHNIQUES: readonly string[] = ['palm-strike', 'shadow-feint'];
 
 /**
  * What the academy teaches a graduate last, beside a blow to open with and a feint that leaves a
  * foe open for it: a husk to step out of a blow.
  */
-export const ACADEMY_BASICS: readonly string[] = ['lantern-husk'];
+const ACADEMY_BASICS: readonly string[] = ['lantern-husk'];
 
-export const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
+const DISCIPLINE_STARTERS: Readonly<Record<Discipline, string>> = {
   taijutsu: 'gale-heel',
   ninjutsu: 'pebble-volley',
   genjutsu: 'lantern-mirage',
   kenjutsu: 'lantern-cut',
   fuuinjutsu: 'ember-tag',
+};
+
+/** What the academy sends every graduate out knowing. */
+export const ACADEMY: Pick<
+  ContentPack,
+  'academyTechniques' | 'academyBasics' | 'disciplineStarters'
+> = {
+  academyTechniques: ACADEMY_TECHNIQUES,
+  academyBasics: ACADEMY_BASICS,
+  disciplineStarters: DISCIPLINE_STARTERS,
 };
 
 export const NINDOS: readonly NindoDef[] = [

@@ -73,15 +73,7 @@ import { VILLAGE_JONIN } from './jonin';
 import { ROSTER_CONVERSATIONS } from './rosterConversations';
 import { ROSTER_TECHNIQUES } from './rosterTechniques';
 import { SENSEIS_AND_ELDERS } from './people';
-import {
-  ACADEMY_BASICS,
-  ACADEMY_TECHNIQUES,
-  BREAK_IN,
-  DISCIPLINE_STARTERS,
-  NAMES,
-  NINDOS,
-  TEAM,
-} from './profile';
+import { ACADEMY, BREAK_IN, NAMES, NINDOS, TEAM } from './profile';
 import { SENSEI_TECHNIQUES } from './senseiTechniques';
 import { TECHNIQUES } from './techniques';
 import { TRAINING } from './training';
@@ -266,7 +258,5 @@ export const ORIGINAL_PACK: ContentPack = {
   names: NAMES,
   team: TEAM,
   village: VILLAGE,
-  academyTechniques: ACADEMY_TECHNIQUES,
-  academyBasics: ACADEMY_BASICS,
-  disciplineStarters: DISCIPLINE_STARTERS,
+  ...ACADEMY,
 };
