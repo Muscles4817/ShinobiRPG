@@ -17,6 +17,7 @@ import { useHoverPreview } from '../../../layout/useHoverPreview';
 import { useKeys } from '../../../layout/useKeys';
 import { useWideScreen } from '../../../layout/useWideScreen';
 
+import { FightGuide } from './FightGuide';
 import { FighterRead, FoeMoves } from './FighterRead';
 import { Formation } from './Formation';
 import { fightMeters, Gauges, type SightOf } from './Gauges';
@@ -215,7 +216,10 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
   );
   const head = (
     <header className="scene-head plan-head">
-      <h1>{view.called ? `Round ${view.round}, stopped` : `Plan round ${view.round}`}</h1>
+      <div className="plan-title">
+        <h1>{view.called ? `Round ${view.round}, stopped` : `Plan round ${view.round}`}</h1>
+        <FightGuide />
+      </div>
       {view.prompt && <p className="muted small">{view.prompt}</p>}
     </header>
   );

@@ -31,6 +31,7 @@ import '@/ui/styles/sensei.css';
 import '@/ui/styles/library.css';
 import '@/ui/styles/plan.css';
 import '@/ui/styles/watch.css';
+import '@/ui/styles/glossary.css';
 import '@/ui/styles/cues.css';
 import '@/ui/styles/cues-village.css';
 import '@/ui/styles/motion.css';

@@ -209,6 +209,7 @@ export { combatLog, type CombatLogLine } from './views/combatLog';
 export { fightReplay, storyEnd, type FightBeat } from './views/fightReplay';
 export { roundWhy, type WhyRow } from './views/roundWhy';
 export { roundAdvice } from './views/roundAdvice';
+export { fightGlossary, statusHelp } from './views/fightGlossary';
 export {
   examScene,
   type ConductLine,
