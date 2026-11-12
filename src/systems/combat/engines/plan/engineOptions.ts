@@ -8,6 +8,7 @@ import { bandOf } from './distance';
 import { groundNote } from './groundPlay';
 import { teamOptions } from './orders';
 import { withTraceNotes } from './slotTrace';
+import { withForecasts } from './forecast';
 import { playerOf, type PlanState } from './state';
 import { seenByPlayer } from './statusView';
 import { survivalWarning } from './survival';
@@ -59,12 +60,15 @@ export function options(state: PlanState): readonly CombatOption[] {
     const player = playerOf(state);
     const begin = beginLabel(state);
     return [
-      ...withTraceNotes(
-        tableOptions(
-          player,
-          state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+      ...withForecasts(
+        withTraceNotes(
+          tableOptions(
+            player,
+            state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+          ),
+          state.slotTrace,
         ),
-        state.slotTrace,
+        state,
       ),
       ...teamOptions(state),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },

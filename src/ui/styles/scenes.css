@@ -494,6 +494,9 @@ button.foe {
   font-size: 0.78rem;
   color: var(--muted);
 }
+.plan-forecast {
+  font-style: italic;
+}
 .plan-settings {
   grid-column: 2 / -1;
   display: grid;
