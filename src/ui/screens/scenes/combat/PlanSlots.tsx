@@ -114,9 +114,13 @@ function SlotRow({
         <b>{entry.label}</b>
         <small>{entry.detail}</small>
       </button>
-      {buttons.map(([name, choices]) => (
-        <Setting key={name} name={name} choices={choices} entry={entry} onPick={onPick} />
-      ))}
+      {buttons.length > 0 && (
+        <div className="plan-moves">
+          {buttons.map(([name, choices]) => (
+            <Setting key={name} name={name} choices={choices} entry={entry} onPick={onPick} />
+          ))}
+        </div>
+      )}
       {entry.note && <p className="plan-trace">{entry.note}</p>}
       {pickers.length > 0 && (
         <details className="plan-when">

@@ -36,6 +36,7 @@ import { offeredConditions } from './conditions';
 
 const SLOT_PREFIX = 'slot:';
 const RAISE_PREFIX = 'raise:';
+const LOWER_PREFIX = 'lower:';
 const WHEN_PREFIX = 'when:';
 const AIM_PREFIX = 'aim:';
 const ALWAYS = 'always';
@@ -87,7 +88,7 @@ function rankOf(player: PlanFighter, band: RangeBand, id: CardId): number {
   return player.loadout[band].findIndex((s) => s.card === id);
 }
 
-/** Setting choices for one slotted card: move up, when it plays, whom it aims at. */
+/** Setting choices for one slotted card: move up or down, when it plays, whom it aims at. */
 const SOLO_AIMS: readonly TargetRule[] = ['weakest', 'strongest', 'nearest', 'open'];
 
 /** Where a slot sits: its distance, its place in the order, and whether a team fights too. */
@@ -95,17 +96,30 @@ interface SlotAt {
   readonly band: RangeBand;
   readonly rank: number;
   readonly team: boolean;
+  /** How many slots the distance holds, so the last offers no Move down. */
+  readonly count: number;
   /** The conditions worth offering in this kit (`conditions.ts`). */
   readonly offered: readonly SlotCondition[];
 }
 
 function adjustments(at: SlotAt, slot: Slot, card: Card | null): CombatOption[] {
-  const { band, rank, team, offered } = at;
+  const { band, rank, team, offered, count } = at;
   const adjusts = entryId(band, slot.card);
   const base = { detail: '', kind: 'plan', group: RANGE_LABEL[band], adjusts } as const;
   const raise: CombatOption[] =
     rank > 0
       ? [{ ...base, id: `${RAISE_PREFIX}${band}:${slot.card}`, label: 'Move up', setting: 'Order' }]
+      : [];
+  const lower: CombatOption[] =
+    rank < count - 1
+      ? [
+          {
+            ...base,
+            id: `${LOWER_PREFIX}${band}:${slot.card}`,
+            label: 'Move down',
+            setting: 'Down',
+          },
+        ]
       : [];
   const timed = card === null || !isReaction(card);
   // A condition already chosen stays on the list, offered or not.
@@ -127,7 +141,7 @@ function adjustments(at: SlotAt, slot: Slot, card: Card | null): CombatOption[] 
     setting: 'Target',
     selected: (slot.target ?? 'weakest') === rule,
   }));
-  return [...raise, ...when, ...aim];
+  return [...raise, ...lower, ...when, ...aim];
 }
 
 /**
@@ -170,7 +184,11 @@ function slotOptions(player: PlanFighter, band: RangeBand, team: boolean): Comba
   });
   const offered = offeredConditions(SLOT_CONDITIONS, { self: player, team });
   const settings = player.loadout[band].flatMap((slot, rank) =>
-    adjustments({ band, rank, team, offered }, slot, findCard(player, slot.card)),
+    adjustments(
+      { band, rank, team, offered, count: player.loadout[band].length },
+      slot,
+      findCard(player, slot.card),
+    ),
   );
   return [
     ...readinessOptions(player, band),
@@ -187,7 +205,7 @@ export function tableOptions(player: PlanFighter, team = true): CombatOption[] {
 
 /** An edit to the plan, read back from one of our own option ids. */
 interface Edit {
-  readonly kind: 'slot' | 'raise' | 'when' | 'aim';
+  readonly kind: 'slot' | 'raise' | 'lower' | 'when' | 'aim';
   readonly band: RangeBand;
   /** The condition or target rule an edit sets. */
   readonly value: string;
@@ -197,6 +215,7 @@ interface Edit {
 const PREFIXES = [
   { prefix: SLOT_PREFIX, kind: 'slot', valued: false },
   { prefix: RAISE_PREFIX, kind: 'raise', valued: false },
+  { prefix: LOWER_PREFIX, kind: 'lower', valued: false },
   { prefix: WHEN_PREFIX, kind: 'when', valued: true },
   { prefix: AIM_PREFIX, kind: 'aim', valued: true },
 ] as const;
@@ -225,6 +244,12 @@ function raised(slots: readonly Slot[], card: CardId): Slot[] {
   return [...slots.slice(0, at - 1), moving, before, ...slots.slice(at + 1)];
 }
 
+function lowered(slots: readonly Slot[], card: CardId): Slot[] {
+  const at = slots.findIndex((s) => s.card === card);
+  const below = slots[at + 1];
+  return at < 0 || !below ? [...slots] : raised(slots, below.card);
+}
+
 function set(slot: Slot, edit: Edit): Slot {
   // "Always" is no condition, and aiming at the weakest is the default.
   const when = edit.kind === 'when' ? SLOT_CONDITIONS.find((c) => c === edit.value) : slot.when;
@@ -242,6 +267,8 @@ function edited(slots: readonly Slot[], edit: Edit): Slot[] {
       return toggled(slots, edit.card);
     case 'raise':
       return raised(slots, edit.card);
+    case 'lower':
+      return lowered(slots, edit.card);
     case 'when':
     case 'aim':
       return slots.map((s) => (s.card === edit.card ? set(s, edit) : s));
