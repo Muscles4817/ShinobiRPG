@@ -125,3 +125,7 @@ export { createDuelEngine } from './engines/duel/engine';
 /** Shelved: kept compiling and tested, but not offered as a fight style (see `game/context.ts`). */
 export { createDeckEngine } from './engines/deck/engine';
 export { createPlanEngine } from './engines/plan/engine';
+/** Status words the plan engine builds from a table, for the fight glossary. */
+export { HARM_STATUS } from './engines/plan/lingering';
+export { stepStatus } from './engines/plan/ladderWords';
+export { SHROUD_STATUS } from './engines/plan/shrouds';

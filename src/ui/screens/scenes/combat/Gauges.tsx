@@ -9,6 +9,7 @@ import {
 
 import { HealthBar } from './HealthBar';
 import { shortName } from './shortNames';
+import { StatusWords } from './StatusWords';
 import type { HealthPulse } from './useHealthPulses';
 
 /**
@@ -83,7 +84,7 @@ function FighterGauges({ fighter: f, pulse, sight, field }: FighterProps) {
           <Gauge key={m.id} meter={m} kind={`meter ${m.id}`} read={sight.pools === 'read'} />
         ))}
       </div>
-      {f.statuses.length > 0 && <small className="muted">{f.statuses.join(', ')}</small>}
+      <StatusWords statuses={f.statuses} owner={f.name} />
     </article>
   );
 }

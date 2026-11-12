@@ -234,7 +234,8 @@ export function lingerAfter(round: Round, exchange: number): Round {
   }, round);
 }
 
-const HARM_STATUS: Readonly<Record<AfflictionKind, string>> = {
+/** What the fight screen calls each lingering harm (`game/views/fightGlossary` explains them). */
+export const HARM_STATUS: Readonly<Record<AfflictionKind, string>> = {
   burn: 'Burning',
   bleed: 'Bleeding',
   poison: 'Poisoned',

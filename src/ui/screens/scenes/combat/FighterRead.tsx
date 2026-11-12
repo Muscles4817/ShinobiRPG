@@ -2,6 +2,7 @@ import type { CombatantView, ScoutingRead } from '@/game';
 
 import { Read } from './Foes';
 import { shortName } from './shortNames';
+import { StatusWords } from './StatusWords';
 
 const DISTANCE_LINE = {
   close: 'Close to you.',
@@ -36,7 +37,6 @@ export function FighterRead({
   readonly read: ScoutingRead | undefined;
 }) {
   if (!f) return null;
-  const conditions = f.statuses.length > 0 ? f.statuses.join(', ') : null;
   return (
     <section className={`fighter-read ${f.side}`} aria-label={`About ${f.name}`}>
       <p className="fighter-read-name">
@@ -46,7 +46,7 @@ export function FighterRead({
         </span>
       </p>
       {f.health > 0 && <StandingNotes fighter={f} />}
-      {conditions && <p className="muted small">{conditions}</p>}
+      <StatusWords statuses={f.statuses} owner={f.name} />
       {read && f.health > 0 && <Read read={read} />}
     </section>
   );

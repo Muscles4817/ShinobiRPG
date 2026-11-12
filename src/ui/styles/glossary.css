@@ -1,0 +1,139 @@
+/*
+ * The fight glossary on the fight screens: status words that explain themselves when tapped or
+ * pointed at, and the "How fighting works" sheet opened from the plan screen.
+ */
+
+.status-words {
+  position: relative;
+  min-width: 0;
+}
+.status-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.status-plain {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+}
+/* A word that explains itself: dotted underline, plain ink, a full tap target on a phone. */
+.status-word {
+  min-height: 40px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+.status-word:hover,
+.status-word[aria-expanded='true'] {
+  color: var(--ink);
+}
+.status-word:focus-visible {
+  outline: 2px solid var(--lantern);
+  outline-offset: 2px;
+}
+/* The explanation: a paper slip under the words. */
+.status-help {
+  margin: 4px 0 0;
+  padding: 8px 10px;
+  background: var(--grain-ink), var(--paper);
+  color: var(--paper-ink);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.status-help[hidden] {
+  display: none;
+}
+.status-answer {
+  color: var(--paper-muted);
+}
+
+/* With a fine pointer the words sit close, and the slip floats over what is below. */
+@media (pointer: fine) {
+  .status-word,
+  .status-plain {
+    min-height: 26px;
+  }
+  .app.wide .status-help {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    min-width: 220px;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 0.45);
+  }
+}
+
+/* The plan screen's title, with the sheet's button beside it. */
+.plan-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.fight-guide-open {
+  flex: none;
+  font-size: 0.85rem;
+}
+
+/* No padding under the Close bar, so nothing scrolls past beneath it. */
+.fight-guide {
+  max-height: 88vh;
+  overflow-y: auto;
+  padding-bottom: 0;
+  border-top: 1px solid var(--line);
+}
+.fight-guide h2 {
+  font-family: var(--font-story);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+.fight-guide-lead,
+.fight-guide-note {
+  color: var(--paper-muted);
+  font-size: 0.85rem;
+}
+.fight-guide-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px dashed color-mix(in srgb, var(--paper-ink) 25%, transparent);
+}
+.fight-guide-group h3 {
+  font-family: var(--font-story);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.fight-guide dl {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+.fight-guide dt {
+  font-weight: 700;
+}
+.fight-guide dd {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.fight-guide .fight-guide-answer {
+  margin-top: 2px;
+  color: var(--paper-muted);
+  font-style: italic;
+}
