@@ -1,4 +1,4 @@
-import type { CombatPerk, CombatTechnique, CombatTrait } from '@/systems/combat';
+import type { CombatPerk, CombatTrait } from '@/systems/combat';
 import { withCalls } from '@/game/combatants';
 import { personDust } from '@/game/dust/dust';
 import { foeHive } from '@/game/hives/hive';
@@ -12,42 +12,19 @@ import { statLine, techniques, type FighterSpec, type Scale, type StatProfile } 
  * The matrix cast (`matrix.test.ts`): the bench's archetypes and one build for every other way
  * a shinobi fights, so each approach meets each other at an equal grade. Every build spends the
  * same budget as the archetypes: two peak stats, three strong, two weak, the rest the scale's
- * base, and every build has a way to wound. Built from the original
- * pack where it has the techniques; the ladder and the killing set-up have none there yet, so
- * they bring bench-only techniques of their own (named here, never in content).
+ * base, and every build has a way to wound. Built from the original pack's techniques: the
+ * gate opener climbs its Seven Wicks, the set-up killer finishes with a killing blow of its
+ * archive.
  */
 
 interface Build {
   readonly label: string;
   readonly profile: StatProfile;
   readonly techniqueIds: readonly string[];
-  readonly own?: readonly CombatTechnique[];
   readonly traits?: readonly CombatTrait[];
   readonly perks?: readonly CombatPerk[];
   readonly extend?: FighterSpec['extend'];
 }
-
-/** A bench-only gate: an empower that opens a step of a ladder, as the Eight Gates do. */
-const gate = (id: string, step: number): CombatTechnique => ({
-  id,
-  name: `Bench gate ${step}`,
-  discipline: 'taijutsu',
-  effects: [
-    { verb: 'empower', power: 10, boosts: ['strength', 'speed'], opens: { ladder: 'gates', step } },
-  ],
-  chakraCost: 8,
-});
-
-/** A bench-only killing blow: through a guard on a target who can't see it or can't move. */
-const killingBlow: CombatTechnique = {
-  id: 'bench-killing-blow',
-  name: 'Bench killing blow',
-  discipline: 'ninjutsu',
-  lethal: true,
-  reach: ['close'],
-  effects: [{ verb: 'damage', power: 30 }],
-  chakraCost: 20,
-};
 
 const BUILDS = {
   areaCaster: {
@@ -232,8 +209,13 @@ const BUILDS = {
       ninjutsu: 'weak',
       genjutsu: 'weak',
     },
-    techniqueIds: ['palm-strike', 'gale-heel', 'crescent-drop'],
-    own: [gate('bench-gate-1', 1), gate('bench-gate-2', 2), gate('bench-gate-3', 3)],
+    techniqueIds: [
+      'palm-strike',
+      'gale-heel',
+      'crescent-drop',
+      'kindled-pulse',
+      'white-flame-heel',
+    ],
     traits: ['brawler'],
   },
   assassin: {
@@ -247,8 +229,7 @@ const BUILDS = {
       strength: 'weak',
       stamina: 'weak',
     },
-    techniqueIds: ['paper-veil', 'binding-ward', 'lantern-cut'],
-    own: [killingBlow],
+    techniqueIds: ['paper-veil', 'sticking-tag', 'binding-ward', 'pinched-flame'],
   },
   foresight: {
     label: 'Foreseer',
@@ -288,7 +269,7 @@ function build(id: BuildId, scale: Scale): FighterSpec {
   return {
     name: `${b.label} (${scale})`,
     stats: statLine(scale, b.profile),
-    techniques: [...techniques(b.techniqueIds), ...(b.own ?? [])],
+    techniques: techniques(b.techniqueIds),
     ...(b.traits ? { traits: b.traits } : {}),
     ...(b.perks ? { perks: b.perks } : {}),
     ...(b.extend ? { extend: b.extend } : {}),

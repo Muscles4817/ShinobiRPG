@@ -16,6 +16,14 @@ export const LANTERN_WIND = [
   'lantern-wind-flurry',
   'banked-coals',
 ] as const;
+/** Moth Needle as the Night Watch teach it: the needle, the points, and the last strike. */
+export const MOTH_NEEDLE = [
+  'moth-needle',
+  'moth-wing-strike',
+  'hundred-moths',
+  'snuffed-wick-step',
+  'last-moth',
+] as const;
 export const TWIN_CUT = ['paired-cuts', 'thousand-cuts', 'forge-yard-storm'] as const;
 
 export const SCHOOL_TECHNIQUES: readonly TechniqueDef[] = [

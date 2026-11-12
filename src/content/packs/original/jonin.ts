@@ -1,7 +1,8 @@
 import { look } from '../../look';
 import { statLine } from '../../statLine';
 import type { PersonDef } from '../../types';
-import { ASH_LANTERN_ARSENAL } from './arsenals';
+import { ASH_LANTERN_ARSENAL, NIGHT_WATCH_ARSENAL } from './arsenals';
+import { MOTH_NEEDLE } from './techniques/schools';
 
 /**
  * Tōrōgakure's jōnin who don't lead a team, and its one living legend. Sized from the fan
@@ -129,6 +130,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     }),
     specialty: 'taijutsu',
     bio: 'One of the masked Night Watch. By day she sells moth charms and pretends not to know you.',
+    arsenal: NIGHT_WATCH_ARSENAL,
     schedule: {
       morning: null,
       afternoon: 'market-street',
@@ -137,7 +139,7 @@ export const VILLAGE_JONIN: readonly PersonDef[] = [
     },
     teacher: {
       quirk: 'natural',
-      teaches: ['moth-needle', 'moth-wing-strike', 'hundred-moths', 'snuffed-wick-step'],
+      teaches: [...MOTH_NEEDLE],
       price: { kind: 'bond', minStage: 2 },
     },
   },
