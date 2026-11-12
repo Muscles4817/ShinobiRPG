@@ -5,6 +5,7 @@ import type { CombatantView, RangeBand, ScoutingRead } from '@/game';
 import type { HoverHandlers } from '../../../layout/useHoverPreview';
 
 import { HealthBar } from './HealthBar';
+import { shortName } from './shortNames';
 import type { HealthPulse } from './useHealthPulses';
 
 /**
@@ -21,21 +22,6 @@ const PACE_TAG = { faster: 'Faster', slower: 'Slower', even: null } as const;
 
 /** A column with more fighters than this pairs them up, so the strip stays short. */
 const COLUMN_MAX = 3;
-
-/**
- * The word that tells a fighter apart, and their seal's letter: "Bandit Archer" is Archer (A),
- * "Hungry Ghost 2" is Ghost 2 (G2), "Kaen" is Kaen (K).
- */
-export function shortName(name: string): { readonly label: string; readonly mark: string } {
-  const words = name.split(' ');
-  const last = words.at(-1) ?? name;
-  const numbered = /^\d+$/.test(last) && words.length > 1;
-  const word = numbered ? (words.at(-2) ?? last) : last;
-  return {
-    label: numbered ? `${word} ${last}` : word,
-    mark: numbered ? `${word.charAt(0)}${last}` : word.charAt(0),
-  };
-}
 
 interface FormationProps {
   readonly fighters: readonly CombatantView[];
@@ -57,6 +43,8 @@ export interface StageMarks {
 
 type TokenProps = Omit<FormationProps, 'fighters' | 'range'> & {
   readonly fighter: CombatantView;
+  /** Everyone in the fight, so each seal is told apart from the rest. */
+  readonly field: readonly CombatantView[];
   /** Say how far this fighter stands, because the foes stand at distances of their own. */
   readonly spread?: boolean;
 };
@@ -79,10 +67,10 @@ function stageRole(id: string, stage: StageMarks | undefined): string | false {
   return stage?.targetId === id && 'struck';
 }
 
-function Token({ fighter: f, spread, ...rest }: TokenProps) {
+function Token({ fighter: f, field, spread, ...rest }: TokenProps) {
   const { reads, pulses, selected, onSelect, previewFor, stage } = rest;
   const pace = PACE_TAG[reads[f.id]?.pace ?? 'even'];
-  const short = shortName(f.name);
+  const short = shortName(f.name, field);
   const state = [
     f.health <= 0 && 'down',
     f.targetable === false && 'hidden',
@@ -194,6 +182,7 @@ export function Formation({ fighters, range, ...rest }: FormationProps) {
   const { strip, line } = useStageLine(rest.stage);
   // On the stage the gap says the distance of the beat; tags would say the round's end.
   const spread = !rest.stage && foesSpread(fighters, range);
+  const shared = { ...rest, field: fighters };
   return (
     <section ref={strip} className="formation" aria-label="Both sides">
       {line && (
@@ -201,22 +190,22 @@ export function Formation({ fighters, range, ...rest }: FormationProps) {
           <line {...line} />
         </svg>
       )}
-      <Column label="Your back row" row="Back" fighters={inRow('player', true)} {...rest} />
-      <Column label="Your front row" row="Front" fighters={inRow('player', false)} {...rest} />
+      <Column label="Your back row" row="Back" fighters={inRow('player', true)} {...shared} />
+      <Column label="Your front row" row="Front" fighters={inRow('player', false)} {...shared} />
       <Gap range={range} />
       <Column
         label="Their front row"
         row="Front"
         fighters={inRow('enemy', false)}
         spread={spread}
-        {...rest}
+        {...shared}
       />
       <Column
         label="Their back row"
         row="Back"
         fighters={inRow('enemy', true)}
         spread={spread}
-        {...rest}
+        {...shared}
       />
     </section>
   );

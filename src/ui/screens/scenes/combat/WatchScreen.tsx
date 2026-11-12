@@ -3,7 +3,8 @@ import type { CombatantView, CombatOption, CombatView, FightBeat, ScoutingRead }
 import { Chips } from '../../../components/Chips';
 import { Pane } from '../../../layout/Pane';
 import { useWideScreen } from '../../../layout/useWideScreen';
-import { Formation, shortName } from './Formation';
+import { Formation } from './Formation';
+import { shortName } from './shortNames';
 import { fightMeters, Gauges, type SightOf } from './Gauges';
 import { useBeatSounds } from './useBeatSounds';
 import { usePlayback } from './usePlayback';
@@ -67,7 +68,7 @@ function ActingOrder({
         const state = id === now ? 'now' : firstBeat(id) < at ? 'done' : 'waiting';
         return (
           <span key={id} className={`token-seal small ${f?.side ?? ''} ${state}`} title={f?.name}>
-            {shortName(f?.name ?? '?').mark}
+            {shortName(f?.name ?? '?', fighters).mark}
           </span>
         );
       })}

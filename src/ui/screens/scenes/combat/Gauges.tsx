@@ -8,7 +8,7 @@ import {
 } from '@/game';
 
 import { HealthBar } from './HealthBar';
-import { shortName } from './Formation';
+import { shortName } from './shortNames';
 import type { HealthPulse } from './useHealthPulses';
 
 /**
@@ -55,15 +55,16 @@ interface FighterProps {
   readonly fighter: CombatantView;
   readonly pulse: HealthPulse | undefined;
   readonly sight: FighterSight;
+  readonly field: readonly CombatantView[];
 }
 
-function FighterGauges({ fighter: f, pulse, sight }: FighterProps) {
+function FighterGauges({ fighter: f, pulse, sight, field }: FighterProps) {
   const down = f.health <= 0;
   return (
     <article className={down ? `gauge-card ${f.side} down` : `gauge-card ${f.side}`}>
       <header>
         <span className={`token-seal small ${f.side}`} aria-hidden="true">
-          {shortName(f.name).mark}
+          {shortName(f.name, field).mark}
         </span>
         <b>{f.name}</b>
       </header>
@@ -109,7 +110,13 @@ export function Gauges({ fighters, pulses, shared, sightOf = SEE_ALL }: GaugesPr
   return (
     <section className="gauges" aria-label="Every fighter’s bars">
       {fighters.map((f) => (
-        <FighterGauges key={f.id} fighter={f} pulse={pulses[f.id]} sight={sightOf(f)} />
+        <FighterGauges
+          key={f.id}
+          fighter={f}
+          pulse={pulses[f.id]}
+          sight={sightOf(f)}
+          field={fighters}
+        />
       ))}
       {shared.length > 0 && (
         <div className="gauge-rows gauge-shared">
