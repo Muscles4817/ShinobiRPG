@@ -563,7 +563,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     fights (`CombatOutcome.allies`), and knocked down it is laid up until mended, sooner at a
     `vet` place or with medicine.
     **Preparation** happens before the fight: fight tools (`ToolDef`, sold by the piece at
-    `gear` places' `toolIds`, kept in `inventory.tools`) ride in as `CombatantSetup.items`;
+    `gear` places' `toolIds`, kept in `inventory.tools`; a graduate starts with the pack's
+    `startingTools`) ride in as `CombatantSetup.items`;
     what they do lives once in `rules/items.ts`, every engine offers them, and
     `CombatOutcome.items` writes back what's left (`afterPouch`). A mission notice shows only
     the threat until you buy the client's report (`buyIntel`, `board.intel`), which names every

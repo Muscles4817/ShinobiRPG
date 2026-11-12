@@ -259,7 +259,11 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
     people: NO_PEOPLE,
     settings: defaultSettings(ctx),
     board: newBoard(seed),
-    inventory: withIssuedBlade(EMPTY_INVENTORY, known, content),
+    inventory: withIssuedBlade(
+      { ...EMPTY_INVENTORY, tools: content.startingTools },
+      known,
+      content,
+    ),
     village: {
       lastSightDay: null,
       lastRoundDay: null,

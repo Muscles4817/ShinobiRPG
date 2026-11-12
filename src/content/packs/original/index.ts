@@ -54,7 +54,7 @@ import { REGIONAL_RECIPES } from './regions/recipes';
 import { VILLAGE_COOKS } from './villagers';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
-import { TOOLS } from '../../shared/tools';
+import { STARTING_POUCH, TOOLS } from '../../shared/tools';
 import { ENCOUNTERS } from '../../shared/encounters';
 import { DEEP_WILDS } from '../../shared/deepWilds';
 import { ROAD_EVENTS, TRAVELLERS } from '../../shared/road/events';
@@ -121,6 +121,7 @@ export const ORIGINAL_PACK: ContentPack = {
   description: 'Tōrōgakure, the Village Hidden Among Lanterns. The game’s own world.',
   startLocationId: 'torogakure',
   startingRyo: 300,
+  startingTools: STARTING_POUCH,
   text: ORIGINAL_TEXT,
   locations: ORIGINAL_LOCATIONS,
   routes: ORIGINAL_ROUTES,

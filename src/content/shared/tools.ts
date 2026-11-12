@@ -56,3 +56,13 @@ export const TOOLS: readonly ToolDef[] = [
 ];
 
 export const TOOL_IDS: readonly string[] = TOOLS.map((t) => t.id);
+
+/**
+ * What the academy sends a graduate out with: smoke to vanish into before a blow, and a flash
+ * tag for the foe who does the same. Spent, they are bought. (A salve or an explosive tag here
+ * was measured and left out: the default plan slots them ahead of the academy's feint.)
+ */
+export const STARTING_POUCH: Readonly<Record<string, number>> = {
+  'smoke-bomb': 2,
+  'flash-tag': 1,
+};
