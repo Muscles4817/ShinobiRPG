@@ -112,12 +112,24 @@ branch; `main` is green.
    It never reads another fighter's loadout, intent roll, hidden stats or the Rng. Every input
    to a decision is named in a type that a test can check.
 
-3. **Fair reactions.** No fighter reacts to something faster than the time structure allows its
-   opponents to (Part 8). Telegraphs, calls and reconsideration are budgeted symmetrically, or
-   the asymmetry is named and justified.
-4. **Trade-offs, not overrides.** Tactics compete by value in the same currency. A special case is
+3. **Fair is not the same as symmetric.** Fairness means both sides work under the _same rules
+   of knowing_. It does not mean both sides know the same things.
+   - A sharp, experienced shinobi should predict an opponent's next move from their stance,
+     habits, hand seals and past behaviour.
+   - That does not mean anyone simply _knows_ which technique the other has queued.
+
+   What each side learns comes from **cues** the action really gives off, read through the
+   observer's perception, experience and tactical intelligence, and muddied by the actor's
+   deception (Part 5, "Cues"). Two fighters facing each other learn different amounts about each
+   other, and that difference is the point: it is where perception, experience, deception and
+   intelligence earn their keep.
+
+4. **Fair reactions.** No fighter reacts to something faster than the time structure allows its
+   opponents to (Part 8). Calls and reconsideration are budgeted by the same rules on both sides,
+   or the asymmetry is named and justified.
+5. **Trade-offs, not overrides.** Tactics compete by value in the same currency. A special case is
    a source of candidate plans and a term in their value, never an early `return`.
-5. **Variation from difference, not dice.** Two fighters in one situation decide differently
+6. **Variation from difference, not dice.** Two fighters in one situation decide differently
    because their identities, beliefs or kits differ. Randomness stays where it is honest:
    - imperfect perception;
    - noisy evaluation in a weak tactician;
@@ -125,17 +137,19 @@ branch; `main` is green.
 
    It is never a flat coin between deciders. Everything still draws on the seeded Rng.
 
-6. **Repetition is allowed to win.** A fighter repeats a move because it believes it will keep
+7. **Repetition is allowed to win.** A fighter repeats a move because it believes it will keep
    working, and stops when evidence says otherwise. Variety is never scored for its own sake.
-7. **Explainable.** Every decision can say, in words, the objective it serves, the belief it rests
+8. **Explainable.** Every decision can say, in words, the objective it serves, the belief it rests
    on, and what would change its mind. This is the decision debugger for us and the read panel's
    source for the player (no numbers in story text; graded words only).
-8. **The player's plan is theirs.** Whatever control the player has, the AI never overrides an
+9. **The player's plan is theirs.** Whatever control the player has, the AI never overrides an
    instruction they gave. It may fill in what they left open.
-9. **Cheap enough for a phone.** A watched fight of six fighters to its end must stay
-   interactive. The budget is set in Part 7, and every algorithm is measured against it.
-10. **Mechanics stay put.** This is a decision layer. It reads the existing rules (damage, avoid,
-    reach, effort, conditions) and changes none of them. Benches keep holding the rules.
+10. **Cheap enough for a phone.** A watched fight of six fighters to its end must stay
+    interactive. The budget is set in Part 7, and every algorithm is measured against it.
+11. **Mechanics stay put.** This is a decision layer. It reads the existing rules (damage, avoid,
+    reach, effort, conditions) and changes none of them. Benches keep holding the rules. Where the
+    design turns up a rules question (the prototype found one, Part 7), it goes to the owner as a
+    rules change of its own, never folded into the AI.
 
 ---
 
@@ -210,17 +224,17 @@ An identity is how a fighter _wants_ to fight, apart from how _well_ it can. It 
 of dimensions, each a number from 0 to 1 used as a weight in valuation. None of them is ever a
 probability of doing something.
 
-| Dimension                 | What it weighs                                                                               | Low                        | High                             |
-| ------------------------- | -------------------------------------------------------------------------------------------- | -------------------------- | -------------------------------- |
-| **Philosophy**            | which objectives it reaches for first: overwhelm, outlast, outwit, protect                   | (categorical, see below)   |                                  |
-| **Preferred range**       | value of plans that keep it at its distance                                                  | indifferent                | will spend turns to get there    |
-| **Aggression**            | value of damage dealt now against damage avoided                                             | waits for openings         | presses every exchange           |
-| **Risk tolerance**        | how variance and worst cases are discounted: plans judged on their downside or their average | judges by the worst case   | judges by the upside             |
-| **Resource management**   | weight on chakra, breath, tools and summons kept for later                                   | spends freely              | hoards for the finisher          |
-| **Adaptability**          | how fast beliefs move objectives (the switching threshold)                                   | sticks to the opening idea | changes approach on new evidence |
-| **Deception**             | value of plans that hide intent: feints, hiding, baiting a seen defence                      | straightforward            | prefers the indirect route       |
-| **Discipline**            | how strongly a chosen objective and plan persist (hysteresis), and resistance to bait        | impulsive                  | holds the line                   |
-| **Tactical intelligence** | competence: planning depth, beam width, evaluation noise, how many hypotheses it entertains  | shallow, noisy             | deep, precise                    |
+| Dimension                 | What it weighs                                                                                   | Low                        | High                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------- | -------------------------------- |
+| **Philosophy**            | which objectives it reaches for first: overwhelm, outlast, outwit, protect                       | (categorical, see below)   |                                  |
+| **Preferred range**       | value of plans that keep it at its distance                                                      | indifferent                | will spend turns to get there    |
+| **Aggression**            | value of damage dealt now against damage avoided                                                 | waits for openings         | presses every exchange           |
+| **Risk tolerance**        | how variance and worst cases are discounted: plans judged on their downside or their average     | judges by the worst case   | judges by the upside             |
+| **Resource management**   | weight on chakra, breath, tools and summons kept for later                                       | spends freely              | hoards for the finisher          |
+| **Adaptability**          | how fast beliefs move objectives (the switching threshold)                                       | sticks to the opening idea | changes approach on new evidence |
+| **Deception**             | value of plans that hide intent: feints, hiding, baiting a seen defence                          | straightforward            | prefers the indirect route       |
+| **Discipline**            | how strongly a chosen objective and plan persist (hysteresis), and resistance to bait            | impulsive                  | holds the line                   |
+| **Tactical intelligence** | competence (one of its sources, below): planning depth, beam width, evaluation noise, hypotheses | shallow, noisy             | deep, precise                    |
 
 Philosophy is categorical. It is a prior over objectives, not a script:
 
@@ -231,12 +245,33 @@ Philosophy is categorical. It is a prior over objectives, not a script:
 
 A fighter may hold two philosophies, weighted.
 
-### Competence is separate from temperament
+### Competence is separate from temperament, and it has more than one source
 
-Tactical intelligence is the only dimension that makes a fighter _better_. It comes from the
-intellect grade, much as `judgement.ts` reads it today. Everything else is _style_: a reckless
-genius and a cautious dullard are both coherent. This separation is what lets "a sharp coward and
-a sharp berserker decide differently" (Part 1.6).
+The dimensions above other than tactical intelligence are _style_: a reckless genius and a
+cautious dullard are both coherent. Style never makes a fighter better. That separation is what
+lets "a sharp coward and a sharp berserker decide differently" (Part 1.6).
+
+Competence is not one number either. An experienced taijutsu specialist can make excellent
+close-combat decisions without being a brilliant general. So competence is a small set of
+sources, each applying where it belongs:
+
+| Source                    | Where it comes from                                                                                                       | What it sharpens                                                                                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tactical intelligence** | intellect grade                                                                                                           | choosing objectives, plans that cross arts or involve teammates, how many hypotheses it entertains, reading absences                                                   |
+| **Art expertise**         | the fighter's grade in each art, and the time spent in it                                                                 | planning depth, accuracy of evaluation and reading cues _within that art's exchanges_: a taijutsu master sees a close-range sequence three steps deep with a dull mind |
+| **Combat experience**     | fights fought, by kind of foe (the field book already counts foes fought and beaten; rank as a proxy for authored people) | stronger priors about that kind of foe ("bandits rush"; "illusionists hide first"), so beliefs form faster and from fewer observations                                 |
+| **Specialised knowledge** | what the fighter was taught: a school's teachings, a clan's arts, a sensei's lessons, a report on this foe                | named patterns it recognises at once: a Gentle Fist stance, a hand-seal sequence, a summoner's tell                                                                    |
+
+In the planner, each decision draws on the relevant source rather than on intellect alone:
+
+- A close-range taijutsu sequence is searched as deep as the better of tactical intelligence and
+  taijutsu expertise.
+- Reading a foe's cues uses perception plus expertise in the foe's art: you read what you know
+  yourself.
+- Forming a belief about a kind of foe starts from the experience prior.
+
+All of these come from data the game already keeps. Experience is the one new thing that would
+need storing per character, and the field book's counts may be enough to start with.
 
 ### Where identities come from
 
@@ -285,7 +320,7 @@ An observation is written for each fighter who perceived an event, at the moment
 | Action seen   | "B threw Lantern Wind at mid"                    | anyone with B in sight; insight or perception ≥ B's names the technique |
 | Outcome       | "it was slipped; Dodge was ready"                | the two involved; onlookers in sight                                    |
 | Defence shown | "B kept a Counter up close"                      | anyone who attacked B there, or watched                                 |
-| Telegraph     | "B is readying a technique"                      | as the fight screen shows it today                                      |
+| Cue           | "B shifts onto the back foot, fingers stiff"     | anyone with B in sight, read as below ("Cues")                          |
 | Wound / state | "B is badly hurt", "B is dazed", "B is held"     | in sight; graded words, not numbers                                     |
 | Effort        | "B is breathing hard", "B's chakra is guttering" | perception against B's; a sensor reads chakra better                    |
 | Absence       | "B didn't counter when it could have"            | interpreting the lack of an expected reaction: tactical intelligence C+ |
@@ -293,6 +328,63 @@ An observation is written for each fighter who perceived an event, at the moment
 
 Today's `reads.ts` (defences per distance, attack styles) becomes two of these observation kinds,
 so nothing it knows is lost.
+
+### Cues: what an action gives away before it lands
+
+Today's telegraph names the exact card a foe has queued, with insight or with perception at least
+the foe's. Under this design, an action being readied gives off **cues** instead. The action
+produces cues, and the observer infers the action from them. The two steps are separate, and
+everyone uses them, on either side.
+
+1. **What an action gives off.** Each card has a cue profile, read from what it is, never tagged
+   by hand:
+   - **Body:** weight shifting in or back, a guard dropping, a blade drawn.
+   - **Hands:** seals forming. More seals give away more, and a one-handed or sealless technique
+     gives away little. `handsFull` and the blade rules already say when signs are slow.
+   - **Chakra:** a flare. Sensors read it best, and a deep reserve flares big.
+   - **Eyes and aim:** whom they are watching.
+   - **Stillness:** gathering, meditating, a Brace.
+2. **How clearly it is seen.** The observer's perception, against how quickly and quietly the
+   actor readies it (speed, skill in the art, the art itself: genjutsu is quiet, a large
+   ninjutsu loud). Sight, hiding and ground apply as they do now.
+3. **What the observer makes of it.** The cues are evidence for the predictions of Part 5, mixed
+   with the observer's beliefs about this foe:
+   - Expertise in the foe's art turns "stiff fingers, weight back" into "a palm strike inside the
+     guard".
+   - Experience turns it into "this kind of foe always opens with a hold".
+   - Specialised knowledge names the technique outright: you know that seal sequence.
+   - Insight, and eyes that see everything, read it fully, as they already do.
+
+   The result is a **prediction with a confidence**, said in graded words ("likely a technique at
+   range: fairly sure"). The exact technique is named only when the evidence is strong enough.
+
+4. **Deception** works on step 1. A feint gives off the cues of another action (a deception
+   identity reaches for it, a feint card or technique enables it). Clones and illusions already
+   show bodies that aren't there. Hiding gives off nothing. A sharp, expert observer is harder to
+   fool, because their beliefs weigh the feint's cues against everything else they know.
+
+What changes for the player:
+
+- The foe panel shows **what you see** (cues) and **what you make of it** (the inference and
+  its confidence), not the queued card. The mockup shows this panel.
+- Your slot conditions keyed on the telegraph ("foe readying a technique") key on the
+  inference, at a confidence the condition names.
+
+What changes for foes: they read you the same way. They see your stance, hands and chakra, never
+your list.
+
+The asymmetry this leaves is honest. A perceptive, expert fighter learns more about a clumsy one
+than the other way round. That is the game rewarding perception, experience and deception, not
+the engine favouring a side.
+
+What we must check before committing to it (it touches the player's information):
+
+- The player must not end up knowing _less_ than the game owes them. A foe the player out-reads
+  should be as readable as today's telegraph makes it.
+- The plan screen must still have something concrete to plan against at low perception.
+
+A prototype of the inference alone, on today's telegraphs, would answer both before any engine
+change.
 
 ### Interpretations: hypotheses
 
@@ -344,8 +436,8 @@ do next, by action class:
 - defend, by kind;
 - move, recover, call, hide.
 
-It is built from habits, known capabilities, the telegraph (very strong evidence when the
-technique is named) and their apparent objective. The planner (Part 7) values candidate plans
+It is built from habits, known capabilities, the cues read this exchange (very strong evidence
+when they name the technique) and their apparent objective. The planner (Part 7) values candidate plans
 against the prediction. Better beliefs give sharper predictions and better plans. Wrong beliefs
 give confident mistakes, which is what a bait or a feint exploits.
 
@@ -510,6 +602,69 @@ is about 6 fighters × 4 exchanges × up to roughly 12 rounds × a decision each
 Every candidate is measured against that before it is compared on anything else. A tactical
 intelligence that would exceed it is capped in depth, not dropped.
 
+### Plans that work through the opponent's reaction
+
+Valuing outcomes is not enough. A planner must also find plans whose value comes from **what
+they make the opponent do**: a weak blow thrown to draw a counter that leaves its thrower open,
+a step back that tempts a dry foe to gather, a show of a killing blow that makes a sharp foe
+spend turns on Evade. The test of tactical flexibility is that it finds these without a bespoke
+"bait" rule. For that, two things must hold:
+
+1. **The opponent model reacts.** The forward model must predict the opponent's reply _to the
+   state the plan creates_, not a fixed distribution. Candidate A does this, because its
+   prediction is re-made at each depth. Candidate B (GOAP) cannot, because its world stands still
+   while it plans. Candidate C sees reactions only one step out.
+2. **The rules give reactions a price.** A bait pays only if the reaction costs the reactor more
+   than the turn spent baiting it. The prototype (below) found that this, not the planner, is
+   what limits bait in today's engine.
+
+### The proof of concept (`prototypes/combat-planner/`)
+
+Before anything else is built, a throwaway prototype tests candidate A's core claim: that a
+planner with no combinations written into it finds useful two- and three-action combinations by
+itself.
+
+- **How it is built.** It searches sequences of one fighter's own cards with a beam search.
+  - Each sequence is scored over the same seeds by **the real Plan & Watch exchange** played on a
+    copy of the fight, as the planner believes it to be. It never uses the fight's own dice.
+  - It has one objective: health dealt, minus health taken, with a win or a fall weighed heavily.
+  - A test checks that its code names no technique, verb or combo.
+- **What it found** (one run is recorded in the prototype's README):
+  - **Daze, then the finisher.** Greedy picks a plain shot. Two exchanges ahead, it finds the
+    daze followed by the finisher that only lands on an open foe. The fighter's own default plan
+    never uses the daze at all.
+  - **Hide, then the killing blow.** Greedy throws the blade straight away (value 3.5). Two ahead,
+    it finds conceal → blade (value 188): a lethal blow on a foe who can't see you goes through
+    their guard.
+  - **A belief moves the value.** Believing the foe sharp-eyed drops the same plan from 188 to 65.
+  - **Whole fights, 30 a side, re-planning every exchange in the real engine:**
+
+    | Scenario            | Default plan       | Planner               | What the planner played                                   |
+    | ------------------- | ------------------ | --------------------- | --------------------------------------------------------- |
+    | Hide, then blade    | won 11/30, took 66 | won **30/30**, took 6 | opened conceal → blade every time                         |
+    | Daze, then finisher | won 2/30, took 99  | won 6/30, took 50     | mostly stepped back out of reach of a foe with only blows |
+
+    In the second scenario the gain came from kiting, a different unscripted tactic. It wasn't
+    the combo the offline search found.
+
+  - **An induced reaction.** The model has it: a sharp foe out of chakra gathers 0 times in 100
+    trials held up close, and 48 times after a step back. But the bait (step back, then hit the
+    gathering foe) ranks second at depth three (72 against 91), so it is never chosen. In today's
+    rules the reactions most worth baiting (the ready Guard, Dodge and Counter) are free and
+    automatic, and the ones that cost something carry a small price. Whether to give a reaction
+    a price, for example a Counter that leaves its user committed once it fires, is a **rules
+    question for the owner** (Part 14). It is not something the AI should paper over. Under such
+    a rule, the same search weighs the bait with nothing new written for it.
+- **What it cost.** 530–625 ms a decision at depth two, against the 2 ms bar. Simulating the real
+  exchange proves emergence honestly but is far too slow to ship. The candidates for closing the
+  gap are:
+  - a tabulated forward model regenerated from benches;
+  - fewer rollouts, with common random numbers;
+  - candidate sequences generated from GOAP-style preconditions;
+  - depth limited to the art in play.
+
+  Closing the gap without losing what the prototype found is the next thing to show.
+
 ### What would decide it
 
 We prototype the cheapest credible version of A and C, and a GOAP candidate generator if A's
@@ -558,36 +713,48 @@ ahead, and the player's plan can key on it ("readying a jutsu").
 | Reacts within an exchange    | conditions evaluated at their turn                      | intent kept unless invalidated (`keepsTo`) |
 
 Today's balance trades a foe's re-decision every exchange against the player's view of every
-foe's next move. It is roughly fair, but by accident. The design makes it deliberate.
+foe's next move. It is roughly fair, but by accident, and it is fair only by being lopsided both
+ways. Under the proposed rules both columns obey the same rules of knowing (Principle 3):
+
+| What                         | Either side                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| The other side's next action | inferred from cues (Part 5), as clearly as perception, expertise and experience allow; feints muddy it |
+| The other side's whole plan  | never; only beliefs built from what was seen, or all with insight                                      |
+| Reconsiders mid-round        | later steps freely; the step already under way only on a call or break                                 |
+| Reacts within an exchange    | at their own turn, from what the exchange has shown so far                                             |
 
 ### Proposed rules
 
 1. **Everyone has a plan of a round's length; how much of it is binding differs.**
    - An NPC's mind produces a plan for the round: its objective, and a sequence or policy
      (Part 7).
-   - Its **next step is binding** once telegraphed. It may change only if the step is
-     invalidated (as `keepsTo` today) or by spending a **break** (rule 3).
+   - Its **next step is binding** once it is under way, which is the moment it starts giving off
+     cues. It may change only if the step is invalidated (as `keepsTo` today) or by spending a
+     **break** (rule 3).
    - The steps after the next are intentions, not commitments. The NPC re-plans them each
      exchange as its beliefs update. This is what "foes reconsider every exchange" means, made
      fair: they reconsider _beyond_ what they've shown.
 2. **The player commits to a round, as today, but on equal terms.**
    - Their conditions are evaluated live. That is the same power as an NPC's re-plan of later
      steps.
-   - A condition may key on the telegraph. That is the player's information advantage.
+   - A condition may key on what they read of a foe's next move, at a confidence the condition
+     names. How much they read is their perception, expertise and experience against the foe's
+     concealment, as it is for the foe reading them.
 3. **Breaks mirror calls.** An NPC may abandon a telegraphed step only on the same triggers that
    grant the player a mid-round call:
    - summoned, revealed, held, hurt, killer, ally down;
    - plus free breaks by intellect, from the same `FREE_CALLS` table.
 
-   Both sides then react to the same surprises with the same budget. A break shows as a changed
-   telegraph line ("changes their mind") so it is never invisible.
+   Both sides then react to the same surprises with the same budget. A break gives off its own
+   cue ("changes their mind"), so it is never invisible to someone watching.
 
-4. **Telegraphs both ways (open question, Part 14).** The player's next action could be
-   telegraphed to foes as foes' are to the player, read by the same perception rule. That would
-   make the information symmetric and give foes something concrete to react to. It would also
-   make the player's plan more readable to sharp foes, which is a real cost to the player. The
-   alternative keeps the asymmetry and compensates NPCs through the free re-plan of later steps.
-   This needs a prototype and a feel test, not a decision now.
+4. **Cues both ways, not telegraphs both ways (the owner's direction).** Neither side is shown
+   the other's queued card. Both receive the cues the readied action really gives off, and infer
+   from them by their own perception, expertise and experience (Part 5, "Cues"). This keeps
+   feints and surprise possible and still gives a sharp foe something real to react to. It
+   replaces the earlier choice between a symmetric telegraph and no player telegraph. Still to
+   test (Part 13): that the player, reading cues, never ends up worse off than today's telegraph
+   leaves them against a foe they out-read.
 5. **No reaction faster than a turn.** Nothing a fighter does reacts _within_ another fighter's
    turn, except the defences that already do (ready defence, intercept, spin, shield). Those stay
    rules, not decisions. An NPC that wants to answer an attack does it at its next turn, as the
@@ -603,10 +770,11 @@ Under these rules a competent foe is one that:
 
 - builds accurate beliefs from what the player shows;
 - plans a round ahead;
-- telegraphs only its next step;
+- gives away only what its readied step's cues show;
 - breaks only when the player could have called.
 
-It never reads the player's slots and never re-rolls a telegraph for free. Its edge has to come
+It never reads the player's slots, never sees their queued card, and never changes a step under
+way for free. Its edge has to come
 from understanding, which is what the bench's sharp-versus-dull test (Part 7) measures.
 
 ---
@@ -631,7 +799,7 @@ The player's beliefs are computed by the same perception rules, which gives thre
 - round advice is the mind's own view ("they keep a Counter up close: fairly sure");
 - a watched player fighter plays by the mind instead of the default plan.
 
-### Interface alternatives (to prototype, not to choose yet)
+### Interface alternatives considered
 
 1. **Priority list, advised (closest to today).** The player keeps slots, conditions and targets.
    The mind supplies the forecast ("this slot will rarely fire because…"), the round review and
@@ -665,8 +833,39 @@ The player's beliefs are computed by the same perception rules, which gives thre
    Plan & Watch's round rhythm and the phone budget. It is noted only because the mind makes it
    cheap to offer as a "focus" mode in a special scene (a duel), if wanted later.
 
-These need not be exclusive. A setting or a per-fight toggle could offer 1 and 3. Part 13 proposes
-paper and screen prototypes before any engine work.
+### The owner's direction: three levels of one interface
+
+Prototype 1 (advised list), 4 (plan then edit) and 3 (orders with pins) **together, as three
+levels of one interface**, not as modes chosen once. They suit different situations and
+different amounts of engagement: a known foe in a routine job, or the duel that matters. The
+mockup (https://claude.ai/artifact/7WJVAf8o39zmcz5arbyB8o) does it like this:
+
+- **One switch, one plan.** A three-stop control, "Who plans this round" (your list, plan then
+  edit, orders), sits above the same plan: slots per distance with their conditions and targets,
+  and one ready defence per distance. The switch decides only who fills the slots you haven't
+  set, and how much of the list you see.
+- **A hand-set slot and a pin are the same thing.** Both are the player's, carry their seal and
+  are hard constraints for the planner. The mind's slots are marked as drafted, each with its
+  one-line reason. Slots it changed to fit around your edit are marked as re-drafted.
+- **Moving between levels never loses anything.**
+  - Orders → plan then edit opens the drafted plan as the list, with your pins already in it.
+  - Editing a slot makes it yours, and the mind re-drafts around it.
+  - Plan then edit → your list turns the reasons into forecasts and adds the one suggestion.
+  - "Ask for a plan" from your list refills only empty and drafted slots.
+  - Back to orders turns every slot you set into a pin, worded as an order ("open with Ember
+    Fang").
+- **Forbid pins act on the hand**, not on slots: a forbidden card is never reached for, even in
+  an emergency.
+
+Open points the mockup raises:
+
+- Should drafted slots stay marked once you are on your own list?
+- Is doctrine set per round or kept as a standing preference?
+- Which stop does a mid-round call open on?
+- Does the planner get your intellect's slot count, so a draft always fits back into your list?
+  The mockup assumes yes.
+
+Per-exchange choice (5) stays out. Orders without pins (2) is simply level 3 with no pins.
 
 ### Teammates
 
@@ -894,42 +1093,52 @@ slot, pinned), or switch to your own priority list.
 
 ---
 
-## Part 13: A build path (for when we do build)
+## Part 13: A build path (not authorised)
 
-Each step is its own PR with the benches green, and each is useful if we stop there.
+The owner has not authorised a build. The order below is a proposal. Each gate must be passed,
+with numbers, before the next is asked for.
 
-1. **Decision log.** Today's AI writes why it chose (which path, which override fired) into the
-   slot trace, so we have a baseline to compare against. No behaviour change.
-2. **Observations and beliefs, shown only.** Build the observation stream and beliefs. Feed the
-   read panel and round advice from them, with graded words. Decisions are still today's.
-   This tests the belief model against what players see before anything plays by it.
-3. **Identity, derived.** Compute identities from kit, traits and archetypes, and show them in
-   scouting ("fights cautiously, prefers range"). Still no behaviour change.
-4. **Objective layer in shadow.** Choose objectives each exchange and log them beside today's
-   actual choices. Measure agreement, and read the disagreements.
-5. **Planner prototypes in the benches.** A and C, behind a flag, measured on Part 12. Pick, or
-   pick a hybrid, with the numbers.
-6. **Switch foes over**, absorbing modules one at a time (Part 10). The adherence coin goes first.
-7. **Teammates and watched players.**
-8. **Player interface prototypes** (Part 9): screens at 1440 and 390 for the chosen alternatives,
-   feel-tested before engine work.
-9. **Commitment rules** (Part 8): breaks mirroring calls, and the player telegraph if chosen.
+1. **Gate: planner proof of concept.** Done in part (Part 7): unscripted combos found and played
+   in the real engine. Still open:
+   - the cost, from about 600 ms to 2 ms a decision, without losing what it finds;
+   - a bait under a rule that prices reactions, if the owner wants one.
+2. **Gate: cue inference, on paper and in a bench.** Infer foes' next moves from cues (Part 5) on
+   today's telegraphs, and show that the player never ends up worse off than today against a
+   foe they out-read.
+3. **Gate: one-interface controls.** Feel-test the three levels as screens at 1440 and 390, from
+   the mockup, before any engine work.
+4. Then, as before, each its own PR with benches green:
+   - a decision log for today's AI;
+   - observations and beliefs, shown only;
+   - identities and competence sources, derived;
+   - the objective layer in shadow;
+   - the planner switched on for foes, absorbing modules one at a time (Part 10);
+   - teammates and watched players;
+   - the player controls;
+   - the commitment rules.
 
 ---
 
 ## Part 14: Open questions for the owner
 
-1. **The player's telegraph.** Should foes see your next action the way you see theirs (Part 8,
-   rule 4)? It is fairer and gives sharp foes more to work with, but it makes your plan more
-   readable.
-2. **Interface direction.** Which of Part 9's alternatives are worth a screen prototype: advised
-   lists only, orders with pins, plan-then-edit, or several?
+Settled since the first draft:
+
+- **Telegraphs.** Cues both ways, never the queued card (Part 5, Part 8 rule 4).
+- **Controls to mock up.** Orders with pins, plan then edit, and the advised list, as three
+  levels of one interface (Part 9).
+- **The build.** Not authorised; it is gated on the proof of concept (Part 13).
+
+Still open:
+
+1. **Prices for reactions.** Should a ready Counter (or Guard, or Dodge) that fires commit its
+   user until their next turn, so that baiting it can pay? This is a rules change, benched like
+   any other, and the only way the planner's bait-finding will show in play.
+2. **The cost gate.** Which route to 2 ms do we try first: a tabulated forward model, fewer
+   rollouts, or GOAP-generated candidates?
 3. **How visible identity is.** Should a scouting read name a foe's temperament ("reckless",
    "patient"), or should players learn it by fighting?
-4. **Authored styles.** Should canon or named characters get authored identities in the fan pack,
-   and the original pack's named foes and senseis in theirs?
-5. **The budget.** Is 150 ms for a watched fight, and 2 ms a decision, the right bar for the
-   phones we target?
-6. **Scope of Part 1's balance problems.** Some matrix outliers are rules, not decisions (the
-   P4.1 hidden-damage finding). Do we hold balance changes until the mind lands, so we don't tune
-   twice?
+4. **Experience.** Is the field book's count of foes fought enough, or should a character keep
+   experience by kind of foe and by art?
+5. **Authored styles.** Should named characters get authored identities?
+6. **The budget.** Is 150 ms for a watched fight, and 2 ms a decision, the right bar?
+7. **Balance timing.** Do we hold balance changes until the mind lands, so we don't tune twice?
