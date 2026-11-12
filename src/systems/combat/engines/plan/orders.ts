@@ -26,6 +26,7 @@ const STANCE_DETAIL: Readonly<Record<CombatStance['kind'], string>> = {
   cover: 'Guard them, and step in front of attacks aimed at them',
   support: 'Daze, seal and heal first to set up the rest',
   hold: 'Keep their place and range, spare chakra',
+  'fall-back': 'Get clear to far off, and keep a Dodge ready',
 };
 
 function stanceKey(stance: CombatStance): string {
@@ -42,19 +43,26 @@ function cardsLocked(ally: PlanFighter): string | undefined {
   return ally.orders.cardsLocked;
 }
 
-/** The stances on offer for a teammate: press, cover each other fighter on the side, support, hold. */
+/** The stances on offer: press, cover each other fighter on the side, support, hold, fall back. */
 function stancesFor(ally: PlanFighter, fighters: readonly PlanFighter[]): CombatStance[] {
   const wards = fighters.filter((f) => isTeammate(f) || f.isPlayer);
   const covers = wards
     .filter((w) => w.id !== ally.id && alive(w))
     .map((w): CombatStance => ({ kind: 'cover', covers: w.id }));
-  return [{ kind: 'press' }, ...covers, { kind: 'support' }, { kind: 'hold' }];
+  return [
+    { kind: 'press' },
+    ...covers,
+    { kind: 'support' },
+    { kind: 'hold' },
+    { kind: 'fall-back' },
+  ];
 }
 
 const STANCE_LABEL: Readonly<Record<Exclude<CombatStance['kind'], 'cover'>, string>> = {
   press: 'Press',
   support: 'Support',
   hold: 'Hold',
+  'fall-back': 'Fall back',
 };
 
 function stanceLabel(stance: CombatStance, fighters: readonly PlanFighter[]): string {
@@ -148,7 +156,7 @@ function parseStance(rest: string): { allyId: string; stance: CombatStance } | n
   const [allyId, kind, covers] = rest.split('|');
   if (!allyId) return null;
   if (kind === 'cover') return covers ? { allyId, stance: { kind, covers } } : null;
-  if (kind === 'press' || kind === 'support' || kind === 'hold')
+  if (kind === 'press' || kind === 'support' || kind === 'hold' || kind === 'fall-back')
     return { allyId, stance: { kind } };
   return null;
 }

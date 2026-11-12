@@ -170,6 +170,18 @@ describe('plan & watch team: orders', () => {
   });
 });
 
+describe('plan & watch team: falling back', () => {
+  it('a teammate told to fall back makes for far off with a Dodge ready', () => {
+    const after = choose(started(), 'stance:kiba|fall-back');
+    expect(ally(after).stance).toEqual({ kind: 'fall-back' });
+    expect(ally(after).keepAt).toBe('far');
+    expect(ally(after).reactions).toEqual({ close: 'dodge', mid: 'dodge', far: 'dodge' });
+    expect(engine.view(encode(after)).combatants.find((c) => c.id === 'kiba')?.statuses).toContain(
+      'Falling back',
+    );
+  });
+});
+
 describe('plan & watch team: the mark', () => {
   it('is set between rounds; marked slots and pressing teammates go for it', () => {
     const marked = choose(started(), 'mark:boss');

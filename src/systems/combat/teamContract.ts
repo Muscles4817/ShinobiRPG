@@ -7,14 +7,14 @@
 /**
  * How a teammate fights: press (attack, close in, follow the team mark), cover (guard one
  * fighter on their side and step in front of single attacks aimed at them), support (dazes,
- * seals, heals and senses first, to set up the others) or hold (keep their place and range,
- * spare their chakra).
+ * seals, heals and senses first, to set up the others), hold (keep their place and range,
+ * spare their chakra) or fall back (get clear, to far off, with a Dodge ready).
  */
-export const STANCE_KINDS = ['press', 'cover', 'support', 'hold'] as const;
+export const STANCE_KINDS = ['press', 'cover', 'support', 'hold', 'fall-back'] as const;
 export type StanceKind = (typeof STANCE_KINDS)[number];
 
 export type CombatStance =
-  | { readonly kind: 'press' | 'support' | 'hold' }
+  | { readonly kind: 'press' | 'support' | 'hold' | 'fall-back' }
   | { readonly kind: 'cover'; /** The fighter (by id) they protect. */ readonly covers: string };
 
 /**
