@@ -28,6 +28,9 @@ function knowing(fighter: FighterSpec, id: string, unstable: boolean): FighterSp
   };
 }
 
+/** Two benches of a hundred-odd fights each: more than the default five seconds on a busy runner. */
+const TIMEOUT_MS = 30_000;
+
 describe('unstable techniques (step 4.1)', () => {
   it.each(['ember-breath', 'kindled-pulse'])(
     'an unstable %s wins less often than a steady one against an equal',
@@ -38,5 +41,6 @@ describe('unstable techniques (step 4.1)', () => {
       expect(shaky.winRate).toBeLessThan(steady.winRate);
       expect(shaky.stalemateRate).toBe(0);
     },
+    TIMEOUT_MS,
   );
 });

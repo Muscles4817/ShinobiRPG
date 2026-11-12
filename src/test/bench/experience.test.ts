@@ -32,11 +32,11 @@ interface Baseline {
   readonly oneScreenShare: number;
 }
 
-/** The measures when they landed (P0.4). */
+/** The measures when they landed (P0.4); plan screens raised by mid-round calls (P2.1). */
 export const BASELINES: Readonly<Record<string, Baseline>> = {
-  'equals (C)': { planScreens: 2.567, repeatShare: 0.8, lostShare: 0.063, oneScreenShare: 0 },
+  'equals (C)': { planScreens: 3.45, repeatShare: 0.8, lostShare: 0.063, oneScreenShare: 0 },
   'one grade up (C v B)': {
-    planScreens: 2,
+    planScreens: 2.15,
     repeatShare: 0.734,
     lostShare: 0.215,
     oneScreenShare: 0,
@@ -48,7 +48,7 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
     oneScreenShare: 0,
   },
   'fresh genin v a classmate': {
-    planScreens: 3.233,
+    planScreens: 3.95,
     repeatShare: 0.823,
     lostShare: 0.077,
     oneScreenShare: 0,
@@ -60,7 +60,7 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
     oneScreenShare: 1,
   },
   'fresh genin v their mirror': {
-    planScreens: 6.1,
+    planScreens: 7.95,
     repeatShare: 0.875,
     lostShare: 0.228,
     oneScreenShare: 0,

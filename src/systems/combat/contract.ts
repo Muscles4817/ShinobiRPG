@@ -401,6 +401,8 @@ export interface CombatView {
   readonly options: readonly CombatOption[];
   /** Current distance, for engines that track range. */
   readonly range?: RangeBand;
+  /** Why the round stopped early at the card table (a mid-round call), in words. */
+  readonly called?: string;
   /** One line telling the player what to do now, e.g. "Pick your cards". */
   readonly prompt?: string;
   readonly meters?: readonly CombatMeter[];

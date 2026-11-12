@@ -380,8 +380,8 @@ describe('App (smoke test)', () => {
       const next =
         leave ??
         screen.queryByRole('button', { name: 'Skip' }) ??
-        screen.queryByRole('button', { name: /^Begin (the fight|round)/ }) ??
-        screen.queryByRole('button', { name: 'Plan the next round' }) ??
+        screen.queryByRole('button', { name: /^(Begin (the fight|round)|Play on)/ }) ??
+        screen.queryByRole('button', { name: /^(Plan the next round|Change your plan)/ }) ??
         screen.getByRole('button', { name: /^Watch the round/ });
       await user.click(next);
     }
@@ -471,7 +471,7 @@ describe('App (smoke test)', () => {
     await waitFor(() => {
       const next = screen.queryByRole('navigation', { name: 'What next' });
       const between =
-        screen.queryByRole('button', { name: 'Plan the next round' }) ??
+        screen.queryByRole('button', { name: /^(Plan the next round|Change your plan)/ }) ??
         screen.queryByText(/The round is over/) ??
         (next && within(next).queryByRole('button', { name: 'Continue' })) ??
         screen.queryByRole('dialog');

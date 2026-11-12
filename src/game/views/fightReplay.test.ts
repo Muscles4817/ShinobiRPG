@@ -121,7 +121,8 @@ describe('the watch screen’s beats', () => {
       state = act(state, { type: 'combatAct', optionId: next!.id });
       const view = combatScene(state, ctx);
       if (!view) break;
-      expect(storyEnd(view)).toBeGreaterThan(end);
+      // Playing on after a mid-round call tells nothing new until the next exchange.
+      if (next!.id === 'next') expect(storyEnd(view)).toBeGreaterThan(end);
       expect(fightReplay(view, end)).toHaveLength(storyEnd(view) - end);
       dropped ||= (view.logOffset ?? 0) > 0;
       end = storyEnd(view);

@@ -30,6 +30,7 @@ import type { ShroudMemory } from '../../rules/shrouds';
 import { withOneMind } from './oneMind';
 import { sizedBody } from './sizing';
 import type { SlotTrace } from './traceShape';
+import type { CallTrigger, Calls } from './roundCallShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -239,6 +240,10 @@ export interface PlanState {
   readonly tired?: true;
   /** How the player's slots fared over the round just played (`slotTrace.ts`). */
   readonly slotTrace?: SlotTrace;
+  /** Mid-round calls made this fight (`roundCalls.ts`); none when absent. */
+  readonly calls?: Calls;
+  /** What stopped the round at the card table, while it waits there (`roundCalls.ts`). */
+  readonly called?: CallTrigger | 'own';
   readonly canFlee: boolean;
   /** The side that moved first (from the fight's opening) acts first in exchange 1. */
   readonly firstMover?: CombatSide;
