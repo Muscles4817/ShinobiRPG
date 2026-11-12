@@ -29,6 +29,7 @@ import type { Hive } from './hive';
 import type { ShroudMemory } from '../../rules/shrouds';
 import { withOneMind } from './oneMind';
 import { sizedBody } from './sizing';
+import type { SlotTrace } from './traceShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -217,6 +218,8 @@ export interface PlanState {
   readonly roundHealth?: number;
   /** Both sides have tired, and nothing comes back between exchanges (`tiring.ts`). */
   readonly tired?: true;
+  /** How the player's slots fared over the round just played (`slotTrace.ts`). */
+  readonly slotTrace?: SlotTrace;
   readonly canFlee: boolean;
   /** The side that moved first (from the fight's opening) acts first in exchange 1. */
   readonly firstMover?: CombatSide;
@@ -272,6 +275,8 @@ export interface Round {
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
+  /** How the player's slots have fared this round (`slotTrace.ts`). */
+  readonly slotTrace?: SlotTrace;
   /** Whom the turn just taken was aimed at, so the screen says the distance between them. */
   readonly aimedAt?: string;
   /** The turn just taken was the player's and played off their plan, and why (`staging.ts`). */

@@ -12,6 +12,7 @@ import { inSight, opponentsOf } from './senses';
 import { mindsMark } from './sharedMind';
 import type { PlanFighter, Round, Slot, SlotCondition, TargetRule } from './state';
 import { attacksFrom } from './stepping';
+import type { PassReason } from './traceShape';
 import { bestTarget } from './targeting';
 
 /**
@@ -114,22 +115,6 @@ export function aimAt(
       return mindsMark(self, foes, round) ?? bestTarget(self, foes);
   }
 }
-
-/**
- * Why a slot passes over its turn: no such card (a tool used up), it doesn't reach or can't be
- * played from here, it can't be used now (chakra, breath, a seal), chakra kept for a finisher,
- * nothing for it to do, its condition doesn't hold, or no foe it may aim at.
- */
-export const PASS_REASONS = [
-  'missing',
-  'out-of-reach',
-  'cannot-use',
-  'saving',
-  'not-needed',
-  'condition',
-  'no-target',
-] as const;
-export type PassReason = (typeof PASS_REASONS)[number];
 
 /** Why a card wouldn't do anything now, or null when it would. */
 function uselessBecause(self: PlanFighter, card: Card, round: Round): PassReason | null {
