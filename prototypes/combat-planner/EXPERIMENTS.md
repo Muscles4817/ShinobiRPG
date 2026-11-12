@@ -84,6 +84,65 @@ Keep it on this branch until the owner has played a few fights with it. If adopt
 The Counter version is worth revisiting once teammates are planned, since they are the ones who
 could use a riposte's opening.
 
+### Follow-up: should a Dodge say where it goes? (analysis only, nothing built)
+
+The owner asked whether a Dodge should eventually tell apart three intentions: keeping close,
+getting away to a greater distance, or repositioning. Here is what each would add, what it
+would cost, and what the evidence so far says.
+
+**What the leap already showed.**
+
+- The one fighter whose AI plan keeps Dodge up close is the Gates build, a close fighter. It lost
+  a little with the leap (80% to 79% overall, and 73% to 65% against the Cloner), because each
+  dodge carried it out of its own range.
+- So a single "always leap clear" rule helps some dodgers and hurts others, depending on where
+  they want to fight. That is the depth the variants are after. It is also a sign that one fixed
+  behaviour is the wrong default.
+
+| Intention      | What it is                                                                                              | Who wants it                             | What it adds                                                          | What it costs                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Keep close** | slip and stay in range (today's Dodge)                                                                  | close fighters                           | nothing new                                                           | nothing                                                                              |
+| **Break away** | slip and land at mid (the experiment)                                                                   | ranged fighters, anyone fleeing a killer | a free disengage; a reason to throw blows at a dodger who wants range | one more choice per distance                                                         |
+| **Reposition** | slip and change who you stand near: out of an area's middle, past a front-row guard, beside a held ally | team fights                              | real depth with several fighters and rows                             | a lot: where to go, chosen how, shown how; needs per-pair distances, rows and allies |
+
+**What a choice would cost the player.**
+
+- The ready defence is one pick per distance (Guard, Dodge, Counter, a substitution). Splitting
+  Dodge into two or three options adds clutter to the busiest part of the plan screen.
+- It adds a decision whose right answer, for most fighters, is fixed by their kit. A close
+  fighter always wants to keep close. A choice with one right answer is a chore, not depth.
+
+**A way to get most of the depth for no new interface.** Derive the intention from what the plan
+already says:
+
+- The player's _fight at_ setting, or the kit's home distance for a fighter the game plays, says
+  where they want to be.
+- A dodger leaps clear only if their plan wants more distance, and stays close if it wants close.
+
+That keeps the tactical meaning:
+
+- **The attacker:** an attacker who reads where you want to fight can still use the leap (draw a
+  dodge from a ranged fighter, and they hand you nothing you weren't about to lose anyway; draw
+  it from someone fleeing, and they get away).
+- **The player:** changing _fight at_ changes how your Dodge behaves.
+- **Reading cues:** a fighter whose stance shows they want distance is predictable in a way a
+  sharp foe can read.
+
+It also removes the Gates build's penalty.
+
+**Reposition** is worth revisiting only with planned teammates and team-wide intent. One against
+one there is nowhere meaningful to reposition to.
+
+**Recommendation.**
+
+1. If the owner's play-test of the leap feels good, try the derived version first:
+   - leap only when the dodger's plan wants more distance;
+   - no new interface;
+   - measured on the same benches, with the Gates build as the check.
+2. Hold explicit variants until play-testing shows players want to override what their _fight at_
+   implies.
+3. Leave repositioning for the team work.
+
 ## Experiment 2: where the planner's time goes, and how to cut it
 
 The full comparison is in `perf/RESULTS.md`, with every row in `perf/out/`.
