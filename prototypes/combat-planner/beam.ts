@@ -29,6 +29,8 @@ export interface Search {
   readonly width: number;
   /** Seeds each sequence is played over. */
   readonly rollouts: number;
+  /** Exchanges each sequence is scored over (on the default plan past it); absent: `depth`. */
+  readonly horizon?: number;
   /** How much the planner minds its own hurt, against the foe's (risk; 1 = even trade). */
   readonly ownHurt: number;
   readonly belief?: Belief;
@@ -69,7 +71,7 @@ function score(start: PlanState, selfId: string, sequence: readonly CardId[], s:
   const model = s.belief ? believed(start, s.belief) : start;
   let total = 0;
   for (let seed = 1; seed <= s.rollouts; seed++) {
-    const plan = { sequence, thenDefault: s.depth - sequence.length };
+    const plan = { sequence, thenDefault: (s.horizon ?? s.depth) - sequence.length };
     total += value(model, rollout(model, selfId, plan, seed), s.ownHurt);
   }
   return total / s.rollouts;

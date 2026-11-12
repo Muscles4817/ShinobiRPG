@@ -42,6 +42,7 @@ import { linkLine } from './chainVoice';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 import { distanceBetween } from './distance';
+import { leapClear } from './leap';
 import { slipCause, slipCauseBeside, withCause } from './causes';
 import type { NarrationCause } from '../../rules/causes';
 
@@ -291,7 +292,9 @@ function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
   const noted = noteDefence(round, foe.id, distanceBetween(round, actor.id, foe.id), 'dodge');
   const told = missLine(moment, why, slip);
-  return say(noted, withCause(reactionLine(told, 'dodged'), slipCauseBeside(cause, true)));
+  const said = say(noted, withCause(reactionLine(told, 'dodged'), slipCauseBeside(cause, true)));
+  // A ready Dodge leaps clear of what it slipped (`leap.ts`); an illusion seen through isn't leapt.
+  return t.discipline === 'genjutsu' ? said : leapClear(said, foe, actor);
 }
 
 interface Slipped {
