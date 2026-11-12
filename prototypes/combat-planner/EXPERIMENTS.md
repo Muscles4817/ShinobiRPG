@@ -11,6 +11,7 @@ production combat code on `main`. The one rule tried (Experiment 1) lives only o
 
 The first candidate was the Counter: a riposte leaves its user exposed until their next turn.
 Checked against the turn order, it fails one-on-one:
+
 - A Counter fires during the attacker's turn.
 - The counterer's own turn, which closes the window, always comes before the attacker acts again.
 - With a steady initiative order, the attacker never gets a turn inside the window.
@@ -21,6 +22,7 @@ planner prototype couldn't test it fairly.
 The mechanic tested instead (`src/systems/combat/engines/plan/leap.ts`, on this branch only):
 **a fighter who slips an attack up close with a Dodge ready leaps clear, and that pair ends at
 mid.** In the world, dodging up close means jumping away.
+
 - **Narrow:**
   - only a ready Dodge (a plain slip, an Evade or a substitution stays put);
   - only from close;
@@ -37,12 +39,12 @@ The scenario (`leap.test.ts`): you hold a strong Stone Sling (mid and far) and p
 starting up close. The foe is a quick, sharp-eyed brawler. Today's answer is to step back, a
 contested step that costs the turn.
 
-| Foe keeps | Rule | Planner's best pair at the start | Planner's first move, 20 fights | Planner won | Default plan won |
-| --- | --- | --- | --- | --- | --- |
-| Dodge | **leap on** | blow > blow (+0.3) | **blow up close, 20 of 20** | 16/20 | 15/20 |
-| Dodge | leap off | step back > blow (−4.3) | step back, 20 of 20 | 15/20 | 15/20 |
-| Guard | leap on | step back > blow (−5.7) | step back, 20 of 20 | 16/20 | 16/20 |
-| Guard | leap off | step back > blow (−5.7) | step back, 20 of 20 | 16/20 | 16/20 |
+| Foe keeps | Rule        | Planner's best pair at the start | Planner's first move, 20 fights | Planner won | Default plan won |
+| --------- | ----------- | -------------------------------- | ------------------------------- | ----------- | ---------------- |
+| Dodge     | **leap on** | blow > blow (+0.3)               | **blow up close, 20 of 20**     | 16/20       | 15/20            |
+| Dodge     | leap off    | step back > blow (−4.3)          | step back, 20 of 20             | 15/20       | 15/20            |
+| Guard     | leap on     | step back > blow (−5.7)          | step back, 20 of 20             | 16/20       | 16/20            |
+| Guard     | leap off    | step back > blow (−5.7)          | step back, 20 of 20             | 16/20       | 16/20            |
 
 The planner switches to throwing a blow up close **only** when both the rule and a dodging foe
 are present. The blow is worth something even when it misses, because the dodge hands over mid.
@@ -74,12 +76,114 @@ The rule is sound, narrow and nearly balance-neutral. It gives a capable planner
 to exploit, and the planner exploits it unprompted. But it is not decisive, and it moves the
 game's feel for anyone who keeps Dodge ready up close: they will find themselves at mid often.
 Keep it on this branch until the owner has played a few fights with it. If adopted:
+
 - update the versus fixture;
 - add Gates against the Assassin to the known outliers;
 - add a line to CLAUDE.md decision 16.
 
 The Counter version is worth revisiting once teammates are planned, since they are the ones who
 could use a riposte's opening.
+
+## Experiment 2: where the planner's time goes, and how to cut it
+
+The full comparison is in `perf/RESULTS.md`, with every row in `perf/out/`.
+
+### Profile (`profiling/`)
+
+| Where the time goes                          | Share             |
+| -------------------------------------------- | ----------------- |
+| Simulating the real exchange                 | 98% of a decision |
+| State cloning, candidate generation, scoring | under 1% together |
+
+A decision simulated about 1,750 real exchanges, at roughly 0.4–0.7 ms each for one against one.
+Each exchange costs more as fighters are added: about 1.1 ms one against one, 1.8 ms two against
+two and 2.6 ms three against three, early in a fight.
+
+Inside the exchange, by self time:
+
+| Work                                                                                 | Share |
+| ------------------------------------------------------------------------------------ | ----- |
+| Narration (story lines, voices, staging, status text), which the planner never reads | ~26%  |
+| Rules maths                                                                          | ~19%  |
+| Exchange bookkeeping                                                                 | ~15%  |
+| The engine's own decisions for the fighters                                          | ~12%  |
+
+The lever is **how many exchanges** are simulated, and only then what each costs.
+
+### The approaches, against a real-engine reference on 42 decision states
+
+The reference is every first card × every second card, 64 rollouts on its own seeds. The states
+come from the two prototype scenarios and 12 bench-build one-on-ones, at three points in each
+fight. Two measures:
+
+- **Near best:** the chosen first card is within 2 points of the reference's best.
+- **Regret:** the reference's value of its best card, less its value of the card chosen.
+
+The reference's own noise, split in halves, is 76% agreement and 86% near best.
+
+| Approach                                         |                            ms a decision (median) | Near best | Regret mean / worst | Keeps the emergent combos                                      |
+| ------------------------------------------------ | ------------------------------------------------: | --------: | ------------------: | -------------------------------------------------------------- |
+| Prototype (depth 2, width 4, 16 rollouts)        |                            444 (exact savings on) |       83% |            2.4 / 51 | hide only: noise loses daze                                    |
+| Exact savings: shared prefixes + silent exchange | same decisions, 43% fewer exchanges, ~¼ less each |           |                     |                                                                |
+| Greedy, depth 1                                  |                                                72 |       64% |          17.6 / 195 | **loses both**                                                 |
+| Depth 2, width 1, 4 rollouts                     |                                                50 |       79% |            3.2 / 44 | both                                                           |
+| Depth 2, width 4, 32 rollouts                    |                                               801 |   **98%** |       **0.2 / 2.5** | both                                                           |
+| Racing (2 → 16 rollouts)                         |                                               257 |       88% |          0.8 / 10.6 | hide only                                                      |
+| **GOAP-proposed candidates, 8 rollouts**         |                                  **81** (p95 159) |       86% |            1.7 / 24 | **both**, and a bench build's own (Paper Veil → Pinched Flame) |
+| Approximate model, depth 2                       |                                           **3.2** |       60% |            8.0 / 56 | plays the openings, loses the fights                           |
+| Hybrid: approximate top two → real engine        |                                               103 |       64% |            7.0 / 56 | both                                                           |
+| Caches and an offline table                      |                                            99–506 |    81–83% |     2.4–2.8 / 44–51 | barely help: states rarely repeat                              |
+
+Closed loop, 30 fights per scenario, as daze-finish / hide-lethal wins:
+
+| Approach                 | Daze-finish | Hide-lethal |
+| ------------------------ | ----------- | ----------- |
+| Default plan             | 2           | 11          |
+| Prototype                | 6           | 30          |
+| Depth 2, 32 rollouts     | 19          | 30          |
+| GOAP-proposed candidates | 15          | 30          |
+| Approximate model        | 4           | 30          |
+
+GOAP candidates still find the Dodge-leap exploit of Experiment 1 at 8 rollouts: a blow against
+the dodger, a step back against the guarder. They catch it through the single-card candidates,
+not the schema.
+
+### What each approach costs in emergence
+
+- **Depth 1 is the one shortcut that destroys emergence.** Every set-up needs two steps seen
+  together.
+- **Fewer rollouts lose robustness, not ideas.** Their misses are noise, and large when they
+  happen. The prototype's "kiting" was partly this.
+- **GOAP narrows two-card ideas to what its schema has a fact for** (a daze opens a foe, a conceal
+  hides you, a step moves the fight). A sequence whose second card needs something the schema
+  doesn't know is never proposed, unless the single-card candidates catch it. They caught the
+  leap; they won't catch everything. The schema reads verbs and fields, never names.
+- **The approximate model is fast and wrong** wherever it skips a rule (ready defences, counters,
+  clones, reach). It would need to grow towards the engine to be trusted, and then it isn't
+  cheap.
+
+### Open item from this experiment
+
+With narration mocked to return empty strings, 5.4% of simulated outcomes changed. Non-empty
+constants changed nothing. So some rule depends on whether a story line is empty. The engine
+slices and re-tags story lines in a few places (`steps.ts`, `zoning.ts`, `staging.ts`), and
+template choice depends on the lines already said (`fresh.ts`). It hasn't been pinned down. It
+must be before a production silent mode, and it may be a small correctness bug in its own right.
+
+### Recommendation
+
+- **What to build:** GOAP-proposed candidates scored in the real engine, with shared prefixes, a
+  silent exchange and about 8 rollouts.
+  - About 80 ms a decision for one against one, and roughly 200 ms per deciding fighter at three
+    against three.
+  - It keeps the emergent combos and beats the prototype's setting on quality.
+- **The 2 ms target is the wrong frame for this architecture.** Real-engine simulation buys about
+  four exchanges in 2 ms.
+- **How it fits a frame budget:**
+  - plan once a round, not every exchange, since the player commits per round anyway;
+  - plan between rounds, off the frame, while the round plays;
+  - plan only for minds that read the fight, and keep the plain AI for the rest.
+- **The runtime budget** should be set on real target devices with these figures in hand.
 
 ## Experiment 3: the daze scenario
 
@@ -140,13 +244,14 @@ the turn and leaves no Guard or Counter that exchange.
 The planner, re-planning every exchange, against the rangeless foe, 20 fights each, fought to
 the end (`closed.test.ts`):
 
-| Planner | First move | Won | Dealt | Taken | Time a decision |
-| --- | --- | --- | --- | --- | --- |
-| Depth 2, 16 rollouts, scored over 2 exchanges | step back, every fight | 15/20 | 83 | 68 | 0.7 s |
-| Depth 2, **80 rollouts**, scored over 2 | **Lantern Flash, every fight** | **16/20** | 94 | 81 | 4.7 s |
-| Depth 2, 32 rollouts, scored over **6** (default plan after) | step back, every fight | 10/20 | 73 | 81 | 4.8 s |
+| Planner                                                      | First move                     | Won       | Dealt | Taken | Time a decision |
+| ------------------------------------------------------------ | ------------------------------ | --------- | ----- | ----- | --------------- |
+| Depth 2, 16 rollouts, scored over 2 exchanges                | step back, every fight         | 15/20     | 83    | 68    | 0.7 s           |
+| Depth 2, **80 rollouts**, scored over 2                      | **Lantern Flash, every fight** | **16/20** | 94    | 81    | 4.7 s           |
+| Depth 2, 32 rollouts, scored over **6** (default plan after) | step back, every fight         | 10/20     | 73    | 81    | 4.8 s           |
 
 Two things show here.
+
 - **With the noise taken out, the planner opens with the combo.** At 16 rollouts it opens by
   stepping back, but still plays Flash and Burst from mid afterwards. Both versions beat every
   fixed strategy (75–80% against 66%), because they mix kiting with the combo against a foe who
