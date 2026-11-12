@@ -123,14 +123,14 @@ describe('the worst killer', () => {
       ],
       canFlee: false,
     });
-    const opened = (['lesser', 'greater'] as const).reduce(
+    const opened = (['lesser', 'greater'] as const).reduce<Round>(
       (r, id) =>
         [life, view, wonder].reduce(
           (at, t) =>
             empowerSelf(at, fighter(at, id), { technique: t, effect: t.effects[0] as never }),
           r,
         ),
-      { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} } as Round,
+      { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} },
     );
     expect(threatFrom(fighter(opened, 'me'), fighter(opened, 'lesser'), {})).toBeDefined();
     expect(killerOf(fighter(opened, 'me'), opened)?.foe.id).toBe('greater');
