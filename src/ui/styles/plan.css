@@ -260,6 +260,12 @@
   border-bottom: 1px solid var(--line);
   color: var(--story);
 }
+/* One thing to try next round, set apart in the lantern's ink. */
+.round-advice {
+  margin: 8px 0 0;
+  font-family: var(--font-story);
+  color: var(--lantern);
+}
 .round-lines summary {
   min-height: 40px;
   font-size: 0.9rem;
