@@ -58,6 +58,8 @@ export interface Skirmish {
   readonly player: FighterSpec;
   readonly allies: readonly FighterSpec[];
   readonly foes: readonly FighterSpec[];
+  /** Both sides fight by their own judgement: no one keeps the player's plan for them. */
+  readonly watch?: boolean;
 }
 
 /** One seeded fight of `player` against `opponent`. */
@@ -66,7 +68,7 @@ export function fightOnce(player: FighterSpec, opponent: FighterSpec, seed: numb
 }
 
 /** One seeded fight between groups. */
-export function skirmishOnce({ player, allies, foes }: Skirmish, seed: number): FightRecord {
+export function skirmishOnce({ player, allies, foes, watch }: Skirmish, seed: number): FightRecord {
   const engine = createPlanEngine();
   const rng = createRng(seed);
   let state = engine.start(
@@ -76,6 +78,7 @@ export function skirmishOnce({ player, allies, foes }: Skirmish, seed: number): 
       enemies: foes.map((f, i) => toSetup(f, i === 0 ? 'foe' : `foe-${i}`)),
       canFlee: false,
       ...(player.plan ? { plan: player.plan } : {}),
+      ...(watch ? { watch: true } : {}),
     },
     rng,
   );

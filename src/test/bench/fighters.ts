@@ -67,6 +67,8 @@ export interface FighterSpec {
   readonly stance?: CombatStance;
   /** What they wear into the fight (step 4.3); absent: armed as their kit suggests. */
   readonly gear?: CombatGear;
+  /** What else they bring, laid over the setup: summons or puppets to call, a hive, dust. */
+  readonly extend?: (setup: CombatantSetup) => CombatantSetup;
 }
 
 export type StatProfile = Partial<Readonly<Record<StatId, Emphasis>>>;
@@ -108,7 +110,7 @@ export function techniques(ids: readonly string[]): CombatTechnique[] {
 
 /** The combat setup for a bench fighter, at full health and chakra (today's formulas). */
 export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
-  return {
+  const setup: CombatantSetup = {
     id,
     name: spec.name,
     attributes: spec.stats,
@@ -123,4 +125,5 @@ export function toSetup(spec: FighterSpec, id: string): CombatantSetup {
     ...(spec.stance ? { stance: spec.stance } : {}),
     ...(spec.gear ? { gear: spec.gear } : {}),
   };
+  return spec.extend ? spec.extend(setup) : setup;
 }
