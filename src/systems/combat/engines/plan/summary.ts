@@ -27,6 +27,7 @@ const OPENINGS: Readonly<Record<CombatResult, string>> = {
   victory: '{a} won in {rounds}.',
   defeat: '{a} lasted {rounds} before going down.',
   escaped: '{a} got away after {rounds}.',
+  stalemate: '{a} fought {rounds} to a standstill.',
 };
 
 /** In the order they went down. */
@@ -103,7 +104,7 @@ function firstToFall(down: readonly PlanFighter[], foes: boolean): string | null
 /** The fight's turning point, when it had one. */
 function turningPoint(state: PlanState, result: CombatResult): string | null {
   const player = playerOf(state);
-  if (result === 'escaped') return null;
+  if (result === 'escaped' || result === 'stalemate') return null;
   const won = result === 'victory';
   const losers = fallen(state.fighters.filter((f) => f.side === (won ? 'enemy' : 'player')));
   const decider = won ? losers.at(-1) : player;

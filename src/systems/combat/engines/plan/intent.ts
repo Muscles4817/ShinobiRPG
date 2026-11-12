@@ -44,7 +44,7 @@ type Table = Pick<
 >;
 
 /** The table as a round about to be played, for a foe weighing its plan. */
-function asRound(table: Table): Round {
+export function asRound(table: Table): Round {
   return {
     number: table.round,
     opening: table.exchange === 0,

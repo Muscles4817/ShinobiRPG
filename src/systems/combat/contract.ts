@@ -410,7 +410,11 @@ export interface CombatChoice {
   readonly targetId?: string;
 }
 
-export type CombatResult = 'victory' | 'defeat' | 'escaped';
+/**
+ * How a fight ended. A `stalemate` is a fight neither side could finish: both broke off (an
+ * engine may call one; nothing in a fight of the shelved engines does).
+ */
+export type CombatResult = 'victory' | 'defeat' | 'escaped' | 'stalemate';
 
 /** A price the player paid for a trump card they used in the fight, due once it is over. */
 export interface CombatCost {

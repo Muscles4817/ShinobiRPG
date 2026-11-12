@@ -120,7 +120,7 @@ export type Report =
   | {
       readonly kind: 'spar';
       readonly opponent: string;
-      readonly result: 'won' | 'lost' | 'yielded';
+      readonly result: 'won' | 'lost' | 'drawn' | 'yielded';
       readonly text: string;
       readonly gains: readonly string[];
       readonly bond: number;

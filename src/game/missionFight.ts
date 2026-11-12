@@ -171,6 +171,8 @@ export function resolveCombat(
     }
     case 'escaped':
       return failMission(afterFight, ctx, 'You retreated from the fight.');
+    case 'stalemate':
+      return failMission(afterFight, ctx, 'Neither side could finish the fight, and you drew off.');
     case 'defeat': {
       const def = activeMission(afterFight, ctx);
       const helped = def ? helpedOf(afterFight, ctx, def) : null;

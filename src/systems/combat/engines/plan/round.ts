@@ -1,12 +1,10 @@
 import type { Rng } from '@/core';
 
 import type { CombatResult } from '../../contract';
-import { rested } from './effort';
 import { styled } from './repertoire';
 import { followThrough, opened } from './chaining';
 import { alive } from '../../rules/body';
 import { reachLead } from '../../rules/blades';
-import { gathered } from '../../rules/chakra';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
 import { charge, type Charged } from './steps';
@@ -25,6 +23,7 @@ import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField } from './field';
 import { intendedCard, keepsTo } from './intent';
 import { momentIn } from './moment';
+import { recovered } from './tiring';
 import { exchangeDivider, staged } from './staging';
 import { lingerAfter } from './lingering';
 import { secondWinds } from './provisions';
@@ -307,8 +306,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const fighters = end.fighters.map((f) => ({
     ...wearOffDaze(f, state.round),
     sealed: Math.max(0, f.sealed - 1),
-    chakra: alive(f) ? gathered(f) : f.chakra,
-    ...(alive(f) ? rested(f) : {}),
+    ...recovered(f, state),
   }));
   const { field: _old, ...rest } = state;
   const closing = result ? [closingLine(end, result)] : fading;

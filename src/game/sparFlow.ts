@@ -24,7 +24,7 @@ const SPAR_HEALTH_FLOOR = 0.5;
 /** What a bout is worth to your partner: their own specialty, and footwork. */
 const PARTNER_LEARNING_GAIN = 0.5;
 const PARTNER_FOOTWORK_GAIN = 0.3;
-const BOND_FOR: Readonly<Record<SparResult, number>> = { won: 5, lost: 4, yielded: 1 };
+const BOND_FOR: Readonly<Record<SparResult, number>> = { won: 5, lost: 4, drawn: 4, yielded: 1 };
 
 type SparResult = Extract<Report, { kind: 'spar' }>['result'];
 
@@ -32,6 +32,7 @@ const RESULT_OF: Readonly<Record<CombatOutcome['result'], SparResult>> = {
   victory: 'won',
   defeat: 'lost',
   escaped: 'yielded',
+  stalemate: 'drawn',
 };
 
 function partnerPractice(result: SparResult, specialty: Discipline | undefined): StatDelta {
@@ -48,6 +49,8 @@ function sparLine(result: SparResult, name: string): string {
       return `${name} taps out, grinning. “Again tomorrow?”`;
     case 'lost':
       return `${name} pulls the last blow and offers you a hand up.`;
+    case 'drawn':
+      return `Neither of you can finish it. ${name} laughs and calls it even.`;
     case 'yielded':
       return `You call it early. ${name} looks a little disappointed.`;
   }
@@ -102,14 +105,16 @@ export function resolveSpar(state: GameState, outcome: CombatOutcome, ctx: GameC
 
 /**
  * A spar with your rival goes in the tally, any purse on it changes hands (yielding forfeits
- * it), and they'll want a word after (unless you yielded).
+ * it), and they'll want a word after (unless you yielded). A draw settles nothing: no one takes
+ * the purse, and neither of you scores.
  */
 function rivalSpar(state: GameState, partnerId: string, result: SparResult): GameState {
   const rival = state.rival;
   if (rival?.personId !== partnerId) return state;
+  const settled = { ...rival, sparStakes: null };
+  if (result === 'drawn') return { ...state, rival: settled };
   const won = result === 'won';
   const paid = settlePurse(state, rival.sparStakes ?? 'pride', won ? 'won' : 'lost');
-  const settled = { ...rival, sparStakes: null };
   if (result === 'yielded') return { ...paid, rival: settled };
   const spars = { you: rival.spars.you + (won ? 1 : 0), them: rival.spars.them + (won ? 0 : 1) };
   return { ...paid, rival: { ...settled, spars, beat: { kind: 'after-spar', won } } };

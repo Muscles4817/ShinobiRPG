@@ -20,7 +20,9 @@ import { fieldMeter } from './field';
 import { seenByPlayer } from './statusView';
 import { betweenRounds } from './adapt';
 import { foesRestanced } from './restance';
-import { rollIntents } from './intent';
+import { quietAfter } from './tiring';
+import { closingLine } from './falls';
+import { asRound, rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { groundNote } from './groundPlay';
@@ -146,8 +148,11 @@ function exchange(state: PlanState, rng: Rng): PlanState {
 }
 
 /** When the round is over, back to the card table. */
-function endOfRound(next: PlanState): PlanState {
-  if (next.result || next.exchange < ROUND_EXCHANGES) return next;
+function endOfRound(ended: PlanState): PlanState {
+  if (ended.result || ended.exchange < ROUND_EXCHANGES) return ended;
+  // A fight no one is winning ends in a stalemate (`tiring.ts`).
+  const next = { ...ended, ...quietAfter(ended) };
+  if (next.result) return { ...next, log: [...next.log, closingLine(asRound(next), next.result)] };
   const watching = next.watching ?? false;
   return {
     ...next,
