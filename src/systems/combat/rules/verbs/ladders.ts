@@ -19,6 +19,9 @@ import type { CombatTechnique } from '../../contract';
 const LADDER_SHARE: Readonly<Record<LadderId, readonly number[]>> = {
   gates: [0, 0.15, 0.25, 0.4, 0.55, 0.7, 0.9, 1.15, 1.6],
   sage: [0, 0.3, 0.45],
+  // The wicks burn a little lower than the gates at every step: the body pays sooner instead.
+  wicks: [0, 0.12, 0.22, 0.35, 0.5, 0.65, 0.85, 1.1],
+  kiln: [0, 0.25],
 };
 
 /**
@@ -26,13 +29,13 @@ const LADDER_SHARE: Readonly<Record<LadderId, readonly number[]>> = {
  * (Sage Mode's natural energy, unless sage toads perched on its user keep drawing it in); absent
  * for a ladder that holds until the body gives out.
  */
-const LADDER_HOLDS: Readonly<Partial<Record<LadderId, number>>> = { sage: 4 };
+const LADDER_HOLDS: Readonly<Partial<Record<LadderId, number>>> = { sage: 4, kiln: 4 };
 
 export function ladderHolds(ladder: LadderId): number | undefined {
   return LADDER_HOLDS[ladder];
 }
 
-/** Whether an open step of the ladder wears the body down until it gives out (the Gates). */
+/** Whether an open step of the ladder wears the body down until it gives out (the Gates, the wicks). */
 export function wearsBody(ladder: LadderId): boolean {
   return ladderHolds(ladder) === undefined;
 }

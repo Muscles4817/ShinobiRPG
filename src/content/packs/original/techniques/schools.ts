@@ -12,6 +12,7 @@ export const LANTERN_WIND = [
   'rising-gale',
   'spinning-gale',
   'kindled-pulse',
+  'white-flame-heel',
   'lantern-wind-flurry',
   'banked-coals',
 ] as const;

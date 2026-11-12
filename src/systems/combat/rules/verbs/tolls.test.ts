@@ -1,6 +1,7 @@
 import { spentBody, stepBreathPrice, stepHealthPrice, stepToll } from './tolls';
 
 const gate = (step: number) => ({ ladder: 'gates' as const, step });
+const wick = (step: number) => ({ ladder: 'wicks' as const, step });
 
 describe('a ladder step’s toll', () => {
   it('costs more the deeper it goes, in wind and then in health', () => {
@@ -29,5 +30,19 @@ describe('a ladder step’s toll', () => {
     expect(sixth.strength).toBeLessThan(30);
     expect(sixth.stamina).toBeLessThan(third.stamina);
     expect(sixth.taijutsu).toBe(30);
+  });
+
+  it('burns health from the second wick, sooner than the gates, and goes dark at the seventh', () => {
+    expect(stepHealthPrice(wick(1), 100)).toBe(0);
+    expect(stepHealthPrice(wick(2), 100)).toBeGreaterThan(0);
+    expect(stepHealthPrice(wick(3), 100)).toBeGreaterThan(stepHealthPrice(gate(3), 100));
+    expect(stepBreathPrice(wick(3), 100)).toBeLessThan(stepBreathPrice(gate(3), 100));
+    expect(stepToll(wick(6)).collapses).toBe(false);
+    expect(stepToll(wick(7)).collapses).toBe(true);
+  });
+
+  it('costs a stillness nothing', () => {
+    expect(stepToll({ ladder: 'kiln', step: 1 })).toEqual(stepToll({ ladder: 'sage', step: 1 }));
+    expect(stepHealthPrice({ ladder: 'kiln', step: 1 }, 100)).toBe(0);
   });
 });

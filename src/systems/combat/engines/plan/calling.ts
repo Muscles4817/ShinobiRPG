@@ -3,7 +3,7 @@ import { fightingPower } from '@/systems/stats';
 import type { CombatCall, CombatTechnique, RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { lastDitch, outmatched } from '../../rules/trumps';
-import { hasVerb, openStep } from '../../rules/verbs';
+import { hasVerb, openStep, opensOf } from '../../rules/verbs';
 import { answers, callsOf, isOut } from './calls';
 import { playable, type Card } from './cards';
 import { climbReasons, isStill } from './climbing';
@@ -81,10 +81,13 @@ function foeShare(self: PlanFighter, fighters: readonly PlanFighter[]): number {
   return Math.max(0, ...foes.map((f) => fightingPower(f.attributes) / own));
 }
 
-/** The kit's Sage Mode, while it isn't open and they aren't meditating into it. */
+/** The kit's stillness (Sage Mode), while it isn't open and they aren't meditating into it. */
 function sageToOpen(self: PlanFighter): CombatTechnique | undefined {
   if (self.meditating) return undefined;
-  return openStep(self, 'sage') === 0 ? self.techniques.find(isStill) : undefined;
+  return self.techniques.find((t) => {
+    const opens = opensOf(t);
+    return isStill(t) && opens !== undefined && openStep(self, opens.ladder) === 0;
+  });
 }
 
 /** Whether a mount of theirs stands ready to carry them. */
