@@ -33,11 +33,26 @@
   You go in with Gale Heel.
   You find the strength from somewhere, and your Gale Heel slices across Asuka. [Guarded] [−8]
   —— Last exchange ——
-  Asuka goes back to Lantern Cut.
-  Asuka’s Lantern Cut hacks into you. [Guarded] [−14]
+  Asuka goes in with Palm Strike.
+  Asuka’s Palm Strike grazes you, close enough to count. [Guarded] [−7]
+  You go back to Gale Heel.
+  Your Gale Heel rips into Asuka. [Guarded] [−8]
+  —— The next round begins ——
+  —— First exchange ——
+  Asuka fixes their eyes on the field and casts Shadow Feint.
+  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
+  You reach for Gale Heel again.
+  Your Gale Heel slices across Asuka cleanly. [Guarded] [−9]
+  —— Second exchange ——
+  Asuka goes back to Shadow Feint.
+  You sway on your feet, close to done.
+  You stand blinking while the exchange goes by without you.
+  —— Third exchange ——
+  Steel flashes as Asuka looses Lantern Cut.
+  Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [Guarded] [−7]
   You go down in a heap, laughing at yourself for walking into it.
   Asuka stands back, breathing hard, and tells you what they saw you do wrong.
-  summary: You lasted two rounds before going down. Asuka dazed you in the second round, and you never found your feet again.
+  summary: You lasted three rounds before going down. Asuka dazed you in the third round, and you never found your feet again.
 
 ########## a rival’s spar ##########
   Jin squares up.
@@ -53,16 +68,16 @@
   —— Third exchange ——
   You have been keeping Gale Heel for this, and use it now.
   Your Gale Heel rips into Jin, and you let him know it. [Guarded] [−8]
-  Jin reaches for Forge Cut again.
-  Jin’s Forge Cut slashes you. [Guarded] [−19]
+  Jin’s blade flows into Lantern Cut.
+  Jin’s Lantern Cut slashes you. [Guarded] [−19]
   —— Last exchange ——
-  Jin uses Forge Cut once more.
+  Steel flashes as Jin looses Forge Cut.
   Jin’s Forge Cut cuts you cleanly. [Guarded] [−19]
   You send Gale Heel howling out.
   You land your Gale Heel on Jin. [Guarded] [−9]
   —— The next round begins ——
   —— First exchange ——
-  Jin goes back to Forge Cut.
+  Jin uses Forge Cut once more.
   You were waiting for exactly that, and Jin’s Forge Cut finds nothing. [Missed] [Got lucky]
   You use Gale Heel once more.
   Your Gale Heel cuts into Jin cleanly. [Guarded] [−9]
@@ -153,27 +168,25 @@
   The storehouse wraith squares up.
   —— The fight begins ——
   —— First exchange ——
-  You form the seal to break illusions.
-  The illusion holds.
-  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith’s Whispering Dread sinks into you before you are properly set. [Guarded] [−12]
-  Your senses swim in the storehouse wraith’s illusion.
-  You follow the blow back to the storehouse wraith.
+  You set off a flash that lights every corner of the field.
+  Whispering Dread rises off the storehouse wraith like the cold off a well.
+  The storehouse wraith’s Whispering Dread grips you before you are properly set. [Guarded] [−9]
   —— Second exchange ——
   You dart in close.
   The storehouse wraith reaches for Whispering Dread again.
-  The storehouse wraith’s Whispering Dread sinks deep into you. [−23]
-  You blink, and the field is no longer where it was.
+  The storehouse wraith’s Whispering Dread sinks deep into you. [−24]
   —— Third exchange ——
-  Your senses lie to you, and the attack goes wide.
-  The storehouse wraith melts back into the illusion.
-  The storehouse wraith goes back to Whispering Dread.
-  The storehouse wraith lands its Whispering Dread on you. [Guarded] [−12]
+  You explode forward with Gale Heel.
+  Your Gale Heel rips into the storehouse wraith cleanly. [Guarded] [−7]
+  Little of it bites on the storehouse wraith.
+  The storehouse wraith is gone again, and the air where it stood is empty.
+  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
+  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−11]
   —— Last exchange ——
-  You snap through the release seal.
-  Nothing gives.
+  You search the corners of the room and find them empty. [Off plan: no one in sight]
   The storehouse wraith reaches for Whispering Dread again.
-  You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed] [Read it coming]
+  The storehouse wraith lands its Whispering Dread on you. [Guarded] [−11]
+  Your senses swim in the storehouse wraith’s illusion.
   You follow the blow back to the storehouse wraith.
   —— The next round begins ——
   —— First exchange ——
@@ -227,40 +240,31 @@
   You blink, and the field is no longer where it was.
   —— The next round begins ——
   —— First exchange ——
-  You form the seal to break illusions.
-  The illusion holds.
-  The storehouse wraith’s touch brushes you. [Guarded] [−1]
+  You search the field and find no one. [Off plan: no one in sight]
+  The storehouse wraith’s touch comes slower than it did at the start and only brushes you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
-  You follow the blow back to the storehouse wraith.
+  You trace the illusion back to the storehouse wraith.
   —— Second exchange ——
-  Tired now, you still go to Gale Heel.
-  You catch the storehouse wraith with your Gale Heel. [Guarded] [−7]
+  You scrape together what chakra you can for Gale Heel.
+  You find the strength from somewhere, and your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
-  Whispering Dread rises off the storehouse wraith like the cold off a well.
-  The storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−8]
+  The storehouse wraith scrapes together what chakra it can for Whispering Dread.
+  The storehouse wraith catches you with its Whispering Dread. [Guarded] [−8]
   —— Third exchange ——
   You go back to Gale Heel.
-  You find the strength from somewhere, and your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
+  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith fades out of sight again.
   The storehouse wraith lashes out with the last of its strength, and the touch only chills you. [Guarded] [−1]
   —— Last exchange ——
-  You form the seal to break illusions.
-  The illusion shatters.
+  You spot the storehouse wraith. [Off plan: no one in sight]
   You scramble clear of the storehouse wraith’s touch with nothing to spare. [Missed] [Too quick for it]
   —— The next round begins ——
   —— First exchange ——
   Hurt and running short of time, you reach for Gale Heel.
   Your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
   The storehouse wraith barely seems to feel it.
-  The storehouse wraith’s touch comes slower than it did at the start and only grazes you. [Guarded] [−1]
-  You blink, and the field is no longer where it was.
-  —— Second exchange ——
-  You break free of the illusion.
-  You scrape together what chakra you can for Gale Heel.
-  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
-  The storehouse wraith comes apart like smoke.
+  The storehouse wraith sinks into the floorboards and does not come back up.
   The last of them is down, and it is over.
   summary: You won in five rounds. The storehouse wraith went down in the fifth round.
 
