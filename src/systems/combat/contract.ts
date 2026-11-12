@@ -386,6 +386,8 @@ export interface CombatOption {
   readonly disabledReason?: string;
   /** How a plan entry fared last round, in words (a slot that played, or why it passed). */
   readonly note?: string;
+  /** What a plan entry would do if the round began now, in words (never odds). */
+  readonly forecast?: string;
 }
 
 export interface CombatView {

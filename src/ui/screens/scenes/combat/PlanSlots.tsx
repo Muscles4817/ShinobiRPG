@@ -80,7 +80,8 @@ function playsAs(pickers: readonly [string, CombatOption[]][]): string {
 
 /**
  * One slotted entry: its place, the card (tap to take it out), how it fared last round (the
- * slot trace, when there is one) and how it plays.
+ * slot trace, when there is one), what it would do if the round began now (the forecast) and
+ * how it plays.
  */
 function SlotRow({
   entry,
@@ -122,6 +123,7 @@ function SlotRow({
         </div>
       )}
       {entry.note && <p className="plan-trace">{entry.note}</p>}
+      {entry.forecast && <p className="plan-trace plan-forecast">{entry.forecast}</p>}
       {pickers.length > 0 && (
         <details className="plan-when">
           <summary>{playsAs(pickers)}</summary>
