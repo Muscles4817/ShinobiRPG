@@ -71,3 +71,24 @@ export function foeMarkFor(fighters: readonly PlanFighter[]): { foeMark?: string
     .sort((a, b) => a.health - b.health || Number(b.isPlayer) - Number(a.isPlayer));
   return mark ? { foeMark: mark.id } : {};
 }
+
+/**
+ * The stance each standing foe should hold now, as the fight has gone: the team read again
+ * while someone can still call the plays; once no one can, each keeps the stance it had,
+ * except a cover whose ward has fallen, who presses.
+ */
+export function foeStancesNow(fighters: readonly PlanFighter[]): Record<string, CombatStance> {
+  const foes = standingFoes(fighters);
+  if (coordinated(foes)) {
+    const pair = coverPair(foes);
+    return Object.fromEntries(foes.map((f) => [f.id, stanceFor(f, pair)]));
+  }
+  const wardDown = (id: string) => !foes.some((f) => f.id === id);
+  return Object.fromEntries(
+    foes.flatMap((f) => {
+      if (!f.stance) return [];
+      const lost = f.stance.kind === 'cover' && wardDown(f.stance.covers);
+      return [[f.id, lost ? { kind: 'press' } : f.stance]];
+    }),
+  );
+}

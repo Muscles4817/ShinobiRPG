@@ -19,6 +19,7 @@ import { slotLimit } from './cards';
 import { fieldMeter } from './field';
 import { seenByPlayer } from './statusView';
 import { betweenRounds } from './adapt';
+import { foesRestanced } from './restance';
 import { rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
@@ -153,7 +154,7 @@ function endOfRound(next: PlanState): PlanState {
     phase: watching ? 'fight' : 'loadout',
     bout: next.bout + 1,
     exchange: 0,
-    fighters: betweenRounds(next.fighters, next.reads, watching),
+    fighters: betweenRounds(foesRestanced(next.fighters), next.reads, watching),
     ...foeMarkFor(next.fighters),
     // Between rounds the plan screen says what to do; the story only marks the new round.
     log: watching ? [...next.log, '— The next round begins —'] : next.log,
