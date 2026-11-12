@@ -90,6 +90,7 @@ function shaperFor(stance: CombatStance): Shaper {
     case 'support':
       return supportFirst;
     case 'hold':
+    case 'fall-back':
       return sparing;
   }
 }
@@ -99,6 +100,7 @@ function shaperFor(stance: CombatStance): Shaper {
  * wounding jutsu (if any) still reach there; a caster whose jutsu don't stays at their distance.
  */
 function homeFor(f: PlanFighter, stance: CombatStance): RangeBand {
+  if (stance.kind === 'fall-back') return 'far';
   if (stance.kind !== 'press' || !canAttackFrom(f, 'close')) return homeBand(f);
   const wounding = f.techniques.filter(isWounding);
   const reachClose = wounding.some((t) => inReach(reachOf(t), 'close'));
@@ -121,18 +123,21 @@ export function stanceLoadout(
 }
 
 /**
- * What a stance keeps ready: a cover keeps a Guard up at every distance, a teammate pressing
- * in makes for close range, and anyone else keeps the default plan's defences.
+ * What a stance keeps ready: a cover keeps a Guard up at every distance, one falling back a
+ * Dodge as they make for far off, a teammate pressing in makes for close range, and anyone else
+ * keeps the default plan's defences.
  */
 export function stanceReadiness(
   f: PlanFighter,
   stance: CombatStance,
 ): Pick<PlanFighter, 'reactions' | 'keepAt' | 'holdOff'> {
   const base = defaultReadiness(f, { home: homeFor(f, stance) });
+  if (stance.kind === 'fall-back') return { ...base, reactions: DODGE_READY };
   return stance.kind === 'cover' ? { ...base, reactions: GUARD_READY } : base;
 }
 
 const GUARD_READY = { close: 'guard', mid: 'guard', far: 'guard' } as const;
+const DODGE_READY = { close: 'dodge', mid: 'dodge', far: 'dodge' } as const;
 
 /** A fighter takes up a stance: its cards and its readiness. */
 export function takeStance(
@@ -170,6 +175,8 @@ export function stanceStatus(f: PlanFighter, fighters: readonly PlanFighter[]): 
       return ['Supporting from behind'];
     case 'hold':
       return ['Holding back'];
+    case 'fall-back':
+      return ['Falling back'];
     case 'cover': {
       const ward = fighters.find((w) => w.id === stance.covers);
       return [ward?.isPlayer ? 'Covering you' : `Covering ${ward?.name ?? 'a teammate'}`];
