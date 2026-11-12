@@ -101,17 +101,27 @@ describe('chakra pacing', () => {
   const big = { ...finisher, discipline: 'ninjutsu' as const };
   const small = { ...jab, discipline: 'ninjutsu' as const };
 
+  const slots = plainSlots(['jutsu:jab', 'jutsu:finisher']);
+  const both = { close: slots, mid: slots, far: slots };
+  const planned = (f: PlanFighter): PlanFighter => ({ ...f, loadout: both });
+
   // With this chakra control, the jab costs 5 and the finisher 8.
   it('keeps enough chakra for the finisher', () => {
-    const bandit = find(against([], { techniques: [big, small], chakra: 12 }), 'bandit');
+    const bandit = planned(find(against([], { techniques: [big, small], chakra: 12 }), 'bandit'));
     expect(spendsReserve(bandit, card(small))).toBe(true);
     expect(spendsReserve(bandit, card(big))).toBe(false);
     expect(spendsReserve({ ...bandit, chakra: 13 }, card(small))).toBe(false);
     expect(spendsReserve(bandit, card(jab))).toBe(false);
   });
 
-  it('spends freely in the last ditch, with a dull mind, or as the player', () => {
+  it('keeps nothing back for a finisher its plan never plays', () => {
     const bandit = find(against([], { techniques: [big, small], chakra: 12 }), 'bandit');
+    const without = { close: plainSlots(['jutsu:jab']), mid: [], far: [] };
+    expect(spendsReserve({ ...bandit, loadout: without }, card(small))).toBe(false);
+  });
+
+  it('spends freely in the last ditch, with a dull mind, or as the player', () => {
+    const bandit = planned(find(against([], { techniques: [big, small], chakra: 12 }), 'bandit'));
     expect(spendsReserve({ ...bandit, health: 10 }, card(small))).toBe(false);
     const dull = { ...bandit, attributes: { ...attributes, intellect: 4 } };
     expect(spendsReserve(dull, card(small))).toBe(false);
