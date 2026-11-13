@@ -155,7 +155,8 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
     return revealed(say(round, line), turn);
   }
   const lost = lostInField(round, actor, rng) ?? lostToGround(round, actor, rng);
-  if (lost) return revealed(say(round, lost), turn);
+  // The roll decides, never the words: a line told empty still means the attack was lost.
+  if (lost !== null) return revealed(say(round, lost), turn);
   const charged = charge(round, turn, card);
   if (charged.stopped) return charged.round;
   const played = afterTheCast(play(charged.round, turn, card), charged);
