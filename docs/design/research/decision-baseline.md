@@ -14,37 +14,37 @@ Every ordered pair of the 22-member bench cast at chūnin, watched (both sides b
 judgement), 3 seeds each: 1,452 fights. Foes' announcements were played as told 87.5% of the
 time; the rest were rethought at the turn.
 
-| Reason | Player side turns | Foe turns | Foe announcements |
-| --- | --- | --- | --- |
-| emergency | 3.0% | 0.2% | 2.1% |
-| climb | 0.3% |  | 0.2% |
-| setup | 4.7% |  | 3.1% |
-| survival | 0.8% | 0.0% | 0.8% |
-| call | 0.1% |  | 0.4% |
-| charge | 0.5% |  | 0.2% |
-| step-to | 17.3% | 2.4% | 10.7% |
-| slot | 48.4% | 3.7% | 35.4% |
-| counter-pick |  |  | 0.3% |
-| change-up | 7.5% | 0.2% | 4.3% |
-| looking | 2.4% | 0.0% | 1.3% |
-| improvised | 13.9% | 0.1% | 8.3% |
-| sight |  | 0.0% | 0.7% |
-| senses |  | 0.0% | 0.8% |
-| killer |  | 0.1% | 0.4% |
-| kit-call |  | 0.0% | 0.2% |
-| kit-setup |  | 0.0% | 0.9% |
-| prep |  | 0.1% | 1.0% |
-| heal |  | 0.0% | 0.6% |
-| shelter |  | 0.0% | 0.1% |
-| gather |  | 0.0% | 0.1% |
-| footwork |  | 2.2% | 5.1% |
-| daze-first |  | 0.1% | 1.0% |
-| finisher |  | 0.0% | 0.1% |
-| weighted |  | 1.2% | 18.5% |
-| nothing |  | 1.5% | 3.4% |
-| announced |  | 87.0% |  |
-| clash | 1.2% | 0.8% |  |
-| aid |  | 0.1% |  |
+| Reason       | Player side turns | Foe turns | Foe announcements |
+| ------------ | ----------------- | --------- | ----------------- |
+| emergency    | 3.0%              | 0.2%      | 2.1%              |
+| climb        | 0.3%              |           | 0.2%              |
+| setup        | 4.7%              |           | 3.1%              |
+| survival     | 0.8%              | 0.0%      | 0.8%              |
+| call         | 0.1%              |           | 0.4%              |
+| charge       | 0.5%              |           | 0.2%              |
+| step-to      | 17.3%             | 2.4%      | 10.7%             |
+| slot         | 48.4%             | 3.7%      | 35.4%             |
+| counter-pick |                   |           | 0.3%              |
+| change-up    | 7.5%              | 0.2%      | 4.3%              |
+| looking      | 2.4%              | 0.0%      | 1.3%              |
+| improvised   | 13.9%             | 0.1%      | 8.3%              |
+| sight        |                   | 0.0%      | 0.7%              |
+| senses       |                   | 0.0%      | 0.8%              |
+| killer       |                   | 0.1%      | 0.4%              |
+| kit-call     |                   | 0.0%      | 0.2%              |
+| kit-setup    |                   | 0.0%      | 0.9%              |
+| prep         |                   | 0.1%      | 1.0%              |
+| heal         |                   | 0.0%      | 0.6%              |
+| shelter      |                   | 0.0%      | 0.1%              |
+| gather       |                   | 0.0%      | 0.1%              |
+| footwork     |                   | 2.2%      | 5.1%              |
+| daze-first   |                   | 0.1%      | 1.0%              |
+| finisher     |                   | 0.0%      | 0.1%              |
+| weighted     |                   | 1.2%      | 18.5%             |
+| nothing      |                   | 1.5%      | 3.4%              |
+| announced    |                   | 87.0%     |                   |
+| clash        | 1.2%              | 0.8%      |                   |
+| aid          |                   | 0.1%      |                   |
 
 A foe's turn is mostly "announced": the reason that matters for it is in the announcements
 column, where its plan (slot, step-to, change-up…) or its instinct (weighted, footwork…) chose.
