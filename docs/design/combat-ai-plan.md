@@ -412,6 +412,57 @@ What we must check before committing to it (it touches the player's information)
 A prototype of the inference alone, on today's telegraphs, would answer both before any engine
 change.
 
+### Cues: what the prototype showed, and what the owner decided
+
+A prototype and bench (`prototypes/cues/`, `RESULTS.md`) tested the model above on 67,657 real
+decisions from 2,904 watched fights.
+
+**What it found:**
+
+- **No wrong names, and honest confidence words.** No card was ever named wrongly. "Sure" was
+  right 98–99% of the time, "fairly sure" 89–94%, "maybe" 55–66%.
+- **Out-reading a foe:** the kind of move is right 94% of the time (today 96%). A technique seen
+  before is named 97% of the time (today 100%).
+- **Being out-read gives more than today's telegraph:** the exact card is known 54% of the time
+  at the widest gap, against today's 28%. Habits and familiar forms help.
+- **Slot conditions** keyed on "fairly sure" catch 89–97% of real events and are wrong 0–3% of
+  the time.
+- **Fair, not symmetric:** foes read the player about as well as the player reads foes.
+
+**The owner's decisions:**
+
+- **A technique seen for the first time is described, not named.** Today's telegraph names a
+  technique you've never met just because your perception is at least the foe's. Under cues a
+  name needs knowledge: having seen it before, knowing it yourself, or skill in its art at its
+  rank. Otherwise the panel says what was _clearly_ seen: the element in the flare, the reach in
+  the stance, and seals in the hands. For example: "Likely an unfamiliar fire technique, at
+  range, with seals."
+  - Measured (`describe.test.ts`) on first-sight techniques against a foe you out-read: 50% are
+    named, and **95% are named or described**.
+  - Every statement a description made was true.
+- **Concealment is weighted towards perception.** How well a fighter hides a readied move is
+  mostly their own perception, some speed and a little skill in the art. The prototype uses
+  0.7 × perception + 0.2 × speed + 0.1 × skill, minus 3: a watchful fighter knows what gives
+  them away. That keeps "you out-read them" meaning what players expect.
+  - If speed and skill alone hid a move, only 49% of techniques would be named at equal
+    perception.
+
+**Also adopted from the prototype:**
+
+- **A ready Counter has its own "coiled" stance cue.** Without it, an unseen Counter reads as a
+  plain blow.
+- **Names need the form actually seen, never habit alone.** Naming from habit gave up to 12%
+  wrong names at low perception.
+- **Slot conditions name a confidence**, defaulting to "fairly sure".
+
+**Still open: feints.** What enables a feint, and what it costs. Fooled shares:
+
+| Observer                    | Fooled |
+| --------------------------- | ------ |
+| With insight                | never  |
+| Sharp and expert in the art | 47%    |
+| Neither                     | 84%    |
+
 ### Interpretations: hypotheses
 
 Beliefs are hypotheses about another fighter, in a few families:
@@ -1182,10 +1233,15 @@ asked for.
      - a terminal estimate of the race;
      - timing on real devices;
      - the Dodge rule, which waits on the owner's play-test.
-2. **Gate: cue inference, in a prototype and a bench (in progress).**
-   - Infer foes' next moves from cues (Part 5) on today's fights.
-   - Show that a player never ends up worse off than today against a foe they out-read, and still
-     has something concrete to plan against at low perception.
+2. **Gate: cue inference. Passed, with the owner's decisions** (Part 5).
+   - The kind of move and a known technique are read close to today's telegraph when you
+     out-read a foe.
+   - A first-sight technique is described rather than named: 95% named or described, every
+     description true.
+   - Low perception still gives a usable read.
+   - Left for the build:
+     - feints, which need a rule;
+     - running the inference in shadow beside today's telegraph before players see it.
 3. **Gate: one-interface controls.** Feel-test the three levels as clickable screens at 1440 and
    390, from the mockup, before any engine work.
 4. **Then, each its own PR with benches green:**
@@ -1220,17 +1276,22 @@ Settled:
   away", "reposition") are analysed in `EXPERIMENTS.md`. The recommendation is to take the
   intention from the plan's _fight at_ rather than add options, with repositioning left for team
   fights.
+- **Cues.** A first-sight technique is described, not named; concealment is weighted towards
+  perception (Part 5).
 - **The build.** Not authorised; gated (Part 13).
 
 Still open:
 
-1. **The Dodge play-test.** Adopt, change to the derived intention, or drop.
-2. **Prices for other reactions.** A Counter that leaves its user exposed matters only once
+1. **The Dodge play-test.** Adopt, change to the derived intention, or drop. It is now in the game
+   as a versus rule on trial (#303).
+2. **Feints.** What enables them (a technique, a trait, an identity's deception) and what they
+   cost.
+3. **Prices for other reactions.** A Counter that leaves its user exposed matters only once
    teammates plan, so it can wait for that.
-3. **Target devices.** Which phone and PC set the budget, so it can be measured there.
-4. **How visible identity is.** Should a scouting read name a foe's temperament ("reckless",
+4. **Target devices.** Which phone and PC set the budget, so it can be measured there.
+5. **How visible identity is.** Should a scouting read name a foe's temperament ("reckless",
    "patient"), or should players learn it by fighting?
-5. **Experience.** Is the field book's count of foes fought enough, or should a character keep
+6. **Experience.** Is the field book's count of foes fought enough, or should a character keep
    experience by kind of foe and by art?
-6. **Authored styles.** Should named characters get authored identities?
-7. **Balance timing.** Do we hold balance changes until the mind lands, so we don't tune twice?
+7. **Authored styles.** Should named characters get authored identities?
+8. **Balance timing.** Do we hold balance changes until the mind lands, so we don't tune twice?
