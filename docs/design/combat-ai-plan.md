@@ -273,6 +273,32 @@ In the planner, each decision draws on the relevant source rather than on intell
 All of these come from data the game already keeps. Experience is the one new thing that would
 need storing per character, and the field book's counts may be enough to start with.
 
+### How competence reaches the planner: one planner, scaled by tier
+
+Every mind runs the same planner. Its tier (from tactical intelligence, lifted by expertise for
+sequences within one art) sets how much it considers and how well it sees. A dull fighter is
+never a separate hard-coded AI. This ladder was measured in `timing/RESULTS.md`:
+
+| Tier | First cards considered               | Two-card chains             | Seeds per option | Error in reading the foe | Reads the telegraph | Between exchanges | Time a decision (1v1) |
+| ---- | ------------------------------------ | --------------------------- | ---------------- | ------------------------ | ------------------- | ----------------- | --------------------- |
+| E    | 3                                    | no (pairs if the art is C+) | 2                | ±30%                     | no                  | keeps the plan    | 9 ms                  |
+| D    | 4                                    | no (same)                   | 3                | ±20%                     | yes                 | keeps the plan    | 16 ms                 |
+| C    | 5                                    | pairs                       | 4                | ±10%                     | yes                 | keeps the plan    | 27 ms                 |
+| B    | 6                                    | pairs                       | 6                | ±5%                      | yes                 | keeps the plan    | 43 ms                 |
+| A    | 8                                    | pairs                       | 8                | exact                    | yes                 | keeps the plan    | 70 ms                 |
+| S    | all, and every follow-up to the best | pairs                       | 16               | exact                    | yes                 | re-scores         | 248 ms                |
+
+What the measurements showed:
+
+- **Each tier wins a little more than the one below.** Against a C copy of the same build, net
+  health a fight ran E −15, C 0, S +8.
+- **The lowest tier roughly ties today's AI** on the player's side but does worse as a foe. It
+  may need four first cards.
+- **Which first cards a mind considers decides which combos it finds, not depth.** Hide →
+  killing blow first appears at D, because E's three first cards never include the hide.
+- **The spread is small next to fight-to-fight noise.** A difference players can feel will
+  likely come from identity and beliefs (wrong reads, temperament), not search budget alone.
+
 ### Where identities come from
 
 In order, each layer adjusting the last:
@@ -596,11 +622,30 @@ The forward model is an _abstract_ exchange, not the real one:
 
 ### The compute budget
 
-The worst case is a watched fight to the end of six or more fighters on a mid-range phone. That
-is about 6 fighters × 4 exchanges × up to roughly 12 rounds × a decision each. Proposed bar:
-**a full watched fight under 150 ms on the bench machine, and no single decision over 2 ms.**
-Every candidate is measured against that before it is compared on anything else. A tactical
-intelligence that would exceed it is capped in depth, not dropped.
+The first draft set a bar of 2 ms a decision and 150 ms a watched fight. Measuring showed that bar
+is the wrong frame for a planner that simulates the real exchange
+(`prototypes/combat-planner/perf/` and `timing/`):
+
+- One real exchange costs about 0.4–0.7 ms one against one, and 1.5–2.1 ms three against three.
+  So 2 ms buys about four simulated exchanges.
+- What matters is _when_ the thinking happens, not how small one decision is. Planning once a
+  round, behind the replay and the plan screen, leaves seconds to spend.
+
+The budget is now set per round, fight-wide, and split between the fighters who plan by their
+tier's weight (E 1, D 2, C 4, B 6, A 9, S 36; the ladder is in Part 4):
+
+| Fight | Simulated exchanges a round | On the bench machine | On a phone (assumed 3–5× slower) |
+| ----- | --------------------------- | -------------------- | -------------------------------- |
+| 1v1   | 900                         | about 450 ms         | 1.4–2.3 s                        |
+| 2v2   | 600                         | about 600 ms         | 1.8–3 s                          |
+| 3v3   | 400                         | 600–800 ms           | 1.8–4 s                          |
+
+- **Where it runs:** in a Web Worker, off the frame. Foes plan during the last exchange's replay
+  (their first card is what they telegraph), allies during the plan screen, and mid-round
+  re-plans during the previous exchange's replay.
+- **What it fits:** a chūnin cast planning at its own grades already fits the 3v3 budget. A
+  fight full of S minds gets roughly an A mind's search each.
+- **Still to do:** measure it on real target devices (Part 14).
 
 ### Plans that work through the opponent's reaction
 
@@ -644,44 +689,65 @@ itself.
     | Hide, then blade    | won 11/30, took 66 | won **30/30**, took 6 | opened conceal → blade every time                         |
     | Daze, then finisher | won 2/30, took 99  | won 6/30, took 50     | mostly stepped back out of reach of a foe with only blows |
 
-    In the second scenario the gain came from kiting, a different unscripted tactic. It wasn't
-    the combo the offline search found.
+    In the second scenario the planner mostly stepped back out of reach. The diagnosis
+    (`EXPERIMENTS.md`, Experiment 3) found that was mostly rollout noise and an 8-exchange cap.
+    With 80 rollouts and fights fought to the end, it opens with the daze every time and wins
+    16/20, better than any fixed strategy, by mixing the combo with kiting a foe who can't reach
+    it.
 
   - **An induced reaction.** The model has it: a sharp foe out of chakra gathers 0 times in 100
     trials held up close, and 48 times after a step back. But the bait (step back, then hit the
     gathering foe) ranks second at depth three (72 against 91), so it is never chosen. In today's
     rules the reactions most worth baiting (the ready Guard, Dodge and Counter) are free and
     automatic, and the ones that cost something carry a small price. Whether to give a reaction
-    a price, for example a Counter that leaves its user committed once it fires, is a **rules
-    question for the owner** (Part 14). It is not something the AI should paper over. Under such
-    a rule, the same search weighs the bait with nothing new written for it.
-- **What it cost.** 530–625 ms a decision at depth two, against the 2 ms bar. Simulating the real
-  exchange proves emergence honestly but is far too slow to ship. The candidates for closing the
-  gap are:
-  - a tabulated forward model regenerated from benches;
-  - fewer rollouts, with common random numbers;
-  - candidate sequences generated from GOAP-style preconditions;
-  - depth limited to the art in play.
+    a price is a **rules question for the owner**. It is not something the AI should paper over.
+  - **A reaction with a price, found unprompted.** One narrow rule was tried, on the design branch
+    only: a ready Dodge that slips an attack up close leaps clear to mid. The planner, with
+    nothing written for it, started throwing a blow up close at a dodger who wanted range,
+    20 fights in 20. It did so only when both the rule and a dodging foe were present (step back
+    in all three controls). The rule is nearly balance-neutral and stays experimental until the
+    owner has play-tested it (Experiment 1).
+- **What it cost.** 530–625 ms a decision at depth two. The ways of cutting that were then measured
+  against a slow reference planner (`perf/RESULTS.md`):
+  - **The exact savings change no decisions.** Sharing simulated prefixes cuts 43% of the
+    exchanges; a silent exchange with no story text makes each about a quarter cheaper.
+  - **Looking only one move ahead is the one shortcut that destroys the combos.**
+  - **Caches and offline tables barely help**, because fight situations rarely repeat.
+  - **An approximate maths model** is fast (3 ms) but wrong wherever it skips a rule.
+  - **GOAP-proposed candidates scored in the real engine** are the best trade: about 80 ms a
+    decision, every combo kept, the Dodge exploit included.
 
-  Closing the gap without losing what the prototype found is the next thing to show.
+### What was decided, and what is still open
 
-### What would decide it
+The prototypes settled the planner (`EXPERIMENTS.md`, `perf/RESULTS.md`, `timing/RESULTS.md`):
 
-We prototype the cheapest credible version of A and C, and a GOAP candidate generator if A's
-beam wastes effort, behind a flag in the benches only. Then we compare them on:
+- **Candidate A, with GOAP-proposed candidates.** Utility objective selection, with candidate
+  sequences proposed from preconditions read from verbs and technique fields (never names) and
+  scored in the real engine:
+  - prefix sharing and a silent exchange;
+  - a horizon of two exchanges;
+  - the fighter's default plan playing on past the searched cards.
+- **Plan once a round, with cheap reactive checks** (Part 8, rule 1). That is 2.5× cheaper than
+  re-planning every exchange, for a small loss: 5 wins in 72 bench fights.
+- **One planner for every mind**, its search scaled by tier (Part 4), so the dullest fighter
+  runs the same planner with a narrow view, never a separate hard-coded AI.
+- **The real-engine planner stays the referee.** Any faster model of the fight is judged against
+  it before it replaces it.
 
-1. **Bench health.** The lethality bench, content bench, bestiary and foreign benches stay
-   within their bars.
-2. **Decision quality.**
-   - The matrix: fewer pairs outside the band, without the hive, puppet and dust users only
-     improving by luck.
-   - Mirror match win rate near 50%.
-   - A sharp fighter beats a dull copy of itself more often than today.
-3. **Experience metrics.** Dominated repeats, exploited repeats (Part 9.5), plan screens a fight
-   and the share of turns explainable in one sentence.
-4. **Cost.** The budget above.
-5. **Code.** Lines in the mind folder, and how many modules of Part 10's "absorb" list each
-   candidate actually retires.
+What the prototypes showed the evaluation must handle:
+
+- **Noise.** Rankings inside the rollout noise can't be trusted.
+- **The race.** A horizon too short to see who wins the race favours delay. Scoring further
+  ahead on a poor follow-on plan made things worse. A terminal estimate of the race is the cheap
+  fix, still to try.
+
+Still open:
+
+- **Tier spread.** The ladder's effect is real but small next to fight-to-fight noise. A
+  difference players can feel may need the identity and belief layers, not search alone.
+- **Benches with the planner on.** The comparisons above (bench health, decision quality, the
+  matrix, experience metrics) have yet to be run with the planner driving foes, at step 5 of the
+  build (Part 13).
 
 ---
 
@@ -726,8 +792,17 @@ ways. Under the proposed rules both columns obey the same rules of knowing (Prin
 ### Proposed rules
 
 1. **Everyone has a plan of a round's length; how much of it is binding differs.**
-   - An NPC's mind produces a plan for the round: its objective, and a sequence or policy
-     (Part 7).
+   - An NPC's mind plans once a round: its objective, and the best first card for it, with the
+     fighter's own default plan playing on from there. The prototypes found the round plan is
+     almost always one card plus that default plan, whose live conditions run the rest of the
+     round.
+   - Three cheap checks re-plan it mid-round, and nothing else does (they cost microseconds and
+     fire about 0.4 times a round):
+     - its next card can't be played;
+     - a fact the plan relied on didn't come true (a foe open, itself hidden, a distance);
+     - one of the player's call triggers fired for it.
+   - Only the top tier re-scores between exchanges, and only with plenty of rollouts. A cheap
+     re-score on few rollouts did worse than keeping the plan.
    - Its **next step is binding** once it is under way, which is the moment it starts giving off
      cues. It may change only if the step is invalidated (as `keepsTo` today) or by spending a
      **break** (rule 3).
@@ -1095,20 +1170,26 @@ slot, pinned), or switch to your own priority list.
 
 ## Part 13: A build path (not authorised)
 
-The owner has not authorised a build. The order below is a proposal. Each gate must be passed,
-with numbers, before the next is asked for.
+The owner has not authorised a build. Each gate must be passed, with numbers, before the next is
+asked for.
 
-1. **Gate: planner proof of concept.** Done in part (Part 7): unscripted combos found and played
-   in the real engine. Still open:
-   - the cost, from about 600 ms to 2 ms a decision, without losing what it finds;
-   - a bait under a rule that prices reactions, if the owner wants one.
-2. **Gate: cue inference, on paper and in a bench.** Infer foes' next moves from cues (Part 5) on
-   today's telegraphs, and show that the player never ends up worse off than today against a
-   foe they out-read.
-3. **Gate: one-interface controls.** Feel-test the three levels as screens at 1440 and 390, from
-   the mockup, before any engine work.
-4. Then, as before, each its own PR with benches green:
-   - a decision log for today's AI;
+1. **Gate: planner proof of concept. Passed.**
+   - Unscripted combos were found and played in the real engine, and so was an induced reaction
+     under a priced Dodge.
+   - The approach and its cost are settled: GOAP candidates in the real engine, once a round,
+     scaled by tier, inside a fight-wide budget per round (Part 7).
+   - Left for the build, not the gate:
+     - a terminal estimate of the race;
+     - timing on real devices;
+     - the Dodge rule, which waits on the owner's play-test.
+2. **Gate: cue inference, in a prototype and a bench (in progress).**
+   - Infer foes' next moves from cues (Part 5) on today's fights.
+   - Show that a player never ends up worse off than today against a foe they out-read, and still
+     has something concrete to plan against at low perception.
+3. **Gate: one-interface controls.** Feel-test the three levels as clickable screens at 1440 and
+   390, from the mockup, before any engine work.
+4. **Then, each its own PR with benches green:**
+   - a decision log for today's AI (why each move was chosen), as the baseline;
    - observations and beliefs, shown only;
    - identities and competence sources, derived;
    - the objective layer in shadow;
@@ -1117,28 +1198,39 @@ with numbers, before the next is asked for.
    - the player controls;
    - the commitment rules.
 
+Fixes the prototypes turned up, already merged into `main`:
+
+- an attack lost in a field no longer depends on its story line (#301);
+- default plans now slot what a finisher needs beside it (#302).
+
 ---
 
 ## Part 14: Open questions for the owner
 
-Settled since the first draft:
+Settled:
 
 - **Telegraphs.** Cues both ways, never the queued card (Part 5, Part 8 rule 4).
-- **Controls to mock up.** Orders with pins, plan then edit, and the advised list, as three
-  levels of one interface (Part 9).
-- **The build.** Not authorised; it is gated on the proof of concept (Part 13).
+- **Controls.** Orders with pins, plan then edit, and the advised list, as three levels of one
+  interface (Part 9).
+- **The planner.** GOAP candidates in the real engine, once a round, one planner scaled by tier
+  (Parts 4, 7, 8).
+- **Movement.** Stepping back stays as it is. A fighter with no range being outplayed at range is
+  the cost of having no range.
+- **Dodge.** The leap stays experimental until play-tested. Variants ("keep close", "break
+  away", "reposition") are analysed in `EXPERIMENTS.md`. The recommendation is to take the
+  intention from the plan's _fight at_ rather than add options, with repositioning left for team
+  fights.
+- **The build.** Not authorised; gated (Part 13).
 
 Still open:
 
-1. **Prices for reactions.** Should a ready Counter (or Guard, or Dodge) that fires commit its
-   user until their next turn, so that baiting it can pay? This is a rules change, benched like
-   any other, and the only way the planner's bait-finding will show in play.
-2. **The cost gate.** Which route to 2 ms do we try first: a tabulated forward model, fewer
-   rollouts, or GOAP-generated candidates?
-3. **How visible identity is.** Should a scouting read name a foe's temperament ("reckless",
+1. **The Dodge play-test.** Adopt, change to the derived intention, or drop.
+2. **Prices for other reactions.** A Counter that leaves its user exposed matters only once
+   teammates plan, so it can wait for that.
+3. **Target devices.** Which phone and PC set the budget, so it can be measured there.
+4. **How visible identity is.** Should a scouting read name a foe's temperament ("reckless",
    "patient"), or should players learn it by fighting?
-4. **Experience.** Is the field book's count of foes fought enough, or should a character keep
+5. **Experience.** Is the field book's count of foes fought enough, or should a character keep
    experience by kind of foe and by art?
-5. **Authored styles.** Should named characters get authored identities?
-6. **The budget.** Is 150 ms for a watched fight, and 2 ms a decision, the right bar?
+6. **Authored styles.** Should named characters get authored identities?
 7. **Balance timing.** Do we hold balance changes until the mind lands, so we don't tune twice?
