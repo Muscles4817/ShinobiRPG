@@ -70,6 +70,9 @@ decisive here.
   puppeteer's opening) whose order of events the leap shifts. The story-text goldens are
   unchanged.
 
+**Since then:** the rule is in the game as a versus rule on trial (#303), off unless a bout turns
+it on. `leap.test.ts` turns it on for its fighters; run it with `LEAP_OFF=1` for the control.
+
 ### Recommendation
 
 The rule is sound, narrow and nearly balance-neutral. It gives a capable planner something real

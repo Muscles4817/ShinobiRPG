@@ -28,6 +28,8 @@ export interface VersusChoice {
   readonly ground: VersusGround['id'];
   /** Only watch: your side fights on its own too. */
   readonly watch: boolean;
+  /** Try the Dodge that leaps clear, a rule on trial. */
+  readonly dodgeLeaps: boolean;
 }
 
 function defaultPack(): string {
@@ -49,7 +51,7 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
 
 /**
  * Everything the versus setup keeps, for either layout: the world, both sides, the ground, the
- * roster filter, which slot is being chosen for and whose profile is open.
+ * rules on trial, the roster filter, which slot is being chosen for and whose profile is open.
  */
 export function useVersusSetup(initial: VersusChoice | null) {
   const packs = useMemo(() => packChoices(), []);
@@ -60,6 +62,7 @@ export function useVersusSetup(initial: VersusChoice | null) {
   const [sideIds, setSideIds] = useState<readonly string[]>(initial?.side ?? []);
   const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
   const [ground, setGround] = useState<VersusGround['id']>(initial?.ground ?? 'arena');
+  const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
   const [filter, setFilter] = useState<VersusFilter>(OPEN_FILTER);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -127,6 +130,8 @@ export function useVersusSetup(initial: VersusChoice | null) {
     foes,
     ground,
     setGround,
+    dodgeLeaps,
+    setDodgeLeaps,
     filter,
     setFilter,
     slot,

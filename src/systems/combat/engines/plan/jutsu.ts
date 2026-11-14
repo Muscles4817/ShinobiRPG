@@ -293,7 +293,7 @@ function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const noted = noteDefence(round, foe.id, distanceBetween(round, actor.id, foe.id), 'dodge');
   const told = missLine(moment, why, slip);
   const said = say(noted, withCause(reactionLine(told, 'dodged'), slipCauseBeside(cause, true)));
-  // A ready Dodge leaps clear of what it slipped (`leap.ts`); an illusion seen through isn't leapt.
+  // A ready Dodge may leap clear of what it slipped (`leap.ts`); an illusion seen through isn't.
   return t.discipline === 'genjutsu' ? said : leapClear(said, foe, actor);
 }
 

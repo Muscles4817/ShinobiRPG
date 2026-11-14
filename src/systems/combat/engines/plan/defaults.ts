@@ -31,6 +31,7 @@ import { fightsBySummons } from './calling';
 import { callsOf } from './calls';
 import { climbOrder, isStill } from './climbing';
 import { kitSlots } from './kitSlots';
+import { withEnablers } from './enablers';
 import { styleMoves } from './repertoire';
 import { opponentsOf } from './senses';
 import { cardWorth } from './worth';
@@ -280,7 +281,9 @@ function defaultFor(fighter: PlanFighter, band: RangeBand, facing: Facing): Slot
   ];
   // The best attack may be the strike that plays your style (`withStyle`).
   const unlocked = damage.find((c) => c.kind !== 'jutsu' || !c.technique.needsOpen);
-  return fitted(ordered, plain(unlocked ? [unlocked] : damage.slice(0, 1))[0], slotLimit(fighter));
+  // A card that needs something made true first (a finisher, an open foe) brings what makes it.
+  const enabled = withEnablers(fighter, ordered, pool);
+  return fitted(enabled, plain(unlocked ? [unlocked] : damage.slice(0, 1))[0], slotLimit(fighter));
 }
 
 /** How a teammate's stance bends the plan (`team.ts`). */

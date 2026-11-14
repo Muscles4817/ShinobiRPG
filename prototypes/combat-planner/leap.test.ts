@@ -17,7 +17,15 @@ function start(ready: 'dodge' | 'guard'): PlanState {
     fighter('foe', [], { stats: { taijutsu: 26, speed: 24, perception: 40 } }),
   );
   const reactions: Reactions = { close: ready, mid: ready, far: ready };
-  return { ...s, fighters: s.fighters.map((f) => (f.isPlayer ? f : { ...f, reactions })) };
+  // The rule is now a versus rule on trial (#303): this experiment turns it on for everyone,
+  // unless LEAP_OFF is set for the control run.
+  const leaps = process.env.LEAP_OFF ? {} : { leapsClear: true as const };
+  return {
+    ...s,
+    fighters: s.fighters.map((f) =>
+      f.isPlayer ? { ...f, ...leaps } : { ...f, reactions, ...leaps },
+    ),
+  };
 }
 
 const top = (p: ReturnType<typeof plan>) =>

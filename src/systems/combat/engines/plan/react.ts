@@ -246,7 +246,7 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const cause = slipCauseBeside(slipCause(round, blowIncoming(hit)), tried);
   // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
   const told = withCause(reactionLine(line, tried ? 'dodged' : 'missed'), cause);
-  // A ready Dodge leaps clear of the blow (`leap.ts`); an Evade or a plain slip stays put.
+  // A ready Dodge may leap clear of the blow (`leap.ts`); an Evade or a plain slip stays put.
   const said = say(round, told);
   return { slipped: tried && has('dodge') ? leapClear(said, target, attacker) : said, tried };
 }

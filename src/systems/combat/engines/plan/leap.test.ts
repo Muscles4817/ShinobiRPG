@@ -6,7 +6,7 @@ import { leapClear } from './leap';
 import { resolveExchange } from './round';
 import { initialFighters, plainSlots, type PlanState, type Reactions } from './state';
 
-/** A ready Dodge leaps clear of what it slips up close (`leap.ts`). */
+/** A ready Dodge leaps clear of what it slips up close, in a fight that tries the rule (`leap.ts`). */
 
 const attributes = {
   strength: 20,
@@ -36,7 +36,7 @@ function setup(id: string): CombatantSetup {
   };
 }
 
-function fight(ready: 'dodge' | 'guard'): PlanState {
+function fight(ready: 'dodge' | 'guard', leaps = true): PlanState {
   const reactions: Reactions = { close: ready, mid: ready, far: ready };
   const fighters = initialFighters({
     player: setup('hero'),
@@ -46,7 +46,7 @@ function fight(ready: 'dodge' | 'guard'): PlanState {
   }).map((f) =>
     f.isPlayer
       ? { ...f, loadout: { close: plainSlots(['strike']), mid: [], far: [] } }
-      : { ...f, reactions },
+      : { ...f, reactions, ...(leaps ? { leapsClear: true as const } : {}) },
   );
   return {
     phase: 'fight',
@@ -67,6 +67,7 @@ describe('a Dodge leaps clear', () => {
   it('moves only the pair, only from close', () => {
     const state = fight('dodge');
     const [hero, foe] = state.fighters;
+    expect(foe?.leapsClear).toBe(true);
     const round = {
       number: 1,
       fighters: [...state.fighters],
@@ -90,5 +91,12 @@ describe('a Dodge leaps clear', () => {
     }
     expect(counts.dodge).toBeGreaterThan(0);
     expect(counts.guard).toBe(0);
+  });
+
+  it('leaves everyone where they are in a fight that does not try the rule', () => {
+    for (let seed = 1; seed <= 60; seed++) {
+      const after = resolveExchange(fight('dodge', false), createRng(seed));
+      expect(distanceBetween(after, 'hero', 'foe')).toBe('close');
+    }
   });
 });

@@ -18,6 +18,7 @@ import { CALLED_FOR, calledBack, callOwn } from './roundCalls';
 import { rollIntents } from './intent';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
+import { withLeaps } from './leap';
 import { withinGround } from '../../rules/ground';
 import { decide, resolveExchange } from './round';
 import {
@@ -174,7 +175,7 @@ export function createPlanEngine(): CombatEngine {
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup, rng) {
-      const opened = openFight(initialFighters(setup), setup.opening);
+      const opened = openFight(withLeaps(initialFighters(setup), setup), setup.opening);
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
       const planned = plannedFighters(fighters, setup.plan);
