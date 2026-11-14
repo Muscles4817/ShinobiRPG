@@ -1,0 +1,169 @@
+[
+  {
+    "name": "fixed cost (candidate list)",
+    "median": 0.048758050000014916,
+    "p95": 0.07008689999993294
+  },
+  {
+    "name": "E1 prefix sharing (d2 w4 r16)",
+    "silent": false,
+    "median": 567.85412,
+    "p95": 957.5771209999984,
+    "mean": 597.1651187619043,
+    "exchanges": 970.3571428571429,
+    "usPerExchange": 615.4075570604829
+  },
+  {
+    "name": "E1 prefix sharing (d2 w4 r16)",
+    "silent": true,
+    "median": 443.70348899999954,
+    "p95": 801.1452930000014,
+    "mean": 457.87807235714286,
+    "exchanges": 970.3571428571429,
+    "usPerExchange": 471.8655143908723
+  },
+  {
+    "name": "d2 w4 r32",
+    "silent": false,
+    "median": 1184.3320399999939,
+    "p95": 1691.6861819999904,
+    "mean": 1134.499305809524,
+    "exchanges": 1945.3809523809523,
+    "usPerExchange": 583.1759092845081
+  },
+  {
+    "name": "d2 w4 r32",
+    "silent": true,
+    "median": 800.7496729999839,
+    "p95": 1143.0394119999983,
+    "mean": 794.625379809526,
+    "exchanges": 1945.3809523809523,
+    "usPerExchange": 408.46774963895047
+  },
+  {
+    "name": "racing 2→16 keep 2",
+    "silent": false,
+    "median": 349.8080619999964,
+    "p95": 594.557804000011,
+    "mean": 369.9511337380945,
+    "exchanges": 562.5,
+    "usPerExchange": 657.6909044232791
+  },
+  {
+    "name": "racing 2→16 keep 2",
+    "silent": true,
+    "median": 256.9576830000151,
+    "p95": 377.61424900000566,
+    "mean": 241.55623200000403,
+    "exchanges": 562.5,
+    "usPerExchange": 429.43330133334047
+  },
+  {
+    "name": "GOAP candidates raced 4→32 keep 2",
+    "silent": false,
+    "median": 176.27974800000084,
+    "p95": 264.0406049999874,
+    "mean": 174.74156378571655,
+    "exchanges": 253.04761904761904,
+    "usPerExchange": 690.5481444298171
+  },
+  {
+    "name": "GOAP candidates raced 4→32 keep 2",
+    "silent": true,
+    "median": 105.38682899999549,
+    "p95": 216.57277500000782,
+    "mean": 125.63182547619259,
+    "exchanges": 253.04761904761904,
+    "usPerExchange": 496.47503481370796
+  },
+  {
+    "name": "GOAP pairs r8",
+    "silent": false,
+    "median": 95.8026560000144,
+    "p95": 159.30993299998227,
+    "mean": 100.65752911904738,
+    "exchanges": 166.33333333333334,
+    "usPerExchange": 605.1554856856555
+  },
+  {
+    "name": "GOAP pairs r8",
+    "silent": true,
+    "median": 81.10433800000465,
+    "p95": 159.1372080000001,
+    "mean": 86.32507819047757,
+    "exchanges": 166.33333333333334,
+    "usPerExchange": 518.9884460349354
+  },
+  {
+    "name": "d2 w4 r8",
+    "silent": false,
+    "median": 296.53232999998727,
+    "p95": 452.90363100002287,
+    "mean": 291.0704637619049,
+    "exchanges": 484.04761904761904,
+    "usPerExchange": 601.3260933595674
+  },
+  {
+    "name": "d2 w4 r8",
+    "silent": true,
+    "median": 217.39011600002414,
+    "p95": 361.4719580000092,
+    "mean": 219.10547180952494,
+    "exchanges": 484.04761904761904,
+    "usPerExchange": 452.65272090506875
+  },
+  {
+    "name": "d2 w1 r4",
+    "silent": false,
+    "median": 68.67125099999248,
+    "p95": 105.19434099999489,
+    "mean": 66.91986064285587,
+    "exchanges": 111.14285714285714,
+    "usPerExchange": 602.1067152956182
+  },
+  {
+    "name": "d2 w1 r4",
+    "silent": true,
+    "median": 49.71580199999153,
+    "p95": 68.51251600001706,
+    "mean": 48.07983576190253,
+    "exchanges": 111.14285714285714,
+    "usPerExchange": 432.59492330760634
+  },
+  {
+    "name": "hybrid: approx top 2 → real r8",
+    "silent": false,
+    "median": 130.70320399999036,
+    "p95": 196.90608200000133,
+    "mean": 126.31678571428277,
+    "exchanges": 209.42857142857142,
+    "usPerExchange": 603.14972714869
+  },
+  {
+    "name": "hybrid: approx top 2 → real r8",
+    "silent": true,
+    "median": 103.24110799998743,
+    "p95": 182.70511799998349,
+    "mean": 109.07141830952536,
+    "exchanges": 209.42857142857142,
+    "usPerExchange": 520.804862323791
+  },
+  {
+    "name": "approx model d2",
+    "silent": false,
+    "median": 3.789294999995036,
+    "p95": 6.839959999982966,
+    "mean": 4.016531595238208,
+    "exchanges": 0,
+    "usPerExchange": 0
+  },
+  {
+    "name": "approx model d2",
+    "silent": true,
+    "median": 3.238865999999689,
+    "p95": 5.517905999993673,
+    "mean": 3.3448135238106174,
+    "exchanges": 0,
+    "usPerExchange": 0
+  }
+]

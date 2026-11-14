@@ -1,0 +1,2987 @@
+[
+  {
+    "name": "baseline: prototype beam d2 w4 r16",
+    "category": "exact",
+    "states": 42,
+    "msMedian": 1221.7476320000023,
+    "msP95": 2079.795156,
+    "msMean": 1214.912269857143,
+    "exchangesMean": 1707.8809523809523,
+    "evalsMean": 0,
+    "agreement": 0.6190476190476191,
+    "nearBest": 0.8333333333333334,
+    "regretMean": 2.3820684523809526,
+    "regretWorst": 51.375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "step-back > spark",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "step-back",
+        "regret": 8.859375
+      },
+      {
+        "id": "daze@2",
+        "first": "step-back",
+        "regret": 10.578125
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "dispel",
+        "regret": 0.296875
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "step-back",
+        "regret": 1.015625
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:pinched-flame",
+        "regret": 12.875
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:pinched-flame",
+        "regret": 51.375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 3.203125
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "step-back",
+        "regret": 0
+      }
+    ]
+  },
+  {
+    "name": "E1 prefix sharing (d2 w4 r16)",
+    "category": "exact",
+    "states": 42,
+    "msMedian": 700.8469429999968,
+    "msP95": 1056.205396999998,
+    "msMean": 689.4758899523813,
+    "exchangesMean": 970.3571428571429,
+    "evalsMean": 0,
+    "agreement": 0.6190476190476191,
+    "nearBest": 0.8333333333333334,
+    "regretMean": 2.3820684523809526,
+    "regretWorst": 51.375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "step-back > spark",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "step-back",
+        "regret": 8.859375
+      },
+      {
+        "id": "daze@2",
+        "first": "step-back",
+        "regret": 10.578125
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "dispel",
+        "regret": 0.296875
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "step-back",
+        "regret": 1.015625
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:pinched-flame",
+        "regret": 12.875
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:pinched-flame",
+        "regret": 51.375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 3.203125
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "step-back",
+        "regret": 0
+      }
+    ]
+  },
+  {
+    "name": "greedy d1 r16",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 71.83153199999651,
+    "msP95": 143.0043219999934,
+    "msMean": 79.7788524761913,
+    "exchangesMean": 126.0952380952381,
+    "evalsMean": 0,
+    "agreement": 0.5238095238095238,
+    "nearBest": 0.6428571428571429,
+    "regretMean": 17.589657738095237,
+    "regretWorst": 194.8125,
+    "worstAt": "hide@2",
+    "daze": "spark + default",
+    "hide": "blade + default",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:spark",
+        "regret": 9.421875
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:spark",
+        "regret": 10.390625
+      },
+      {
+        "id": "daze@5",
+        "first": "jutsu:spark",
+        "regret": 67.71875
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:blade",
+        "regret": 176.265625
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:blade",
+        "regret": 194.8125
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:blade",
+        "regret": 152.171875
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "jutsu:crescent-drop",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "step-in",
+        "regret": 15.234375
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "jutsu:moonfall-slash",
+        "regret": 4.03125
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:pinched-flame",
+        "regret": 12.875
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:pinched-flame",
+        "regret": 51.375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 4.25
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 4.65625
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "jutsu:lantern-scatter",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "jutsu:white-flame-heel",
+        "regret": 15.984375
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "step-in",
+        "regret": 14.015625
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "step-back",
+        "regret": 0
+      }
+    ]
+  },
+  {
+    "name": "d2 w1 r16",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 328.73288599999796,
+    "msP95": 542.5051099999982,
+    "msMean": 332.3357244285719,
+    "exchangesMean": 444.8333333333333,
+    "evalsMean": 0,
+    "agreement": 0.6666666666666666,
+    "nearBest": 0.8333333333333334,
+    "regretMean": 3.8686755952380953,
+    "regretWorst": 51.375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "flash > burst",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "step-back",
+        "regret": 41.1875
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "search",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:tide-lash",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "step-back",
+        "regret": 1.015625
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:pinched-flame",
+        "regret": 12.875
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:pinched-flame",
+        "regret": 51.375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:cut-the-wick",
+        "regret": 1.203125
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:gale-heel",
+        "regret": 20.03125
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 3.203125
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "d2 w2 r16",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 369.2172900000005,
+    "msP95": 545.9876980000117,
+    "msMean": 361.4509634285714,
+    "exchangesMean": 623.5,
+    "evalsMean": 0,
+    "agreement": 0.6190476190476191,
+    "nearBest": 0.8095238095238095,
+    "regretMean": 2.8519345238095237,
+    "regretWorst": 51.375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "step-back > spark",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "step-back",
+        "regret": 8.859375
+      },
+      {
+        "id": "daze@2",
+        "first": "step-back",
+        "regret": 10.578125
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "search",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "step-back",
+        "regret": 1.015625
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:pinched-flame",
+        "regret": 12.875
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:pinched-flame",
+        "regret": 51.375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:gale-heel",
+        "regret": 20.03125
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 3.203125
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "step-back",
+        "regret": 0
+      }
+    ]
+  },
+  {
+    "name": "d2 w2 r8",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 171.40533100000175,
+    "msP95": 280.62840600000345,
+    "msMean": 180.9130673333327,
+    "exchangesMean": 310.3333333333333,
+    "evalsMean": 0,
+    "agreement": 0.5714285714285714,
+    "nearBest": 0.8095238095238095,
+    "regretMean": 2.783482142857143,
+    "regretWorst": 44.359375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "flash > burst",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "search",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "evade",
+        "regret": 0.875
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "evade",
+        "regret": 0.53125
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:sticking-tag",
+        "regret": 6.4375
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:sticking-tag",
+        "regret": 44.359375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:gale-heel",
+        "regret": 20.03125
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 1.359375
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.5
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.640625
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "d2 w4 r8",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 308.37898399998085,
+    "msP95": 473.04670100001385,
+    "msMean": 291.1880843809534,
+    "exchangesMean": 484.04761904761904,
+    "evalsMean": 0,
+    "agreement": 0.5952380952380952,
+    "nearBest": 0.8333333333333334,
+    "regretMean": 1.7273065476190477,
+    "regretWorst": 24.328125,
+    "worstAt": "counterer-v-powerhouse@5",
+    "daze": "flash > burst",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "search",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "evade",
+        "regret": 0.875
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "evade",
+        "regret": 0.53125
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:sticking-tag",
+        "regret": 6.4375
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:paper-veil",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:gale-heel",
+        "regret": 20.03125
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 1.359375
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.5
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.640625
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "d2 w4 r4",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 134.03585000001476,
+    "msP95": 237.76326399997924,
+    "msMean": 142.7662844285674,
+    "exchangesMean": 239.42857142857142,
+    "evalsMean": 0,
+    "agreement": 0.5476190476190477,
+    "nearBest": 0.8095238095238095,
+    "regretMean": 2.712797619047619,
+    "regretWorst": 44.359375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "flash > burst",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "jutsu:crescent-drop",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "evade",
+        "regret": 1.546875
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:tide-lash",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "evade",
+        "regret": 0.875
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "evade",
+        "regret": 0.53125
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:sticking-tag",
+        "regret": 6.4375
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:sticking-tag",
+        "regret": 44.359375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:cut-the-wick",
+        "regret": 1.203125
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:cut-the-wick",
+        "regret": 0.765625
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-back",
+        "regret": 6.75
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "brace",
+        "regret": 10.890625
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.5
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.640625
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "d2 w1 r4",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 59.80792900000233,
+    "msP95": 116.45544200000586,
+    "msMean": 65.40638714285437,
+    "exchangesMean": 111.14285714285714,
+    "evalsMean": 0,
+    "agreement": 0.47619047619047616,
+    "nearBest": 0.7857142857142857,
+    "regretMean": 3.1968005952380953,
+    "regretWorst": 44.359375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "flash > burst",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "jutsu:gale-heel",
+        "regret": 0.046875
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "evade",
+        "regret": 1.546875
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:tide-lash",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "evade",
+        "regret": 0.875
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "evade",
+        "regret": 0.53125
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:sticking-tag",
+        "regret": 6.4375
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:sticking-tag",
+        "regret": 44.359375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:cut-the-wick",
+        "regret": 1.203125
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:cut-the-wick",
+        "regret": 0.765625
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:gale-heel",
+        "regret": 20.03125
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-back",
+        "regret": 6.75
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "brace",
+        "regret": 10.890625
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.5
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.640625
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "d2 w4 r32",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 1142.5929459999898,
+    "msP95": 1692.4958719999995,
+    "msMean": 1110.8204651428587,
+    "exchangesMean": 1945.3809523809523,
+    "evalsMean": 0,
+    "agreement": 0.8571428571428571,
+    "nearBest": 0.9761904761904762,
+    "regretMean": 0.15029761904761904,
+    "regretWorst": 2.484375,
+    "worstAt": "versatile-v-illusionist@2",
+    "daze": "flash > burst",
+    "hide": "veil > blade",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "jutsu:crescent-drop",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "search",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "step-back",
+        "regret": 1.015625
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:paper-veil",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:paper-veil",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:great-gale",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "throw",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "step-back",
+        "regret": 0
+      }
+    ]
+  },
+  {
+    "name": "d3 w2 r8",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 454.51067600000533,
+    "msP95": 635.4383110000053,
+    "msMean": 457.72825319047564,
+    "exchangesMean": 734.2857142857143,
+    "evalsMean": 0,
+    "agreement": 0.5714285714285714,
+    "nearBest": 0.8095238095238095,
+    "regretMean": 2.6432291666666665,
+    "regretWorst": 41.1875,
+    "worstAt": "daze@5",
+    "daze": "step-back > flash > burst",
+    "hide": "veil > blade > strike",
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "step-back",
+        "regret": 8.859375
+      },
+      {
+        "id": "daze@2",
+        "first": "step-back",
+        "regret": 10.578125
+      },
+      {
+        "id": "daze@5",
+        "first": "step-back",
+        "regret": 41.1875
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "jutsu:crescent-drop",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "evade",
+        "regret": 1.546875
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:tide-lash",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "evade",
+        "regret": 0.875
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "step-back",
+        "regret": 1.28125
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:paper-veil",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:paper-veil",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:cut-the-wick",
+        "regret": 1.203125
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:cut-the-wick",
+        "regret": 0.765625
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:lantern-scatter",
+        "regret": 0.828125
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 3.203125
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "throw",
+        "regret": 4.328125
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "throw",
+        "regret": 4.46875
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "selective depth r8 w2 (margin 10)",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 149.72772200001054,
+    "msP95": 301.9714920000115,
+    "msMean": 168.79473733333344,
+    "exchangesMean": 267.95238095238096,
+    "evalsMean": 0,
+    "agreement": 0.5714285714285714,
+    "nearBest": 0.8095238095238095,
+    "regretMean": 2.783482142857143,
+    "regretWorst": 44.359375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "flash > burst",
+    "hide": "veil + default",
+    "notes": {
+      "deepened": 33,
+      "shallow": 9
+    },
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@2",
+        "first": "jutsu:flash",
+        "regret": 0
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "search",
+        "regret": 0
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "evade",
+        "regret": 0.875
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "evade",
+        "regret": 0.53125
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:sticking-tag",
+        "regret": 6.4375
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:sticking-tag",
+        "regret": 44.359375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:gale-heel",
+        "regret": 20.03125
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 1.359375
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.5
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 3.640625
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "jutsu:return-current",
+        "regret": 24.328125
+      }
+    ]
+  },
+  {
+    "name": "selective depth r16 w4 (margin 15)",
+    "category": "width/depth",
+    "states": 42,
+    "msMedian": 529.7369319999998,
+    "msP95": 846.069233999995,
+    "msMean": 523.358431785714,
+    "exchangesMean": 896.2380952380952,
+    "evalsMean": 0,
+    "agreement": 0.6190476190476191,
+    "nearBest": 0.8333333333333334,
+    "regretMean": 2.3820684523809526,
+    "regretWorst": 51.375,
+    "worstAt": "assassin-v-sensor@5",
+    "daze": "step-back > spark",
+    "hide": "veil + default",
+    "notes": {
+      "deepened": 37,
+      "shallow": 5
+    },
+    "choices": [
+      {
+        "id": "daze@0",
+        "first": "step-back",
+        "regret": 8.859375
+      },
+      {
+        "id": "daze@2",
+        "first": "step-back",
+        "regret": 10.578125
+      },
+      {
+        "id": "daze@5",
+        "first": "brace",
+        "regret": 0
+      },
+      {
+        "id": "hide@0",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@2",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "hide@5",
+        "first": "jutsu:veil",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@2",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "rusher-v-powerhouse@5",
+        "first": "brace",
+        "regret": 0.25
+      },
+      {
+        "id": "versatile-v-illusionist@0",
+        "first": "dispel",
+        "regret": 0.296875
+      },
+      {
+        "id": "versatile-v-illusionist@2",
+        "first": "jutsu:ember-breath",
+        "regret": 2.484375
+      },
+      {
+        "id": "versatile-v-illusionist@5",
+        "first": "jutsu:tide-lash",
+        "regret": 0.578125
+      },
+      {
+        "id": "stalker-v-mistBlade@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "stalker-v-mistBlade@2",
+        "first": "step-back",
+        "regret": 1.015625
+      },
+      {
+        "id": "stalker-v-mistBlade@5",
+        "first": "jutsu:moonfall-slash",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "assassin-v-sensor@2",
+        "first": "jutsu:pinched-flame",
+        "regret": 12.875
+      },
+      {
+        "id": "assassin-v-sensor@5",
+        "first": "jutsu:pinched-flame",
+        "regret": 51.375
+      },
+      {
+        "id": "sealer-v-trapper@0",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@2",
+        "first": "jutsu:ink-chain-seal",
+        "regret": 0
+      },
+      {
+        "id": "sealer-v-trapper@5",
+        "first": "jutsu:lantern-cut",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@0",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@2",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "medic-v-counterer@5",
+        "first": "jutsu:mending-glow",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@0",
+        "first": "jutsu:ember-rain",
+        "regret": 0
+      },
+      {
+        "id": "areaCaster-v-cloner@2",
+        "first": "jutsu:ember-rain",
+        "regret": 0.265625
+      },
+      {
+        "id": "areaCaster-v-cloner@5",
+        "first": "step-back",
+        "regret": 4.75
+      },
+      {
+        "id": "gates-v-shrouded@0",
+        "first": "step-in",
+        "regret": 0
+      },
+      {
+        "id": "gates-v-shrouded@2",
+        "first": "jutsu:gale-heel",
+        "regret": 1.28125
+      },
+      {
+        "id": "gates-v-shrouded@5",
+        "first": "strike",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@0",
+        "first": "jutsu:whispering-dread",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@2",
+        "first": "step-back",
+        "regret": 0
+      },
+      {
+        "id": "illusionist-v-rusher@5",
+        "first": "jutsu:whispering-dread",
+        "regret": 0.140625
+      },
+      {
+        "id": "mistBlade-v-versatile@0",
+        "first": "jutsu:moonfall-slash",
+        "regret": 1.09375
+      },
+      {
+        "id": "mistBlade-v-versatile@2",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 3.203125
+      },
+      {
+        "id": "mistBlade-v-versatile@5",
+        "first": "jutsu:snuffed-wick-step",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@0",
+        "first": "jutsu:snare-ward",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@2",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "trapper-v-stalker@5",
+        "first": "jutsu:blast-ring",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@0",
+        "first": "jutsu:lantern-cut",
+        "regret": 1
+      },
+      {
+        "id": "counterer-v-powerhouse@2",
+        "first": "jutsu:return-current",
+        "regret": 0
+      },
+      {
+        "id": "counterer-v-powerhouse@5",
+        "first": "step-back",
+        "regret": 0
+      }
+    ]
+  }
+]

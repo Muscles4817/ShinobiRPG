@@ -1,0 +1,42 @@
+[
+  {
+    "approach": "GOAP candidates raced 4→32 keep 2",
+    "scenario": "daze-finish",
+    "won": 14,
+    "fights": 30,
+    "dealt": 81.36666666666666,
+    "taken": 63.8,
+    "msPerDecision": 103.30916754347825,
+    "openings": "flash > burst ×22, flash > flash ×8"
+  },
+  {
+    "approach": "GOAP candidates raced 4→32 keep 2",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 119.46648177464773,
+    "openings": "veil > blade ×30"
+  },
+  {
+    "approach": "hybrid: approx top 2 → real r8",
+    "scenario": "daze-finish",
+    "won": 15,
+    "fights": 30,
+    "dealt": 80.46666666666667,
+    "taken": 61.6,
+    "msPerDecision": 75.98030206086962,
+    "openings": "flash > burst ×22, flash > flash ×8"
+  },
+  {
+    "approach": "hybrid: approx top 2 → real r8",
+    "scenario": "hide-lethal",
+    "won": 30,
+    "fights": 30,
+    "dealt": 100,
+    "taken": 6.266666666666667,
+    "msPerDecision": 77.94147352112722,
+    "openings": "veil > blade ×30"
+  }
+]

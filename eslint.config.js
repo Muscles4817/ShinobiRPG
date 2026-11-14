@@ -7,6 +7,8 @@ export default tseslint.config(
   {
     ignores: [
       'dist',
+      // Throwaway design prototypes, run on their own config (see their README).
+      'prototypes',
       'dist-release',
       'electron/dist',
       'release',
