@@ -983,13 +983,24 @@ mockup (https://claude.ai/artifact/7WJVAf8o39zmcz5arbyB8o) does it like this:
 - **Forbid pins act on the hand**, not on slots: a forbidden card is never reached for, even in
   an emergency.
 
-Open points the mockup raises:
+Decided after the clickable prototype (https://claude.ai/artifact/5u6NUFDoxSsmLCMj7KD3P1):
 
-- Should drafted slots stay marked once you are on your own list?
-- Is doctrine set per round or kept as a standing preference?
-- Which stop does a mid-round call open on?
+- **Doctrine is a standing preference**, not part of a round's order: how you fight
+  (aggression, risk, chakra) is set once, behind a "How you fight" control on the plan screen
+  at every level, and holds for every round until changed. The mind drafts by it; slots you set
+  are never touched.
+- **Your list adopts everything as yours.** There is no third "from the draft" mark: moving to
+  your list makes every slot and defence yours, and the list shows no ownership stamps at all.
+  "Ask for a plan" fills only empty slots; handing a slot back empties it for the mind to fill.
+  Moving to Orders after that brings the whole list across as pins, folded into one entry
+  ("Your list, kept as pins") with a way to hand the list back in one press; forbidden moves stay
+  listed on their own.
+
+Still open from the mockup:
+
+- Which stop does a mid-round call open on? Probably the one you were on, with the order kept.
 - Does the planner get your intellect's slot count, so a draft always fits back into your list?
-  The mockup assumes yes.
+  The prototype assumes yes.
 
 Per-exchange choice (5) stays out. Orders without pins (2) is simply level 3 with no pins.
 
@@ -1267,7 +1278,7 @@ Settled:
 
 - **Telegraphs.** Cues both ways, never the queued card (Part 5, Part 8 rule 4).
 - **Controls.** Orders with pins, plan then edit, and the advised list, as three levels of one
-  interface (Part 9).
+  interface (Part 9). Doctrine is a standing preference; your list adopts everything as yours.
 - **The planner.** GOAP candidates in the real engine, once a round, one planner scaled by tier
   (Parts 4, 7, 8).
 - **Movement.** Stepping back stays as it is. A fighter with no range being outplayed at range is

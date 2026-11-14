@@ -1,0 +1,1700 @@
+<title>Fight plan controls</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #14121b;
+  --surface: #1e1b28;
+  --raise: #282435;
+  --line: #353046;
+  --ink: #efe9f6;
+  --story: #e9e0cc;
+  --muted: #a39ab4;
+  --lantern: #f0a050;
+  --gold: #ffd27a;
+  --on-lantern: #1b120a;
+  --foe: #e0566a;
+  --good: #7fd6a0;
+  --cost: #e8b25a;
+  --harm: #ff6f61;
+  --taijutsu: #e5643f;
+  --ninjutsu: #4f8fe8;
+  --genjutsu: #a46cf2;
+  --kenjutsu: #8fb1c9;
+  --fuuinjutsu: #d9a441;
+  --health: #ff7b6b;
+  --chakra: #6fb0ff;
+  --breath: #e9dfc0;
+  --paper: #efe3c8;
+  --paper-ink: #2a2118;
+  --paper-muted: #6f6149;
+  --paper-tai: #9c3a1c;
+  --paper-nin: #22508f;
+  --paper-fuu: #7a5410;
+  --seal: #c0392b;
+  --page: #100e16;
+  --scrim: rgb(8 6 12 / 0.6);
+  --shadow: rgb(0 0 0 / 0.35);
+  --focus: #ffd27a;
+  --font-story: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif;
+  --font-ui: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius: 4px;
+  --radius-sm: 3px;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grain-ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0 0.1 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #ece2cb; --surface: #f6eedc; --raise: #e6dac0; --line: #c9b994;
+    --ink: #2a2118; --story: #2a2118; --muted: #6f6149;
+    --lantern: #b0581a; --gold: #8a5a0c; --on-lantern: #fff6e6; --foe: #a8283a;
+    --good: #2f7d4f; --cost: #9a5c12; --harm: #b2382c;
+    --taijutsu: #b8441f; --ninjutsu: #2c63b8; --genjutsu: #6e3fbf; --kenjutsu: #4d6e86; --fuuinjutsu: #93681a;
+    --health: #c8463a; --chakra: #2f6fc4; --breath: #8f7e55;
+    --paper: #fbf5e6; --page: #e3d7bc; --scrim: rgb(60 45 25 / 0.35); --shadow: rgb(60 45 25 / 0.2); --focus: #8a5a0c;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #ece2cb; --surface: #f6eedc; --raise: #e6dac0; --line: #c9b994;
+  --ink: #2a2118; --story: #2a2118; --muted: #6f6149;
+  --lantern: #b0581a; --gold: #8a5a0c; --on-lantern: #fff6e6; --foe: #a8283a;
+  --good: #2f7d4f; --cost: #9a5c12; --harm: #b2382c;
+  --taijutsu: #b8441f; --ninjutsu: #2c63b8; --genjutsu: #6e3fbf; --kenjutsu: #4d6e86; --fuuinjutsu: #93681a;
+  --health: #c8463a; --chakra: #2f6fc4; --breath: #8f7e55;
+  --paper: #fbf5e6; --page: #e3d7bc; --scrim: rgb(60 45 25 / 0.35); --shadow: rgb(60 45 25 / 0.2); --focus: #8a5a0c;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3, h4 { font-family: var(--font-story); font-weight: 700; margin: 0; color: var(--story); }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Page ---------- */
+.page {
+  max-width: 1440px; margin: 0 auto;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.intro { display: grid; gap: 10px; padding: 14px 16px; margin-bottom: 18px; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.intro-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.intro-top h2 { font-size: 1.15rem; margin-right: auto; }
+.intro p { color: var(--muted); font-size: 0.9rem; max-width: 900px; }
+.intro p b { color: var(--ink); }
+.intro ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--muted); font-size: 0.9rem; max-width: 900px; }
+.intro ol b { color: var(--ink); }
+.tools { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 0.85rem; }
+
+/* ---------- Shared game look ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; padding: 0.5em 1em;
+  background: var(--lantern); color: var(--on-lantern);
+  border: 1px solid transparent; border-radius: var(--radius);
+  font-weight: 700; text-align: center;
+}
+.btn.ghost { background: var(--grain), var(--surface); color: var(--ink); border-color: var(--line); font-weight: 400; }
+.btn.small { min-height: 40px; padding: 0.35em 0.85em; font-size: 0.86rem; }
+.btn.link { background: none; border: 0; color: var(--gold); min-height: 40px; padding: 0 4px; font-weight: 400; text-decoration: underline; text-underline-offset: 3px; }
+.btn:disabled { opacity: 0.5; }
+.btn:not(:disabled):hover { filter: brightness(1.08); }
+.btn.ghost:not(:disabled):hover { border-color: var(--muted); filter: none; }
+.sec { font-family: var(--font-story); font-size: 1.05rem; color: var(--muted); font-weight: 500; margin: 6px 0 0; }
+.hint { font-size: 0.78rem; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; padding: 0 6px; line-height: 1.5; font-family: var(--font-story); font-size: 0.8rem; color: var(--story); border: 1.5px solid currentColor; border-radius: var(--radius-sm); white-space: nowrap; }
+.badge.foe { color: var(--foe); }
+.chip { display: inline-block; padding: 0 6px; border-radius: var(--radius-sm); font-size: 0.78rem; line-height: 1.6; font-variant-numeric: tabular-nums; background: var(--raise); color: var(--ink); white-space: nowrap; }
+.chip.harm { color: var(--harm); }
+.chip.cost { color: var(--cost); }
+.chip.gain { color: var(--good); }
+.conf { display: inline-block; padding: 0 5px; line-height: 1.45; font-family: var(--font-story); font-size: 0.78rem; border-radius: var(--radius-sm); white-space: nowrap; color: var(--gold); vertical-align: 1px; }
+.conf.sure { border: 2px solid currentColor; font-weight: 700; }
+.conf.fairly { border: 1.5px solid currentColor; }
+.conf.maybe { border: 1px dashed currentColor; color: var(--muted); }
+.conf.unseen { border: 1px dotted var(--line); color: var(--muted); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-row .btn { flex: 1 1 auto; }
+
+/* ---------- The screen: three columns on a desk, one on a phone ---------- */
+.screen { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "switch" "fight" "foe" "plan"; }
+.a-head { grid-area: head; }
+.a-switch { grid-area: switch; }
+.a-plan { grid-area: plan; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.a-fight { grid-area: fight; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.a-foe { grid-area: foe; min-width: 0; }
+.screen.wide {
+  grid-template-columns: minmax(400px, 450px) minmax(0, 1fr) minmax(330px, 390px);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas: "head head head" "switch fight foe" "plan fight foe";
+  column-gap: 22px; row-gap: 14px; align-items: start;
+}
+.screen.wide .a-fight, .screen.wide .a-foe { position: sticky; top: 16px; }
+.screen.narrow { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+
+.plan-head { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.plan-head h1 { font-size: 1.5rem; }
+.plan-head p { color: var(--muted); font-size: 0.86rem; flex: 1 1 300px; }
+
+/* The hand-over switch */
+.handover { display: grid; gap: 6px; padding: 10px 12px 12px; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.handover-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.handover-top h2 { font-size: 1.05rem; }
+.handover-top span { font-size: 0.76rem; color: var(--muted); }
+.stops { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 4px; }
+.stops::before { content: ''; position: absolute; left: 16.66%; right: 16.66%; top: 19px; height: 2px; background: var(--line); }
+.stops .fill { position: absolute; left: 16.66%; top: 19px; height: 2px; background: var(--lantern); transition: width 0.25s ease; }
+.stop { position: relative; display: grid; justify-items: center; align-content: start; gap: 4px; min-height: 64px; padding: 4px 2px; background: none; border: 0; border-radius: var(--radius); text-align: center; }
+.stop i { width: 32px; height: 32px; display: grid; place-items: center; font-style: normal; font-family: var(--font-story); font-weight: 700; font-size: 0.9rem; color: var(--muted); background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius-sm); transition: background 0.2s, color 0.2s, border-color 0.2s; }
+.stop b { font-size: 0.86rem; font-weight: 700; color: var(--muted); }
+.stop[aria-pressed="true"] i { color: var(--on-lantern); background: var(--lantern); border-color: var(--lantern); }
+.stop[aria-pressed="true"] b { color: var(--ink); }
+.stop:not([aria-pressed="true"]):hover i { border-color: var(--lantern); color: var(--lantern); }
+.handover-say { font-size: 0.82rem; color: var(--muted); text-align: center; }
+
+/* Distance tabs, fields */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { min-height: 40px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.9rem; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.tab small { font-weight: 400; font-size: 0.75rem; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--lantern); color: var(--on-lantern); border-color: var(--lantern); }
+.tab[aria-selected="true"] small { color: var(--on-lantern); }
+.field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.field { display: grid; gap: 4px; align-content: start; font-size: 0.8rem; color: var(--muted); min-width: 0; }
+.select { min-height: 44px; width: 100%; min-width: 0; overflow: hidden; display: flex; align-items: center; gap: 6px; padding: 0 10px; font-size: 0.9rem; color: var(--ink); text-align: left; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.select .v { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select::after { content: ''; flex: none; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); }
+.select.drafted { border-style: dashed; }
+.select:hover { border-color: var(--muted); }
+.lead { font-size: 0.86rem; color: var(--ink); }
+.lead-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+/* Slots */
+.slots { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.slot { display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 8px; row-gap: 3px; }
+.rank { grid-row: 1; align-self: center; font-family: var(--font-story); font-size: 1.05rem; color: var(--lantern); text-align: center; }
+.slot > :not(.rank) { grid-column: 2; }
+.card {
+  position: relative; display: grid; gap: 3px; padding: 8px 10px; text-align: left; width: 100%; min-height: 52px;
+  background: var(--grain), var(--raise); border: 1px solid var(--d, var(--line)); border-radius: var(--radius);
+}
+.card:hover { filter: brightness(1.06); }
+.card-top { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.card-top b { font-size: 0.95rem; flex: 1; min-width: 0; }
+.card small { font-size: 0.78rem; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+[data-d="taijutsu"] { --d: var(--taijutsu); }
+[data-d="ninjutsu"] { --d: var(--ninjutsu); }
+[data-d="fuuinjutsu"] { --d: var(--fuuinjutsu); }
+[data-d="tool"] { --d: var(--kenjutsu); }
+[data-d="basic"] { --d: var(--muted); }
+.card.dashed { border-style: dashed; }
+.card.empty { border-style: dotted; background: none; color: var(--muted); align-content: center; }
+.when { font-size: 0.83rem; color: var(--ink); }
+.why { font-family: var(--font-story); font-size: 0.87rem; color: var(--story); }
+.why::before { content: '\2014\00a0'; color: var(--muted); }
+.forecast { font-family: var(--font-story); font-size: 0.87rem; color: var(--gold); }
+.forecast.warn { color: var(--harm); }
+
+/* Ownership stamps */
+.own { flex: none; font-family: var(--font-story); font-size: 0.72rem; line-height: 1.4; padding: 0 5px; border-radius: 2px; white-space: nowrap; }
+.own.yours { color: var(--gold); border: 1.5px solid var(--gold); font-weight: 700; }
+.own.drafted { color: var(--muted); border: 1px dashed var(--muted); }
+.own.redrafted { color: var(--chakra); border: 1px dashed var(--chakra); }
+.legend { display: grid; gap: 4px; font-size: 0.78rem; color: var(--muted); padding-top: 2px; }
+.legend div { display: flex; gap: 8px; align-items: baseline; }
+
+/* Paper slips */
+.slip { position: relative; display: grid; gap: 8px; padding: 12px 14px; color: var(--paper-ink); background: var(--grain-ink), var(--paper); border-radius: var(--radius-sm); box-shadow: 0 1px 0 var(--shadow); }
+.slip h4 { color: var(--paper-ink); font-size: 1rem; padding-right: 40px; }
+.slip p { font-family: var(--font-story); font-size: 0.92rem; }
+.slip .muted { color: var(--paper-muted); font-family: var(--font-ui); font-size: 0.8rem; }
+.slip .btn.ghost { background: transparent; color: var(--paper-ink); border-color: var(--paper-muted); }
+.slip .btn { background: var(--paper-ink); color: var(--paper); }
+.slip :focus-visible { outline-color: var(--seal); }
+.seal-mark { position: absolute; top: 10px; right: 12px; width: 30px; height: 30px; display: grid; place-items: center; font-family: var(--font-story); font-weight: 700; color: var(--seal); border: 2px solid var(--seal); border-radius: 2px; transform: rotate(-4deg); font-size: 0.95rem; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.steps li { display: grid; grid-template-columns: 20px minmax(0,1fr) auto; gap: 8px; align-items: baseline; font-size: 0.9rem; }
+.steps li > span:first-child { font-family: var(--font-story); font-weight: 700; color: var(--seal); }
+.k { font-size: 0.72rem; padding: 0 5px; border: 1px solid currentColor; border-radius: 2px; font-family: var(--font-story); white-space: nowrap; }
+.k.taijutsu { color: var(--paper-tai); } .k.ninjutsu { color: var(--paper-nin); } .k.fuuinjutsu { color: var(--paper-fuu); } .k.basic, .k.tool { color: var(--paper-muted); }
+.slip.flash { animation: flash 0.6s ease; }
+@keyframes flash { from { box-shadow: 0 0 0 3px var(--lantern); } to { box-shadow: 0 1px 0 var(--shadow); } }
+
+/* Orders */
+.orders { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.order { display: grid; gap: 2px; align-content: start; padding: 8px 10px; min-height: 60px; text-align: left; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.order b { font-family: var(--font-story); font-size: 0.98rem; color: var(--story); }
+.order small { font-size: 0.76rem; color: var(--muted); }
+.order[aria-pressed="true"] { border: 1.5px solid var(--lantern); background: var(--grain), var(--raise); }
+.order[aria-pressed="true"] b { color: var(--lantern); }
+.order:disabled { opacity: 0.55; }
+.order:not(:disabled):hover { border-color: var(--muted); }
+.doctrine { display: grid; gap: 8px; }
+.dial { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 8px; align-items: center; font-size: 0.82rem; color: var(--muted); }
+.words { display: flex; gap: 4px; flex-wrap: wrap; }
+.word { min-height: 40px; padding: 0 9px; font-size: 0.84rem; background: none; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--muted); }
+.word[aria-pressed="true"] { color: var(--ink); border-color: var(--story); background: var(--raise); font-weight: 700; }
+.word:not([aria-pressed="true"]):hover { border-color: var(--muted); color: var(--ink); }
+.pins { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pin { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 4px 4px 10px; font-size: 0.88rem; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.pin .what { flex: 1; min-width: 0; }
+.pin .kind { flex: none; font-family: var(--font-story); font-weight: 700; font-size: 0.76rem; padding: 0 5px; border-radius: 2px; color: var(--gold); border: 1.5px solid var(--gold); }
+.pin.never .kind { color: var(--foe); border-color: var(--foe); }
+.pin .x { flex: none; min-height: 40px; padding: 0 10px; font-size: 0.8rem; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.pin .x:hover { color: var(--ink); border-color: var(--muted); }
+.pinfold { background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.pinfold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 10px; font-size: 0.88rem; }
+.pinfold > summary::-webkit-details-marker { display: none; }
+.pinfold > summary .what { flex: 1; min-width: 0; }
+.pinfold > summary .kind { flex: none; font-family: var(--font-story); font-weight: 700; font-size: 0.76rem; padding: 0 5px; border-radius: 2px; color: var(--gold); border: 1.5px solid var(--gold); }
+.pinfold[open] .fold-hint .closed, .pinfold:not([open]) .fold-hint .opened { display: none; }
+.pinfold .pins { padding: 0 8px 8px; }
+.none-yet { font-size: 0.85rem; color: var(--muted); font-family: var(--font-story); }
+
+/* Fight column */
+.formation { display: flex; align-items: stretch; gap: 4px; padding: 10px 8px 8px; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.f-col { display: grid; justify-items: center; gap: 6px; min-width: 60px; }
+.f-row { font-family: var(--font-story); font-size: 0.72rem; color: var(--muted); }
+.token { display: grid; justify-items: center; gap: 3px; font-size: 0.74rem; }
+.seal { width: 40px; height: 40px; display: grid; place-items: center; font-family: var(--font-story); font-weight: 700; font-size: 1.1rem; color: var(--lantern); border: 1.5px solid var(--lantern); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--lantern) 12%, var(--bg)); }
+.seal.foe { color: var(--foe); border-color: var(--foe); background: color-mix(in srgb, var(--foe) 12%, var(--bg)); }
+.seal.small { width: 24px; height: 24px; font-size: 0.75rem; }
+.hp { width: 40px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.hp i { display: block; height: 100%; background: var(--good); transition: width 0.4s ease; }
+.hp.foe i { background: var(--foe); }
+.gap { flex: 1; display: grid; place-content: center; justify-items: center; gap: 6px; padding: 0 6px; }
+.gap-label { font-family: var(--font-story); color: var(--story); font-size: 0.98rem; }
+.ruler { display: flex; gap: 3px; width: 100%; min-width: 110px; }
+.ruler i { flex: 1; height: 2px; background: var(--line); }
+.ruler i.on { background: var(--story); }
+.vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vcard { display: grid; gap: 6px; padding: 10px 12px; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
+.vname { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.92rem; }
+.meter { display: grid; grid-template-columns: 50px minmax(0,1fr) 62px; gap: 8px; align-items: center; font-size: 0.78rem; color: var(--muted); }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; transition: width 0.4s ease; }
+.bar .h { background: var(--good); } .bar .hf { background: var(--foe); } .bar .c { background: var(--chakra); } .bar .b { background: var(--breath); }
+.meter .num { text-align: right; color: var(--ink); }
+.story h3 { font-size: 1rem; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+.story p { font-family: var(--font-story); color: var(--story); font-size: 0.98rem; margin-bottom: 4px; }
+.story summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-family: var(--font-story); color: var(--muted); }
+.choices { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+.planned-by { font-size: 0.82rem; color: var(--muted); }
+.planned-by b { color: var(--ink); }
+
+/* Foe panel */
+.read { display: grid; gap: 8px; padding: 12px 14px; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.read-name { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.read-name b { font-size: 1rem; }
+.read-name .chip { margin-left: auto; }
+.read h4 { font-size: 0.95rem; color: var(--muted); font-weight: 500; margin-top: 4px; }
+.cues { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.cues li { display: grid; grid-template-columns: 14px minmax(0,1fr); gap: 6px; font-size: 0.86rem; align-items: baseline; }
+.cues svg { width: 10px; height: 10px; color: var(--muted); }
+.infer { display: grid; gap: 4px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); }
+.infer p { font-family: var(--font-story); color: var(--story); font-size: 0.95rem; }
+.infer p.second { font-size: 0.86rem; color: var(--muted); }
+.known { display: flex; flex-wrap: wrap; gap: 6px; }
+.kcard { padding: 3px 8px; font-size: 0.8rem; border: 1px solid var(--d); border-radius: var(--radius-sm); background: var(--raise); }
+.kcard.unknown { --d: var(--line); border-style: dashed; color: var(--muted); background: none; }
+.learned { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.learned li { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; font-size: 0.86rem; }
+.perception { display: grid; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
+.perception .lab { font-size: 0.82rem; color: var(--muted); }
+.foldread > summary { list-style: none; cursor: pointer; }
+.foldread > summary::-webkit-details-marker { display: none; }
+.fold-hint { font-size: 0.78rem; color: var(--gold); }
+.foldread[open] .fold-hint .closed, .foldread:not([open]) .fold-hint .opened { display: none; }
+
+/* Phone bar */
+.bottom-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: grid; grid-template-columns: 1fr 2fr; gap: 8px;
+  padding-top: 10px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(14px, env(safe-area-inset-left, 0px));
+  padding-right: max(14px, env(safe-area-inset-right, 0px));
+  background: var(--grain), var(--raise); border-top: 1px solid var(--line);
+}
+
+/* Ticker */
+.ticker {
+  position: fixed; z-index: 30; left: 50%; transform: translateX(-50%);
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 8px 14px; font-size: 0.88rem; color: var(--ink);
+  background: var(--grain), var(--raise); border: 1px solid var(--lantern); border-radius: var(--radius);
+  box-shadow: 0 4px 16px var(--shadow);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.ticker.show { opacity: 1; }
+.narrow-mode .ticker { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+
+/* Drawer (desk) and sheet (phone) */
+.scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); }
+.drawer {
+  position: fixed; z-index: 21; top: 0; right: 0; bottom: 0; width: min(460px, 100vw);
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--grain), var(--surface); border-left: 1px solid var(--line);
+  box-shadow: -8px 0 24px var(--shadow);
+  padding-right: env(safe-area-inset-right, 0px);
+  animation: slide-in 0.2s ease;
+}
+@keyframes slide-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.drawer.sheet {
+  top: auto; left: 0; width: auto; max-height: 88vh; max-height: 88dvh;
+  border-left: 0; border-top: 1px solid var(--line); border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: 0 -8px 24px var(--shadow);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  animation: rise 0.2s ease;
+}
+@keyframes rise { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.d-head { display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+.d-head h2 { font-size: 1.15rem; flex: 1; }
+.d-close { min-width: 44px; min-height: 44px; background: none; border: 1px solid var(--line); border-radius: var(--radius); color: var(--muted); font-size: 0.85rem; }
+.d-body { overflow-y: auto; padding: 12px 16px 16px; display: grid; gap: 10px; align-content: start; overscroll-behavior: contain; }
+.d-foot { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 16px 14px; border-top: 1px solid var(--line); }
+.d-foot .btn { flex: 1 1 auto; }
+.d-foot .why-off { flex-basis: 100%; font-size: 0.78rem; color: var(--muted); }
+
+/* Technique cards in the picker */
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.tcard { display: grid; gap: 3px; align-content: start; padding: 8px 9px; min-height: 92px; text-align: left; background: var(--grain), var(--raise); border: 1px solid var(--d, var(--line)); border-top-width: 3px; border-radius: var(--radius); }
+.tcard .tc-top { display: flex; align-items: baseline; gap: 6px; }
+.tcard b { font-size: 0.9rem; flex: 1; }
+.tcard .tc-rank { font-family: var(--font-story); font-size: 0.78rem; color: var(--d); border: 1px solid var(--d); padding: 0 4px; border-radius: 2px; }
+.tcard .tc-art { font-size: 0.72rem; color: var(--d); }
+.tcard .tc-text { font-size: 0.78rem; color: var(--muted); }
+.tcard .tc-off { font-size: 0.74rem; color: var(--muted); font-style: italic; }
+.tcard[aria-pressed="true"] { outline: 2px solid var(--lantern); outline-offset: 1px; background: var(--grain), var(--surface); }
+.tcard:disabled { opacity: 0.5; }
+.tcard:not(:disabled):hover { filter: brightness(1.08); }
+.optlist { display: grid; gap: 6px; }
+.opt { display: grid; gap: 2px; padding: 8px 10px; min-height: 44px; text-align: left; background: var(--grain), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.opt b { font-size: 0.92rem; }
+.opt small { font-size: 0.78rem; color: var(--muted); }
+.opt .forecast { font-size: 0.82rem; }
+.opt[aria-pressed="true"] { border: 1.5px solid var(--lantern); background: var(--grain), var(--raise); }
+.opt:disabled { opacity: 0.5; }
+
+/* Round report */
+.report { display: grid; gap: 12px; }
+.exch { display: grid; gap: 4px; padding: 10px 12px; background: var(--grain), var(--raise); border: 1px solid var(--line); border-radius: var(--radius); }
+.exch h3 { font-size: 0.95rem; color: var(--muted); font-weight: 500; }
+.exch p { font-family: var(--font-story); color: var(--story); font-size: 0.95rem; }
+.exch .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.verdict { font-family: var(--font-story); font-size: 1.05rem; color: var(--story); }
+
+/* Narrow-screen tightening */
+.narrow .meter { grid-template-columns: 42px minmax(0,1fr) 52px; gap: 6px; font-size: 0.74rem; }
+.narrow .vitals { gap: 8px; }
+.narrow .vcard { padding: 8px 10px; }
+.narrow .formation { padding: 8px 6px 6px; }
+@media (max-width: 420px) {
+  .dial { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .field-row { gap: 8px; }
+  .plan-head h1 { font-size: 1.3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="page" id="page">
+  <section class="intro" id="intro" aria-labelledby="intro-title"></section>
+  <main class="screen" id="screen"></main>
+</div>
+<div id="bar-host"></div>
+<div id="overlay"></div>
+<div class="ticker" id="ticker" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ================= Content: your kit, the conditions, the foe ================= */
+  var DISTS = ['close', 'mid', 'far'];
+  var DIST_NAME = { close: 'Close', mid: 'Mid', far: 'Far' };
+  var AT = { close: 'up close', mid: 'at mid', far: 'at far' };
+  var LIMIT = 4;
+
+  var KIT = {
+    ember: { name: 'Ember Fang', d: 'taijutsu', art: 'Taijutsu', rank: 'C', reach: ['close'], cost: '14 chakra', ck: 14, text: 'A burning palm-heel up close', attack: true },
+    heel: { name: 'Rising Heel', d: 'taijutsu', art: 'Taijutsu', rank: 'D', reach: ['close'], cost: '6 breath', br: 6, text: 'A kick that dazes an open foe', attack: true },
+    style: { name: 'Your style', d: 'taijutsu', art: 'Taijutsu', rank: 'C', reach: ['close'], cost: '5 breath', br: 5, text: 'Body moves by feel, the one the moment wants', attack: true },
+    spark: { name: 'Lantern Spark', d: 'ninjutsu', art: 'Ninjutsu', rank: 'D', reach: ['mid', 'far'], cost: '10 chakra', ck: 10, text: 'A thrown spark of fire', attack: true },
+    scroll: { name: 'Binding scroll', d: 'fuuinjutsu', art: 'Fūinjutsu', rank: 'C', reach: ['close', 'mid'], cost: '18 chakra', ck: 18, text: 'A sealing strip that holds them', attack: true },
+    kunai: { name: 'Kunai', d: 'tool', art: 'Tool', rank: 'D', reach: ['mid', 'far'], cost: 'from the pouch', text: 'Thrown steel', attack: true },
+    stepBack: { name: 'Step back', d: 'basic', art: 'Footwork', reach: ['close', 'mid'], cost: 'the turn', text: 'Out to the next distance', move: 1 },
+    stepIn: { name: 'Step in', d: 'basic', art: 'Footwork', reach: ['mid', 'far'], cost: 'the turn', text: 'In to the next distance', move: -1 },
+    evade: { name: 'Evade', d: 'basic', art: 'Defence', reach: ['close', 'mid', 'far'], cost: '8 breath', br: 8, text: 'Spend the turn on not being hit' },
+    brace: { name: 'Brace', d: 'basic', art: 'Defence', reach: ['close', 'mid', 'far'], cost: '6 breath', br: 6, text: 'Take the blows on a hard guard' },
+    gather: { name: 'Gather', d: 'basic', art: 'Recovery', reach: ['close', 'mid', 'far'], cost: 'the turn', text: 'Draw back chakra, open until your next turn' }
+  };
+  var KIT_ORDER = ['ember', 'heel', 'style', 'spark', 'scroll', 'kunai', 'stepBack', 'stepIn', 'evade', 'brace', 'gather'];
+
+  var CONDS = {
+    always: { text: 'Whenever it can' },
+    first: { text: 'On your first turn' },
+    open: { text: "When they're open" },
+    held: { text: "When they're held" },
+    readyHold: { text: 'When they ready a hold', foe: true },
+    readyTech: { text: 'When they ready a technique', foe: true },
+    afterOpener: { text: 'After your opener, or when they ready a hold', foe: true },
+    holdSpent: { text: 'Once their hold is spent' },
+    hurt: { text: "When you're hurt" },
+    lowChakra: { text: 'When your chakra runs low' }
+  };
+  var COND_ORDER = ['always', 'first', 'open', 'held', 'readyHold', 'readyTech', 'afterOpener', 'holdSpent', 'hurt', 'lowChakra'];
+  var CONF_WORD = { sure: 'sure', fairly: 'fairly sure', maybe: 'maybe' };
+  var CONF_RANK = { maybe: 0, fairly: 1, sure: 2 };
+  var READ_CONF = { sharp: 'sure', even: 'fairly', outclassed: 'maybe' };
+
+  var DEF = {
+    guard: { name: 'Guard', text: 'Catches blows; a break walks through it' },
+    dodge: { name: 'Dodge', text: 'Slips what you see coming' },
+    counter: { name: 'Counter', text: 'Punishes a plain blow; a break goes through it' }
+  };
+  var FIGHT_AT = { stand: 'Wherever I stand', close: 'Close', mid: 'Mid', far: 'Far' };
+
+  var OBJECTIVES = [
+    { id: 'wear', name: 'Wear down', blurb: "Trade where you're ahead until they tire", title: 'Wear them down' },
+    { id: 'setup', name: 'Set up', blurb: 'Hold or daze them, then the finisher', title: 'Set them up' },
+    { id: 'control', name: 'Control distance', blurb: 'Fight where your kit is better', title: 'Keep the distance yours' },
+    { id: 'survive', name: 'Survive', blurb: "Don't take the big hit; wait it out", title: 'Get through the round' },
+    { id: 'protect', name: 'Protect', blurb: 'No one beside you to cover', title: 'Protect', disabled: true },
+    { id: 'outlast', name: 'Outlast', blurb: 'Spend less than they do', title: 'Outlast them' }
+  ];
+  var DOCTRINE = {
+    aggr: { label: 'Aggression', words: [['held', 'Held back'], ['measured', 'Measured'], ['pressing', 'Pressing'], ['reckless', 'Reckless']] },
+    risk: { label: 'Risk', words: [['careful', 'Careful'], ['steady', 'Steady'], ['bold', 'Bold']] },
+    chakra: { label: 'Chakra', words: [['spare', 'Spare it'], ['needed', 'As needed'], ['pour', 'Pour it in']] }
+  };
+  /* More kept pins than this fold into one entry in Orders. */
+  var PIN_FOLD = 5;
+  var RISK_ADV = { careful: 'carefully', steady: 'steadily', bold: 'boldly' };
+
+  var SAY = {
+    manual: 'You plan every action. Your instincts only advise.',
+    draft: 'Your instincts draft the round; anything you change is yours.',
+    orders: 'You give the order and the pins; your instincts plan the actions.'
+  };
+  var LEVEL_NAME = { manual: 'Your list', draft: 'Plan then edit', orders: 'Orders' };
+
+  function nameOf(card, d) {
+    if (card === 'stepBack') return d === 'mid' ? 'Step back to far' : 'Step back to mid';
+    if (card === 'stepIn') return d === 'far' ? 'Step in to mid' : 'Step in to close';
+    return KIT[card].name;
+  }
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function lower(t) { return t.charAt(0).toLowerCase() + t.slice(1); }
+
+  /* ================= State ================= */
+  var STORE = 'fight-plan-controls-v1';
+  var S;
+  var wide = window.matchMedia('(min-width: 1100px)');
+
+  function emptyRows() { return { close: [null, null, null, null], mid: [null, null, null, null], far: [null, null, null, null] }; }
+  function fresh() {
+    var s = {
+      level: 'draft', round: 3, tab: 'close', at: 'close', perception: 'even',
+      objective: 'wear', doctrine: { aggr: 'measured', risk: 'careful', chakra: 'needed' },
+      forbid: ['scroll'], slots: emptyRows(),
+      defence: { close: { def: 'counter', owner: 'yours' }, mid: null, far: null },
+      fightAt: null, variant: 0, dismissed: false, introOpen: true, foeOpen: false,
+      editor: null, holdSpent: false, holdSeen: false, steppedBack: false,
+      vit: { you: { hp: 60, ck: 88, br: 52 }, foe: { hp: 75, ck: 112, br: 40 } },
+      last: ['Your Counter caught her open palm a second time.', 'She stepped off and watched your hands for a long breath.', 'Her Heart-breaker Palm, the one from the first round, has not come again.']
+    };
+    redraft(s, false);
+    return s;
+  }
+  function load() {
+    var s = fresh();
+    try {
+      var raw = window.localStorage.getItem(STORE);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        if (saved && LEVEL_NAME[saved.level]) setLevelOn(s, saved.level);
+        if (saved && typeof saved.introOpen === 'boolean') s.introOpen = saved.introOpen;
+        if (saved && saved.doctrine) {
+          Object.keys(DOCTRINE).forEach(function (k) {
+            var v = saved.doctrine[k];
+            if (DOCTRINE[k].words.some(function (w) { return w[0] === v; })) s.doctrine[k] = v;
+          });
+          redraft(s, false);
+        }
+      }
+    } catch (e) { /* storage unavailable: start fresh */ }
+    return s;
+  }
+  function remember() {
+    try { window.localStorage.setItem(STORE, JSON.stringify({ level: S.level, introOpen: S.introOpen, doctrine: S.doctrine })); } catch (e) { /* fine without it */ }
+  }
+
+  /* ================= The mind's draft: a small hand-written rule table ================= */
+  function cand(card, when, reason, conf) { return { card: card, when: when, reason: reason, conf: conf || 'fairly' }; }
+  function baseList(o, d) {
+    if (d === 'close') {
+      switch (o) {
+        case 'wear': return [cand('stepBack', 'readyHold', "Their palm can't follow you to mid."), cand('ember', 'always', 'Your strongest blow, and it has landed each time.'), cand('heel', 'open', "If their hold misses, they're open for a moment.")];
+        case 'setup': return [cand('scroll', 'first', "Hold them first, so the finisher can't be slipped."), cand('ember', 'held', "The finisher, once they can't move."), cand('heel', 'open', 'If the strip misses, a daze does the same job.')];
+        case 'control': return [cand('stepBack', 'always', 'Their art is short-reached; at mid you have the better shot.'), cand('heel', 'open', "Only if they rush you before you're clear.")];
+        case 'survive': return [cand('evade', 'readyTech', 'Their break is the blow that could end this; make it miss.'), cand('stepBack', 'always', 'Out of reach of the break.'), cand('brace', 'hurt', "If you can't slip it, take it on a hard guard.")];
+        case 'outlast': return [cand('brace', 'readyTech', 'Let their break land on a hard guard.'), cand('style', 'always', 'Plain blows cost breath, not chakra.'), cand('stepBack', 'lowChakra', 'Out of reach to draw your chakra back.')];
+      }
+    }
+    if (d === 'mid') {
+      switch (o) {
+        case 'wear': return [cand('spark', 'always', 'Your spark outreaches their palm shot here.'), cand('stepIn', 'holdSpent', "Back in once they can't hold you."), cand('kunai', 'always', 'Keeps them honest if they close.')];
+        case 'setup': return [cand('scroll', 'always', 'The strip reaches mid too.'), cand('stepIn', 'held', 'Your finisher needs them close.')];
+        case 'control': return [cand('spark', 'always', 'The distance you chose; make it count.'), cand('kunai', 'always', 'Cheap pressure while they come to you.'), cand('stepIn', 'holdSpent', 'Only once their hold is spent.')];
+        case 'survive': return [cand('evade', 'readyTech', 'Their Air Palm reaches here; slip it.'), cand('gather', 'always', "Win back chakra while they're out of reach."), cand('kunai', 'always', 'Costs nothing you need.')];
+        case 'outlast': return [cand('gather', 'always', 'They spend faster than you; draw back what you spent.'), cand('kunai', 'always', 'Costs no chakra at all.')];
+      }
+    }
+    switch (o) {
+      case 'survive': case 'outlast': return [cand('gather', 'always', 'Nothing of theirs reaches you here.'), cand('kunai', 'always', 'Keeps them from resting too.')];
+      case 'control': return [cand('stepIn', 'always', 'Mid is where you want this; far is too far.'), cand('spark', 'always', 'A shot while you close.')];
+      default: return [cand('stepIn', 'always', 'Nothing of yours lands from here.'), cand('spark', 'always', 'A shot on the way in.')];
+    }
+  }
+  function isDefensive(c) { return ['evade', 'brace', 'stepBack', 'gather'].indexOf(c.card) >= 0; }
+  function has(L, card) { return L.some(function (c) { return c.card === card; }); }
+  function candidates(s, d) {
+    var L = baseList(s.objective, d);
+    var doc = s.doctrine;
+    if (doc.aggr === 'reckless') {
+      L = L.filter(function (c) { return !isDefensive(c); });
+      if (d === 'close') {
+        L = L.filter(function (c) { return c.card !== 'ember'; });
+        L.unshift(cand('ember', 'always', 'Reckless: your hardest blow, every turn it can.'));
+        L.push(cand('style', 'always', 'And more of the same between.'));
+      }
+    } else if (doc.aggr === 'pressing') {
+      L = L.filter(function (c) { return !isDefensive(c); }).concat(L.filter(isDefensive));
+      if (d === 'close' && !has(L, 'style')) L.splice(Math.min(2, L.length), 0, cand('style', 'always', 'Pressing: keep hitting between techniques.'));
+    } else if (doc.aggr === 'held') {
+      L = L.filter(isDefensive).concat(L.filter(function (c) { return !isDefensive(c) && c.card !== 'heel'; }));
+      if (d === 'close' && !has(L, 'evade')) L.push(cand('evade', 'readyTech', 'Held back: give them nothing to hit.'));
+    }
+    if (doc.risk === 'careful' && d === 'close' && s.objective !== 'setup' && doc.aggr !== 'reckless' && !has(L, 'stepBack')) {
+      L.unshift(cand('stepBack', 'readyHold', 'Careful: out of reach before their hold lands.'));
+    }
+    if (doc.risk === 'bold') {
+      L = L.filter(function (c) { return !(c.card === 'stepBack' && c.when === 'readyHold'); });
+      L = L.map(function (c) { return c.card === 'ember' && s.objective === 'wear' ? cand('ember', 'always', "Bold: trade with them; you're ahead up close.") : c; });
+    }
+    if (doc.chakra === 'spare') {
+      L = L.map(function (c) {
+        if (c.card === 'ember') return cand('style', c.when, 'Your style in place of Ember Fang: you said spare chakra.');
+        if (c.card === 'spark') return cand('kunai', c.when, 'Kunai in place of the spark: you said spare chakra.');
+        return c;
+      }).filter(function (c) { return c.card !== 'scroll'; });
+    } else if (doc.chakra === 'pour') {
+      if (d === 'close' && !has(L, 'ember')) L.push(cand('ember', 'always', 'Pour it in: your hardest blow whenever it can.'));
+      if (d === 'mid' && !has(L, 'spark')) L.unshift(cand('spark', 'always', 'Pour it in: the spark every turn it can.'));
+    }
+    if (s.objective === 'setup' && d === 'close' && s.forbid.indexOf('scroll') >= 0) {
+      L = L.filter(function (c) { return c.card !== 'heel'; }).map(function (c) {
+        return c.card === 'ember' && c.when === 'held' ? cand('ember', 'open', 'The finisher, once the daze takes.') : c;
+      });
+      L.unshift(cand('heel', 'always', 'No scroll: a daze is your hold.'));
+    }
+    if (s.variant % 2 === 1) {
+      L = L.map(function (c) { return c.card === 'heel' && c.when === 'open' ? cand('style', 'always', 'Another way: your style by feel, breath not chakra.') : c; });
+      if (L.length > 2) { var t = L.splice(1, 1)[0]; L.splice(2, 0, t); }
+    }
+    if (s.holdSpent) {
+      L = L.filter(function (c) { return c.when !== 'readyHold'; }).map(function (c) {
+        return c.when === 'holdSpent' ? cand(c.card, 'always', 'Their hold is spent; nothing keeps you out now.') : c;
+      });
+    }
+    var seen = {};
+    return L.filter(function (c) {
+      if (s.forbid.indexOf(c.card) >= 0 || KIT[c.card].reach.indexOf(d) < 0 || seen[c.card]) return false;
+      seen[c.card] = true; return true;
+    });
+  }
+  function emptyReason(d) {
+    return d === 'close' ? 'Left empty: nothing else is worth a turn up close.' : d === 'mid' ? 'Left empty: nothing else is worth a turn at mid.' : 'Left empty: you rarely stand this far off.';
+  }
+  function draftDefence(s, d) {
+    if (d === 'close') {
+      if (s.objective === 'outlast') return { def: 'guard', reason: "Catches what you can't slip, for no chakra." };
+      if (s.doctrine.aggr === 'reckless') return { def: 'counter', reason: 'Reckless: punish anything plain they throw.' };
+      return { def: 'dodge', reason: "They've learned your Counter; their break goes through it." };
+    }
+    if (d === 'mid') return { def: 'dodge', reason: 'Against their Air Palm.' };
+    return { def: 'guard', reason: 'Little of theirs reaches you here.' };
+  }
+  function draftFightAt(s) {
+    switch (s.objective) {
+      case 'control': case 'survive': return { v: 'mid', reason: 'Their art is short-reached.' };
+      case 'setup': return { v: 'close', reason: 'Your finisher is a close blow.' };
+      default: return { v: 'stand', reason: 'Close is where your art is.' };
+    }
+  }
+  function notYours(x) { return !x || x.owner !== 'yours'; }
+  function ownerAfter(mark, changed, old) {
+    if (mark && changed) return 'redrafted';
+    if (old && old.owner === 'redrafted' && !changed) return 'redrafted';
+    return 'drafted';
+  }
+  /* Recompute every position `which` allows; yours (and anything kept) is never touched. */
+  function redraft(s, mark, which) {
+    which = which || notYours;
+    DISTS.forEach(function (d) {
+      var row = s.slots[d];
+      var kept = {};
+      row.forEach(function (x) { if (x && x.card && !which(x)) kept[x.card] = true; });
+      var cands = candidates(s, d).filter(function (c) { return !kept[c.card]; });
+      var ci = 0;
+      for (var i = 0; i < LIMIT; i++) {
+        var old = row[i];
+        if (!which(old)) continue;
+        var c = cands[ci++];
+        var nu;
+        if (c) {
+          nu = { card: c.card, when: c.when, conf: c.conf, target: 'her', reason: c.reason };
+          var opener = firstYoursAttackBefore(row, i);
+          if (c.card === 'stepBack' && c.when === 'readyHold' && opener) {
+            nu.when = 'afterOpener';
+            nu.reason = "Their palm can't follow you to mid; now after your " + KIT[opener].name + ', not before it.';
+          }
+        } else nu = { card: null, reason: emptyReason(d) };
+        var changed = !old || old.card !== nu.card || old.when !== nu.when;
+        if (!old && !nu.card) changed = false;
+        nu.owner = ownerAfter(mark, changed, old);
+        row[i] = nu;
+      }
+    });
+    DISTS.forEach(function (d) {
+      var old = s.defence[d];
+      if (!which(old)) return;
+      var nu = draftDefence(s, d);
+      var changed = !old || old.def !== nu.def;
+      s.defence[d] = { def: nu.def, reason: nu.reason, owner: ownerAfter(mark && !!old, changed, old) };
+    });
+    if (which(s.fightAt)) {
+      var old = s.fightAt, nu = draftFightAt(s);
+      var changed = !old || old.v !== nu.v;
+      s.fightAt = { v: nu.v, reason: nu.reason, owner: ownerAfter(mark && !!old, changed, old) };
+    }
+  }
+  function firstYoursAttackBefore(row, i) {
+    for (var j = 0; j < i; j++) { var x = row[j]; if (x && x.owner === 'yours' && x.card && KIT[x.card].attack) return x.card; }
+    return null;
+  }
+
+  /* ================= Moving between levels ================= */
+  function setLevelOn(s, lv) {
+    var from = s.level;
+    if (lv === from) return '';
+    var note = '';
+    if (lv === 'manual') {
+      // Your list adopts everything on it as yours: nothing is marked as the mind's any more.
+      DISTS.forEach(function (d) {
+        s.slots[d] = s.slots[d].map(function (x) {
+          if (!x || x.owner === 'yours') return x;
+          if (!x.card) return null;
+          return Object.assign({}, x, { owner: 'yours' });
+        });
+        var df = s.defence[d];
+        if (df && df.owner !== 'yours') s.defence[d] = Object.assign({}, df, { owner: 'yours' });
+      });
+      if (s.fightAt && s.fightAt.owner !== 'yours') s.fightAt = Object.assign({}, s.fightAt, { owner: 'yours' });
+      note = 'Everything on the list is yours now. Your instincts only advise.';
+    } else if (from === 'manual') {
+      var before = snapshot(s);
+      redraft(s, true, function (x) { return !x; });
+      var n = changedCount(before, s);
+      note = n ? 'Your instincts filled ' + (n === 1 ? 'the empty slot' : 'the empty slots') + '. Hand a slot back to let them plan it.' : 'Everything is yours. Hand a slot back to let your instincts plan it.';
+    }
+    s.level = lv;
+    return note;
+  }
+  function snapshot(s) {
+    var out = {};
+    DISTS.forEach(function (d) { s.slots[d].forEach(function (x, i) { out[d + i] = x ? (x.card || '-') + '/' + (x.when || '') : 'null'; }); });
+    return out;
+  }
+  function changedCount(before, s) {
+    var n = 0;
+    DISTS.forEach(function (d) { s.slots[d].forEach(function (x, i) { if (x && x.owner === 'redrafted' && before[d + i] !== (x.card || '-') + '/' + (x.when || '')) n++; }); });
+    return n;
+  }
+  function redraftedList(before) {
+    var out = [];
+    DISTS.forEach(function (d) {
+      S.slots[d].forEach(function (x, i) {
+        if (x && x.owner === 'redrafted' && before[d + i] !== (x.card || '-') + '/' + (x.when || '')) out.push('slot ' + (i + 1) + ' ' + AT[d]);
+      });
+    });
+    return out;
+  }
+
+  /* ================= Reads and forecasts ================= */
+  function readConf() { return READ_CONF[S.perception]; }
+  function condHtml(slot) {
+    var c = CONDS[slot.when] || CONDS.always;
+    var h = esc(c.text);
+    if (c.foe) h += ' <span class="conf ' + slot.conf + '">' + CONF_WORD[slot.conf] + '</span>';
+    if (slot.card && KIT[slot.card].attack) h += slot.target === 'worth' ? ', at whoever is most worth it' : ', at Shizuka';
+    return h;
+  }
+  function forecast(slot, d, i) {
+    if (!slot || !slot.card) return null;
+    var c = CONDS[slot.when];
+    if (c && c.foe && CONF_RANK[readConf()] < CONF_RANK[slot.conf]) {
+      return { warn: true, text: "Won't fire on what you can see: your read of her reaches only " + CONF_WORD[readConf()] + '.' };
+    }
+    switch (slot.when) {
+      case 'open': return { text: "Rarely fires: they've been open once in two rounds." };
+      case 'held': return { text: hasHoldAbove(d, i) ? 'Follows your hold when it takes.' : 'Fires only once they’re held, and nothing above it holds them.' };
+      case 'readyHold': case 'afterOpener': return { text: 'Fires as their hold comes; you saw the seals form in time.' };
+      case 'readyTech': return { text: 'Fires most turns: they ready something nearly every exchange.' };
+      case 'holdSpent': return { text: S.holdSpent ? 'Their hold is spent; this plays whenever it is reached.' : 'Waits until their hold has been tried and missed.' };
+      case 'hurt': return { text: "Already true: you're hurt. It plays whenever it's reached." };
+      case 'first': return { text: 'Plays on your first turn only.' };
+      case 'lowChakra': return { text: 'Not yet: you have half your chakra.' };
+    }
+    if (KIT[slot.card].move) return { text: 'Fires once; after it the list starts over ' + AT[shift(d, KIT[slot.card].move)] + '.' };
+    if (slot.card === 'ember' && i === 0) return { text: "Plays first most turns. It has landed each time, but they're readying something." };
+    if (slot.card === 'gather') return { text: 'Gives back some chakra and leaves you open until your next turn.' };
+    if (i === 0) return { text: 'Plays first every turn it can.' };
+    return { text: 'Plays only when nothing above it does.' };
+  }
+  function hasHoldAbove(d, i) {
+    for (var j = 0; j < i; j++) { var x = S.slots[d][j]; if (x && (x.card === 'scroll' || x.card === 'heel')) return true; }
+    return false;
+  }
+  function defenceForecast(def, d) {
+    if (d !== 'close') return def === 'dodge' ? 'Slips their Air Palm more often than not.' : 'Little of theirs reaches you here.';
+    if (def === 'counter') return "They've learned it: sure. A break goes through it.";
+    if (def === 'dodge') return "They haven't seen it yet; it slips a palm you can see coming.";
+    return 'Catches their blows; their break walks through it.';
+  }
+  function shift(d, by) { return DISTS[Math.max(0, Math.min(2, DISTS.indexOf(d) + by))]; }
+
+  function suggestion() {
+    if (S.dismissed) return null;
+    var df = S.defence.close;
+    if (df && df.def === 'counter') {
+      return { text: "Keep Dodge ready up close this round, not Counter. They've seen it twice, and what they're readying looks like a break, which goes through a Counter.", use: 'Use Dodge', apply: function () { S.defence.close = { def: 'dodge', owner: 'yours' }; return 'Dodge up close is yours.'; } };
+    }
+    var close = S.slots.close;
+    var reacts = close.some(function (x) { return x && x.card && (x.when === 'readyHold' || x.when === 'afterOpener'); });
+    var free = close.findIndex(function (x) { return !x || !x.card; });
+    if (!reacts && free >= 0 && S.forbid.indexOf('stepBack') < 0 && !close.some(function (x) { return x && x.card === 'stepBack'; })) {
+      return { text: 'Put a step back to mid in slot ' + (free + 1) + ', for when they ready a hold. Their palm can’t follow you there.', use: 'Add it', apply: function () { close[free] = { card: 'stepBack', when: 'readyHold', conf: 'fairly', target: 'her', owner: 'yours' }; return 'Step back to mid is yours, in slot ' + (free + 1) + '.'; } };
+    }
+    if (free >= 0) {
+      return { text: 'Fill slot ' + (free + 1) + ' up close with your style. Plain blows cost breath, not chakra, and you have half your chakra left.', use: 'Add it', apply: function () { close[free] = { card: 'style', when: 'always', conf: 'fairly', target: 'her', owner: 'yours' }; return 'Your style is in slot ' + (free + 1) + '.'; } };
+    }
+    return null;
+  }
+
+  /* ================= The orders slip ================= */
+  function pinsList() {
+    var P = [];
+    DISTS.forEach(function (d) {
+      var df = S.defence[d];
+      if (df && df.owner === 'yours') P.push({ id: 'def-' + d, kind: 'Keep', text: DEF[df.def].name + ' ready ' + AT[d] });
+    });
+    DISTS.forEach(function (d) {
+      var firstYours = true;
+      S.slots[d].forEach(function (x, i) {
+        if (!x || x.owner !== 'yours') return;
+        var t;
+        if (!x.card) t = 'Leave slot ' + (i + 1) + ' ' + AT[d] + ' empty';
+        else {
+          var nm = nameOf(x.card, d);
+          var where = KIT[x.card].move || d === S.at ? '' : ' ' + AT[d];
+          var said = x.card === 'style' ? 'your style' : nm;
+          t = (KIT[x.card].move ? nm : (i === 0 && firstYours ? 'Open with ' : 'Use ') + said) + where;
+          if (x.when !== 'always') t += ', ' + lower(CONDS[x.when].text);
+        }
+        firstYours = false;
+        P.push({ id: 'slot-' + d + '-' + i, kind: 'Do', text: t, conf: x.card && CONDS[x.when] && CONDS[x.when].foe ? x.conf : null });
+      });
+    });
+    if (S.fightAt && S.fightAt.owner === 'yours') P.push({ id: 'fightat', kind: 'Keep', text: S.fightAt.v === 'stand' ? 'the fight wherever you stand' : 'the fight at ' + lower(FIGHT_AT[S.fightAt.v]) });
+    S.forbid.forEach(function (c) { P.push({ id: 'forbid-' + c, kind: 'Never', text: c === 'scroll' ? 'the binding scroll' : nameOf(c, 'close'), never: true }); });
+    return P;
+  }
+  /* Walk the list as it would play from where you stand, for up to three steps. */
+  function planSteps() {
+    var at = S.at, pos = { close: 0, mid: 0, far: 0 }, steps = [];
+    var guard = 0;
+    while (steps.length < 3 && guard++ < 12) {
+      var row = S.slots[at], picked = null;
+      while (pos[at] < LIMIT) {
+        var x = row[pos[at]++];
+        if (x && x.card) { picked = x; break; }
+      }
+      if (!picked) break;
+      var nm = nameOf(picked.card, at);
+      var t = KIT[picked.card].attack ? nm + ' at Shizuka' : nm;
+      if (picked.when !== 'always') t += ' ' + lower(CONDS[picked.when].text);
+      steps.push({ text: t, d: picked.card, own: picked.owner });
+      if (KIT[picked.card].move) at = shift(at, KIT[picked.card].move);
+    }
+    return steps;
+  }
+  function whyLine() {
+    var c0 = S.slots[S.at][0];
+    if (c0 && c0.owner === 'yours' && c0.card && KIT[c0.card].attack) {
+      var back = S.slots[S.at].some(function (x) { return x && x.card === 'stepBack'; });
+      return 'You open with ' + KIT[c0.card].name + ' as you pinned' + (back ? ', then get clear before their hold comes.' : ', and the rest follows from it.');
+    }
+    switch (S.objective) {
+      case 'wear':
+        if (S.doctrine.aggr === 'reckless') return 'Everything you have, up close, before they can set anything up.';
+        return c0 && c0.card === 'stepBack' ? "They'll try to hold you up close, so this keeps you out of reach until they've used it." : 'Trade where you are ahead: your art is the stronger up close.';
+      case 'setup': return S.forbid.indexOf('scroll') >= 0 ? 'No scroll, so a daze does the holding; the finisher waits for it.' : "Hold first, so the finisher can't be slipped.";
+      case 'control': return 'Their art is short-reached. At mid you have the better shot, and you step in only once their hold is spent.';
+      case 'survive': return "You're hurt. Their break is the one blow that could end this, so make it miss and get out of its reach.";
+      case 'outlast': return 'They spend chakra faster than you. Take their blows on a hard guard and draw back what you spend.';
+    }
+    return '';
+  }
+  function readiesLine() {
+    var parts = [];
+    DISTS.forEach(function (d) {
+      var df = S.defence[d];
+      if (!df || d === 'far') return;
+      parts.push(DEF[df.def].name + ' ' + AT[d] + (df.owner === 'yours' ? ', as you pinned' : d === 'mid' ? ' against their palm shot' : ''));
+    });
+    return 'Ready: ' + parts.join('; ') + '.';
+  }
+
+  /* ================= The round, played out ================= */
+  function choose(ctx) {
+    var row = S.slots[ctx.at];
+    for (var i = 0; i < LIMIT; i++) {
+      var x = row[i];
+      if (!x || !x.card) continue;
+      var k = KIT[x.card];
+      if (k.reach.indexOf(ctx.at) < 0) continue;
+      if (k.ck && ctx.you.ck < k.ck) continue;
+      if (!condHolds(x, ctx)) continue;
+      return x;
+    }
+    return null;
+  }
+  function condHolds(x, ctx) {
+    var readOk = CONF_RANK[ctx.read] >= CONF_RANK[x.conf || 'fairly'];
+    switch (x.when) {
+      case 'always': return true;
+      case 'first': return ctx.n === 1;
+      case 'open': return ctx.foeOpen || ctx.foeBound;
+      case 'held': return ctx.foeBound;
+      case 'readyHold': return ctx.f === 'hold' && readOk;
+      case 'afterOpener': return (ctx.f === 'hold' && readOk) || ctx.n > 1;
+      case 'readyTech': return readOk;
+      case 'holdSpent': return ctx.holdSpent;
+      case 'hurt': return ctx.you.hp <= 70;
+      case 'lowChakra': return ctx.you.ck < 60;
+    }
+    return true;
+  }
+  function simulate() {
+    var at = S.at;
+    var you = Object.assign({}, S.vit.you), foe = Object.assign({}, S.vit.foe);
+    var start = { you: Object.assign({}, you), foe: Object.assign({}, foe) };
+    var read = readConf();
+    var queue = S.holdSpent ? ['break', 'strike', 'break', 'strike'] : ['hold', 'break', 'strike', 'break'];
+    var youHeld = false, foeBound = false, foeOpen = false, herSkip = false, holdSpent = S.holdSpent, holdSeen = S.holdSeen, steppedBack = false;
+    var exs = [];
+    var said = {};
+    function say(key, opts) { var k = said[key] || 0; said[key] = k + 1; return opts[k % opts.length]; }
+    for (var n = 1; n <= 4; n++) {
+      var f = queue.shift() || 'strike';
+      if (f === 'hold' && holdSpent) f = 'break';
+      var lines = [], chips = [];
+      var evading = false, bracing = false, open = false, wasHeld = youHeld;
+      /* Your turn */
+      if (youHeld) {
+        lines.push('You strain against her hold and lose the turn.');
+      } else {
+        var pick = choose({ at: at, n: n, f: f, foeOpen: foeOpen, foeBound: foeBound, holdSpent: holdSpent, you: you, read: read });
+        var card = pick ? pick.card : null;
+        if (!card) {
+          if (at === 'close') { card = 'plain'; }
+          else if (S.fightAt && S.fightAt.v !== at && S.fightAt.v !== 'stand') card = DISTS.indexOf(S.fightAt.v) < DISTS.indexOf(at) ? 'stepIn' : 'stepBack';
+          else card = 'stepIn';
+        }
+        var vulnerable = foeOpen || foeBound;
+        switch (card) {
+          case 'plain': lines.push('Nothing on your list fits, so you throw a plain blow.'); foe.hp -= 5; chips.push(['harm', 'Shizuka −5']); break;
+          case 'ember': var dm = vulnerable ? 20 : 14; foe.hp -= dm; you.ck -= 14; lines.push(vulnerable ? 'Your Ember Fang drives into her with nothing in the way.' : say('ember', ['Your Ember Fang burns into her guard.', 'Ember Fang again, and her sleeve smoulders.', 'Your burning palm-heel finds her ribs.'])); chips.push(['harm', 'Shizuka −' + dm], ['cost', '−14 chakra']); break;
+          case 'heel': you.br -= 6; foe.hp -= 6; chips.push(['harm', 'Shizuka −6'], ['cost', '−6 breath']); if (vulnerable) { herSkip = true; lines.push('Your Rising Heel catches her open and she reels.'); } else lines.push('Your Rising Heel thumps into her guard.'); break;
+          case 'style': you.br -= 5; foe.hp -= 8; lines.push(vulnerable ? 'Your style finds the gap she left.' : 'You work her with your style, a change of feet and a low strike.'); chips.push(['harm', 'Shizuka −8'], ['cost', '−5 breath']); break;
+          case 'spark': you.ck -= 10; foe.hp -= 10; lines.push(say('spark', ['Your Lantern Spark catches her shoulder.', 'Another spark, and she turns her face from it.', 'Your spark bursts against her guard.'])); chips.push(['harm', 'Shizuka −10'], ['cost', '−10 chakra']); break;
+          case 'kunai': foe.hp -= 4; lines.push('Your kunai draws a line across her sleeve.'); chips.push(['harm', 'Shizuka −4']); break;
+          case 'scroll': you.ck -= 18; foeBound = true; herSkip = true; lines.push('Your binding strip wraps her arms to her sides.'); chips.push(['cost', '−18 chakra']); break;
+          case 'stepBack': at = shift(at, 1); steppedBack = true; lines.push(at === 'mid' ? 'You slide back to mid, out of her palm’s reach.' : 'You fall back further, out to far.'); break;
+          case 'stepIn': at = shift(at, -1); lines.push(at === 'close' ? 'You close in again.' : 'You come in to mid.'); break;
+          case 'evade': evading = true; you.br -= 8; lines.push('You stay light on your feet and give her nothing to hit.'); chips.push(['cost', '−8 breath']); break;
+          case 'brace': bracing = true; you.br -= 6; lines.push('You set your feet and close your guard hard.'); chips.push(['cost', '−6 breath']); break;
+          case 'gather': open = true; var back = Math.min(18, 176 - you.ck); you.ck += back; lines.push('You draw your chakra back in, and leave yourself open.'); chips.push(['gain', '+' + back + ' chakra']); break;
+        }
+        if (card !== 'scroll' && card !== 'heel') { /* a hold or daze you didn't make wears off as you act */ }
+        foeOpen = false;
+      }
+      /* Her turn */
+      var def = S.defence[at] ? S.defence[at].def : 'guard';
+      if (herSkip) {
+        lines.push(foeBound ? 'She strains against the strip and loses her turn.' : 'She loses her turn, still reeling.');
+        herSkip = false;
+        if (!foeBound) foeOpen = true;
+      } else if (foeBound) {
+        lines.push('She tears the strip away.'); foeBound = false;
+      } else if (f === 'hold') {
+        if (at !== 'close') {
+          lines.push('Her sealed palm closes on air: you were already out of reach. She is open for a moment.');
+          holdSpent = true; holdSeen = true; foeOpen = true;
+        } else if (evading || def === 'dodge') {
+          lines.push('You slip her sealed palm, and she is open for a moment.'); holdSpent = true; holdSeen = true; foeOpen = true;
+        } else {
+          youHeld = true; holdSpent = true; holdSeen = true;
+          lines.push('Her fingers seal against your arm and your body locks.');
+          you.ck -= 12; chips.push(['harm', '−12 chakra']);
+        }
+      } else if (f === 'break' || f === 'strike') {
+        if (at === 'far') {
+          lines.push('She comes in to mid, keeping her hands ready.'); at = 'mid';
+        } else if (at === 'mid' && f === 'strike') {
+          at = 'close'; lines.push(say('closes', ['She closes the gap again, palms low.', 'She is on you again before you can settle.']));
+        } else if (at === 'mid') {
+          if (evading || def === 'dodge') lines.push(say('airslip', ['Her Air Palm rips past you; you saw it coming.', 'You lean out of a second Air Palm.']));
+          else { you.hp -= 8; lines.push('Her Air Palm knocks the breath out of you.'); chips.push(['harm', 'You −8']); }
+        } else if (f === 'break') {
+          var dmg = 0, line;
+          if (youHeld || wasHeld) { dmg = 26; line = 'Heart-breaker Palm lands inside your guard; held, you can’t turn it.'; }
+          else if (evading) { line = 'Her Heart-breaker Palm finds nothing; you are already moving.'; }
+          else if (def === 'dodge') { line = 'You turn sideways and her Heart-breaker Palm passes you.'; }
+          else if (bracing) { dmg = 9; line = 'Her palm hits your braced guard and the worst of it spreads.'; }
+          else if (def === 'counter') { dmg = 20; line = 'Her Heart-breaker Palm goes straight through your Counter.'; }
+          else { dmg = 16; line = 'Her Heart-breaker Palm breaks through your guard.'; }
+          if (open && dmg) { dmg += 6; line += ' Gathering, you were wide open.'; }
+          lines.push(line); if (dmg) { you.hp -= dmg; chips.push(['harm', 'You −' + dmg]); }
+          foe.ck -= 16;
+        } else {
+          if (evading || def === 'dodge') lines.push('Her palm strike glances off your shoulder as you slip it.');
+          else if (def === 'counter' && !youHeld) { foe.hp -= 8; lines.push('Your Counter catches her palm strike and turns it back on her.'); chips.push(['harm', 'Shizuka −8']); }
+          else { you.hp -= 5; lines.push('Her palm strike lands on your guard.'); chips.push(['harm', 'You −5']); }
+        }
+      }
+      if (wasHeld) { youHeld = false; lines.push('You tear free of the hold.'); }
+      exs.push({ n: n, lines: lines, chips: chips });
+    }
+    you.hp = Math.max(1, you.hp); foe.hp = Math.max(1, foe.hp);
+    var dealt = start.foe.hp - foe.hp, took = start.you.hp - you.hp;
+    var verdict = dealt > took + 4 ? 'The round went your way.' : took > dealt + 4 ? 'The round went hers.' : 'An even round: neither of you gave much.';
+    return { exs: exs, start: start, end: { you: you, foe: foe, at: at, holdSpent: holdSpent, holdSeen: holdSeen, steppedBack: steppedBack }, verdict: verdict };
+  }
+
+  /* ================= Rendering ================= */
+  var screen = document.getElementById('screen');
+  var intro = document.getElementById('intro');
+  var overlay = document.getElementById('overlay');
+  var barHost = document.getElementById('bar-host');
+
+  function ownStamp(owner) {
+    // On your list everything is yours, so nothing needs a mark.
+    if (S.level === 'manual') return '';
+    switch (owner) {
+      case 'yours': return '<span class="own yours">Yours</span>';
+      case 'drafted': return '<span class="own drafted">Drafted</span>';
+      case 'redrafted': return '<span class="own redrafted">Re-drafted</span>';
+    }
+    return '';
+  }
+
+  function renderIntro() {
+    var h = '<div class="intro-top"><h2 id="intro-title">What this is, what to try</h2>' +
+      '<button class="btn ghost small" id="intro-toggle" data-act="intro" aria-expanded="' + S.introOpen + '">' + (S.introOpen ? 'Fold it away' : 'Open it') + '</button></div>';
+    if (S.introOpen) {
+      h += '<p>A clickable prototype of the plan screen for the objective-driven combat AI (combat-ai-plan, Part 9), for a feel test before any engine work. <b>One plan sits under three levels of help</b>; the switch decides who fills the slots you haven’t set. The mind’s drafting is a small hand-written rule table, and the round played out is a sketch, not the engine.</p>' +
+        '<ol>' +
+        '<li><b>Slide the switch</b> (or press 1, 2, 3 on a keyboard). Nothing you set is ever lost.</li>' +
+        '<li>In <b>Plan then edit</b>, open a drafted slot, pick a card and keep it. It takes your seal and the mind re-drafts around it, marked in chakra ink.</li>' +
+        '<li>Go to <b>Your list</b>: everything on it becomes yours, reasons turn into forecasts, and one suggestion waits on a slip. Clear a slot and try <b>Ask for a plan</b>.</li>' +
+        '<li>Go to <b>Orders</b>: your slots are pins now. Change the order and watch the slip change; unpin something, forbid a move.</li><li><b>How you fight</b> (beside the round’s title) is a standing preference: set it once and it holds for every round until you change it.</li>' +
+        '<li>Change <b>Perception</b> under the foe’s read and see what you can make of her, and which of your conditions can still fire.</li>' +
+        '<li><b>Begin round 3</b>, read how it went, then plan round 4.</li></ol>' +
+        '<div class="tools">Look:' +
+        '<button class="btn ghost small" id="theme-night" data-act="theme" data-v="dark">Night</button>' +
+        '<button class="btn ghost small" id="theme-day" data-act="theme" data-v="light">Day</button>' +
+        '<button class="btn ghost small" id="theme-device" data-act="theme" data-v="">Follow the device</button>' +
+        '<span style="flex:1"></span>' +
+        '<button class="btn ghost small" id="reset" data-act="reset">Reset the prototype</button></div>';
+    } else {
+      h += '<div class="tools"><button class="btn ghost small" id="reset" data-act="reset">Reset the prototype</button></div>';
+    }
+    intro.innerHTML = h;
+  }
+
+  function renderSwitch() {
+    var idx = { manual: 0, draft: 1, orders: 2 }[S.level];
+    var h = '<div class="handover">' +
+      '<div class="handover-top"><h2>Who plans this round</h2><span>' + (wide.matches ? 'Keys 1 to 3' : 'Change it any round') + '</span></div>' +
+      '<div class="stops" role="group" aria-label="Who plans this round"><span class="fill" style="width:' + (idx * 33.33) + '%"></span>';
+    ['manual', 'draft', 'orders'].forEach(function (lv, i) {
+      h += '<button class="stop" id="lv-' + lv + '" data-act="level" data-v="' + lv + '" aria-pressed="' + (S.level === lv) + '"><i>' + (i + 1) + '</i><b>' + LEVEL_NAME[lv] + '</b></button>';
+    });
+    h += '</div><p class="handover-say">' + SAY[S.level] + '</p></div>';
+    return h;
+  }
+
+  function renderTabs() {
+    var h = '<div class="tabs" role="tablist" aria-label="Distance">';
+    DISTS.forEach(function (d) {
+      var n = S.slots[d].filter(function (x) { return x && x.card; }).length;
+      var sub = d === S.at ? 'you are here' : n ? String(n) : '';
+      h += '<button class="tab" role="tab" id="tab-' + d + '" data-act="tab" data-v="' + d + '" aria-selected="' + (S.tab === d) + '">' + DIST_NAME[d] + (sub ? ' <small>' + sub + '</small>' : '') + '</button>';
+    });
+    return h + '</div>';
+  }
+
+  function renderFields() {
+    var d = S.tab, df = S.defence[d], fa = S.fightAt;
+    var dHint = '', fHint = '';
+    if (S.level === 'manual') {
+      dHint = '<span class="forecast" style="font-size:0.8rem">' + esc(defenceForecast(df.def, d)) + '</span>';
+      fHint = '<span class="hint">Step only when nothing slotted reaches</span>';
+    } else {
+      dHint = '<span class="hint">' + (df.owner === 'yours' ? 'You set it; the mind keeps it.' : esc(df.reason || '')) + '</span>';
+      fHint = '<span class="hint">' + (fa.owner === 'yours' ? 'You set it; the mind keeps it.' : esc(fa.reason || '')) + '</span>';
+    }
+    return '<div class="field-row">' +
+      '<div class="field"><span id="def-label">Defence ' + AT[d] + '</span>' +
+      '<button class="select' + (df.owner === 'yours' || S.level === 'manual' ? '' : ' drafted') + '" id="def-btn" data-act="edit-def" aria-labelledby="def-label def-btn"><span class="v">' + DEF[df.def].name + '</span>' + (S.level === 'manual' && df.owner !== 'yours' ? '' : ownStamp(df.owner)) + '</button>' + dHint + '</div>' +
+      '<div class="field"><span id="fa-label">Fight at</span>' +
+      '<button class="select' + (fa.owner === 'yours' || S.level === 'manual' ? '' : ' drafted') + '" id="fightat-btn" data-act="edit-fightat" aria-labelledby="fa-label fightat-btn"><span class="v">' + FIGHT_AT[fa.v] + '</span>' + (S.level === 'manual' && fa.owner !== 'yours' ? '' : ownStamp(fa.owner)) + '</button>' + fHint + '</div>' +
+      '</div>';
+  }
+
+  function renderSlots() {
+    var d = S.tab, h = '<ol class="slots" aria-label="Actions ' + AT[d] + '">';
+    S.slots[d].forEach(function (x, i) {
+      var id = 'slot-' + d + '-' + i;
+      h += '<li class="slot"><span class="rank">' + (i + 1) + '</span>';
+      if (!x || !x.card) {
+        var t = !x ? 'Empty slot' : x.owner === 'yours' ? 'Kept empty by you' : esc(x.reason);
+        h += '<button class="card empty" id="' + id + '" data-act="edit-slot" data-d="basic" data-dist="' + d + '" data-i="' + i + '"><span class="card-top"><span style="flex:1">' + t + '</span>' + (x ? ownStamp(x.owner === 'drafted' ? 'drafted' : x.owner) : '') + '</span><small>' + (S.level === 'manual' ? 'Tap to set it' : 'Tap to set it yourself') + '</small></button>';
+      } else {
+        var k = KIT[x.card];
+        var dashed = x.owner === 'drafted' || x.owner === 'redrafted';
+        h += '<button class="card' + (dashed ? ' dashed' : '') + '" id="' + id + '" data-act="edit-slot" data-d="' + k.d + '" data-dist="' + d + '" data-i="' + i + '">' +
+          '<span class="card-top"><b>' + esc(nameOf(x.card, d)) + '</b>' + ownStamp(x.owner) + '</span>' +
+          '<small>' + esc(k.text) + ' <span class="chip cost">' + esc(k.cost) + '</span></small></button>';
+        h += '<p class="when">' + condHtml(x) + '</p>';
+        if (S.level === 'manual') {
+          var fc = forecast(x, d, i);
+          if (fc) h += '<p class="forecast' + (fc.warn ? ' warn' : '') + '">' + esc(fc.text) + '</p>';
+        } else if (x.owner === 'yours') {
+          var fc2 = forecast(x, d, i);
+          h += fc2 && fc2.warn ? '<p class="forecast warn">' + esc(fc2.text) + '</p>' : '<p class="hint">You set this; the mind plans around it.</p>';
+        } else {
+          h += '<p class="why">' + esc(x.reason) + '</p>';
+        }
+      }
+      h += '</li>';
+    });
+    return h + '</ol>';
+  }
+
+  function objectiveSummary() {
+    var o = OBJECTIVES.filter(function (x) { return x.id === S.objective; })[0];
+    return '<b>' + o.name + '</b>. ' + esc(doctrineLine());
+  }
+  /* How you fight, as one plain sentence: a standing preference, not part of a round's order. */
+  function doctrineLine() {
+    var d = S.doctrine;
+    var aggr = { held: 'held back', measured: 'measured', pressing: 'pressing', reckless: 'reckless' }[d.aggr];
+    var ck = { spare: 'sparing your chakra', needed: 'spending chakra as needed', pour: 'pouring your chakra in' }[d.chakra];
+    return 'You fight ' + RISK_ADV[d.risk] + ' and ' + aggr + ', ' + ck + '.';
+  }
+  function renderDoctrine() {
+    var h = '<div class="doctrine">';
+    Object.keys(DOCTRINE).forEach(function (k) {
+      h += '<div class="dial"><span id="dial-' + k + '">' + DOCTRINE[k].label + '</span><div class="words" role="group" aria-labelledby="dial-' + k + '">';
+      DOCTRINE[k].words.forEach(function (w) {
+        h += '<button class="word" id="doc-' + k + '-' + w[0] + '" data-act="doctrine" data-k="' + k + '" data-v="' + w[0] + '" aria-pressed="' + (S.doctrine[k] === w[0]) + '">' + w[1] + '</button>';
+      });
+      h += '</div></div>';
+    });
+    return h + '</div>';
+  }
+  function wordOf(k, v) { return DOCTRINE[k].words.filter(function (w) { return w[0] === v; })[0][1]; }
+
+  function renderDraft() {
+    return '<section class="a-plan" aria-label="Plan then edit">' +
+      '<div class="lead-row"><p class="lead">Drafted for ' + objectiveSummary() + '</p><button class="btn link" id="go-orders" data-act="level" data-v="orders">Change the order</button></div>' +
+      renderTabs() + renderFields() + renderSlots() +
+      '<div class="legend">' +
+      '<div><span class="own yours">Yours</span> kept as you set it; the mind plans around it.</div>' +
+      '<div><span class="own drafted">Drafted</span> the mind’s, with its reason. Change it and it’s yours.</div>' +
+      '<div><span class="own redrafted">Re-drafted</span> changed this round to fit around your edit.</div></div>' +
+      '<div class="btn-row"><button class="btn ghost small" id="take-list" data-act="level" data-v="manual">Take the list as mine</button>' +
+      '<button class="btn ghost small" id="redraft-rest" data-act="redraft">Redraft the rest</button></div>' +
+      '</section>';
+  }
+
+  function renderManual() {
+    var sg = suggestion();
+    var empty = 0;
+    DISTS.forEach(function (d) { S.slots[d].forEach(function (x) { if (!x) empty++; }); });
+    var askHint = empty ? 'Fills ' + (empty === 1 ? 'the empty slot' : 'the empty slots') + '. Leaves everything you set alone.' : 'Every slot is set. Clear one or hand it back for your instincts to fill.';
+    var h = '<section class="a-plan" aria-label="Your list">' +
+      '<p class="lead">Your list. Your instincts only advise; nothing here changes without you.</p>' +
+      renderTabs() + renderFields() + renderSlots() +
+      '<div class="btn-row"><button class="btn ghost small" id="ask-plan" data-act="ask">Ask for a plan</button></div>' +
+      '<p class="hint">' + esc(askHint) + '</p>';
+    if (sg) {
+      h += '<div class="slip"><h4>One suggestion</h4><p>' + esc(sg.text) + '</p>' +
+        '<div class="btn-row"><button class="btn small" id="sg-use" data-act="sg-use">' + esc(sg.use) + '</button><button class="btn ghost small" id="sg-no" data-act="sg-no">Not this round</button></div></div>';
+    } else {
+      h += '<p class="hint">' + (S.dismissed ? 'No more suggestions this round.' : 'No suggestion: the list answers what she has shown.') + '</p>';
+    }
+    return h + '</section>';
+  }
+
+  function renderOrders() {
+    var h = '<section class="a-plan" aria-label="Orders"><h3 class="sec">Your order for the round</h3><div class="orders">';
+    OBJECTIVES.forEach(function (o) {
+      h += '<button class="order" id="obj-' + o.id + '" data-act="objective" data-v="' + o.id + '" aria-pressed="' + (S.objective === o.id) + '"' + (o.disabled ? ' disabled' : '') + '><b>' + o.name + '</b><small>' + o.blurb + '</small></button>';
+    });
+    h += '</div><p class="lead">' + esc(doctrineLine()) + ' <button class="btn link" id="doc-open-o" data-act="doctrine-open">Change how you fight</button></p>';
+    h += '<h3 class="sec">Pins</h3>';
+    var P = pinsList();
+    var nevers = P.filter(function (p) { return p.never; });
+    var kept = P.filter(function (p) { return !p.never; });
+    var pinItem = function (p) {
+      return '<li class="pin' + (p.never ? ' never' : '') + '"><span class="kind">' + p.kind + '</span><span class="what">' + esc(p.text) + (p.conf ? ' <span class="conf ' + p.conf + '">' + CONF_WORD[p.conf] + '</span>' : '') + '</span>' +
+        '<button class="x" id="unpin-' + p.id + '" data-act="unpin" data-v="' + p.id + '">Unpin</button></li>';
+    };
+    if (!P.length) h += '<p class="none-yet">No pins: the mind plans every action.</p>';
+    else if (kept.length > PIN_FOLD) {
+      // A whole list brought over from Your list folds into one entry: the order still reads at a glance.
+      h += '<details class="pinfold" id="pinfold"' + (S.pinsOpen ? ' open' : '') + '><summary><span class="kind">Keep</span><span class="what">Your list, kept as pins: ' + kept.length + ' of them</span><span class="fold-hint"><span class="closed">Show them</span><span class="opened">Fold them away</span></span></summary>' +
+        '<ul class="pins">' + kept.map(pinItem).join('') + '</ul></details>' +
+        '<div class="btn-row"><button class="btn ghost small" id="unpin-all" data-act="unpin-all">Hand the list back to your instincts</button></div>';
+      if (nevers.length) h += '<ul class="pins">' + nevers.map(pinItem).join('') + '</ul>';
+    } else {
+      h += '<ul class="pins">' + P.map(pinItem).join('') + '</ul>';
+    }
+    h += '<div class="btn-row"><button class="btn ghost small" id="pin-require" data-act="pick" data-v="require">Require a move</button><button class="btn ghost small" id="pin-forbid" data-act="pick" data-v="forbid">Forbid a move</button></div>';
+    var o = OBJECTIVES.filter(function (x) { return x.id === S.objective; })[0];
+    var steps = planSteps();
+    h += '<h3 class="sec">The plan for the round</h3><div class="slip" id="orders-slip"><span class="seal-mark" aria-hidden="true">策</span>' +
+      '<h4>' + o.title + ', ' + RISK_ADV[S.doctrine.risk] + '</h4><ol class="steps">';
+    steps.forEach(function (st, i) {
+      var k = KIT[st.d];
+      h += '<li><span>' + (i + 1) + '</span><span>' + esc(st.text) + (st.own === 'yours' ? ' <span class="muted">(your pin)</span>' : '') + '</span><span class="k ' + k.d + '">' + k.art + '</span></li>';
+    });
+    if (!steps.length) h += '<li><span>1</span><span>Hold your ground and react</span><span class="k basic">Footwork</span></li>';
+    h += '</ol><p>' + esc(whyLine()) + '</p><p class="muted">' + esc(readiesLine()) + '</p></div>' +
+      '<div class="btn-row"><button class="btn ghost small" id="see-list" data-act="level" data-v="draft">See it as a list</button><button class="btn ghost small" id="another-plan" data-act="another">Another plan</button></div></section>';
+    return h;
+  }
+
+  function meter(label, cls, v, max) {
+    return '<div class="meter">' + label + '<span class="bar"><i class="' + cls + '" style="width:' + Math.round(100 * v / max) + '%"></i></span><span class="num">' + v + '/' + max + '</span></div>';
+  }
+  function renderFormation() {
+    var ix = DISTS.indexOf(S.at);
+    return '<div class="formation" aria-label="Formation">' +
+      '<div class="f-col"><span class="f-row">Front</span><div class="token"><span class="seal">K</span><span>You</span><span class="hp"><i style="width:' + S.vit.you.hp + '%"></i></span></div></div>' +
+      '<div class="gap"><span class="gap-label">' + DIST_NAME[S.at] + ' range</span><span class="ruler">' + DISTS.map(function (d, i) { return '<i' + (i <= ix ? ' class="on"' : '') + '></i>'; }).join('') + '</span></div>' +
+      '<div class="f-col"><span class="f-row">Front</span><div class="token"><span class="seal foe">S</span><span>Shizuka</span><span class="hp foe"><i style="width:' + S.vit.foe.hp + '%"></i></span></div></div></div>';
+  }
+  function renderVitals() {
+    var y = S.vit.you, f = S.vit.foe;
+    return '<div class="vitals">' +
+      '<div class="vcard"><div class="vname"><span class="seal small">K</span>Kaito</div>' + meter('Health', 'h', y.hp, 100) + meter('Chakra', 'c', y.ck, 176) + meter('Breath', 'b', y.br, 70) + '</div>' +
+      '<div class="vcard"><div class="vname"><span class="seal small foe">S</span>Shizuka</div>' + meter('Health', 'hf', f.hp, 100) + meter('Chakra', 'c', f.ck, 160) + meter('Breath', 'b', f.br, 50) + '</div></div>';
+  }
+  function renderFight() {
+    var story = '<h3>How round ' + (S.round - 1) + ' went</h3>' + S.last.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('');
+    var h = '<section class="a-fight" aria-label="The fight">' + renderFormation() + renderVitals();
+    if (wide.matches) {
+      h += '<div class="story">' + story + '</div>' +
+        '<p class="planned-by">This round: <b>' + LEVEL_NAME[S.level] + '</b>. ' + plannedByLine() + '</p>' +
+        '<div class="choices"><button class="btn ghost" id="flee" data-act="flee">Try to flee</button><button class="btn" id="begin" data-act="begin">Begin round ' + S.round + '</button></div>' +
+        '<p class="hint">Enter begins.</p>';
+    } else {
+      h += '<details class="story" id="story-fold"><summary>How round ' + (S.round - 1) + ' went</summary>' + S.last.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') + '</details>';
+    }
+    return h + '</section>';
+  }
+  function plannedByLine() {
+    var y = 0, m = 0;
+    DISTS.forEach(function (d) { S.slots[d].forEach(function (x) { if (x && x.card) { if (x.owner === 'yours') y++; else m++; } }); });
+    if (S.level === 'manual') return 'Every slot plays as you see it.';
+    return y ? (y === 1 ? 'One slot is yours' : y + ' slots are yours') + '; your instincts fill the rest.' : 'Your instincts fill every slot.';
+  }
+
+  var CUES = {
+    hold: {
+      sharp: {
+        cues: ['Her weight shifts onto the back foot', 'Her fingers run through a seal you haven’t met, then go stiff', 'Her eyes are on your forearm, not your chest', 'Breathing slow, as if she’s waiting for something'],
+        main: ['A hold, up close, made with seals', 'sure'], second: ['Then Heart-breaker Palm, once you can’t move', 'fairly'],
+        note: 'The hold is new to you, so it is described, not named. Heart-breaker Palm you would know at once.'
+      },
+      even: {
+        cues: ['Her weight shifts onto the back foot', 'Fingers held stiff and together, with seals before them', 'Her eyes are on your arm, not your fists'],
+        main: ['Likely an unfamiliar technique, up close, with seals: a hold', 'fairly'], second: ['Or a palm aimed inside your guard', 'maybe'],
+        note: 'Not named: you’ve never seen it, and your eyes are a step short of hers.'
+      },
+      outclassed: {
+        cues: ['She has gone very still', 'Her hands move too quickly to follow'],
+        main: ['Perhaps a technique up close', 'maybe'], second: null,
+        note: 'Her hands are too quick for you. A condition that needs fairly sure won’t fire on what you see.'
+      }
+    },
+    brk: {
+      sharp: {
+        cues: ['Her weight drops, the back heel lifting', 'Two fingers pointed, the palm turned in', 'Her eyes are on your chest'],
+        main: ['Heart-breaker Palm, inside your guard', 'sure'], second: null,
+        note: 'Named: you’ve seen it before, and your eyes are a match for hers.'
+      },
+      even: {
+        cues: ['Her weight drops onto the front foot', 'Fingers held stiff and together, two of them pointed', 'Her eyes are on your chest, not your fists'],
+        main: ['Likely a technique up close, a palm aimed inside your guard', 'fairly'], second: ['Or a plain strike to draw your Counter', 'maybe'],
+        note: 'Not named: your eyes are a step short of hers. Sharper perception, or insight, would name it.'
+      },
+      outclassed: {
+        cues: ['She comes forward', 'Her hands are hard to follow'],
+        main: ['Perhaps a technique up close', 'maybe'], second: null,
+        note: 'Her hands are too quick for you. A condition that needs fairly sure won’t fire on what you see.'
+      }
+    }
+  };
+  function renderRead(inner) {
+    var R = CUES[S.holdSpent ? 'brk' : 'hold'][S.perception];
+    var h = '';
+    if (!inner) h += '<div class="read-name"><span class="seal small foe">S</span><b>Shizuka</b><span class="badge foe">Opponent</span><span class="chip harm">' + S.vit.foe.hp + '/100</span></div>' +
+      '<p class="hint">' + (S.at === 'close' ? 'Up close with you' : DIST_NAME[S.at] + ' from you') + '. A Gentle-palm adept.</p>';
+    h += '<h4>What you see</h4><ul class="cues">' + R.cues.map(function (c) { return '<li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="2.5" fill="currentColor"/></svg><span>' + esc(c) + '</span></li>'; }).join('') + '</ul>';
+    h += '<h4>What you make of it</h4><div class="infer"><p>' + esc(R.main[0]) + ' <span class="conf ' + R.main[1] + '">' + CONF_WORD[R.main[1]] + '</span></p>' +
+      (R.second ? '<p class="second">' + esc(R.second[0]) + ' <span class="conf ' + R.second[1] + '">' + CONF_WORD[R.second[1]] + '</span></p>' : '') + '</div>' +
+      '<p class="hint">' + esc(R.note) + '</p>';
+    h += '<h4>What you know she holds</h4><div class="known">' +
+      '<span class="kcard" data-d="taijutsu">Still Palm Strike</span><span class="kcard" data-d="taijutsu">Heart-breaker Palm</span><span class="kcard" data-d="ninjutsu">Air Palm, at mid</span>' +
+      (S.holdSeen ? '<span class="kcard" data-d="taijutsu">A sealing hold, not yet named</span>' : '<span class="kcard unknown">One you haven’t seen</span>') + '</div>';
+    h += '<h4>What she’s learned of you</h4><ul class="learned">' +
+      '<li><span>You keep Counter ready up close</span><span class="conf sure">sure</span></li>' +
+      '<li><span>You lead with Ember Fang</span><span class="conf fairly">fairly sure</span></li>' +
+      (S.steppedBack ? '<li><span>You step back when she reaches for a hold</span><span class="conf fairly">fairly sure</span></li>' : '<li><span>You step back when hurt</span><span class="conf unseen">not seen</span></li>') + '</ul>';
+    h += '<div class="perception"><span class="lab" id="perc-label">Perception, for the demo: your eyes against hers</span><div class="words" role="group" aria-labelledby="perc-label">' +
+      [['sharp', 'Sharp'], ['even', 'Even'], ['outclassed', 'Outclassed']].map(function (p) {
+        return '<button class="word" id="perc-' + p[0] + '" data-act="perception" data-v="' + p[0] + '" aria-pressed="' + (S.perception === p[0]) + '">' + p[1] + '</button>';
+      }).join('') + '</div></div>';
+    return h;
+  }
+  function renderFoe() {
+    if (wide.matches) return '<aside class="a-foe" aria-label="Your read of Shizuka"><div class="read">' + renderRead(false) + '</div></aside>';
+    var R = CUES[S.holdSpent ? 'brk' : 'hold'][S.perception];
+    return '<aside class="a-foe" aria-label="Your read of Shizuka"><details class="foldread" id="foe-fold"' + (S.foeOpen ? ' open' : '') + '><summary id="foe-summary"><div class="read" style="gap:4px">' +
+      '<div class="read-name"><span class="seal small foe">S</span><b>Shizuka</b><span class="chip harm">' + S.vit.foe.hp + '/100</span></div>' +
+      '<p style="font-family:var(--font-story);font-size:0.92rem">' + esc(R.main[0]) + ' <span class="conf ' + R.main[1] + '">' + CONF_WORD[R.main[1]] + '</span></p>' +
+      '<span class="fold-hint"><span class="closed">What you see, what she holds, and perception</span><span class="opened">Fold the read away</span></span></div></summary>' +
+      '<div class="read" style="margin-top:8px">' + renderRead(true) + '</div></details></aside>';
+  }
+
+  function headLine() {
+    return S.level === 'orders' ? 'Give the order and any pins; your instincts plan the actions inside them.' :
+      S.level === 'draft' ? 'Your instincts drafted the round. Change any slot and it becomes yours.' :
+      'Set every action yourself. Your instincts forecast each slot and offer one suggestion.';
+  }
+
+  function render() {
+    var active = document.activeElement && document.activeElement.id;
+    var dScroll = overlay.querySelector('.d-body');
+    var dTop = dScroll ? dScroll.scrollTop : 0;
+    document.body.classList.toggle('narrow-mode', !wide.matches);
+    renderIntro();
+    screen.className = 'screen ' + (wide.matches ? 'wide' : 'narrow');
+    var plan = S.level === 'orders' ? renderOrders() : S.level === 'draft' ? renderDraft() : renderManual();
+    screen.innerHTML = '<header class="plan-head a-head"><h1>Plan round ' + S.round + '</h1><p>' + headLine() + '</p><button class="btn ghost small" id="doc-open" data-act="doctrine-open">How you fight</button></header>' +
+      '<div class="a-switch">' + renderSwitch() + '</div>' + renderFight() + renderFoe() + plan;
+    barHost.innerHTML = wide.matches ? '' : '<div class="bottom-bar"><button class="btn ghost" id="flee-m" data-act="flee">Flee</button><button class="btn" id="begin-m" data-act="begin">Begin round ' + S.round + '</button></div>';
+    renderOverlay();
+    var nd = overlay.querySelector('.d-body');
+    if (nd && dTop) nd.scrollTop = dTop;
+    var focusId = S._focus || active;
+    S._focus = null;
+    if (focusId) { var el = document.getElementById(focusId); if (el) el.focus({ preventScroll: true }); }
+    remember();
+  }
+
+  /* ================= Editors, pickers and the round report ================= */
+  function renderOverlay() {
+    var E = S.editor;
+    if (!E) { overlay.innerHTML = ''; return; }
+    var cls = 'drawer' + (wide.matches ? '' : ' sheet');
+    var head = '', body = '', foot = '';
+    if (E.kind === 'slot') {
+      var x = S.slots[E.d][E.i];
+      var dr = E.draft;
+      head = 'Slot ' + (E.i + 1) + ' ' + AT[E.d];
+      body += '<p class="hint">' + (x && x.owner === 'yours' ? 'This slot is yours.' : S.level === 'manual' ? 'Whatever you keep here is yours.' : 'Keep a change and the slot is yours; the mind re-drafts the others around it.') + '</p>';
+      body += '<h3 class="sec">Card</h3><div class="tgrid">';
+      KIT_ORDER.forEach(function (c) {
+        var k = KIT[c], off = '', note = '';
+        if (k.reach.indexOf(E.d) < 0) off = 'Doesn’t reach from ' + DIST_NAME[E.d].toLowerCase();
+        else if (S.forbid.indexOf(c) >= 0) off = 'You forbade it; unpin it in Orders';
+        else {
+          var dup = S.slots[E.d].findIndex(function (y, j) { return j !== E.i && y && y.card === c; });
+          if (dup >= 0 && S.slots[E.d][dup].owner === 'yours') off = 'Yours already, in slot ' + (dup + 1);
+          else if (dup >= 0) note = 'Moves here from slot ' + (dup + 1);
+        }
+        body += '<button class="tcard" id="pick-' + c + '" data-act="ed-card" data-v="' + c + '" data-d="' + k.d + '" aria-pressed="' + (dr.card === c) + '"' + (off ? ' disabled' : '') + '>' +
+          '<span class="tc-top"><b>' + esc(nameOf(c, E.d)) + '</b>' + (k.rank ? '<span class="tc-rank">' + k.rank + '</span>' : '') + '</span>' +
+          '<span class="tc-art">' + k.art + '</span><span class="tc-text">' + esc(k.text) + '</span>' +
+          (off ? '<span class="tc-off">' + esc(off) + '</span>' : '<span><span class="chip cost">' + esc(k.cost) + '</span></span>' + (note ? '<span class="tc-off">' + note + '</span>' : '')) + '</button>';
+      });
+      body += '</div><h3 class="sec">When</h3><div class="words" role="group" aria-label="When it plays">';
+      COND_ORDER.forEach(function (w) {
+        body += '<button class="word" id="when-' + w + '" data-act="ed-when" data-v="' + w + '" aria-pressed="' + (dr.when === w) + '">' + esc(CONDS[w].text) + '</button>';
+      });
+      body += '</div>';
+      if (CONDS[dr.when] && CONDS[dr.when].foe) {
+        body += '<h3 class="sec">How sure you must be</h3><div class="words" role="group" aria-label="How sure you must be">';
+        ['sure', 'fairly', 'maybe'].forEach(function (c) {
+          body += '<button class="word" id="conf-' + c + '" data-act="ed-conf" data-v="' + c + '" aria-pressed="' + (dr.conf === c) + '">' + CONF_WORD[c] + '</button>';
+        });
+        var ok = CONF_RANK[readConf()] >= CONF_RANK[dr.conf];
+        body += '</div><p class="' + (ok ? 'hint' : 'forecast warn') + '">Your read of her reaches ' + CONF_WORD[readConf()] + '. ' + (ok ? 'This can fire.' : 'At this setting it won’t fire on what you see.') + ' Maybe fires more often and is wrong more often.</p>';
+      }
+      if (dr.card && KIT[dr.card].attack) {
+        body += '<h3 class="sec">At</h3><div class="words" role="group" aria-label="Target">' +
+          '<button class="word" id="target-her" data-act="ed-target" data-v="her" aria-pressed="' + (dr.target !== 'worth') + '">Shizuka</button>' +
+          '<button class="word" id="target-worth" data-act="ed-target" data-v="worth" aria-pressed="' + (dr.target === 'worth') + '">Whoever is most worth it</button></div>';
+      }
+      foot = '<button class="btn" id="ed-save" data-act="ed-save"' + (dr.card ? '' : ' disabled') + '>Keep it as mine</button>' +
+        '<button class="btn ghost" id="ed-clear" data-act="ed-clear">Clear the slot</button>' +
+        (x && x.card && x.owner === 'yours' ? '<button class="btn ghost" id="ed-handback" data-act="ed-handback">Hand it back</button>' : '') +
+        '<button class="btn ghost" id="ed-cancel" data-act="close">Cancel</button>' +
+        (dr.card ? '' : '<span class="why-off">Pick a card first, or clear the slot.</span>');
+    } else if (E.kind === 'def' || E.kind === 'fightat') {
+      var isDef = E.kind === 'def';
+      var cur = isDef ? S.defence[S.tab] : S.fightAt;
+      head = isDef ? 'Defence ' + AT[S.tab] : 'Fight at';
+      body += '<p class="hint">' + (isDef ? 'One defence stays ready at each distance and reacts on its own. It takes no slot.' : 'Your fighter steps towards it when nothing slotted plays there.') + '</p><div class="optlist">';
+      var opts = isDef ? ['guard', 'dodge', 'counter'] : ['stand', 'close', 'mid', 'far'];
+      opts.forEach(function (o) {
+        body += '<button class="opt" id="opt-' + o + '" data-act="ed-opt" data-v="' + o + '" aria-pressed="' + (E.draft === o) + '"><b>' + (isDef ? DEF[o].name : FIGHT_AT[o]) + '</b>' +
+          (isDef ? '<small>' + DEF[o].text + '</small><span class="forecast">' + esc(defenceForecast(o, S.tab)) + '</span>' : '') + '</button>';
+      });
+      body += '</div>';
+      foot = '<button class="btn" id="ed-save" data-act="ed-save">Keep it as mine</button>' +
+        (S.level !== 'manual' && cur.owner === 'yours' ? '<button class="btn ghost" id="ed-handback" data-act="ed-handback">Hand it back</button>' : '') +
+        '<button class="btn ghost" id="ed-cancel" data-act="close">Cancel</button>';
+    } else if (E.kind === 'pick') {
+      var req = E.mode === 'require';
+      head = req ? 'Require a move' : 'Forbid a move';
+      body += '<p class="hint">' + (req ? 'It goes into your list as yours, and the mind plans around it.' : 'A forbidden card is never reached for, even in an emergency.') + '</p><div class="tgrid">';
+      KIT_ORDER.forEach(function (c) {
+        var k = KIT[c], off = '';
+        var inYours = DISTS.some(function (d) { return S.slots[d].some(function (y) { return y && y.owner === 'yours' && y.card === c; }); });
+        if (S.forbid.indexOf(c) >= 0) off = req ? 'Forbidden; unpin that first' : 'Already forbidden';
+        else if (inYours) off = req ? 'Already pinned' : 'You set it yourself; unpin it first';
+        else if (req && !placeFor(c)) off = 'No free slot where it reaches';
+        body += '<button class="tcard" id="pin-' + c + '" data-act="' + (req ? 'pin-req' : 'pin-forbid') + '" data-v="' + c + '" data-d="' + k.d + '"' + (off ? ' disabled' : '') + '>' +
+          '<span class="tc-top"><b>' + esc(KIT[c].name) + '</b>' + (k.rank ? '<span class="tc-rank">' + k.rank + '</span>' : '') + '</span>' +
+          '<span class="tc-art">' + k.art + '</span><span class="tc-text">' + esc(k.text) + '</span>' +
+          (off ? '<span class="tc-off">' + esc(off) + '</span>' : '') + '</button>';
+      });
+      body += '</div>';
+      if (req) {
+        body += '<h3 class="sec">Or keep a defence ready</h3><div class="optlist">';
+        ['close', 'mid'].forEach(function (d) {
+          ['counter', 'dodge', 'guard'].forEach(function (df) {
+            var on = S.defence[d] && S.defence[d].owner === 'yours' && S.defence[d].def === df;
+            body += '<button class="opt" id="pin-def-' + d + '-' + df + '" data-act="pin-def" data-d="' + d + '" data-v="' + df + '"' + (on ? ' disabled' : '') + '><b>Keep ' + DEF[df].name + ' ready ' + AT[d] + '</b>' + (on ? '<small>Already pinned</small>' : '') + '</button>';
+          });
+        });
+        body += '</div>';
+      }
+      foot = '<button class="btn ghost" id="ed-cancel" data-act="close">Cancel</button>';
+    } else if (E.kind === 'doctrine') {
+      head = 'How you fight';
+      body += '<p class="hint">A standing preference: it holds for every round until you change it, whoever plans. Your instincts draft by it; slots you set are never touched.</p>' + renderDoctrine() +
+        '<p class="lead">' + esc(doctrineLine()) + '</p>';
+      foot = '<button class="btn" id="doc-done" data-act="close">Done</button>';
+    } else if (E.kind === 'result') {
+      var R = E.result;
+      head = 'Round ' + S.round;
+      body += '<p class="hint">Planned at <b>' + LEVEL_NAME[S.level] + '</b>. A sketch of the round from the first cards of your plan, not the engine.</p><div class="report">';
+      R.exs.forEach(function (x) {
+        body += '<div class="exch"><h3>Exchange ' + x.n + '</h3>' + x.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
+          (x.chips.length ? '<div class="chips">' + x.chips.map(function (c) { return '<span class="chip ' + c[0] + '">' + c[1] + '</span>'; }).join('') + '</div>' : '') + '</div>';
+      });
+      body += '<p class="verdict">' + esc(R.verdict) + '</p><div class="chips" style="display:flex;gap:6px;flex-wrap:wrap">' +
+        '<span class="chip' + (R.end.you.hp < R.start.you.hp ? ' harm' : '') + '">Your health ' + R.start.you.hp + ' to ' + R.end.you.hp + '</span>' +
+        '<span class="chip cost">Chakra ' + R.start.you.ck + ' to ' + R.end.you.ck + '</span>' +
+        '<span class="chip' + (R.end.foe.hp < R.start.foe.hp ? ' harm' : '') + '">Shizuka ' + R.start.foe.hp + ' to ' + R.end.foe.hp + '</span></div></div>';
+      foot = '<button class="btn" id="next-round" data-act="next-round">Plan round ' + (S.round + 1) + '</button>';
+    }
+    overlay.innerHTML = '<div class="scrim" data-act="close"></div><div class="' + cls + '" role="dialog" aria-modal="true" aria-labelledby="d-title">' +
+      '<div class="d-head"><h2 id="d-title">' + esc(head) + '</h2>' + (E.kind === 'result' ? '' : '<button class="d-close" id="d-close" data-act="close" aria-label="Close">Close</button>') + '</div>' +
+      '<div class="d-body">' + body + '</div><div class="d-foot">' + foot + '</div></div>';
+  }
+
+  function placeFor(card) {
+    var dists = KIT[card].reach.indexOf(S.at) >= 0 ? [S.at] : KIT[card].reach;
+    for (var a = 0; a < dists.length; a++) {
+      var d = dists[a], row = S.slots[d];
+      var same = row.findIndex(function (y) { return y && y.card === card; });
+      if (same >= 0) return { d: d, i: same };
+      var free = row.findIndex(function (y) { return notYours(y); });
+      if (free >= 0) return { d: d, i: free };
+    }
+    return null;
+  }
+
+  /* ================= Actions ================= */
+  var tickTimer = null;
+  function tick(msg) {
+    if (!msg) return;
+    var t = document.getElementById('ticker');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(tickTimer);
+    tickTimer = setTimeout(function () { t.classList.remove('show'); }, 3200);
+  }
+  function afterEdit(msgHead) {
+    if (S.level === 'manual') { tick(msgHead); return; }
+    var before = snapshot(S);
+    redraft(S, true);
+    var moved = redraftedList(before);
+    tick(msgHead + (moved.length ? ' Your instincts re-drafted ' + moved.join(', ') + '.' : ''));
+  }
+  function flashSlip() {
+    var s = document.getElementById('orders-slip');
+    if (s) { s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash'); }
+  }
+  function openEditor(E, focusId) { S.editor = E; S._focus = focusId; render(); }
+  function closeEditor() {
+    var back = S.editor && S.editor.from;
+    S.editor = null; S._focus = back || null; render();
+  }
+
+  var ACT = {
+    intro: function () { S.introOpen = !S.introOpen; S._focus = 'intro-toggle'; },
+    theme: function (el) { if (el.dataset.v) document.documentElement.dataset.theme = el.dataset.v; else delete document.documentElement.dataset.theme; },
+    reset: function () {
+      var keep = S.introOpen, doctrine = S.doctrine;
+      S = fresh(); S.introOpen = keep; S.doctrine = doctrine; redraft(S, false);
+      tick('Back to the start of round 3. How you fight is kept: it is a standing preference.');
+    },
+    level: function (el) { var note = setLevelOn(S, el.dataset.v); tick(note || (LEVEL_NAME[S.level] + '.')); S._focus = 'lv-' + S.level; },
+    tab: function (el) { S.tab = el.dataset.v; },
+    'edit-slot': function (el) {
+      var d = el.dataset.dist, i = Number(el.dataset.i), x = S.slots[d][i];
+      openEditor({ kind: 'slot', d: d, i: i, from: el.id, draft: { card: x && x.card, when: (x && x.when) || 'always', conf: (x && x.conf) || 'fairly', target: (x && x.target) || 'her' } }, 'd-close');
+      return true;
+    },
+    'edit-def': function (el) { openEditor({ kind: 'def', from: el.id, draft: S.defence[S.tab].def }, 'd-close'); return true; },
+    'edit-fightat': function (el) { openEditor({ kind: 'fightat', from: el.id, draft: S.fightAt.v }, 'd-close'); return true; },
+    'ed-card': function (el) { var dr = S.editor.draft; dr.card = el.dataset.v; if (!dr.whenSet) dr.when = 'always'; },
+    'ed-when': function (el) { S.editor.draft.when = el.dataset.v; S.editor.draft.whenSet = true; },
+    'ed-conf': function (el) { S.editor.draft.conf = el.dataset.v; },
+    'ed-target': function (el) { S.editor.draft.target = el.dataset.v; },
+    'ed-opt': function (el) { S.editor.draft = el.dataset.v; },
+    'ed-save': function () {
+      var E = S.editor;
+      if (E.kind === 'slot') {
+        var dr = E.draft, row = S.slots[E.d];
+        var from = row.findIndex(function (y, j) { return j !== E.i && y && y.card === dr.card; });
+        if (from >= 0) row[from] = row[E.i] && row[E.i].card ? Object.assign({}, row[E.i]) : (S.level === 'manual' ? null : { card: null, owner: 'drafted', reason: emptyReason(E.d) });
+        S.slots[E.d][E.i] = { card: dr.card, when: dr.when, conf: dr.conf, target: dr.target, owner: 'yours' };
+        S.editor = null; S._focus = E.from;
+        afterEdit(nameOf(dr.card, E.d) + ' in slot ' + (E.i + 1) + ' ' + AT[E.d] + ' is yours.');
+      } else if (E.kind === 'def') {
+        S.defence[S.tab] = { def: E.draft, owner: 'yours' };
+        S.editor = null; S._focus = E.from;
+        afterEdit(DEF[E.draft].name + ' ' + AT[S.tab] + ' is yours.');
+      } else {
+        S.fightAt = { v: E.draft, owner: 'yours' };
+        S.editor = null; S._focus = E.from;
+        afterEdit('Fight at ' + FIGHT_AT[E.draft].toLowerCase() + ' is yours.');
+      }
+    },
+    'ed-clear': function () {
+      var E = S.editor;
+      S.slots[E.d][E.i] = S.level === 'manual' ? null : { card: null, owner: 'yours' };
+      S.editor = null; S._focus = E.from;
+      afterEdit(S.level === 'manual' ? 'Slot ' + (E.i + 1) + ' ' + AT[E.d] + ' is empty.' : 'Slot ' + (E.i + 1) + ' ' + AT[E.d] + ' is kept empty, by you.');
+    },
+    'ed-handback': function () {
+      var E = S.editor;
+      if (E.kind === 'slot' && S.level === 'manual') {
+        S.slots[E.d][E.i] = null;
+        S.editor = null; S._focus = 'ask-plan';
+        tick('Slot ' + (E.i + 1) + ' ' + AT[E.d] + ' is empty. Ask for a plan and your instincts will fill it.');
+        return;
+      }
+      if (E.kind === 'slot') S.slots[E.d][E.i] = Object.assign({}, S.slots[E.d][E.i], { owner: 'drafted' });
+      else if (E.kind === 'def') S.defence[S.tab] = Object.assign({}, S.defence[S.tab], { owner: 'drafted' });
+      else S.fightAt = Object.assign({}, S.fightAt, { owner: 'drafted' });
+      S.editor = null; S._focus = E.from;
+      afterEdit('Handed back to your instincts.');
+    },
+    close: function () { if (S.editor && S.editor.kind === 'result') return true; closeEditor(); return true; },
+    redraft: function () { S.variant++; afterEdit('A fresh draft around what is yours.'); },
+    another: function () { S.variant++; redraft(S, true); tick('Another plan, inside the same order and pins.'); setTimeout(flashSlip, 0); },
+    ask: function () { var note = setLevelOn(S, 'draft'); tick(note); S._focus = 'lv-draft'; },
+    'sg-use': function () { var sg = suggestion(); if (sg) tick(sg.apply()); S._focus = 'ask-plan'; },
+    'sg-no': function () { S.dismissed = true; tick('No more suggestions this round.'); S._focus = 'ask-plan'; },
+    objective: function (el) { S.objective = el.dataset.v; redraft(S, false); tick('Order: ' + OBJECTIVES.filter(function (o) { return o.id === S.objective; })[0].name + '. The plan below changed.'); setTimeout(flashSlip, 0); },
+    doctrine: function (el) {
+      S.doctrine[el.dataset.k] = el.dataset.v;
+      S._focus = el.id;
+      if (S.level !== 'manual') redraft(S, false);
+      tick(DOCTRINE[el.dataset.k].label + ': ' + wordOf(el.dataset.k, el.dataset.v).toLowerCase() + '. It holds for every round.');
+    },
+    unpin: function (el) {
+      var id = el.dataset.v, m;
+      if ((m = /^def-(\w+)$/.exec(id))) S.defence[m[1]] = Object.assign({}, S.defence[m[1]], { owner: 'drafted' });
+      else if ((m = /^slot-(\w+)-(\d)$/.exec(id))) S.slots[m[1]][Number(m[2])] = Object.assign({}, S.slots[m[1]][Number(m[2])], { owner: 'drafted' });
+      else if (id === 'fightat') S.fightAt = Object.assign({}, S.fightAt, { owner: 'drafted' });
+      else if ((m = /^forbid-(\w+)$/.exec(id))) S.forbid = S.forbid.filter(function (c) { return c !== m[1]; });
+      S._focus = 'pin-require';
+      afterEdit('Unpinned: your instincts have it back.');
+      setTimeout(flashSlip, 0);
+    },
+    'doctrine-open': function (el) { openEditor({ kind: 'doctrine', from: el.id }, 'd-close'); return true; },
+    'unpin-all': function () {
+      DISTS.forEach(function (d) {
+        S.slots[d] = S.slots[d].map(function (x) { return x && x.owner === 'yours' ? Object.assign({}, x, { owner: 'drafted' }) : x; });
+        if (S.defence[d] && S.defence[d].owner === 'yours') S.defence[d] = Object.assign({}, S.defence[d], { owner: 'drafted' });
+      });
+      if (S.fightAt && S.fightAt.owner === 'yours') S.fightAt = Object.assign({}, S.fightAt, { owner: 'drafted' });
+      S._focus = 'pin-require';
+      afterEdit('The list is your instincts’ again; forbidden moves stay forbidden.');
+      setTimeout(flashSlip, 0);
+    },
+    pick: function (el) { openEditor({ kind: 'pick', mode: el.dataset.v, from: el.id }, 'd-close'); return true; },
+    'pin-req': function (el) {
+      var c = el.dataset.v, p = placeFor(c);
+      if (!p) return;
+      var old = S.slots[p.d][p.i];
+      S.slots[p.d][p.i] = { card: c, when: old && old.card === c ? old.when : (c === 'stepBack' ? 'readyHold' : 'always'), conf: 'fairly', target: 'her', owner: 'yours' };
+      S.editor = null; S._focus = 'pin-require';
+      afterEdit('Pinned: ' + nameOf(c, p.d) + ', slot ' + (p.i + 1) + ' ' + AT[p.d] + '.');
+      setTimeout(flashSlip, 0);
+    },
+    'pin-forbid': function (el) {
+      var c = el.dataset.v;
+      S.forbid = S.forbid.concat([c]);
+      S.editor = null; S._focus = 'pin-forbid';
+      afterEdit('Never ' + (c === 'scroll' ? 'the binding scroll' : KIT[c].name) + '.');
+      setTimeout(flashSlip, 0);
+    },
+    'pin-def': function (el) {
+      S.defence[el.dataset.d] = { def: el.dataset.v, owner: 'yours' };
+      S.editor = null; S._focus = 'pin-require';
+      afterEdit('Keep ' + DEF[el.dataset.v].name + ' ready ' + AT[el.dataset.d] + '.');
+      setTimeout(flashSlip, 0);
+    },
+    perception: function (el) { S.perception = el.dataset.v; S.foeOpen = true; tick('Perception: ' + el.dataset.v + '. The read changed.'); },
+    flee: function () { tick('Fleeing isn’t part of this prototype.'); },
+    begin: function (el) { openEditor({ kind: 'result', from: el.id, result: simulate() }, 'next-round'); return true; },
+    'next-round': function () {
+      var R = S.editor.result;
+      S.vit.you = R.end.you; S.vit.foe = R.end.foe;
+      S.at = R.end.at; S.tab = R.end.at;
+      S.holdSpent = R.end.holdSpent; S.holdSeen = R.end.holdSeen; S.steppedBack = S.steppedBack || R.end.steppedBack;
+      var lines = [];
+      R.exs.forEach(function (x) { if (lines.length < 2 && x.lines.length) lines.push(x.lines[x.lines.length - 1]); });
+      lines.push(R.verdict);
+      S.last = lines;
+      S.round++;
+      S.dismissed = false; S.variant = 0;
+      DISTS.forEach(function (d) {
+        S.slots[d] = S.slots[d].map(function (x) { return x && x.owner === 'redrafted' ? Object.assign({}, x, { owner: 'drafted' }) : x; });
+        if (S.defence[d] && S.defence[d].owner === 'redrafted') S.defence[d].owner = 'drafted';
+      });
+      if (S.fightAt && S.fightAt.owner === 'redrafted') S.fightAt.owner = 'drafted';
+      if (S.level !== 'manual') redraft(S, false);
+      S.editor = null; S._focus = 'lv-' + S.level;
+      tick('Round ' + S.round + '. Your slots are kept; the switch stays on ' + LEVEL_NAME[S.level] + '.');
+    }
+  };
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el || el.disabled) return;
+    var fn = ACT[el.dataset.act];
+    if (!fn) return;
+    var handled = fn(el);
+    if (!handled) render();
+  });
+  document.addEventListener('toggle', function (e) {
+    if (e.target && e.target.id === 'foe-fold') S.foeOpen = e.target.open;
+    if (e.target && e.target.id === 'pinfold') S.pinsOpen = e.target.open;
+  }, true);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && S.editor) {
+      e.preventDefault();
+      if (S.editor.kind === 'result') ACT['next-round']();
+      else { closeEditor(); return; }
+      render(); return;
+    }
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (S.editor) {
+      if (e.key === 'Tab') trapFocus(e);
+      return;
+    }
+    if (!wide.matches) return;
+    if (e.key === '1' || e.key === '2' || e.key === '3') {
+      var lv = ['manual', 'draft', 'orders'][Number(e.key) - 1];
+      var note = setLevelOn(S, lv);
+      tick(note || LEVEL_NAME[lv] + '.');
+      render();
+    } else if (e.key === 'Enter' && (tag === 'BODY' || tag === 'MAIN')) {
+      e.preventDefault();
+      ACT.begin(document.getElementById('begin'));
+    }
+  });
+  function trapFocus(e) {
+    var f = overlay.querySelectorAll('button:not([disabled])');
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  if (wide.addEventListener) wide.addEventListener('change', render); else wide.addListener(render);
+
+  S = load();
+  render();
+})();
+</script>
