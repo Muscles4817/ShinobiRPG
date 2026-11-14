@@ -1,6 +1,7 @@
 import type { RangeBand } from '../../contract';
 import { effectsOf, hasVerb, isWounding } from '../../rules/verbs';
-import { isDefenceCard, type Card } from './cards';
+import { cardId, isDefenceCard, type Card } from './cards';
+import { witnessAct, witnessDefence } from './mind/observe';
 import type { AttackStyle, DefenceKind, Read, Reads, Round } from './state';
 
 /**
@@ -79,10 +80,11 @@ function withRead(round: Round, id: string, read: Read): Round {
 /** Notes an attack the actor threw this exchange. */
 export function noteAttack(round: Round, actorId: string, card: Card): Round {
   const style = styleOf(card);
-  if (!style) return round;
-  const read = readOf(round.reads, actorId);
+  const seen = witnessAct(round, actorId, { card, id: cardId(card), style });
+  if (!style) return seen;
+  const read = readOf(seen.reads, actorId);
   const attacks = { ...read.attacks, [style]: (read.attacks[style] ?? 0) + 1 };
-  return withRead(round, actorId, { ...read, attacks });
+  return withRead(seen, actorId, { ...read, attacks });
 }
 
 /** Notes the defence a fighter was seen to use at a distance. */
@@ -93,7 +95,8 @@ export function noteDefence(
   kind: DefenceKind | null,
 ): Round {
   if (!kind) return round;
-  const read = readOf(round.reads, id);
-  if (read.defences[band] === kind) return round;
-  return withRead(round, id, { ...read, defences: { ...read.defences, [band]: kind } });
+  const seen = witnessDefence(round, id, { band, defence: kind });
+  const read = readOf(seen.reads, id);
+  if (read.defences[band] === kind) return seen;
+  return withRead(seen, id, { ...read, defences: { ...read.defences, [band]: kind } });
 }

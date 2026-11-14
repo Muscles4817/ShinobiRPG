@@ -3,6 +3,7 @@ import { viewOf } from '../../rules/body';
 import { bandOf, distanceBetween } from './distance';
 import { intentLine, knownLine } from './intent';
 import { learnedLine } from './learned';
+import { beliefLines } from './mind';
 import { playerOf, type PlanFighter, type PlanState } from './state';
 import { seenByPlayer, statuses, statusesShown } from './statusView';
 import { onStage } from './swarmView';
@@ -32,11 +33,19 @@ function learnedOf(plan: PlanState, f: PlanFighter): Pick<CombatantView, 'learne
   return learned ? { learned } : {};
 }
 
+/** What you make of a foe so far, for its view (only once you believe anything of them). */
+function beliefsOf(plan: PlanState, f: PlanFighter): Pick<CombatantView, 'beliefs'> {
+  if (f.side !== 'enemy') return {};
+  const beliefs = beliefLines(playerOf(plan), f, plan.round);
+  return beliefs.length > 0 ? { beliefs } : {};
+}
+
 export function combatantView(plan: PlanState, f: PlanFighter, insight: boolean): CombatantView {
   return {
     ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
     ...knownOf(plan, f, insight),
     ...learnedOf(plan, f),
+    ...beliefsOf(plan, f),
     ...distanceOf(plan, f),
     // A hidden foe the player sees anyway is shown, and aimed at, as seen.
     ...(seenByPlayer(plan, f) ? { statuses: statusesShown(plan, f), targetable: true } : {}),
