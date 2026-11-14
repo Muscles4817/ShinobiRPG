@@ -15,7 +15,8 @@ import { empowerCostsOwed } from '../../rules/verbs';
 import { fieldMeter } from './field';
 import { endOfRound } from './roundEnd';
 import { CALLED_FOR, calledBack, callOwn } from './roundCalls';
-import { rollIntents } from './intent';
+import { announce } from './intent';
+import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { withLeaps } from './leap';
@@ -98,7 +99,7 @@ function fleeChance(state: PlanState): number {
 /** Fights an exchange, then foes announce their next move. */
 function exchange(state: PlanState, rng: Rng): PlanState {
   const next = endOfRound(resolveExchange(state, rng));
-  const told = next.result ? next : { ...next, intents: rollIntents(next, rng) };
+  const told = next.result ? next : announced(next, announce(next, rng));
   // Something the player would want to answer stops the round (`roundCalls.ts`).
   return calledBack(state, told);
 }
@@ -199,7 +200,7 @@ export function createPlanEngine(): CombatEngine {
         range,
         seen: {},
         ...foeMarkFor(planned),
-        intents: rollIntents(table, rng),
+        intents: {},
         log: [intro, ...lines, ...(watching ? [FIGHT_BEGINS] : [])],
         ...(setup.ground ? { ground: setup.ground } : {}),
         ...(setup.occasion ? { occasion: setup.occasion } : {}),
@@ -208,8 +209,9 @@ export function createPlanEngine(): CombatEngine {
         ...(watching ? { watching: true as const } : {}),
         ...(firstMover === undefined ? {} : { firstMover }),
         ...(field ? { field } : {}),
+        ...(setup.trace ? { decisions: [] } : {}),
       };
-      return encode(state);
+      return encode(announced(state, announce(table, rng)));
     },
 
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {

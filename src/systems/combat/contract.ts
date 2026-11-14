@@ -296,6 +296,11 @@ export interface CombatSetup {
   readonly watch?: boolean;
   /** Rules on trial, off unless a fight turns them on (versus play-testing). */
   readonly experiments?: CombatExperiments;
+  /**
+   * Benches and tests only: the engine keeps why each fighter chose each move (Plan & Watch's
+   * decision log, `decisionsOf`). Changes nothing anyone does.
+   */
+  readonly trace?: boolean;
 }
 
 /**

@@ -12,7 +12,7 @@ import { styleOf } from './reads';
 import { hittable } from './rows';
 import { improvise, makingFor, readiesTheCharge } from './stepping';
 import { inSight, opponentsOf } from './senses';
-import { aimAt, fromSlot, useful, type Play } from './slots';
+import { aimAt, fromSlot, useful, type Chosen, type Play } from './slots';
 import type { PlanFighter, Round, Slot } from './state';
 
 /**
@@ -120,20 +120,34 @@ function kitFor(self: PlanFighter, round: Round): Card | undefined {
  * which slots those (`kitSlots.ts`): it is theirs, unless they only watch the fight. Playing
  * for time is never the player's either (`survival.ts`).
  */
-function kitPlay(self: PlanFighter, round: Round): Play | null {
+function kitPlay(self: PlanFighter, round: Round): Chosen | null {
   if (self.isPlayer && round.watching !== true) return null;
   const climb = climbing(self, round);
-  if (climb) return climb;
+  if (climb) return { ...climb, why: 'climb' };
   // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.
   const foes = opponentsOf(round.fighters, self);
-  const setup = setupPlay(self, { band: bandOf(round, self), foes });
+  const found = setupPlay(self, { band: bandOf(round, self), foes });
+  const setup = found ? { ...found, why: 'setup' as const } : null;
   // A killer coming: the set-up is its own answer, else play for time (`survival.ts`).
   const survival = survivalPlay(self, round);
-  if (survival) return setup ?? survival;
+  if (survival) return setup ?? { ...survival, why: 'survival' };
   // Otherwise a summoner fights their own way first: from the kit, Sage Mode and all.
   const called = kitFor(self, round);
-  if (called) return { card: called, target: undefined };
-  return setup ?? null;
+  if (called) return { card: called, target: undefined, why: 'call' };
+  return setup;
+}
+
+/** The same card at the same foe. */
+function samePlay(a: Play, b: Play): boolean {
+  return cardId(a.card) === cardId(b.card) && a.target === b.target;
+}
+
+/** The first slot that qualifies, unless a foe's read of the fight swaps it for a later one. */
+function fromThePlan(self: PlanFighter, round: Round, first: Play): Chosen {
+  const picked = counterPick(self, round, first);
+  const changed = changeUp(self, round, picked);
+  if (!samePlay(changed, picked)) return { ...changed, why: 'change-up' };
+  return { ...picked, why: samePlay(picked, first) ? 'slot' : 'counter-pick' };
 }
 
 /**
@@ -141,10 +155,10 @@ function kitPlay(self: PlanFighter, round: Round): Play | null {
  * player's); else, for someone fighting at a set distance and elsewhere, a step towards it; else the
  * first slot at this distance that qualifies; else an improvised blow or step (at the mark).
  */
-export function plannedPlay(self: PlanFighter, round: Round): Play {
+export function plannedPlay(self: PlanFighter, round: Round): Chosen {
   const slots = self.loadout[bandOf(round, self)];
   const emergency = firstPlay(self, round, slots.filter(urgent));
-  if (emergency) return emergency;
+  if (emergency) return { ...emergency, why: 'emergency' };
   const kit = kitPlay(self, round);
   if (kit) return kit;
   const footwork = isPinned(self) ? null : makingFor(self, bandOf(round, self));
@@ -154,17 +168,20 @@ export function plannedPlay(self: PlanFighter, round: Round): Play {
       const card = findCard(self, s.card);
       return card !== null && readiesTheCharge(self, card, bandOf(round, self));
     });
-    return firstPlay(self, round, charging) ?? { card: footwork, target: undefined };
+    const charge = firstPlay(self, round, charging);
+    return charge
+      ? { ...charge, why: 'charge' }
+      : { card: footwork, target: undefined, why: 'step-to' };
   }
   const play = firstPlay(self, round, slots);
-  if (play) return changeUp(self, round, counterPick(self, round, play));
+  if (play) return fromThePlan(self, round, play);
   const foes = opponentsOf(round.fighters, self);
   const seen = foes.filter((f) => inSight(self, f));
   // With no one to hit and someone hidden, looking for them beats walking about.
   if (seen.length === 0 && foes.some((f) => f.hidden)) {
-    return { card: { kind: 'search' }, target: undefined, offPlan: 'looking' };
+    return { card: { kind: 'search' }, target: undefined, offPlan: 'looking', why: 'looking' };
   }
   const card = improvise(self, bandOf(round, self));
   const target = aimAt(hittable(card, seen, round.fighters), 'marked', self, round);
-  return { card, target, offPlan: 'improvised' };
+  return { card, target, offPlan: 'improvised', why: 'improvised' };
 }

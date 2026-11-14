@@ -10,13 +10,10 @@ import {
   isWounding,
   techniquePower,
 } from '../../rules/verbs';
-import { repeatWeight } from '../../rules/familiarity';
-import { standIn } from './repertoire';
-import { beats, seenDefence, walksInto } from './adapt';
-import { cardId, isOffence, playable, slotted, type Card } from './cards';
+import { isOffence, playable, slotted, type Card } from './cards';
 import { partnered } from './combo';
 import { spendsReserve } from './pacing';
-import { beatsWeight, readsInTheMoment, worthSharpness } from './judgement';
+import { readsInTheMoment } from './judgement';
 import { cardWorth } from './worth';
 import { moveDestination } from './footwork';
 import { toolInstinct } from './pouch';
@@ -31,7 +28,10 @@ import { gatherInstinct } from './resting';
 import { sightInstinct } from './sight';
 import { attacksFrom, improvise, isEntry, makingFor, readiesTheCharge } from './stepping';
 import { canDaze, isDazed } from './daze';
-import type { DefenceKind, PlanFighter, Reads } from './state';
+import type { Moment } from './moment';
+import type { PlanFighter } from './state';
+import { weighted } from './weighing';
+import type { InstinctWhy, Odds, Why } from './whyShape';
 
 /**
  * Which slotted card a fighter plays this exchange. Fighters follow a few instincts (heal when
@@ -50,76 +50,10 @@ const LOW_HEALTH = 0.35;
 const DAZE_FIRST_CHANCE = 0.6;
 /** A mind that reckons reaches for a hold first only if it is worth this share of its best attack. */
 const DAZE_WORTH_SHARE = 0.5;
-const BASIC_WEIGHT = 5;
-const STEP_WEIGHT = 5;
-/** An attack worth nothing against this foe still keeps this share of the average's pull. */
-const WORTH_FLOOR = 0.1;
-/** How much likelier an attack that walks into the foe's seen defence is (`judgement.ts` sets the lean towards one that beats it). */
-const WALKS_INTO_WEIGHT = 0.5;
-
-/** The defence a fighter has seen its foe keep, and how hard it leans on what beats it. */
-interface Lean {
-  readonly defence: DefenceKind;
-  readonly beatsBy: number;
-}
-
 function jutsu(cards: readonly Card[], test: (t: CombatTechnique) => boolean): Card | undefined {
   return cards
     .flatMap((c) => (c.kind === 'jutsu' && test(c.technique) ? [c] : []))
     .sort((a, b) => techniquePower(b.technique) - techniquePower(a.technique))[0];
-}
-
-function baseWeight(card: Card): number {
-  if (card.kind === 'jutsu') return Math.max(BASIC_WEIGHT, techniquePower(card.technique) / 2);
-  return card.kind === 'step' ? STEP_WEIGHT : BASIC_WEIGHT;
-}
-
-/** Stronger cards more often; for a foe, ones that get past the defence it has seen more still. */
-function weight(card: Card, lean: Lean | undefined, self: PlanFighter, worth = 1): number {
-  // A mind that reads the fight reaches less for a technique played turns running.
-  const streak = self.streak;
-  const leaning = card.kind === 'jutsu' && streak?.card === cardId(card) && readsInTheMoment(self);
-  const running = leaning ? streak.turns : 0;
-  const base = baseWeight(card) * repeatWeight(running) * worth;
-  if (!lean) return base;
-  if (beats(card, lean.defence)) return base * lean.beatsBy;
-  return walksInto(card, lean.defence) ? base * WALKS_INTO_WEIGHT : base;
-}
-
-/**
- * Each attack's lean from what it is worth against the foe (`worth.ts`), against the average
- * attack on offer, as sharply as the fighter's judgement weighs it; 1 for anything else.
- */
-function worthLeans(self: PlanFighter, cards: readonly Card[], moment: Moment): number[] {
-  const { foe } = moment;
-  if (!foe) return cards.map(() => 1);
-  const where = { band: moment.band, fighters: moment.fighters ?? [] };
-  const worths = cards.map((c) => (isOffence(c) ? cardWorth(self, foe, c, where) : null));
-  const counted = worths.filter((w): w is number => w !== null);
-  const mean = counted.reduce((sum, w) => sum + w, 0) / Math.max(1, counted.length);
-  if (mean <= 0) return cards.map(() => 1);
-  const sharp = worthSharpness(self);
-  return worths.map((w) => (w === null ? 1 : ((w + WORTH_FLOOR * mean) / mean) ** sharp));
-}
-
-function weighted(
-  self: PlanFighter,
-  cards: readonly Card[],
-  rng: Rng,
-  moment: Moment,
-): Card | undefined {
-  const lean = leanOf(self, moment);
-  // A strike that plays a style is weighed as the best of its moves (`repertoire.ts`).
-  const weighed = cards.map((c) => standIn(self, c));
-  const leans = worthLeans(self, weighed, moment);
-  const weights = weighed.map((c, i) => weight(c, lean, self, leans[i]));
-  const total = weights.reduce((sum, w) => sum + w, 0);
-  let roll = rng.next() * total;
-  for (const [i, card] of cards.entries()) {
-    roll -= weights[i] ?? 0;
-    if (roll < 0) return card;
-  }
-  return cards[cards.length - 1];
 }
 
 /** A move technique that would take them somewhere else: footwork, like a step. */
@@ -136,47 +70,49 @@ function senses(self: PlanFighter, ready: readonly Card[], hiddenFoe: boolean): 
   return dispel && (hiddenFoe || self.confused > 0) ? dispel : undefined;
 }
 
-/** The situation a fighter acts in. */
-export interface Moment {
-  readonly band: RangeBand;
-  /** The foe they'd attack; undefined when no living foe can be seen. */
-  readonly foe: PlanFighter | undefined;
-  /** Some living foe is hidden in an illusion. */
-  readonly hiddenFoe?: boolean;
-  /** The first exchange of a round, when a smoke bomb opens. */
-  readonly opening?: boolean;
-  /** A field of their own side is already over the fight. */
-  readonly fieldUp?: boolean;
-  /** Everyone in the fight, when known: a combination technique needs a partner among them. */
-  readonly fighters?: readonly PlanFighter[];
-  /** The exchange the card would be played in: a foe steady after a daze can't be dazed. */
-  readonly exchange?: number;
-  /** What each fighter has been seen to do (`reads.ts`): foes lean on what beats it. */
-  readonly reads?: Reads;
+/** A card, and the rule that chose it (`whyShape.ts`). */
+export interface Choice {
+  readonly card: Card;
+  readonly why: Why;
+  /** The weighted pick's field (`weighted` only): what was passed over, and how near it came. */
+  readonly odds?: readonly Odds[];
 }
 
 /**
  * A sense, Search or Dispel for a hidden foe, a killer's answer (a set-up, or playing for
  * time), a summoner's call from the kit (`calling.ts`), a set-up, a conceal to open, an empower, clones or a trap (`prep.ts`); else a tool that's called for.
  */
-function instinctFor(self: PlanFighter, ready: readonly Card[], moment: Moment): Card | undefined {
+function instinctFor(
+  self: PlanFighter,
+  ready: readonly Card[],
+  moment: Moment,
+): Choice | undefined {
   const hiddenFoe = moment.hiddenFoe ?? false;
   const opening = moment.opening ?? false;
   const now = { hiddenFoe, opening };
-  return (
-    sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false }) ??
-    senses(self, ready, hiddenFoe) ??
-    againstKiller(self, moment) ??
-    kitCall(self, {
-      fighters: moment.fighters ?? [],
-      band: moment.band,
-      ...(moment.reads ? { reads: moment.reads } : {}),
-      ...(moment.exchange === undefined ? {} : { exchange: moment.exchange }),
-    }) ??
-    setupCard(self, moment) ??
-    prepInstinct(self, ready, moment) ??
-    toolInstinct(self, ready, now)
-  );
+  const instincts: readonly (readonly [InstinctWhy, () => Card | undefined])[] = [
+    ['sight', () => sightInstinct(self, ready, { ...now, fieldUp: moment.fieldUp ?? false })],
+    ['senses', () => senses(self, ready, hiddenFoe)],
+    ['killer', () => againstKiller(self, moment)],
+    [
+      'kit-call',
+      () =>
+        kitCall(self, {
+          fighters: moment.fighters ?? [],
+          band: moment.band,
+          ...(moment.reads ? { reads: moment.reads } : {}),
+          ...(moment.exchange === undefined ? {} : { exchange: moment.exchange }),
+        }),
+    ],
+    ['kit-setup', () => setupCard(self, moment)],
+    ['prep', () => prepInstinct(self, ready, moment)],
+    ['tool', () => toolInstinct(self, ready, now)],
+  ];
+  for (const [why, instinct] of instincts) {
+    const card = instinct();
+    if (card) return { card, why };
+  }
+  return undefined;
 }
 
 /** A set-up from the kit (`setups.ts`): hide, hold, finish. */
@@ -224,10 +160,10 @@ function moves(self: PlanFighter, ready: readonly Card[], band: RangeBand): Card
  * An attack or footwork: a trump (only offered in its moment), a hold on a fresh foe (often), the finisher on
  * a dazed one, else any of them, stronger ones more often.
  */
-function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, rng: Rng): Card {
+function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, rng: Rng): Choice {
   const { foe } = moment;
   const trump = harmful.find(trumpCard);
-  if (trump) return trump;
+  if (trump) return { card: trump, why: 'trump' };
   const daze = jutsu(harmful, holdsBack(foe));
   const fresh =
     foe !== undefined &&
@@ -240,12 +176,13 @@ function onTheMove(self: PlanFighter, harmful: readonly Card[], moment: Moment, 
     worthDazing(self, daze, { harmful, moment }) &&
     rng.chance(DAZE_FIRST_CHANCE)
   ) {
-    return daze;
+    return { card: daze, why: 'daze-first' };
   }
   const finisher = jutsu(harmful, isWounding);
-  if (finisher && foe && isDazed(foe)) return finisher;
+  if (finisher && foe && isDazed(foe)) return { card: finisher, why: 'finisher' };
   const usual = harmful.filter((c) => c !== daze || fresh);
-  return weighted(self, usual, rng, moment) ?? fallback(self, moment);
+  const picked = weighted(self, usual, rng, moment);
+  return picked ? { ...picked, why: 'weighted' } : { card: fallback(self, moment), why: 'nothing' };
 }
 
 /**
@@ -266,12 +203,6 @@ function worthDazing(
   return worthOf(daze) >= best * DAZE_WORTH_SHARE;
 }
 
-/** A foe's lean towards what beats the defence it has seen this one keep here. */
-function leanOf(self: PlanFighter, { reads, foe, band }: Moment): Lean | undefined {
-  const defence = self.side === 'enemy' ? seenDefence(reads, foe, band) : undefined;
-  return defence ? { defence, beatsBy: beatsWeight(self) } : undefined;
-}
-
 /** Nothing to play: look for a hidden foe when no one is in sight, else improvise. */
 function fallback(self: PlanFighter, { band, foe, hiddenFoe }: Moment): Card {
   return foe === undefined && hiddenFoe === true ? { kind: 'search' } : improvise(self, band);
@@ -286,6 +217,11 @@ export function desperate(self: PlanFighter, band: RangeBand): boolean {
 }
 
 export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
+  return chooseWhy(self, moment, rng).card;
+}
+
+/** What instinct plays here, and which instinct chose it (`why.ts`). */
+export function chooseWhy(self: PlanFighter, moment: Moment, rng: Rng): Choice {
   const fighters = moment.fighters ?? [];
   // A trump is held back (from every instinct, an empower's too) until its moment.
   const trumpNow = trumpTime(self, moment.foe);
@@ -300,19 +236,19 @@ export function chooseCard(self: PlanFighter, moment: Moment, rng: Rng): Card {
   const instinct = instinctFor(self, ready, moment);
   if (instinct) return instinct;
   const heal = jutsu(ready, (t) => hasVerb(t, 'heal'));
-  if (heal && self.health < self.maxHealth * LOW_HEALTH) return heal;
+  if (heal && self.health < self.maxHealth * LOW_HEALTH) return { card: heal, why: 'heal' };
   // Far outclassed, a mind that reads the fight takes cover some turns (`shelter.ts`).
   const shelter = shelterInstinct(self, moment.foe, rng);
-  if (shelter) return shelter;
+  if (shelter) return { card: shelter, why: 'shelter' };
   // Run dry of chakra, a fighter whose attacks need it may gather it back (`gather.ts`).
   const rest = gatherInstinct(self, moment, rng);
-  if (rest) return rest;
+  if (rest) return { card: rest, why: 'gather' };
   // Someone fighting at a set distance makes for it before anything but an emergency, going in
   // with an entry when they have one.
   const footwork = isPinned(self) ? null : makingFor(self, moment.band);
   const entry = ready.find(
     (c) => readiesTheCharge(self, c, moment.band) && isEntry(self, c, moment.band),
   );
-  if (footwork) return entry ?? footwork;
+  if (footwork) return entry ? { card: entry, why: 'entry' } : { card: footwork, why: 'footwork' };
   return onTheMove(self, moves(self, ready, moment.band), moment, rng);
 }

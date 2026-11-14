@@ -17,7 +17,7 @@ import { cardId, isOffence, needsAim, type Card } from './cards';
 import { released } from './commitment';
 import { meditationEnds } from './meditation';
 import { play } from './play';
-import { chooseCard } from './choose';
+import { chooseWhy, type Choice } from './choose';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField } from './field';
@@ -30,7 +30,8 @@ import { lingerAfter } from './lingering';
 import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay } from './priority';
-import type { Play } from './slots';
+import { decided, PULLED_FREE } from './decisionLog';
+import type { Chosen, Play } from './slots';
 import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
 import { bestTarget } from './targeting';
@@ -85,20 +86,26 @@ function targetFor(foes: readonly PlanFighter[], rng: Rng) {
  * Foes play their telegraphed card, or follow their instincts. They size up a foe in sight;
  * when the card can't reach them past their front row, they turn on one it can reach.
  */
-function instinct(round: Round, actor: PlanFighter, rng: Rng): Play {
+function instinct(round: Round, actor: PlanFighter, rng: Rng): Chosen {
   const seen = opponentsOf(round.fighters, actor).filter((f) => inSight(actor, f));
   // A mind that reads the fight picks whom to go for; a dull one goes for whoever is there.
   const there = targetFor(seen, rng);
   const foe = readsInTheMoment(actor) ? bestTarget(actor, seen) : there;
   const moment = momentIn(round, actor, foe);
   const intended = intendedCard(actor, round.intents, bandOf(round, actor));
-  const card =
-    intended && keepsTo(actor, intended, round) ? intended : chooseCard(actor, moment, rng);
+  const choice: Choice =
+    intended && keepsTo(actor, intended, round)
+      ? { card: intended, why: 'announced' }
+      : chooseWhy(actor, moment, rng);
+  const { card, why, odds } = choice;
+  const told = { why, ...(odds ? { odds } : {}) };
   // A finisher that needs an opening goes for an open foe (`finishers.ts`).
   const open = finisherTargets(card, seen);
   const aim = !needsOpenTarget(card) || (foe && open.includes(foe)) ? foe : open[0];
-  if (!aim || !isOffence(card) || canHit(card, aim, round.fighters)) return { card, target: aim };
-  return { card, target: targetFor(hittable(card, open, round.fighters), rng) };
+  if (!aim || !isOffence(card) || canHit(card, aim, round.fighters)) {
+    return { card, target: aim, ...told };
+  }
+  return { card, target: targetFor(hittable(card, open, round.fighters), rng), ...told };
 }
 
 export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
@@ -180,11 +187,11 @@ function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Roun
  * instinct; but a teammate caught in a hold comes first (`struggle.ts`), whether that means
  * aiming at its caster or spending the turn pulling them free.
  */
-function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Play | { spent: Round } {
+function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Chosen | { spent: Round } {
   const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
   const helping = aid(round, { actor, rng }, planned.card);
-  if (helping.kind === 'spent') return { spent: helping.round };
-  return helping.kind === 'strike' ? { ...planned, target: helping.at } : planned;
+  if (helping.kind === 'spent') return { spent: decided(helping.round, actor, PULLED_FREE) };
+  return helping.kind === 'strike' ? { ...planned, target: helping.at, why: 'aid' } : planned;
 }
 
 /** The player is told when their turn played something they never slotted (`staging.ts`). */
@@ -220,13 +227,14 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   const held = keepHolding(sprung, sprung.fighters.find((f) => f.id === actorId) ?? before);
   if (held.spent) return held.round;
   // A covered eye is uncovered as the turn begins, when the fight calls for it (`veil.ts`).
-  const round = uncoverWhenWorth(held.round, actorId);
-  const actor = round.fighters.find((f) => f.id === actorId) ?? before;
-  if (!alive(actor)) return round;
-  const lost = lostTurn(round, actor);
+  const ready = uncoverWhenWorth(held.round, actorId);
+  const actor = ready.fighters.find((f) => f.id === actorId) ?? before;
+  if (!alive(actor)) return ready;
+  const lost = lostTurn(ready, actor);
   if (lost) return lost;
-  const chosen = choosePlay(round, actor, rng);
+  const chosen = choosePlay(ready, actor, rng);
   if ('spent' in chosen) return chosen.spent;
+  const round = decided(ready, actor, chosen);
   const { target } = chosen;
   // A trained fighter's strike is one of their moves, or a chain of them (`repertoire.ts`).
   const planned = { actor, target, rng };
@@ -262,6 +270,7 @@ function carriedIn(state: PlanState): Partial<Round> {
     ...(state.foeMark ? { foeMark: state.foeMark } : {}),
     ...(state.watching ? { watching: true as const } : {}),
     ...(state.slotTrace ? { slotTrace: state.slotTrace } : {}),
+    ...(state.decisions ? { decisions: [] } : {}),
   };
 }
 
@@ -330,5 +339,6 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     result,
     ...(field ? { field } : {}),
     ...(end.slotTrace ? { slotTrace: end.slotTrace } : {}),
+    ...(end.decisions ? { decisions: [...(state.decisions ?? []), ...end.decisions] } : {}),
   };
 }

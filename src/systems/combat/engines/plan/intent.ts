@@ -16,7 +16,8 @@ import {
   type Card,
   type DefenceCard,
 } from './cards';
-import { chooseCard, desperate } from './choose';
+import { chooseWhy, desperate, type Choice } from './choose';
+import type { Announcement } from './decisionLog';
 import { ownField } from './field';
 import { momentIn } from './moment';
 import { planAdherence, readsInTheMoment } from './judgement';
@@ -61,20 +62,36 @@ export function asRound(table: Table): Round {
   };
 }
 
-function intentOf(table: Table, self: PlanFighter, rng: Rng): CardId {
+function intentOf(table: Table, self: PlanFighter, rng: Rng): Announcement {
   // A foe plays its plan in priority order as often as its judgement keeps it to it (its
   // default plan already holds its instincts as slot conditions); otherwise it follows instinct.
   const round = asRound(table);
-  if (rng.chance(planAdherence(self))) return cardId(plannedPlay(self, round).card);
-  const inSight = opponentsOf(table.fighters, self).filter(targetable);
-  const moment = momentIn(round, self, inSight.length > 0 ? rng.pick(inSight) : undefined);
-  return cardId(chooseCard(self, moment, rng));
+  const choice = rng.chance(planAdherence(self))
+    ? plannedPlay(self, round)
+    : instinctNow(table, self, rng);
+  return {
+    card: cardId(choice.card),
+    why: choice.why,
+    ...(choice.odds ? { odds: choice.odds } : {}),
+  };
 }
 
-/** What every standing foe means to do next exchange. A dazed foe loses it, so plans nothing. */
-export function rollIntents(table: Table, rng: Rng): Intents {
+function instinctNow(table: Table, self: PlanFighter, rng: Rng): Choice {
+  const inSight = opponentsOf(table.fighters, self).filter(targetable);
+  const foe = inSight.length > 0 ? rng.pick(inSight) : undefined;
+  return chooseWhy(self, momentIn(asRound(table), self, foe), rng);
+}
+
+/** What every standing foe means to do next exchange, and why. A dazed foe loses it. */
+export function announce(table: Table, rng: Rng): Readonly<Record<string, Announcement>> {
   const planners = table.fighters.filter((f) => f.side === 'enemy' && alive(f) && f.stunned === 0);
   return Object.fromEntries(planners.map((f) => [f.id, intentOf(table, f, rng)]));
+}
+
+/** What every standing foe means to do next exchange. */
+export function rollIntents(table: Table, rng: Rng): Intents {
+  const told = announce(table, rng);
+  return Object.fromEntries(Object.entries(told).map(([id, { card }]) => [id, card]));
 }
 
 /** The card a fighter announced, if it still makes sense to play it here. */

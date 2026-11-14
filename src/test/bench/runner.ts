@@ -1,7 +1,9 @@
 import { createRng, type Rng } from '@/core';
 import {
   createPlanEngine,
+  decisionsOf,
   type CombatEngine,
+  type Decision,
   type CombatResult,
   type CombatState,
 } from '@/systems/combat';
@@ -68,7 +70,26 @@ export function fightOnce(player: FighterSpec, opponent: FighterSpec, seed: numb
 }
 
 /** One seeded fight between groups. */
-export function skirmishOnce({ player, allies, foes, watch }: Skirmish, seed: number): FightRecord {
+export function skirmishOnce(skirmish: Skirmish, seed: number): FightRecord {
+  return played(skirmish, seed, false).record;
+}
+
+/** One seeded fight between groups, traced: why everyone chose each move (`decisionsOf`). */
+export function tracedSkirmish(skirmish: Skirmish, seed: number): TracedFight {
+  const { record, state } = played(skirmish, seed, true);
+  return { record, decisions: decisionsOf(state) };
+}
+
+export interface TracedFight {
+  readonly record: FightRecord;
+  readonly decisions: readonly Decision[];
+}
+
+function played(
+  { player, allies, foes, watch }: Skirmish,
+  seed: number,
+  trace: boolean,
+): { record: FightRecord; state: CombatState } {
   const engine = createPlanEngine();
   const rng = createRng(seed);
   let state = engine.start(
@@ -79,12 +100,14 @@ export function skirmishOnce({ player, allies, foes, watch }: Skirmish, seed: nu
       canFlee: false,
       ...(player.plan ? { plan: player.plan } : {}),
       ...(watch ? { watch: true } : {}),
+      ...(trace ? { trace: true } : {}),
     },
     rng,
   );
   let exchanges = 0;
   while (!engine.outcome(state)) {
-    if (exchanges >= STALEMATE_EXCHANGES) return stalemate(player, state, engine);
+    if (exchanges >= STALEMATE_EXCHANGES)
+      return { record: stalemate(player, state, engine), state };
     const atTable = engine.view(state).options.some((o) => o.id === 'begin');
     if (atTable) state = step(engine, state, 'begin', rng);
     else {
@@ -93,7 +116,7 @@ export function skirmishOnce({ player, allies, foes, watch }: Skirmish, seed: nu
     }
   }
   const outcome = engine.outcome(state)!;
-  return {
+  const record: FightRecord = {
     result: outcome.result,
     exchanges,
     healthLeft: healthFraction(player, outcome.player),
@@ -102,6 +125,7 @@ export function skirmishOnce({ player, allies, foes, watch }: Skirmish, seed: nu
       id.startsWith('foe') ? usage.techniqueIds : [],
     ),
   };
+  return { record, state };
 }
 
 function healthFraction(player: FighterSpec, now: { readonly health: number }): number {
