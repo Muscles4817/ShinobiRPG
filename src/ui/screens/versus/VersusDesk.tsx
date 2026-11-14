@@ -6,7 +6,7 @@ import { useHoverPreview } from '../../layout/useHoverPreview';
 import { useKeys } from '../../layout/useKeys';
 import { FighterProfile } from './FighterProfile';
 import { RosterBrowser } from './RosterBrowser';
-import { BothSides, GroundPicker, StartBout, WorldPicker } from './SetupParts';
+import { BothSides, GroundPicker, TrialRules, StartBout, WorldPicker } from './SetupParts';
 import { placeLabel, slotLabel, type Slot } from './SideSlots';
 import type { VersusChoice, VersusSetupState } from './useVersusSetup';
 
@@ -43,13 +43,13 @@ function DeskActions({ setup, slot, profile }: DeskActionsProps) {
 
 /** Enter starts the bout once it can start (the search box keeps its own Enter). */
 function useFightKey(setup: VersusSetupState, onFight: (choice: VersusChoice) => void): void {
-  const { ctx, side, foes, ground, problem } = setup;
+  const { ctx, side, foes, ground, dodgeLeaps, problem } = setup;
   useKeys(
     {
       Enter:
         ctx && problem === null
           ? () => {
-              onFight({ ctx, side, foes, ground, watch: false });
+              onFight({ ctx, side, foes, ground, watch: false, dodgeLeaps });
             }
           : undefined,
     },
@@ -88,6 +88,7 @@ export function VersusDesk({
         <WorldPicker setup={setup} />
         <BothSides setup={setup} active={slot} onOpen={setup.openSlot} />
         <GroundPicker setup={setup} />
+        <TrialRules setup={setup} />
         <div className="versus-start">
           <StartBout setup={setup} onFight={onFight} />
           <p className="key-note">Enter fights.</p>

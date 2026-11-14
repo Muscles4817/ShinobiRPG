@@ -379,6 +379,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
+    **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
+    them on, and only versus does (its setup's "Rules on trial"): today a ready Dodge that slips an
+    attack up close leaps clear to mid (`plan/leap.ts`, `dodgeLeaps`). A rule is play-tested there
+    before it is adopted or dropped; adopting one moves it out of `experiments`.
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,
     swift, pack, coward, spirit) on `EnemyDef.traits` → `CombatantSetup.traits`. What they
     mean lives once in `rules/kit.ts` (reach, which a technique that names its own reach overrides, `namesReach`, so an archer's senbon still fly up close; `kitDamageScale` by `AttackKind`, pack, coward)

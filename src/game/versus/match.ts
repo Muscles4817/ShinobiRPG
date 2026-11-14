@@ -27,6 +27,8 @@ export interface VersusPick {
   readonly ground?: CombatGround;
   /** Only watch: both sides fight on their own, round after round. */
   readonly watch?: boolean;
+  /** Try the Dodge that leaps clear (a rule on trial, `CombatExperiments.dodgeLeaps`). */
+  readonly dodgeLeaps?: boolean;
 }
 
 /** A sandbox whose character is your fighter, so every read of "you" reads them. */
@@ -56,6 +58,7 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     canFlee: !watching,
     ...(pick.ground ? { ground: pick.ground } : {}),
     ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),
+    ...(pick.dodgeLeaps ? { experiments: { dodgeLeaps: true } } : {}),
   };
   const vitals = { ...sandbox.character.vitals, health: player.health, chakra: player.chakra };
   const match = {

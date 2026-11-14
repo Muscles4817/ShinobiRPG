@@ -1,4 +1,4 @@
-import { combatScene, combatScouting } from '@/game';
+import { combatScene, combatScouting, type GameState } from '@/game';
 import { act, fightOut } from '@/test/gameFixtures';
 
 import { contextForPack } from '../context';
@@ -233,5 +233,31 @@ describe('versus team fights', () => {
     const end = fightOut(team(team7, ['enemy:zabuza', 'enemy:haku']), naruto);
     expect(end.combat).toBeNull();
     expect(end.reports[0]?.kind).toBe('fight');
+  });
+});
+
+describe('rules on trial', () => {
+  /** How often anyone sprang clear in watched bouts of Lee against Neji. */
+  function leapsIn(dodgeLeaps: boolean): number {
+    let leaps = 0;
+    for (let seed = 1; seed <= 3; seed++) {
+      const pick = { side: ['person:lee'], foes: ['person:neji'], seed, watch: true, dodgeLeaps };
+      const made = createVersus(naruto, pick);
+      if (!made.ok) throw new Error(made.error);
+      let state: GameState = made.value;
+      for (let i = 0; i < 200 && state.combat; i++) {
+        const view = combatScene(state, naruto)!;
+        leaps += view.log.filter((line) => line.includes('springs clear')).length;
+        const next = view.options.find((o) => !o.disabledReason && o.id !== 'flee');
+        if (!next) break;
+        state = act(state, { type: 'combatAct', optionId: next.id }, naruto);
+      }
+    }
+    return leaps;
+  }
+
+  it('a Dodge leaps clear only in a bout that turns it on', () => {
+    expect(leapsIn(true)).toBeGreaterThan(0);
+    expect(leapsIn(false)).toBe(0);
   });
 });

@@ -22,6 +22,7 @@ import { defenceKind, noteDefence } from './reads';
 import { throughClones } from './decoys';
 import { substituted, type Swap } from './footwork';
 import { riposteFirst } from './lingering';
+import { leapClear } from './leap';
 import { taken, wound } from './wound';
 import { committedTo } from './commitment';
 import { BRACE_LETS } from '../../rules/commitment';
@@ -245,7 +246,9 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const cause = slipCauseBeside(slipCause(round, blowIncoming(hit)), tried);
   // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
   const told = withCause(reactionLine(line, tried ? 'dodged' : 'missed'), cause);
-  return { slipped: say(round, told), tried };
+  // A ready Dodge may leap clear of the blow (`leap.ts`); an Evade or a plain slip stays put.
+  const said = say(round, told);
+  return { slipped: tried && has('dodge') ? leapClear(said, target, attacker) : said, tried };
 }
 
 /** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */

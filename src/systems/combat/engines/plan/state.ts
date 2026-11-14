@@ -190,6 +190,8 @@ export interface PlanFighter
   readonly copied?: readonly string[];
   /** The exchange they went down in, for the fight's summary (`falls.ts`). */
   readonly fellAt?: number;
+  /** A ready Dodge carries them clear when it slips an attack up close (an experiment, `leap.ts`). */
+  readonly leapsClear?: true;
   /** Their last daze and their guard last smashed, and by whom, for the summary's turning point. */
   readonly dazedBy?: Swing;
   readonly guardBrokenBy?: Swing;

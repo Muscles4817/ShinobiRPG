@@ -27,7 +27,7 @@ afterEach(() => {
 function choice(watch: boolean): VersusChoice {
   const ctx = contextForPack('naruto')!;
   const [first, second] = versusRoster(ctx);
-  return { ctx, side: [first!.id], foes: [second!.id], ground: 'arena', watch };
+  return { ctx, side: [first!.id], foes: [second!.id], ground: 'arena', watch, dodgeLeaps: false };
 }
 
 function renderBout(watch: boolean) {
