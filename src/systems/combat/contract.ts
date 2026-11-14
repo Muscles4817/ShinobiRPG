@@ -294,6 +294,17 @@ export interface CombatSetup {
    * on round after round with no planning between. Engines that can't stage a fight ignore it.
    */
   readonly watch?: boolean;
+  /** Rules on trial, off unless a fight turns them on (versus play-testing). */
+  readonly experiments?: CombatExperiments;
+}
+
+/**
+ * Rules being play-tested before they are adopted. Each is off when absent, and engines that
+ * don't know one ignore it.
+ */
+export interface CombatExperiments {
+  /** A ready Dodge that slips an attack up close leaps clear to mid (Plan & Watch, `leap.ts`). */
+  readonly dodgeLeaps?: boolean;
 }
 
 /**

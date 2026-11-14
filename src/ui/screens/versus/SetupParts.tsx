@@ -52,6 +52,30 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
   );
 }
 
+/** Rules on trial: off unless turned on here, for this bout only. */
+export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
+  return (
+    <section className="versus-slot versus-trial">
+      <span className="versus-trial-head">Rules on trial</span>
+      <label className="versus-trial-rule" htmlFor="versus-dodge-leaps">
+        <input
+          id="versus-dodge-leaps"
+          type="checkbox"
+          checked={setup.dodgeLeaps}
+          onChange={(e) => {
+            setup.setDodgeLeaps(e.target.checked);
+          }}
+        />
+        A Dodge leaps clear
+      </label>
+      <p className="muted">
+        Anyone who slips an attack up close with a Dodge ready lands at mid range, clear of whoever
+        threw it. It helps a fighter who wants distance and costs one who wants to stay close.
+      </p>
+    </section>
+  );
+}
+
 /** Both sides, each slot opened to read or change its fighter, and the swap between them. */
 export function BothSides({
   setup,
@@ -99,9 +123,9 @@ export function StartBout({
   readonly setup: VersusSetupState;
   readonly onFight: (choice: VersusChoice) => void;
 }) {
-  const { ctx, side, foes, ground, problem } = setup;
+  const { ctx, side, foes, ground, dodgeLeaps, problem } = setup;
   const start = (watch: boolean) => {
-    if (ctx) onFight({ ctx, side, foes, ground, watch });
+    if (ctx) onFight({ ctx, side, foes, ground, watch, dodgeLeaps });
   };
   return (
     <>
