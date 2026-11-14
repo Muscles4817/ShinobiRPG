@@ -32,6 +32,9 @@ import { sizedBody } from './sizing';
 import type { SlotTrace } from './traceShape';
 import type { CallTrigger, Calls } from './roundCallShape';
 import type { Decision } from './whyShape';
+import type { Reads } from './readShape';
+import type { Minded, Witness } from './mind/shape';
+export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -92,20 +95,6 @@ export type Loadout = Readonly<Record<RangeBand, readonly Slot[]>>;
 /** The defence kept ready at each distance (`readiness.ts`), by card id; null keeps none. */
 export type Reactions = Readonly<Record<RangeBand, CardId | null>>;
 
-/** Kinds of attack, as an opponent sizes them up (`reads.ts`). */
-export type AttackStyle = 'blow' | 'flurry' | 'break' | 'sure' | 'illusion' | 'jutsu';
-/** A defence as an opponent sees it react. */
-export type DefenceKind = 'guard' | 'dodge' | 'counter' | 'swap';
-
-/** What a fighter has given away this fight: their defence at each distance, the attacks they throw. */
-export interface Read {
-  readonly defences: Partial<Record<RangeBand, DefenceKind>>;
-  readonly attacks: Partial<Record<AttackStyle, number>>;
-}
-
-/** Everyone's read, by fighter id: what their opponents have seen of them. */
-export type Reads = Readonly<Record<string, Read>>;
-
 /** Slots that always play and aim at the weakest, one per card, in order. */
 export function plainSlots(cards: readonly CardId[]): Slot[] {
   return cards.map((card) => ({ card }));
@@ -124,6 +113,7 @@ export interface PlanFighter
     Summoned,
     Hive,
     ShroudMemory,
+    Minded,
     Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
@@ -280,6 +270,8 @@ export type Distances = Readonly<Record<string, RangeBand>>;
 
 /** One exchange in progress; traced, its `decisions` are this exchange's alone. */
 export interface Round extends Pick<PlanState, 'decisions'> {
+  /** What was done this exchange and who saw it, for the mind (`mind/observe.ts`). */
+  readonly witnessed?: readonly Witness[];
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
   readonly number: number;
   /** The first exchange of a round (`PlanState.exchange` is 0). */
