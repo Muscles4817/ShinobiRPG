@@ -9,3 +9,8 @@ electron/dist
 release
 android
 ios
+
+# Design prototypes: generated outputs, and the controls page kept exactly as published.
+prototypes/**/out/
+prototypes/**/*-output.md
+prototypes/controls/index.html
