@@ -14,6 +14,9 @@ import type { Beliefs } from './shape';
 const SHOWN = 4;
 /** Below this confidence a belief isn't worth saying. */
 const SAID_FROM = 0.5;
+/** A habit is something done again: seen this much (a couple of clear sights) before it is said. */
+const HABIT_FROM = 1.5;
+const HABITS: ReadonlySet<string> = new Set(['style', 'card']);
 
 const PRIORS: Readonly<Record<string, number>> = {
   defence: 1 / 4,
@@ -76,7 +79,9 @@ function groupOf(key: string): string {
 export function held(mind: PlanFighter, about: Beliefs | undefined, now: number): Held[] {
   const best = new Map<string, Held>();
   for (const [key, e] of Object.entries(about ?? {})) {
-    const c = confidence(mind, faded(mind, e, now), PRIORS[familyOf(key)] ?? 0);
+    const sofar = faded(mind, e, now);
+    const c = confidence(mind, sofar, PRIORS[familyOf(key)] ?? 0);
+    if (HABITS.has(familyOf(key)) && sofar.seen < HABIT_FROM) continue;
     const group = groupOf(key);
     const was = best.get(group);
     if (e.seen > 0 && (!was || c > was.confidence)) {
