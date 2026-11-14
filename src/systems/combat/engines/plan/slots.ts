@@ -14,6 +14,7 @@ import { mindsMark } from './sharedMind';
 import type { PlanFighter, Round, Slot, TargetRule } from './state';
 import { attacksFrom } from './stepping';
 import type { PassReason } from './traceShape';
+import type { Odds, Why } from './whyShape';
 import { bestTarget } from './targeting';
 
 /**
@@ -110,7 +111,14 @@ export interface Play {
   readonly target: PlanFighter | undefined;
   /** Nothing slotted played: why the turn went off the plan (stamped for the player). */
   readonly offPlan?: NarrationOffPlan;
+  /** The rule that chose it (`whyShape.ts`), for the decision log. */
+  readonly why?: Why;
+  /** A weighted pick's field (`weighing.ts`), for the decision log. */
+  readonly odds?: readonly Odds[];
 }
+
+/** A play as a plan or instinct chose it: always with its reason. */
+export type Chosen = Play & { readonly why: Why };
 
 /** A technique that only holds a foe back (daze, seal, confuse), without wounding them. */
 function holdsOnly(card: Card): boolean {

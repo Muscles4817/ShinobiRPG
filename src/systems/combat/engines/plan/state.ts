@@ -31,6 +31,7 @@ import { withOneMind } from './oneMind';
 import { sizedBody } from './sizing';
 import type { SlotTrace } from './traceShape';
 import type { CallTrigger, Calls } from './roundCallShape';
+import type { Decision } from './whyShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
 export const LOG_LIMIT = 60;
@@ -263,6 +264,8 @@ export interface PlanState {
   readonly reads?: Reads;
   /** Only watched (`CombatSetup.watch`): no card table between rounds, both sides adapt. */
   readonly watching?: true;
+  /** Traced (`CombatSetup.trace`): every choice so far, oldest first (`decisionLog.ts`). */
+  readonly decisions?: readonly Decision[];
 }
 
 /** A hit with an element that landed this exchange, for element combos (`combo.ts`). */
@@ -272,11 +275,11 @@ export interface ElementHit {
   readonly element: NonNullable<PlanFighter['nature']>;
 }
 
-/** One exchange in progress. */
 /** Pairs of foes standing at a distance of their own, by `pairKey` (`distance.ts`). */
 export type Distances = Readonly<Record<string, RangeBand>>;
 
-export interface Round {
+/** One exchange in progress; traced, its `decisions` are this exchange's alone. */
+export interface Round extends Pick<PlanState, 'decisions'> {
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
   readonly number: number;
   /** The first exchange of a round (`PlanState.exchange` is 0). */

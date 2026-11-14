@@ -1,8 +1,27 @@
-import type { Moment } from './choose';
+import type { RangeBand } from '../../contract';
 import { distanceBetween, bandOf } from './distance';
 import { ownField } from './field';
 import { opponentsOf } from './senses';
-import type { PlanFighter, Round } from './state';
+import type { PlanFighter, Reads, Round } from './state';
+
+/** The situation a fighter acts in. */
+export interface Moment {
+  readonly band: RangeBand;
+  /** The foe they'd attack; undefined when no living foe can be seen. */
+  readonly foe: PlanFighter | undefined;
+  /** Some living foe is hidden in an illusion. */
+  readonly hiddenFoe?: boolean;
+  /** The first exchange of a round, when a smoke bomb opens. */
+  readonly opening?: boolean;
+  /** A field of their own side is already over the fight. */
+  readonly fieldUp?: boolean;
+  /** Everyone in the fight, when known: a combination technique needs a partner among them. */
+  readonly fighters?: readonly PlanFighter[];
+  /** The exchange the card would be played in: a foe steady after a daze can't be dazed. */
+  readonly exchange?: number;
+  /** What each fighter has been seen to do (`reads.ts`): foes lean on what beats it. */
+  readonly reads?: Reads;
+}
 
 /**
  * The moment a fighter acts in, read from the round: whom they'd go for, at what distance, and

@@ -9,6 +9,7 @@ import { driveOf, effectsOf, isWounding, primaryEffect, techniquePower } from '.
 import { playable, type Card } from './cards';
 import { intendedCard } from './intent';
 import { plannedPlay } from './priority';
+import { decided } from './decisionLog';
 import { canHit } from './rows';
 import { inSight, type Turn } from './senses';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
@@ -84,7 +85,9 @@ function thrown(round: Round, answerer: PlanFighter, answer: CombatTechnique): R
   });
   const acted = [...(round.acted ?? []), answerer.id];
   const line = tell('{a} meet{a.s} it with {what}.', { a: answerer, what: answer.name });
-  return say({ ...round, fighters, acted }, line);
+  const card: Card = { kind: 'jutsu', technique: answer };
+  const clash = decided(round, answerer, { card, target: undefined, why: 'clash' });
+  return say({ ...clash, fighters, acted }, line);
 }
 
 /** The winning answer carries on into the attacker, weakened. */
