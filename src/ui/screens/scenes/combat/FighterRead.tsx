@@ -10,6 +10,20 @@ const DISTANCE_LINE = {
   far: 'Far off from you.',
 } as const;
 
+/** What you make of a foe from what you've seen of them, each with how sure you are. */
+function YourRead({ beliefs }: { readonly beliefs: readonly string[] }) {
+  return (
+    <div className="your-read">
+      <h4 className="your-read-heading">What you make of them</h4>
+      <ul className="muted small">
+        {beliefs.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /** What a fighter still standing is doing: how far off, what next, what you know, what it knows. */
 function StandingNotes({ fighter: f }: { readonly fighter: CombatantView }) {
   return (
@@ -20,6 +34,7 @@ function StandingNotes({ fighter: f }: { readonly fighter: CombatantView }) {
       {f.intent && <p className="intent">{f.intent}</p>}
       {f.known && <p className="muted small known-cards">{f.known}</p>}
       {f.learned && <p className="muted small learned">{f.learned}</p>}
+      {f.beliefs && <YourRead beliefs={f.beliefs} />}
     </>
   );
 }

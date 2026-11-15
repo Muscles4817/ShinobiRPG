@@ -1256,8 +1256,11 @@ asked for.
 3. **Gate: one-interface controls.** Feel-test the three levels as clickable screens at 1440 and
    390, from the mockup, before any engine work.
 4. **Then, each its own PR with benches green:**
-   - a decision log for today's AI (why each move was chosen), as the baseline;
-   - observations and beliefs, shown only;
+   - a decision log for today's AI (why each move was chosen), as the baseline. **Done (#305):**
+     `docs/design/research/decision-baseline.md`;
+   - observations and beliefs, shown only. **Done:** `engines/plan/mind/` (witnesses, evidence,
+     beliefs, words), shown in the read panel as "What you make of them". Cues and predictions
+     (Part 5) come with the objective layer;
    - identities and competence sources, derived;
    - the objective layer in shadow;
    - the planner switched on for foes, absorbing modules one at a time (Part 10);

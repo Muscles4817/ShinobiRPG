@@ -166,6 +166,19 @@
 .fighter-read .intent {
   margin-top: 0;
 }
+.your-read-heading {
+  margin: 4px 0 2px;
+  font-family: var(--font-story);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.your-read ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding-left: 1.1em;
+}
 
 .foe-moves ul {
   display: flex;

@@ -340,6 +340,8 @@ export interface CombatantView {
   readonly known?: string;
   /** What a foe has learned of you: defences it has seen you keep, moves it reads (`learned`). */
   readonly learned?: string;
+  /** What you make of a foe from what you've seen, a line a belief, with how sure you are. */
+  readonly beliefs?: readonly string[];
   /** False while they can't be picked as a target (hidden in an illusion). */
   readonly targetable?: boolean;
   /** Their row, for engines with formations. */
