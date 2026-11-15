@@ -4,7 +4,10 @@ import { statTier } from '@/systems/stats';
 import { alive } from '../../../../rules/body';
 import type { Announcement } from '../../decisionLog';
 import { bandOf } from '../../distance';
-import { intendedCard, intentOf } from '../../intent';
+import { cardId } from '../../cards';
+import { asRound, intendedCard, intentOf } from '../../intent';
+import { plannedPlay } from '../../priority';
+import { TEAM_PLANNING } from './team';
 import type { PlanFighter, PlanState } from '../../state';
 import type { HeldPlan } from '../shape';
 import { holdsNow } from './facts';
@@ -71,20 +74,36 @@ function thought(
   return planned(state, f, budget) ?? intentOf(state, f, rng);
 }
 
+/** The moves foes would make anyway, presumed for teammates still to settle on theirs. */
+function presumed(state: PlanState, foes: readonly PlanFighter[]): Record<string, string> {
+  const round = asRound(state);
+  return Object.fromEntries(foes.map((f) => [f.id, cardId(plannedPlay(f, round).card)]));
+}
+
 /** What every standing foe means to do next exchange, thinking foes by their plans. */
 export function foresee(state: PlanState, rng: Rng): Readonly<Record<string, Announcement>> {
   const foes = state.fighters.filter((f) => f.side === 'enemy' && alive(f) && f.stunned === 0);
   const thinkers = foes.filter((f) => f.thinks);
   const weights = thinkers.reduce((sum, f) => sum + tierOf(f).weight, 0);
-  const budget = roundBudget(state.fighters.filter(alive).length);
+  const budget = roundBudget(state.fighters.filter(alive).length) * TEAM_PLANNING.budgetScale;
+  const lit = thinkers[state.round % Math.max(1, thinkers.length)];
   const shareOf = (f: PlanFighter) =>
-    Math.max(1, Math.floor((budget * tierOf(f).weight) / Math.max(1, weights)));
-  return Object.fromEntries(
-    foes.map((f) => [
-      f.id,
-      f.thinks ? thought(state, f, { rng, budget: shareOf(f) }) : intentOf(state, f, rng),
-    ]),
-  );
+    TEAM_PLANNING.spotlight
+      ? budget
+      : Math.max(1, Math.floor((budget * tierOf(f).weight) / Math.max(1, weights)));
+  const settled: Record<string, Announcement> = {};
+  let intents = TEAM_PLANNING.sequential
+    ? { ...state.intents, ...presumed(state, foes) }
+    : state.intents;
+  for (const f of foes) {
+    const thinks = f.thinks === true && (!TEAM_PLANNING.spotlight || f === lit);
+    const told = thinks
+      ? thought({ ...state, intents }, f, { rng, budget: shareOf(f) })
+      : intentOf(state, f, rng);
+    settled[f.id] = told;
+    if (TEAM_PLANNING.sequential) intents = { ...intents, [f.id]: told.card };
+  }
+  return settled;
 }
 
 /** Every foe thinks ahead, in a fight that tries it (`CombatExperiments.planner`). */
