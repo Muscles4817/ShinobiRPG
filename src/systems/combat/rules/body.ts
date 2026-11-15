@@ -70,6 +70,8 @@ export interface Body {
   readonly provisions?: readonly CombatProvision[];
   /** The mind they share with other bodies of their side (`minds.ts`); absent: their own. */
   readonly mind?: CombatMind;
+  /** How they want to fight, as set (`CombatantSetup.fighting`). */
+  readonly fighting?: CombatantSetup['fighting'];
 }
 
 export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = false): Body {

@@ -7,3 +7,5 @@ export { confidence, surenessOf, type Sureness } from './evidence';
 export { witnessAct, witnessDefence } from './observe';
 export { beliefLines, held, type Held } from './words';
 export type { Beliefs, Capability, Evidence, Minded, Witness } from './shape';
+export { competenceOf, recognises, tierFor, type Competence } from './competence';
+export { identityOf, identityProblems, type Identity } from './identity';

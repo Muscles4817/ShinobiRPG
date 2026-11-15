@@ -1,4 +1,5 @@
 import type { StatGrade } from '@/systems/stats';
+import type { Discipline } from '@/systems/techniques';
 
 import { alive, hasPerk } from '../../../rules/body';
 import { maxBreath } from '../../../rules/breath';
@@ -41,6 +42,8 @@ const SHOWN_WEIGHT = 8;
 const DEFENCE_WEIGHT = 6;
 /** Below this share of a pool, it reads as running low. */
 const LOW_SHARE = 0.35;
+/** How much of an observer's skill in an art helps them read it being done. */
+const EXPERTISE_READS = 0.15;
 /** How well a fighter hides what they do: mostly their own perception (Part 5's decision). */
 const CONCEAL = { perception: 0.7, speed: 0.2, art: 0.1, offset: 3 } as const;
 
@@ -54,10 +57,15 @@ function concealment(f: PlanFighter): number {
   );
 }
 
-/** How clearly an observer sees what a fighter does: eyes that read foes see it all. */
-export function clarity(observer: PlanFighter, subject: PlanFighter): number {
+/**
+ * How clearly an observer sees what a fighter does: eyes that read foes see it all; otherwise
+ * perception against how well they hide it, helped by the observer's own skill in the art it
+ * was done in (you read what you know yourself, `competence.ts`).
+ */
+export function clarity(observer: PlanFighter, subject: PlanFighter, art?: Discipline): number {
   if (hasPerk(observer, 'insight')) return 1;
-  return observer.attributes.perception >= concealment(subject) ? 1 : GLIMPSE;
+  const expertise = art ? EXPERTISE_READS * observer.attributes[art] : 0;
+  return observer.attributes.perception + expertise >= concealment(subject) ? 1 : GLIMPSE;
 }
 
 export function keeps(mind: PlanFighter, family: Family): boolean {
@@ -118,12 +126,13 @@ function readings(subject: PlanFighter, clear: number): Seen[] {
 function aboutAfter(mind: PlanFighter, subject: PlanFighter, round: Round): Beliefs {
   const clear = clarity(mind, subject);
   const now = round.number;
+  const clearOf = (w: Witness) => (w.kind === 'attack' ? clarity(mind, subject, w.art) : clear);
   const seen = (round.witnessed ?? []).filter(
     (w) => w.of === subject.id && w.seenBy.includes(mind.id),
   );
   const start = mind.minds?.[subject.id] ?? {};
   const fromActs = seen.reduce(
-    (b, w) => seenIn(mind, b, w, clear).reduce((acc, s) => fold(mind, acc, s, now), b),
+    (b, w) => seenIn(mind, b, w, clearOf(w)).reduce((acc, s) => fold(mind, acc, s, now), b),
     start,
   );
   if (!keeps(mind, 'low') || !inSight(mind, subject)) return fromActs;
