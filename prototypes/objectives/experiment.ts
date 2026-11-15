@@ -143,13 +143,33 @@ function ending(state: PlanState): Pick<Ending, 'won' | 'margin'> {
   return { won, margin: Math.max(0, self.health) / self.maxHealth - theirs };
 }
 
+function withoutKeepAt(state: PlanState): PlanState {
+  return {
+    ...state,
+    fighters: state.fighters.map((f) => {
+      if (f.id !== SELF) return f;
+      const { keepAt: _set, ...free } = f;
+      return free;
+    }),
+  };
+}
+
+function withKeepAt(state: PlanState, from: PlanState): PlanState {
+  const keepAt = from.fighters.find((f) => f.id === SELF)?.keepAt;
+  return {
+    ...state,
+    fighters: state.fighters.map((f) => (f.id === SELF && keepAt ? { ...f, keepAt } : f)),
+  };
+}
+
 /** Plays a moment out from where it stood: today's move, or the layer's forced for one exchange. */
 export function playOut(moment: Moment, forced: boolean, seed: number): Ending {
   let state: PlanState = { ...moment.state, decisions: [] };
-  const first = forced ? forcedFor(state, SELF, moment.card) : state;
+  // A set distance steps before any slot plays (`stepping.ts`): the forced move goes first.
+  const first = forced ? withoutKeepAt(forcedFor(state, SELF, moment.card)) : state;
   state = playExchange(first, seed * 7919);
   const played = state.decisions?.find((d) => d.phase === 'turn' && d.fighterId === SELF)?.card;
-  state = forced ? forcedFor(state, SELF, null, moment.state) : state;
+  state = forced ? withKeepAt(forcedFor(state, SELF, null, moment.state), moment.state) : state;
   for (let i = 1; i < CAP && !state.result; i++) state = playExchange(state, seed * 7919 + i);
   return { ...ending(state), complied: !forced || played === moment.card };
 }
