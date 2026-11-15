@@ -156,3 +156,46 @@ standard error of each difference is about 5 points):
 
 **A lesson for the benches:** 44 fights a foe can't show a single foe's change. Per-foe rows need
 about 200 fights before a difference under 10 points means anything.
+
+## Beyond one against one at chūnin
+
+The setup (`prototypes/planner-diag/wide.test.ts`, after the clear-edge fix):
+
+- Every fight is watched and played twice on the same seed: foes on today's AI, then thinking
+  ahead. Only the foes think.
+- The cast is mirrored at genin and at jōnin.
+- Teams of two and three are drawn from the cast at chūnin.
+- The bestiary foes fight every bench archetype at the scale their danger means.
+
+| Fights                          | n   | Foe wins, today | Foe wins, thinking | ±1 SE | Margin, today | Margin, thinking | Time a fight (today / thinking) |
+| ------------------------------- | --- | --------------- | ------------------ | ----- | ------------- | ---------------- | ------------------------------- |
+| one against one, genin          | 484 | 45.2%           | 49.8%              | ±3.2  | −0.054        | +0.004           | 17 / 106 ms                     |
+| one against one, chūnin         | 968 | 47.4%           | 50.4%              | ±2.3  | −0.056        | −0.005           | 14 / 109 ms                     |
+| one against one, jōnin          | 484 | 49.6%           | 51.0%              | ±3.2  | −0.007        | +0.034           | 13 / 154 ms                     |
+| two against two, chūnin         | 240 | 57.1%           | 56.7%              | ±4.6  | −0.075        | −0.100           | 28 / 389 ms                     |
+| three against three, chūnin     | 240 | 57.1%           | 58.8%              | ±4.6  | −0.145        | −0.111           | 34 / 720 ms                     |
+| bestiary, each at its own scale | 780 | 10.6%           | 13.2%              | ±2.5  | −0.648        | −0.616           | 11 / 53 ms                      |
+
+**What it says:**
+
+- **One against one, thinking helps at every grade.** It is most at genin (+4.6 points of wins,
+  +0.06 margin) and least at jōnin (+1.4, +0.04). That reads as fewer combinations left on the
+  table by dull, plain-kit fighters, and the sharper jōnin kits already playing theirs.
+- **In teams there's no clear gain yet, and the cost is steep.** A 3v3 fight takes about 20
+  times longer. The round's budget is split among two or three thinking foes (600 or 400
+  simulated exchanges a round in all), so each gets a few seeds. With few seeds the clear-edge
+  rule keeps their usual move most of the time. The planner also models its own teammates as
+  playing today's AI, not as thinking.
+- **The bestiary gains a little** (+2.6 points, about one standard error). Most bestiary foes
+  have small kits, so there is little to combine.
+
+**Before thinking foes become the default:**
+
+1. Teams need the planner to be worth its cost. Options:
+   - plan as a side, the mark and roles first (Part 6, team objectives);
+   - give the budget to the foe whose choice matters most;
+   - or plan teams only at higher tiers.
+2. Planning must run off the main thread (Part 7). A 3v3 round is over half a second on the
+   bench machine, and a phone is slower.
+3. The reacting kits (foresight, mimic, the counterer) may need their reactions valued, through
+   the opponent's predicted moves (Part 5), before a look at one's own moves can do them justice.
