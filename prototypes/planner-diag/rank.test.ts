@@ -3,6 +3,8 @@ import { createPlanEngine, type CombatState } from '@/systems/combat';
 import { cardId } from '@/systems/combat/engines/plan/cards';
 import { asRound } from '@/systems/combat/engines/plan/intent';
 import { planFor } from '@/systems/combat/engines/plan/mind/planner/search';
+import { forwardFrom, silent } from '@/systems/combat/engines/plan/mind/planner/forward';
+import { worthOf } from '@/systems/combat/engines/plan/mind/planner/value';
 import { plannedPlay } from '@/systems/combat/engines/plan/priority';
 import { resolveExchange } from '@/systems/combat/engines/plan/round';
 import { endOfRound } from '@/systems/combat/engines/plan/roundEnd';
@@ -59,18 +61,26 @@ it('ranks', () => {
           const p = planFor({ state: s, selfId: 'foe', budget: 900, seedBase: 77 });
           const pick = p?.sequence[0];
           if (pick && pick !== today && p) {
-            const single = planFor({ state: s, selfId: 'foe', budget: 900, seedBase: 77 });
             let pw = 0;
             let tw = 0;
             for (let k = 1; k <= LONG_SEEDS; k++) {
               pw += toEnd(s, pick, k);
               tw += toEnd(s, today, k);
             }
+            const view = silent(s);
+            const fw = forwardFrom(view, 'foe', 5000);
+            const objective = foe.objective?.id;
+            const short = (card: string) => {
+              let t = 0;
+              for (let k = 0; k < 64; k++)
+                t += worthOf(view, fw.leaf([card], 2, k), { selfId: 'foe', objective });
+              return t / 64;
+            };
             rows.push({
               planner: pick,
               today,
-              pv: single?.value ?? 0,
-              tv: 0,
+              pv: short(pick),
+              tv: short(today),
               pw: pw / LONG_SEEDS,
               tw: tw / LONG_SEEDS,
             });
@@ -84,11 +94,17 @@ it('ranks', () => {
   }
   const mean = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / Math.max(1, xs.length);
   const pairs: Record<string, number[]> = {};
-  for (const r of rows) (pairs[`${r.planner} over ${r.today}`] ??= []).push(r.pw - r.tw);
+  const shortBy: Record<string, number[]> = {};
+  for (const r of rows) {
+    (pairs[`${r.planner} over ${r.today}`] ??= []).push(r.pw - r.tw);
+    (shortBy[`${r.planner} over ${r.today}`] ??= []).push(r.pv - r.tv);
+  }
   console.warn(
     `${FOE}: ${rows.length} moments the pick differs. Whole-fight wins with the planner's card ${mean(rows.map((r) => r.pw)).toFixed(3)}, with today's ${mean(rows.map((r) => r.tw)).toFixed(3)}`,
   );
   for (const [k, v] of Object.entries(pairs).sort((x, y) => y[1].length - x[1].length)) {
-    console.warn(`  ${k}: ${v.length} times, planner's better by ${mean(v).toFixed(3)}`);
+    console.warn(
+      `  ${k}: ${v.length} times, whole fights: planner's better by ${mean(v).toFixed(3)} wins; two exchanges, 64 seeds: by ${mean(shortBy[k] ?? []).toFixed(1)} worth`,
+    );
   }
 });

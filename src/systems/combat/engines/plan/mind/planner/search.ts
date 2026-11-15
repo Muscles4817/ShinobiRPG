@@ -62,6 +62,37 @@ function believed(state: PlanState, selfId: string, blur: number): PlanState {
 
 interface Scored extends Candidate {
   readonly value: number;
+  /** Its worth on each seed: every candidate is played on the same seeds, so they compare pair by pair. */
+  readonly values: readonly number[];
+}
+
+/**
+ * How clearly a plan must beat what the fighter would do anyway before it is played instead: its
+ * edge on the same seeds, in standard errors. What they'd do anyway carries the long-run sense the
+ * two-exchange look can't see (slot order, what the kit is built around), and the look's few seeds
+ * can't tell a near tie from luck (`docs/design/research/planner-foes.md`). A plan worth playing
+ * wins by far more than this.
+ */
+const CLEAR_EDGE = 1.5;
+/** With a single seed there's no spread to read: an edge this large in worth is clear. */
+const ONE_SEED_EDGE = 20;
+
+/** Whether `best` beats `usual` clearly, seed by seed. */
+function clearlyBetter(best: Scored, usual: Scored): boolean {
+  const diffs = best.values.map((v, i) => v - (usual.values[i] ?? 0));
+  const n = diffs.length;
+  const mean = diffs.reduce((s, d) => s + d, 0) / Math.max(1, n);
+  if (n < 2) return mean > ONE_SEED_EDGE;
+  const variance = diffs.reduce((s, d) => s + (d - mean) ** 2, 0) / (n - 1);
+  return mean > CLEAR_EDGE * Math.sqrt(variance / n);
+}
+
+/** The best plan, unless what they'd do anyway is about as good. */
+function chosen(ranked: readonly Scored[], usual: CardId | undefined): Scored | undefined {
+  const best = ranked[0];
+  const anyway = ranked.find((c) => c.sequence.length === 1 && c.sequence[0] === usual);
+  if (!best || !anyway || best === anyway) return best;
+  return clearlyBetter(best, anyway) ? best : anyway;
 }
 
 export function planFor(request: PlanRequest): Planned | undefined {
@@ -71,7 +102,7 @@ export function planFor(request: PlanRequest): Planned | undefined {
   const view = silent(believed(request.state, request.selfId, tier.blur));
   const self = view.fighters.find((f) => f.id === request.selfId);
   if (!self) return undefined;
-  const { candidates, all } = candidatesFor(view, self, tier);
+  const { candidates, all, usual } = candidatesFor(view, self, tier);
   if (candidates.length === 0) return undefined;
   // As many candidates as one seed each affords, then as many seeds as the budget allows.
   const affordable = candidates.slice(0, Math.max(1, Math.floor(request.budget / HORIZON)));
@@ -82,18 +113,20 @@ export function planFor(request: PlanRequest): Planned | undefined {
   const forward = forwardFrom(view, request.selfId, request.seedBase);
   const objective: Objective | undefined = real.objective?.id;
   const score = (c: Candidate): Scored => {
-    let total = 0;
-    for (let seed = 0; seed < rollouts; seed++) {
+    const values = Array.from({ length: rollouts }, (_, seed) => {
       const end = forward.leaf(c.sequence, Math.max(HORIZON, c.sequence.length), seed);
-      total += worthOf(view, end, { selfId: request.selfId, objective });
-    }
-    return { ...c, value: total / rollouts };
+      return worthOf(view, end, { selfId: request.selfId, objective });
+    });
+    return { ...c, values, value: values.reduce((s, v) => s + v, 0) / rollouts };
   };
   const scored = affordable.map(score);
   const widened = tier.widthOne
     ? widen(scored, all, { score, room: request.budget - forward.played() })
     : [];
-  const best = [...scored, ...widened].sort((a, b) => b.value - a.value)[0];
+  const best = chosen(
+    [...scored, ...widened].sort((a, b) => b.value - a.value),
+    usual,
+  );
   return best ? { ...best, simulated: forward.played() } : undefined;
 }
 

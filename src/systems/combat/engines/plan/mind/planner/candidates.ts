@@ -95,6 +95,8 @@ export function candidatesFor(
 ): {
   readonly candidates: Candidate[];
   readonly all: readonly CardId[];
+  /** What the fighter would play now without planning, when it can be played. */
+  readonly usual: CardId | undefined;
 } {
   const all = actionsOf(self);
   const now = asRound(state);
@@ -102,5 +104,13 @@ export function candidatesFor(
   const singles = priorOrder(state, self, first)
     .slice(0, tier.firstK)
     .map((id): Candidate => ({ sequence: [id], relies: [[]] }));
-  return { candidates: [...singles, ...pairs(state, self, tier, { first, all })], all };
+  const anyway = cardId(plannedPlay(self, now).card);
+  const usual = first.includes(anyway) ? anyway : undefined;
+  if (
+    usual !== undefined &&
+    !singles.some((c) => c.sequence[0] === usual && c.sequence.length === 1)
+  ) {
+    singles.unshift({ sequence: [usual], relies: [[]] });
+  }
+  return { candidates: [...singles, ...pairs(state, self, tier, { first, all })], all, usual };
 }
