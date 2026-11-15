@@ -40,7 +40,7 @@ import { bandOf } from './distance';
 /** Each foe's next card, by fighter id. */
 export type Intents = Readonly<Record<string, CardId>>;
 
-type Table = Pick<
+export type Table = Pick<
   PlanState,
   'fighters' | 'range' | 'distances' | 'exchange' | 'field' | 'round' | 'reads' | 'foeMark'
 >;
@@ -62,7 +62,8 @@ export function asRound(table: Table): Round {
   };
 }
 
-function intentOf(table: Table, self: PlanFighter, rng: Rng): Announcement {
+/** What one foe means to do next exchange, by today's judgement: its plan, or instinct. */
+export function intentOf(table: Table, self: PlanFighter, rng: Rng): Announcement {
   // A foe plays its plan in priority order as often as its judgement keeps it to it (its
   // default plan already holds its instincts as slot conditions); otherwise it follows instinct.
   const round = asRound(table);

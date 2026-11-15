@@ -82,6 +82,18 @@ describe('versus setup on a desk', () => {
     expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ dodgeLeaps: true }));
   });
 
+  it('lets the foes think ahead, for this bout only', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    const onFight = vi.fn();
+    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
+    const rule = screen.getByRole('checkbox', { name: 'Foes think ahead' });
+    expect(rule).not.toBeChecked();
+    await user.click(rule);
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ foesThink: true }));
+  });
+
   it('opens the roster over the page on a phone instead', async () => {
     asDesk(false);
     const user = userEvent.setup();

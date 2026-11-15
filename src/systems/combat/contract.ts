@@ -313,6 +313,8 @@ export interface CombatSetup {
 export interface CombatExperiments {
   /** A ready Dodge that slips an attack up close leaps clear to mid (Plan & Watch, `leap.ts`). */
   readonly dodgeLeaps?: boolean;
+  /** Foes think ahead with the planner (`engines/plan/mind/planner/`). */
+  readonly planner?: boolean;
 }
 
 /**

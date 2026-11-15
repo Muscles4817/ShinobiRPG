@@ -63,8 +63,11 @@ function daysToGrade(standing: ClassStanding, grade: StatGrade, days = DAYS): nu
 /** Win rate against every genin of their year, rested and fed. */
 /** Fights against each classmate. */
 const FIGHTS_EACH = 50;
-/** Fights against the year for two starts take ten seconds and more on a slow, busy runner. */
-const YEAR_TIMEOUT_MS = 20_000;
+/**
+ * Fights against the year for two starts: about sixteen seconds alone on a dev machine, more on a
+ * busy runner.
+ */
+const YEAR_TIMEOUT_MS = 60_000;
 /** Four months of play and hundreds of fights take a while on a slow runner. */
 const CLIMB_TIMEOUT_MS = 60_000;
 

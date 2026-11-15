@@ -69,8 +69,20 @@ export interface HeldObjective {
   readonly fallback?: Objective;
 }
 
+/** A plan the planner made: the cards it means to play, the next to play, and when it was made. */
+export interface HeldPlan {
+  readonly steps: readonly string[];
+  readonly next: number;
+  readonly round: number;
+  /** The facts each step relied on that earlier steps were to make (`planner/facts.ts`). */
+  readonly relies: readonly (readonly string[])[];
+}
+
 /** A fighter's mind: beliefs about every other fighter, by id, and the objective they hold. */
 export interface Minded {
   readonly minds?: Readonly<Record<string, Beliefs>>;
   readonly objective?: HeldObjective;
+  /** Thinks ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
+  readonly thinks?: true;
+  readonly planned?: HeldPlan;
 }

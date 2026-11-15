@@ -72,6 +72,22 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
         Anyone who slips an attack up close with a Dodge ready lands at mid range, clear of whoever
         threw it. It helps a fighter who wants distance and costs one who wants to stay close.
       </p>
+      <label className="versus-trial-rule" htmlFor="versus-foes-think">
+        <input
+          id="versus-foes-think"
+          type="checkbox"
+          checked={setup.foesThink}
+          onChange={(e) => {
+            setup.setFoesThink(e.target.checked);
+          }}
+        />
+        Foes think ahead
+      </label>
+      <p className="muted">
+        The other side plans each round by playing out its options before it moves, as far ahead as
+        its wits allow, and keeps to the plan unless it breaks. Rounds take a moment longer to
+        start.
+      </p>
     </section>
   );
 }
@@ -123,9 +139,9 @@ export function StartBout({
   readonly setup: VersusSetupState;
   readonly onFight: (choice: VersusChoice) => void;
 }) {
-  const { ctx, side, foes, ground, dodgeLeaps, problem } = setup;
+  const { ctx, side, foes, ground, dodgeLeaps, foesThink, problem } = setup;
   const start = (watch: boolean) => {
-    if (ctx) onFight({ ctx, side, foes, ground, watch, dodgeLeaps });
+    if (ctx) onFight({ ctx, side, foes, ground, watch, dodgeLeaps, foesThink });
   };
   return (
     <>

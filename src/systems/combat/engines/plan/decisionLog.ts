@@ -3,6 +3,7 @@ import type { Chosen } from './slots';
 import type { CombatState } from '../../contract';
 import { decode, type CardId, type PlanFighter, type PlanState, type Round } from './state';
 import { sourceOf, type Decision, type Odds, type Why } from './whyShape';
+import type { HeldPlan } from './mind/shape';
 
 /**
  * The decision log, kept as a fight is fought (`whyShape.ts`): only in a fight whose setup asks
@@ -18,6 +19,17 @@ export interface Announcement {
   readonly card: CardId;
   readonly why: Why;
   readonly odds?: readonly Odds[];
+  /** The plan a thinking foe now holds (`mind/planner/`); kept on the fighter. */
+  readonly planned?: HeldPlan;
+}
+
+/** Fighters with the plans their announcements made. */
+function withPlans(state: PlanState, announcements: Readonly<Record<string, Announcement>>) {
+  if (!Object.values(announcements).some((a) => a.planned)) return state.fighters;
+  return state.fighters.map((f) => {
+    const planned = announcements[f.id]?.planned;
+    return planned ? { ...f, planned } : f;
+  });
 }
 
 interface Noted extends Announcement {
@@ -65,12 +77,13 @@ export function announced(
   const intents = Object.fromEntries(
     Object.entries(announcements).map(([id, { card }]) => [id, card]),
   );
-  if (!state.decisions) return { ...state, intents };
-  const lines = Object.entries(announcements).map(([fighterId, noted]) => ({
+  const told = { ...state, intents, fighters: withPlans(state, announcements) };
+  if (!state.decisions) return told;
+  const lines = Object.entries(announcements).map(([fighterId, { planned: _plan, ...noted }]) => ({
     ...line({ round: state.round, phase: 'announce', fighterId }, noted),
     ...aimOf(state.fighters, fighterId),
   }));
-  return { ...state, intents, decisions: [...state.decisions, ...lines] };
+  return { ...told, decisions: [...state.decisions, ...lines] };
 }
 
 /** Everything a traced fight has decided so far, oldest first; nothing for an untraced one. */

@@ -30,6 +30,8 @@ export interface VersusChoice {
   readonly watch: boolean;
   /** Try the Dodge that leaps clear, a rule on trial. */
   readonly dodgeLeaps: boolean;
+  /** Foes think ahead, a rule on trial. */
+  readonly foesThink: boolean;
 }
 
 function defaultPack(): string {
@@ -63,6 +65,7 @@ export function useVersusSetup(initial: VersusChoice | null) {
   const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
   const [ground, setGround] = useState<VersusGround['id']>(initial?.ground ?? 'arena');
   const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
+  const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
   const [filter, setFilter] = useState<VersusFilter>(OPEN_FILTER);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -132,6 +135,8 @@ export function useVersusSetup(initial: VersusChoice | null) {
     setGround,
     dodgeLeaps,
     setDodgeLeaps,
+    foesThink,
+    setFoesThink,
     filter,
     setFilter,
     slot,
