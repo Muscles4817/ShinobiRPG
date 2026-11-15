@@ -1,3 +1,5 @@
+import type { Discipline } from '@/systems/techniques';
+
 import type { RangeBand } from '../../../contract';
 import type { AttackStyle, DefenceKind } from '../readShape';
 
@@ -21,6 +23,8 @@ export type Witness =
       /** How it read as an attack; absent for what wasn't one (a heal, an empower). */
       readonly style?: AttackStyle;
       readonly shows: readonly Capability[];
+      /** The art it was done in, which those expert in it read more clearly (`competence.ts`). */
+      readonly art?: Discipline;
       readonly seenBy: readonly string[];
     }
   | {

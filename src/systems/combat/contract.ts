@@ -5,6 +5,7 @@ import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/tec
 import type { CombatGear, CombatItem } from './gearContract';
 import type { CombatDust } from './dustContract';
 import type { CombatGround } from './groundContract';
+import type { CombatFighting } from './fightingContract';
 import type { CombatMind } from './mindContract';
 import type { CombatSwarm } from './swarmContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
@@ -215,6 +216,8 @@ export interface CombatantSetup {
   readonly dust?: CombatDust;
   /** The mind they share with other bodies of their side, if any (`mindContract.ts`). */
   readonly mind?: CombatMind;
+  /** How they want to fight, where it isn't left to their kit (`fightingContract.ts`). */
+  readonly fighting?: CombatFighting;
 }
 
 /**

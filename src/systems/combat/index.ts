@@ -129,6 +129,11 @@ export { createDeckEngine } from './engines/deck/engine';
 export { createPlanEngine } from './engines/plan/engine';
 export { decisionsOf } from './engines/plan/decisionLog';
 export {
+  COMBAT_PHILOSOPHIES,
+  type CombatFighting,
+  type CombatPhilosophy,
+} from './fightingContract';
+export {
   INSTINCT_WHYS,
   PLAN_WHYS,
   TURN_WHYS,

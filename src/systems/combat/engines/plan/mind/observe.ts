@@ -1,3 +1,5 @@
+import type { Discipline } from '@/systems/techniques';
+
 import { hasVerb, isHindering } from '../../../rules/verbs';
 import { isOffence, type Card } from '../cards';
 import { bandOf } from '../distance';
@@ -39,6 +41,13 @@ function shows(round: Round, actor: PlanFighter, card: Card): Capability[] {
   ];
 }
 
+/** The art a card is done in: a technique's own, a blade's kenjutsu, a fist's taijutsu. */
+function artOf(card: Card): { art?: Discipline } {
+  if (card.kind === 'jutsu') return { art: card.technique.discipline };
+  if (card.kind === 'strike') return { art: 'taijutsu' };
+  return card.kind === 'throw' ? { art: 'kenjutsu' } : {};
+}
+
 /** Whether a card is an act worth noticing: an attack, a technique or a tool, not footwork. */
 function noticed(card: Card): boolean {
   return card.kind === 'jutsu' || card.kind === 'item' || isOffence(card);
@@ -61,6 +70,7 @@ export function witnessAct(
     card: id,
     ...(style ? { style } : {}),
     shows: showing,
+    ...artOf(card),
     seenBy,
   });
 }

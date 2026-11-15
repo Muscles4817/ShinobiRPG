@@ -1261,7 +1261,11 @@ asked for.
    - observations and beliefs, shown only. **Done:** `engines/plan/mind/` (witnesses, evidence,
      beliefs, words), shown in the read panel as "What you make of them". Cues and predictions
      (Part 5) come with the objective layer;
-   - identities and competence sources, derived;
+   - identities and competence sources, derived. **Done:** `mind/identity.ts` (layers 1, 2 and,
+     through `CombatantSetup.fighting`, 4 and 5), `mind/competence.ts` (tactical intelligence,
+     expertise, knowledge). Expertise already sharpens what beliefs see, and a technique the mind
+     doesn't know is described, not named. Archetype templates (layer 3) and combat experience
+     wait for the objective layer and the game keeping experience;
    - the objective layer in shadow;
    - the planner switched on for foes, absorbing modules one at a time (Part 10);
    - teammates and watched players;

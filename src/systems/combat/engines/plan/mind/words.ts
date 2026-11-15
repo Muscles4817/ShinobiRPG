@@ -1,4 +1,5 @@
-import { findCard } from '../cards';
+import { findCard, type Card } from '../cards';
+import { recognises } from './competence';
 import type { PlanFighter } from '../state';
 import { cardLabel } from '../wording';
 import { confidence, faded, surenessOf, type Sureness } from './evidence';
@@ -91,7 +92,22 @@ export function held(mind: PlanFighter, about: Beliefs | undefined, now: number)
   return [...best.values()].sort((a, b) => b.confidence - a.confidence);
 }
 
-function wordsFor(key: string, subject: PlanFighter): string {
+const ART_WORDS: Readonly<Record<string, string>> = {
+  taijutsu: 'taijutsu',
+  ninjutsu: 'ninjutsu',
+  genjutsu: 'illusion',
+  kenjutsu: 'blade',
+  fuuinjutsu: 'sealing',
+};
+
+/** A card by name if the mind would know it; an unknown technique only as what it was. */
+function named(mind: PlanFighter, card: Card, subject: PlanFighter): string {
+  if (card.kind !== 'jutsu' || recognises(mind, card.technique)) return cardLabel(card, subject);
+  const element = card.technique.element ? `${card.technique.element} ` : '';
+  return `an unfamiliar ${element}${ART_WORDS[card.technique.discipline] ?? ''} technique`;
+}
+
+function wordsFor(mind: PlanFighter, key: string, subject: PlanFighter): string {
   const [family, a, b] = key.split(':');
   if (family === 'defence')
     return `Keeps ${DEFENCE_WORDS[b ?? ''] ?? b} ready ${BAND_WORDS[a ?? ''] ?? a}`;
@@ -99,7 +115,7 @@ function wordsFor(key: string, subject: PlanFighter): string {
   if (family === 'card') {
     const id = key.slice('card:'.length);
     const card = findCard(subject, id);
-    return `Keeps coming back to ${card ? cardLabel(card, subject) : id}`;
+    return `Keeps coming back to ${card ? named(mind, card, subject) : id}`;
   }
   return OTHER_WORDS[key] ?? key;
 }
@@ -109,5 +125,5 @@ export function beliefLines(mind: PlanFighter, subject: PlanFighter, now: number
   return held(mind, mind.minds?.[subject.id], now)
     .filter((h) => h.confidence >= SAID_FROM)
     .slice(0, SHOWN)
-    .map((h) => `${wordsFor(h.key, subject)}: ${h.sureness}.`);
+    .map((h) => `${wordsFor(mind, h.key, subject)}: ${h.sureness}.`);
 }
