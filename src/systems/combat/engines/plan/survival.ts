@@ -65,7 +65,7 @@ function wounds(attacker: PlanFighter, target: PlanFighter, technique: CombatTec
 }
 
 /** The heaviest blow a fighter could land on a target from a distance (any, when absent). */
-function heaviest(attacker: PlanFighter, target: PlanFighter, band?: RangeBand): number {
+export function heaviest(attacker: PlanFighter, target: PlanFighter, band?: RangeBand): number {
   const blow =
     band === undefined || band === 'close' ? strikeDamage(attacker, target, MID_ROLL) : 0;
   const techniques = attacker.techniques

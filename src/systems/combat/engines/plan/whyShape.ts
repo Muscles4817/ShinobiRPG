@@ -1,3 +1,5 @@
+import type { Objective } from './mind/shape';
+
 /**
  * Why a fighter chose what they chose: the decision log (`docs/design/combat-ai-plan.md` Part
  * 13, step 1). Every way a card is picked says which rule picked it, so a fight can be read
@@ -90,6 +92,8 @@ export interface Decision {
   readonly card: string;
   readonly targetId?: string;
   readonly odds?: readonly Odds[];
+  /** The objective they held as they chose (`mind/objectives.ts`, in shadow). */
+  readonly objective?: Objective;
 }
 
 const PLAN_SET: ReadonlySet<Why> = new Set(PLAN_WHYS);

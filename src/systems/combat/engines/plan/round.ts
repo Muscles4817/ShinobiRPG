@@ -31,7 +31,7 @@ import { secondWinds } from './provisions';
 import { canHit, hittable } from './rows';
 import { plannedPlay } from './priority';
 import { decided, PULLED_FREE } from './decisionLog';
-import { beliefsAfter } from './mind';
+import { beliefsAfter, objectivesAfter } from './mind';
 import type { Chosen, Play } from './slots';
 import { readsInTheMoment } from './judgement';
 import { noteAttack } from './reads';
@@ -313,8 +313,10 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ),
   );
   // What everyone saw this exchange is taken in as it ends; shown only (`mind/`).
-  const end = beliefsAfter(
-    secondWinds(lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round)),
+  const end = objectivesAfter(
+    beliefsAfter(
+      secondWinds(lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round)),
+    ),
   );
   const result = decide(end.fighters);
   const { field, lines: fading } = fieldAfter(end.field, state.round);
