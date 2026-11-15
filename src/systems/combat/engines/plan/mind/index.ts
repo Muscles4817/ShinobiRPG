@@ -9,3 +9,7 @@ export { beliefLines, held, type Held } from './words';
 export type { Beliefs, Capability, Evidence, Minded, Witness } from './shape';
 export { competenceOf, recognises, tierFor, type Competence } from './competence';
 export { identityOf, identityProblems, type Identity } from './identity';
+export { assess, type Assessment } from './assess';
+export { objectivesAfter } from './aims';
+export { choose, scored } from './objectives';
+export { OBJECTIVES, type HeldObjective, type Objective } from './shape';

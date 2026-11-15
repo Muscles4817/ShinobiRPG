@@ -15,7 +15,8 @@ import { empowerCostsOwed } from '../../rules/verbs';
 import { fieldMeter } from './field';
 import { endOfRound } from './roundEnd';
 import { CALLED_FOR, calledBack, callOwn } from './roundCalls';
-import { announce } from './intent';
+import { announce, asRound } from './intent';
+import { objectivesAfter } from './mind';
 import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
@@ -188,6 +189,8 @@ export function createPlanEngine(): CombatEngine {
         round: 1,
         ...(field ? { field } : {}),
       };
+      // Everyone settles what they mean to do before the first exchange (`mind/`, in shadow).
+      const aimed = objectivesAfter(asRound(table)).fighters;
       const firstMover = setup.opening?.firstMover;
       const watching = setup.watch ?? false;
       const intro = setup.intro ?? squareUpLine(setup.enemies);
@@ -196,7 +199,7 @@ export function createPlanEngine(): CombatEngine {
         round: 1,
         bout: 1,
         exchange: 0,
-        fighters: planned,
+        fighters: aimed,
         range,
         seen: {},
         ...foeMarkFor(planned),

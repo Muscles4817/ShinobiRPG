@@ -1266,7 +1266,10 @@ asked for.
      expertise, knowledge). Expertise already sharpens what beliefs see, and a technique the mind
      doesn't know is described, not named. Archetype templates (layer 3) and combat experience
      wait for the objective layer and the game keeping experience;
-   - the objective layer in shadow;
+   - the objective layer in shadow. **Done:** `mind/assess.ts`, `mind/objectives.ts` (a first
+     eight objectives, scored from identity and the assessment, held by discipline, interrupted
+     by a killer, nobody in sight or a foe to finish), logged beside each move;
+     `docs/design/research/objectives-shadow.md`;
    - the planner switched on for foes, absorbing modules one at a time (Part 10);
    - teammates and watched players;
    - the player controls;

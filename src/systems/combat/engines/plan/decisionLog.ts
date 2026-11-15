@@ -28,6 +28,12 @@ function line(at: Pick<Decision, 'round' | 'phase' | 'fighterId'>, noted: Noted)
   return { ...at, source: sourceOf(noted.why), ...noted };
 }
 
+/** The objective a fighter held as they chose, for the log. */
+function aimOf(fighters: readonly PlanFighter[], id: string): Pick<Decision, 'objective'> {
+  const objective = fighters.find((f) => f.id === id)?.objective?.id;
+  return objective ? { objective } : {};
+}
+
 /** A turn's choice, noted on the round when the fight is traced. */
 export function decided(
   round: Round,
@@ -44,7 +50,10 @@ export function decided(
           ...(chosen.target ? { targetId: chosen.target.id } : {}),
           ...(chosen.odds ? { odds: chosen.odds } : {}),
         };
-  const turn = line({ round: round.number, phase: 'turn', fighterId: actor.id }, noted);
+  const turn = {
+    ...line({ round: round.number, phase: 'turn', fighterId: actor.id }, noted),
+    ...aimOf(round.fighters, actor.id),
+  };
   return { ...round, decisions: [...round.decisions, turn] };
 }
 
@@ -57,9 +66,10 @@ export function announced(
     Object.entries(announcements).map(([id, { card }]) => [id, card]),
   );
   if (!state.decisions) return { ...state, intents };
-  const lines = Object.entries(announcements).map(([fighterId, noted]) =>
-    line({ round: state.round, phase: 'announce', fighterId }, noted),
-  );
+  const lines = Object.entries(announcements).map(([fighterId, noted]) => ({
+    ...line({ round: state.round, phase: 'announce', fighterId }, noted),
+    ...aimOf(state.fighters, fighterId),
+  }));
   return { ...state, intents, decisions: [...state.decisions, ...lines] };
 }
 

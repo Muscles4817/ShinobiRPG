@@ -49,7 +49,28 @@ export interface Evidence {
  */
 export type Beliefs = Readonly<Record<string, Evidence>>;
 
-/** A fighter's mind: beliefs about every other fighter, by id. Absent: nothing believed yet. */
+/** What a fighter can be trying to bring about over the next few exchanges (`objectives.ts`). */
+export const OBJECTIVES = [
+  'wear-down',
+  'finish',
+  'set-up',
+  'survive',
+  'control-distance',
+  'recover',
+  'find',
+  'escalate',
+] as const;
+export type Objective = (typeof OBJECTIVES)[number];
+
+/** The objective a fighter holds, since which exchange, and what they would fall back on. */
+export interface HeldObjective {
+  readonly id: Objective;
+  readonly since: number;
+  readonly fallback?: Objective;
+}
+
+/** A fighter's mind: beliefs about every other fighter, by id, and the objective they hold. */
 export interface Minded {
   readonly minds?: Readonly<Record<string, Beliefs>>;
+  readonly objective?: HeldObjective;
 }
