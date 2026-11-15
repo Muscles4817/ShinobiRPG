@@ -101,3 +101,58 @@ Still to do in step 5:
 - other grades and the bestiary;
 - the per-device timing;
 - absorbing today's special-case modules one at a time (Part 10).
+
+## The three regressions, diagnosed
+
+The prototype is `prototypes/planner-diag/`.
+
+**1. Each hypothesis as a knob, the whole run** (`diag.test.ts`, 44 fights a foe):
+
+| Foe        | Today | Thinking | No misjudging | Seeds ×4 | Horizon 3 |
+| ---------- | ----- | -------- | ------------- | -------- | --------- |
+| foresight  | 57%   | 43%      | 43%           | 48%      | 43%       |
+| mimic      | 57%   | 45%      | 43%           | 48%      | 45%       |
+| mist blade | 61%   | 52%      | 59%           | 59%      | 52%       |
+
+**2. The foresight fighter's round-start picks, where they differ from today's** (`rank.test.ts`):
+
+- The planner mostly threw kunai or Evaded where today's AI breathed embers.
+- Played to the end of the fight, each such swap cost about 3 points of win rate.
+- Scored properly (64 seeds, two exchanges), the swaps were worse even at the planner's own
+  horizon: kunai −1 worth, Evade −10.
+- So the planner's few seeds were settling near ties by luck.
+
+**The fix:** a thinking foe now keeps the move it would play anyway, unless a plan beats it
+clearly. All candidates are scored on the same seeds, and the plan must win by 1.5 standard errors
+of the difference (`search.ts`, `CLEAR_EDGE`). The move it would play anyway carries the long-run
+sense a two-exchange look can't see. A plan worth playing, like the assassin's hide then killing
+blow, still wins by far more.
+
+**3. The same foes over four times the fights** (`many.test.ts`, 176 fights a foe, new seeds; one
+standard error of each difference is about 5 points):
+
+| Foe                | Today | Thinking |
+| ------------------ | ----- | -------- |
+| foresight          | 50.0% | 46.6%    |
+| mimic              | 51.1% | 46.6%    |
+| mist blade         | 59.1% | 61.9%    |
+| counterer          | 63.1% | 59.1%    |
+| assassin (control) | 10.2% | 26.7%    |
+
+**What it comes to:**
+
+- **Mist blade:** no regression. The 9-point drop was the chance of 44 fights.
+- **Foresight, mimic and the counterer:** perhaps a small cost, within the noise. All three are
+  fighters whose strength is reacting (eyes that see it coming, a Counter kept ready), which a
+  two-exchange look of one's own moves can't value.
+- **Assassin:** the gain holds, at three standard errors.
+
+**After the fix, over the whole cast** (968 fights):
+
+| Foe            | Wins  | Health margin | Time a fight |
+| -------------- | ----- | ------------- | ------------ |
+| Today's AI     | 47.4% | −0.056        | 14 ms        |
+| Thinking ahead | 50.4% | −0.005        | 109 ms       |
+
+**A lesson for the benches:** 44 fights a foe can't show a single foe's change. Per-foe rows need
+about 200 fights before a difference under 10 points means anything.
