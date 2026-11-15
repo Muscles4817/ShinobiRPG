@@ -81,7 +81,15 @@ By foe:
   - Two exchanges of rollouts may not show what those are worth.
   - Or the plan's steps may override a kit play today's AI makes at the right moment.
 
-  That needs diagnosing before the planner becomes the default (step 5's next part).
+  A first look, counting what they played over the same fights:
+  - The foresight fighter threw kunai 94 times thinking, against 74 on today's AI. It used
+    its fire technique 339 times, against 379.
+  - The mist blade threw a plain blow 10 times against 0, and played its third cut 54 times
+    against 85.
+
+  So the planner sometimes settles on a weaker plain card. The likeliest cause is rollout noise
+  at a two-exchange horizon: a few seeds can't tell a technique's real edge from luck. That
+  needs diagnosing before the planner becomes the default (step 5's next part).
 
 - **It costs about eight times as much a fight.** That is well inside the round budget, but
   enough that it must run off the main thread before it is the default (Part 7: a Web Worker).
