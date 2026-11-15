@@ -29,6 +29,17 @@ export interface VersusPick {
   readonly watch?: boolean;
   /** Try the Dodge that leaps clear (a rule on trial, `CombatExperiments.dodgeLeaps`). */
   readonly dodgeLeaps?: boolean;
+  /** Foes think ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
+  readonly foesThink?: boolean;
+}
+
+/** The rules on trial a pick turns on, if any. */
+function experimentsOf(pick: VersusPick) {
+  const experiments = {
+    ...(pick.dodgeLeaps ? { dodgeLeaps: true } : {}),
+    ...(pick.foesThink ? { planner: true } : {}),
+  };
+  return Object.keys(experiments).length > 0 ? { experiments } : {};
 }
 
 /** A sandbox whose character is your fighter, so every read of "you" reads them. */
@@ -58,7 +69,7 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     canFlee: !watching,
     ...(pick.ground ? { ground: pick.ground } : {}),
     ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),
-    ...(pick.dodgeLeaps ? { experiments: { dodgeLeaps: true } } : {}),
+    ...experimentsOf(pick),
   };
   const vitals = { ...sandbox.character.vitals, health: player.health, chakra: player.chakra };
   const match = {

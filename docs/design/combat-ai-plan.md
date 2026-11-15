@@ -1270,7 +1270,10 @@ asked for.
      eight objectives, scored from identity and the assessment, held by discipline, interrupted
      by a killer, nobody in sight or a foe to finish), logged beside each move;
      `docs/design/research/objectives-shadow.md`;
-   - the planner switched on for foes, absorbing modules one at a time (Part 10);
+   - the planner switched on for foes, absorbing modules one at a time (Part 10). **Begun:**
+     `mind/planner/`, foes who think ahead as a rule on trial in versus
+     (`docs/design/research/planner-foes.md`: 47.4% → 51.2% foe wins over the cast; three
+     kits worse, to diagnose before it becomes the default);
    - teammates and watched players;
    - the player controls;
    - the commitment rules.

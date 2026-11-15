@@ -34,6 +34,10 @@ export const PLAN_WHYS = [
   'looking',
   /** Nothing slotted played: a plain blow or a step. */
   'improvised',
+  /** The planner's best first card, planned as the round began or when a plan broke (`mind/planner/`). */
+  'planned',
+  /** The next card of the plan the planner made. */
+  'plan-step',
 ] as const;
 
 /** Ways instinct picks (`choose.ts`), in the order instinct asks them. */

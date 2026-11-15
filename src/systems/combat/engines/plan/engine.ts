@@ -15,7 +15,8 @@ import { empowerCostsOwed } from '../../rules/verbs';
 import { fieldMeter } from './field';
 import { endOfRound } from './roundEnd';
 import { CALLED_FOR, calledBack, callOwn } from './roundCalls';
-import { announce, asRound } from './intent';
+import { asRound } from './intent';
+import { foresee, withThinking } from './mind/planner/think';
 import { objectivesAfter } from './mind';
 import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
@@ -100,7 +101,7 @@ function fleeChance(state: PlanState): number {
 /** Fights an exchange, then foes announce their next move. */
 function exchange(state: PlanState, rng: Rng): PlanState {
   const next = endOfRound(resolveExchange(state, rng));
-  const told = next.result ? next : announced(next, announce(next, rng));
+  const told = next.result ? next : announced(next, foresee(next, rng));
   // Something the player would want to answer stops the round (`roundCalls.ts`).
   return calledBack(state, told);
 }
@@ -177,7 +178,8 @@ export function createPlanEngine(): CombatEngine {
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup, rng) {
-      const opened = openFight(withLeaps(initialFighters(setup), setup), setup.opening);
+      const thinking = withThinking(initialFighters(setup), setup.experiments?.planner === true);
+      const opened = openFight(withLeaps(thinking, setup), setup.opening);
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
       const planned = plannedFighters(fighters, setup.plan);
@@ -214,7 +216,7 @@ export function createPlanEngine(): CombatEngine {
         ...(field ? { field } : {}),
         ...(setup.trace ? { decisions: [] } : {}),
       };
-      return encode(announced(state, announce(table, rng)));
+      return encode(announced(state, foresee(state, rng)));
     },
 
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {
