@@ -78,6 +78,12 @@ function ordinaryTalent() {
   return { ...game, character: { ...game.character, aptitude: evenAptitude(1) } };
 }
 
+/**
+ * Playing out three months of days takes a few seconds alone and more on a busy CI runner, past
+ * the default limit of five.
+ */
+const LONG_RUN_MS = 30_000;
+
 describe('pacing: a focused player', () => {
   const run = playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, DAYS);
   const month = playFocused(ordinaryTalent(), TAIJUTSU_FOCUS, MONTH);
@@ -145,15 +151,19 @@ describe('pacing: a focused player', () => {
     );
     expect(solo ?? Infinity).toBeGreaterThanOrEqual(reached + TEACHERS_LEAD_DAYS);
   });
-  it(`the focused player is nominated for the chūnin exam on day ${NOMINATION_DAYS} ± ${NOMINATION_WINDOW}`, () => {
-    let state = ordinaryTalent();
-    const start = state.time.day;
-    let nominated: number | null = null;
-    for (let day = 0; day <= NOMINATION_DAYS + NOMINATION_WINDOW && nominated === null; day++) {
-      if (nominationBlocker(state, ctx) === null) nominated = state.time.day - start;
-      else state = playFocused(state, TAIJUTSU_FOCUS, 1).state;
-    }
-    expect(nominated).not.toBeNull();
-    expect(Math.abs((nominated ?? 0) - NOMINATION_DAYS)).toBeLessThanOrEqual(NOMINATION_WINDOW);
-  });
+  it(
+    `the focused player is nominated for the chūnin exam on day ${NOMINATION_DAYS} ± ${NOMINATION_WINDOW}`,
+    () => {
+      let state = ordinaryTalent();
+      const start = state.time.day;
+      let nominated: number | null = null;
+      for (let day = 0; day <= NOMINATION_DAYS + NOMINATION_WINDOW && nominated === null; day++) {
+        if (nominationBlocker(state, ctx) === null) nominated = state.time.day - start;
+        else state = playFocused(state, TAIJUTSU_FOCUS, 1).state;
+      }
+      expect(nominated).not.toBeNull();
+      expect(Math.abs((nominated ?? 0) - NOMINATION_DAYS)).toBeLessThanOrEqual(NOMINATION_WINDOW);
+    },
+    LONG_RUN_MS,
+  );
 });
