@@ -212,7 +212,8 @@ function offPlanOf(actor: PlanFighter, play: Play): Pick<Round, 'offPlan'> {
  * and not a mind's source or a body its mind has left (`sharedMind.ts`).
  */
 function hasTurn(start: Round, before: PlanFighter): boolean {
-  if (!alive(before) || decide(start.fighters, start.toTheLast) || start.acted?.includes(before.id)) return false;
+  if (!alive(before) || decide(start.fighters, start.toTheLast) || start.acted?.includes(before.id))
+    return false;
   return !keepsOffField(before) && stillFighting(start.fighters, before);
 }
 
