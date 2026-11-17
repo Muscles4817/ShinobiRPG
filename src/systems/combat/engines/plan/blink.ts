@@ -31,7 +31,7 @@ export function withTeleports(
   fighters: readonly PlanFighter[],
   setup: Pick<CombatSetup, 'experiments'>,
 ): PlanFighter[] {
-  if (!setup.experiments?.teleport) return [...fighters];
+  if (setup.experiments?.teleport === false) return [...fighters];
   return fighters.map((f) => (f.perks.includes('teleport') ? { ...f, teleports: true } : f));
 }
 
