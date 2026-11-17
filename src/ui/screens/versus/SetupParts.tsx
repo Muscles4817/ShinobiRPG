@@ -52,6 +52,12 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
   );
 }
 
+/** The rules on trial a bout carries, as the setup has them ticked. */
+export function trialsOf(setup: VersusSetupState) {
+  const { dodgeLeaps, foesThink, rushing, handSigns, standFirm } = setup;
+  return { dodgeLeaps, foesThink, rushing, handSigns, standFirm };
+}
+
 /** Rules on trial: off unless turned on here, for this bout only. */
 export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
   return (
@@ -118,6 +124,21 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
         With a foe close enough to touch, a technique that needs hand signs is a contest: speed and
         chakra control against their speed and taijutsu. Lost, the seals come apart.
       </p>
+      <label className="versus-trial-rule" htmlFor="versus-stand-firm">
+        <input
+          id="versus-stand-firm"
+          type="checkbox"
+          checked={setup.standFirm}
+          onChange={(e) => {
+            setup.setStandFirm(e.target.checked);
+          }}
+        />
+        Hold your ground against blasts
+      </label>
+      <p className="muted">
+        A wide blast may fail to throw someone strong, big or braced, as a knock may fail to take
+        hold. A blast far stronger than they are still throws them.
+      </p>
     </section>
   );
 }
@@ -169,9 +190,10 @@ export function StartBout({
   readonly setup: VersusSetupState;
   readonly onFight: (choice: VersusChoice) => void;
 }) {
-  const { ctx, side, foes, ground, dodgeLeaps, foesThink, rushing, handSigns, problem } = setup;
+  const { ctx, side, foes, ground, problem } = setup;
+  const trials = trialsOf(setup);
   const start = (watch: boolean) => {
-    if (ctx) onFight({ ctx, side, foes, ground, watch, dodgeLeaps, foesThink, rushing, handSigns });
+    if (ctx) onFight({ ctx, side, foes, ground, watch, ...trials });
   };
   return (
     <>

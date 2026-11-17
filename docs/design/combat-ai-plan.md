@@ -1313,7 +1313,7 @@ distances of their own: it reset every pair to the fight's distance. A bug, fixe
   reaction faster than a turn" stands.
 - **Teleport** (Minato's Flying Thunder God): a change of distance that costs no turn, once a
   round.
-- **Knockback** should be resisted on the gap (the area's power against strength and size, and a
+- **Knockback** should be resisted on the gap (the blast against strength and size, and a
   Brace), so a far stronger blast still throws a strong body.
 - A crowd rule (leaving close range needs a turn the closer doesn't contest) is held back unless
   the measurements still show casters escaping too easily.
@@ -1324,8 +1324,19 @@ distances of their own: it reset every pair to the fight's distance. A bug, fixe
 | ---------------------------------------- | ---------------------- | ------------------ |
 | Today's rules                            | 30.1% won              | 49.3% won          |
 | Rushing and hand signs on                | 35.7% won              | 53.6% won          |
+| And holding ground against blasts        | 39.0% won              | 53.4% won          |
 
 Kimimaro, fighting up close against Asuma, went from 0 wins in 10 to 10 in 10.
+
+**Knockback** went on trial next (`standFirm`, `plan/standing.ts`). A wide area throws back only
+those it caught who don't keep their feet. Holding reads like a knock: the maker's art and
+strength against the body's strength. It is odds on that ratio, not the knock's own resist, which
+stays between a tenth and a quarter and barely tells bodies apart. Equals keep their feet one time
+in five, and a body twice as strong about half the time. A maker far stronger still throws a
+strong body. A Brace holds far more surely (`bracedResist`), and each size larger adds to it. The
+technique's power plays no part, as with every condition: what throws is who made it. The rule
+only ever helps against wide-area foes (+3 points of wins), and it leaves other fights as they
+were.
 
 **The plan:** Phase A tries these as rules on trial in versus, one PR at a time, with the
 measurements before and after. Phase B adopts what plays well and teaches today's AI what it

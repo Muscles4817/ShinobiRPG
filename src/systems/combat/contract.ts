@@ -325,6 +325,8 @@ export interface CombatExperiments {
   readonly rushing?: boolean;
   /** Up close, a technique that needs hand signs may come apart before it's cast (same). */
   readonly handSigns?: boolean;
+  /** A body caught in a wide blast may keep its feet, by strength, size and a Brace (`plan/standing.ts`). */
+  readonly standFirm?: boolean;
 }
 
 /**

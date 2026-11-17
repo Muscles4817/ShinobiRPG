@@ -390,7 +390,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     lighter blow as they land (`rushing`); and up close a technique that needs hand signs (read from
     its art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming
     apart (`handSigns`; both in `plan/closeQuarters.ts`, flags on the fighter from
-    `plan/trialShape.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
+    `plan/trialShape.ts`); and a body caught in a wide blast may keep its feet, on the maker's art
+    and strength against its own strength, more surely braced or bigger (`standFirm`,
+    `plan/standing.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
     moves it out of `experiments`. A small area (no `size`) moves no one; only wide and vast blasts
     throw the fight apart (`plan/blast.ts`).
     A fight is lost when the player falls, as on a job; a versus bout is fought **to the last**

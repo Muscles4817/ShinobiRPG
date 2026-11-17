@@ -6,7 +6,14 @@ import { useHoverPreview } from '../../layout/useHoverPreview';
 import { useKeys } from '../../layout/useKeys';
 import { FighterProfile } from './FighterProfile';
 import { RosterBrowser } from './RosterBrowser';
-import { BothSides, GroundPicker, TrialRules, StartBout, WorldPicker } from './SetupParts';
+import {
+  BothSides,
+  GroundPicker,
+  StartBout,
+  TrialRules,
+  trialsOf,
+  WorldPicker,
+} from './SetupParts';
 import { placeLabel, slotLabel, type Slot } from './SideSlots';
 import type { VersusChoice, VersusSetupState } from './useVersusSetup';
 
@@ -43,7 +50,7 @@ function DeskActions({ setup, slot, profile }: DeskActionsProps) {
 
 /** Enter starts the bout once it can start (the search box keeps its own Enter). */
 function useFightKey(setup: VersusSetupState, onFight: (choice: VersusChoice) => void): void {
-  const { ctx, side, foes, ground, dodgeLeaps, foesThink, rushing, handSigns, problem } = setup;
+  const { ctx, side, foes, ground, problem } = setup;
   useKeys(
     {
       Enter:
@@ -55,10 +62,7 @@ function useFightKey(setup: VersusSetupState, onFight: (choice: VersusChoice) =>
                 foes,
                 ground,
                 watch: false,
-                dodgeLeaps,
-                foesThink,
-                rushing,
-                handSigns,
+                ...trialsOf(setup),
               });
             }
           : undefined,

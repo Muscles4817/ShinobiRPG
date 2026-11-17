@@ -10,4 +10,6 @@ export interface OnTrial {
   readonly rushes?: true;
   /** Hand signs can be broken up close (`closeQuarters.ts`). */
   readonly crowdable?: true;
+  /** May keep their feet when a wide blast catches them (`standing.ts`). */
+  readonly standsFirm?: true;
 }

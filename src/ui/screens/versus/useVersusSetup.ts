@@ -36,6 +36,8 @@ export interface VersusChoice {
   readonly rushing: boolean;
   /** Hand signs can be broken up close, a rule on trial. */
   readonly handSigns: boolean;
+  /** A body may hold its ground against a blast, a rule on trial. */
+  readonly standFirm: boolean;
 }
 
 function defaultPack(): string {
@@ -61,6 +63,7 @@ function useTrialRules(initial: VersusChoice | null) {
   const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
   const [rushing, setRushing] = useState(initial?.rushing ?? false);
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
+  const [standFirm, setStandFirm] = useState(initial?.standFirm ?? false);
   return {
     dodgeLeaps,
     setDodgeLeaps,
@@ -70,6 +73,8 @@ function useTrialRules(initial: VersusChoice | null) {
     setRushing,
     handSigns,
     setHandSigns,
+    standFirm,
+    setStandFirm,
   };
 }
 

@@ -101,6 +101,18 @@ describe('versus setup on a desk', () => {
     );
   });
 
+  it('holds ground against blasts only when you turn it on', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    const onFight = vi.fn();
+    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ standFirm: false }));
+    await user.click(screen.getByRole('checkbox', { name: 'Hold your ground against blasts' }));
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ standFirm: true }));
+  });
+
   it('lets the foes think ahead, for this bout only', async () => {
     asDesk(true);
     const user = userEvent.setup();
