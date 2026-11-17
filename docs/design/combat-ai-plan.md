@@ -1496,10 +1496,13 @@ What the read shows:
     fighter casts its armour up close again and loses it about one fight in two, and takes a rush
     blow a fight. Casting armour inside a brawler's reach and sometimes losing it makes sense too.
   - **Found in the story, not the numbers:**
-    - The kit's "glances off" lines ("barely seems to feel it", "little of it bites") are told
-      whenever armour or a shroud takes any share of a blow, however small, even beside a chip of 16. The words should follow how much was kept out. This is exactly the dishonest text the
-      owner's note on reads is about.
-    - Mending Glow, a healing technique, is told as "catches their breath and recovers".
+    - The kit's "glances off" lines ("barely seems to feel it", "little of it bites") were told
+      whenever armour or a shroud took any share of a blow, however small, even beside a chip of
+      16: the dishonest text the owner's note on reads is about. Fixed (`plan/kitNote.ts`): "much
+      of it glances off" only when the kit kept out at least half, "some of it" when it kept out
+      some, and nothing when it kept out little.
+    - Mending Glow, a healing technique, was told as "catches their breath and recovers". Fixed: a
+      heal names the technique closing the wounds.
 - **The owner's note: distance isn't even.** Close to mid is a short gap; mid to far is a long one.
   - Closing from far to mid should give the far fighter more chance to answer (to see it coming,
     throw, set something) than closing from mid to close does.
