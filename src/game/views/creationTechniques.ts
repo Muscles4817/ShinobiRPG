@@ -1,5 +1,10 @@
 import { statTier, type StatGrade, type Stats } from '@/systems/stats';
-import { DISCIPLINES, type Discipline, type TechniqueDef } from '@/systems/techniques';
+import {
+  DISCIPLINES,
+  gradeToAttempt,
+  type Discipline,
+  type TechniqueDef,
+} from '@/systems/techniques';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf } from '../combatants';
@@ -32,6 +37,8 @@ export interface TaughtCard {
   readonly rank: StatGrade;
   /** One of the clan's own arts. */
   readonly fromClan: boolean;
+  /** Half of a combination: it plays only beside someone who knows the other half. */
+  readonly combo: boolean;
   readonly selected: boolean;
   /** Why it can't be chosen now (the file is full), or null. */
   readonly blocker: string | null;
@@ -94,19 +101,30 @@ function fileReader(stats: Stats): Reader {
   };
 }
 
-const HELD_WORDS: Readonly<Record<HeldBack, (n: number, art: string) => string>> = {
-  grade: (n, art) => `${word(n)} wait${n === 1 ? 's' : ''} for a higher ${art} grade`,
-  nature: (n) => `${word(n)} need${n === 1 ? 's' : ''} a chakra nature you haven’t found yet`,
-  body: (n) => `${word(n)} ask${n === 1 ? 's' : ''} more of your body than it has yet`,
-};
+/** How many held-back techniques a line names before it counts the rest. */
+const NAMED = 2;
 
-function heldBackLine(held: readonly HeldBack[], discipline: Discipline): string | null {
+function heldWords(def: TechniqueDef, why: HeldBack): string {
+  switch (why) {
+    case 'grade':
+      return `${def.name} waits for ${ART_NAME[def.discipline]} ${gradeToAttempt(def.rank)}`;
+    case 'nature':
+      return `${def.name} needs a chakra nature you haven’t found yet`;
+    case 'body':
+      return `${def.name} asks more of your body than it has yet`;
+  }
+}
+
+/** The nearest few the rack holds back, named with what they wait for, and how many more. */
+function heldBackLine(held: readonly { def: TechniqueDef; why: HeldBack }[]): string | null {
   if (held.length === 0) return null;
-  const parts = (['grade', 'nature', 'body'] as const).flatMap((why) => {
-    const n = held.filter((h) => h === why).length;
-    return n === 0 ? [] : [HELD_WORDS[why](n, ART_NAME[discipline])];
-  });
-  return `On the rack still: ${parts.join('; ')}.`;
+  const nearest = [...held].sort(
+    (a, b) => RANK_ORDER.indexOf(a.def.rank) - RANK_ORDER.indexOf(b.def.rank),
+  );
+  const named = nearest.slice(0, NAMED).map((h) => heldWords(h.def, h.why));
+  const rest = held.length - named.length;
+  const more = rest > 0 ? `; and ${word(rest)} more` : '';
+  return `Still on the rack: ${named.join('; ')}${more}.`;
 }
 
 interface CardMaker {
@@ -125,6 +143,7 @@ function cardOf(def: TechniqueDef, maker: CardMaker): TaughtCard {
     discipline: def.discipline,
     rank: def.rank,
     fromClan: def.clan !== undefined,
+    combo: def.combo !== undefined,
     selected,
     blocker: maker.full && !selected ? 'Your file is full. Put one back to choose this.' : null,
     sheet: sheetFor({ ctx: maker.ctx, def, you: maker.you, unstable: false }),
@@ -151,10 +170,7 @@ export function techniquesPage(draft: CreationDraft, ctx: GameContext): Techniqu
       .filter((t) => t.discipline === discipline)
       .sort((a, b) => RANK_ORDER.indexOf(a.rank) - RANK_ORDER.indexOf(b.rank))
       .map((t) => cardOf(t, maker)),
-    heldBack: heldBackLine(
-      held.filter((h) => h.def.discipline === discipline).map((h) => h.why),
-      discipline,
-    ),
+    heldBack: heldBackLine(held.filter((h) => h.def.discipline === discipline)),
   })).filter((g) => g.cards.length > 0 || g.heldBack !== null);
   return {
     picks,

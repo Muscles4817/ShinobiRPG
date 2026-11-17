@@ -77,7 +77,7 @@ describe('techniques chosen at creation', () => {
 
   it('says what the rack keeps back, and reads each offer’s sheet for the student', () => {
     const page = techniquesPage(draft(), ctx);
-    expect(page.groups.some((g) => g.heldBack?.startsWith('On the rack still:'))).toBe(true);
+    expect(page.groups.some((g) => g.heldBack?.startsWith('Still on the rack:'))).toBe(true);
     const offered = page.groups.flatMap((g) => g.cards);
     expect(offered.every((card) => card.sheet.reach.length > 0)).toBe(true);
     // Ranks run from the easiest within each art.

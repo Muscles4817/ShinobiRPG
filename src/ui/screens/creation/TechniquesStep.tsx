@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState, type RefObject } from 'react';
 
 import {
   techniquesPage,
@@ -24,7 +24,17 @@ const ART_LABEL: Readonly<Record<Discipline, string>> = {
   fuuinjutsu: 'Fūinjutsu',
 };
 
-/** A technique on offer: a slip that is chosen or put back, and read beside the list. */
+/** The word stamped on a slip: chosen, the clan's own, or half of a combination. */
+function stampOf(card: TaughtCard): string | undefined {
+  if (card.selected) return 'Chosen';
+  if (card.fromClan) return 'Clan art';
+  return card.combo ? 'Combination' : undefined;
+}
+
+/**
+ * A technique on offer: a slip that is chosen or put back, read beside the list on a desk and,
+ * on a phone, unfolded under the slip.
+ */
 function Offer({
   card,
   onToggle,
@@ -34,7 +44,7 @@ function Offer({
   readonly onToggle: () => void;
   readonly onRead: () => void;
 }) {
-  const stamp = card.selected ? 'Chosen' : card.fromClan ? 'Clan art' : undefined;
+  const stamp = stampOf(card);
   return (
     <li>
       <button
@@ -43,7 +53,7 @@ function Offer({
         aria-pressed={card.selected}
         aria-disabled={card.blocker !== null}
         title={card.blocker ?? undefined}
-        onClick={card.blocker ? onRead : onToggle}
+        onClick={onToggle}
         onMouseEnter={onRead}
         onFocus={onRead}
       >
@@ -56,6 +66,10 @@ function Offer({
           {...(stamp ? { stamp } : {})}
         />
       </button>
+      <details className="sheet-fold taught-fold">
+        <summary>What it does</summary>
+        <TechniqueSheet sheet={card.sheet} />
+      </details>
     </li>
   );
 }
@@ -65,14 +79,16 @@ function ChosenTray({
   chosen,
   picks,
   onPutBack,
+  trayRef,
 }: {
   readonly chosen: readonly TaughtCard[];
   readonly picks: number;
   readonly onPutBack: (id: string) => void;
+  readonly trayRef: RefObject<HTMLElement | null>;
 }) {
   const open = Math.max(0, picks - chosen.length);
   return (
-    <section className="taught-tray" aria-label="Chosen techniques">
+    <section className="taught-tray" aria-label="Chosen techniques" ref={trayRef}>
       <h3 className="note-group">
         Chosen{' '}
         <span className="num">
@@ -128,6 +144,12 @@ function Reading({ card }: { readonly card: TaughtCard | null }) {
 export function TechniquesStep({ draft, update, ctx }: TechniquesStepProps) {
   const page = techniquesPage(draft, ctx);
   const [readingId, setReadingId] = useState<string | null>(null);
+  const trayRef = useRef<HTMLElement | null>(null);
+  // A click on a slip the full file can't take sends you to the tray, where one is put back.
+  const toTray = (id: string) => {
+    setReadingId(id);
+    trayRef.current?.querySelector('button')?.focus();
+  };
   const all = [...page.basics, ...page.groups.flatMap((g) => g.cards)];
   const reading = all.find((c) => c.id === readingId) ?? page.chosen[0] ?? null;
   const toggle = (id: string) => {
@@ -135,6 +157,10 @@ export function TechniquesStep({ draft, update, ctx }: TechniquesStepProps) {
   };
   return (
     <div className="step taught">
+      <p className="taught-strip" aria-hidden="true">
+        Chosen {page.chosen.length} of {page.picks}
+        {page.chosen.length > 0 && `: ${page.chosen.map((c) => c.name).join(', ')}`}
+      </p>
       <div className="taught-list">
         <p className="taught-allowance">{page.allowance}</p>
         <section className="opt-list">
@@ -161,8 +187,7 @@ export function TechniquesStep({ draft, update, ctx }: TechniquesStepProps) {
         {page.groups.map((group) => (
           <section key={group.discipline} className="opt-list">
             <h3 className="note-group">
-              {ART_LABEL[group.discipline]}{' '}
-              <span className="taught-grade">you learn it up to rank {group.grade}</span>
+              {ART_LABEL[group.discipline]}, taught up to rank {group.grade}
             </h3>
             {group.cards.length > 0 && (
               <ul className="taught-grid">
@@ -171,7 +196,8 @@ export function TechniquesStep({ draft, update, ctx }: TechniquesStepProps) {
                     key={card.id}
                     card={card}
                     onToggle={() => {
-                      toggle(card.id);
+                      if (card.blocker) toTray(card.id);
+                      else toggle(card.id);
                     }}
                     onRead={() => {
                       setReadingId(card.id);
@@ -185,7 +211,7 @@ export function TechniquesStep({ draft, update, ctx }: TechniquesStepProps) {
         ))}
       </div>
       <aside className="taught-side">
-        <ChosenTray chosen={page.chosen} picks={page.picks} onPutBack={toggle} />
+        <ChosenTray chosen={page.chosen} picks={page.picks} onPutBack={toggle} trayRef={trayRef} />
         {page.full && (
           <p className="muted taught-full">Your file is full. Put one back to choose another.</p>
         )}

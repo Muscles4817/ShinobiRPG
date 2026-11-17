@@ -35,8 +35,11 @@ describe('the academy file on a desk (smoke test)', () => {
     const user = userEvent.setup();
     render(<App store={EMPTY} />);
     await user.click(screen.getByRole('button', { name: /^New game/ }));
+    // Enter on the world just picked turns the page: the pick is made, the press means "on".
     await user.click(screen.getByRole('button', { name: /Land of Embers/ }));
-    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.keyboard('{Enter}');
+    // Nothing of the student shows before their file is read.
+    expect(screen.getByText('A file not yet read')).toBeInTheDocument();
     await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
     await user.click(screen.getByRole('button', { name: 'Find your file' }));
     await user.type(screen.getByLabelText('Given name'), 'Aoi');

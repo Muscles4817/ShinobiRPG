@@ -1,12 +1,35 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useKeys } from '../../layout/useKeys';
 
 /**
  * The foot of the academy file: why the page can't be turned yet, Back and the page's own
  * forward button, and how far through the file you are. On a desk Enter turns the page (or
- * graduates, on the last) and Esc goes back.
+ * graduates, on the last) and Esc goes back; Enter on an option just picked turns the page too,
+ * since the option is already chosen and pressing it again would change nothing.
  */
+
+/** Whether the focused control is an option already picked: Enter there means "on". */
+function onPickedOption(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && target.getAttribute('aria-pressed') === 'true';
+}
+
+/** Enter on a picked option turns the page (`useKeys` leaves a focused control alone). */
+function usePickedEnter(enabled: boolean, onForward: () => void): void {
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Enter' || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (!onPickedOption(event.target)) return;
+      event.preventDefault();
+      onForward();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [enabled, onForward]);
+}
 
 interface FileNavProps {
   readonly blocker: string | null;
@@ -38,6 +61,7 @@ export function FileNav({
     [canForward, onForward, onBack, index],
   );
   useKeys(bindings, wide);
+  usePickedEnter(wide && canForward, onForward);
   return (
     <nav className="file-nav" aria-label="Turn the file’s pages">
       {blocker && <p className="blocker">{blocker}</p>}

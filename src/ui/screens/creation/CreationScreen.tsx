@@ -30,7 +30,7 @@ import { BuildStep, UpbringingStep } from './FrameSteps';
 import { NotesStep, QuirksStep, ReadBackStep } from './NotesSteps';
 import { RecordStep } from './RecordStep';
 import { FileNav } from './FileNav';
-import { FileRail } from './FileRail';
+import { FileRail, railShows } from './FileRail';
 import { StandingStep } from './StandingStep';
 import { TechniquesStep } from './TechniquesStep';
 import type { StepProps } from './types';
@@ -256,6 +256,7 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
             index={index}
             reached={reached}
             onOpen={setIndex}
+            shows={railShows(steps, index)}
             draft={draft}
             view={view}
             ctx={ctx}
