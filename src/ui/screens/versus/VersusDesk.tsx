@@ -43,13 +43,23 @@ function DeskActions({ setup, slot, profile }: DeskActionsProps) {
 
 /** Enter starts the bout once it can start (the search box keeps its own Enter). */
 function useFightKey(setup: VersusSetupState, onFight: (choice: VersusChoice) => void): void {
-  const { ctx, side, foes, ground, dodgeLeaps, foesThink, problem } = setup;
+  const { ctx, side, foes, ground, dodgeLeaps, foesThink, rushing, handSigns, problem } = setup;
   useKeys(
     {
       Enter:
         ctx && problem === null
           ? () => {
-              onFight({ ctx, side, foes, ground, watch: false, dodgeLeaps, foesThink });
+              onFight({
+                ctx,
+                side,
+                foes,
+                ground,
+                watch: false,
+                dodgeLeaps,
+                foesThink,
+                rushing,
+                handSigns,
+              });
             }
           : undefined,
     },

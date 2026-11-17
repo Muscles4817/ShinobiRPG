@@ -26,6 +26,8 @@ export const NARRATION_CAUSES = [
   'cut-off',
   'kept-pace',
   'held-off',
+  // A technique that came apart before it was cast.
+  'crowded',
 ] as const;
 export type NarrationCause = (typeof NARRATION_CAUSES)[number];
 

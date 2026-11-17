@@ -31,6 +31,10 @@ export interface VersusPick {
   readonly dodgeLeaps?: boolean;
   /** Foes think ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
   readonly foesThink?: boolean;
+  /** Taijutsu fighters strike as they rush in (a rule on trial, `CombatExperiments.rushing`). */
+  readonly rushing?: boolean;
+  /** Hand signs can be broken up close (a rule on trial, `CombatExperiments.handSigns`). */
+  readonly handSigns?: boolean;
 }
 
 /** The rules on trial a pick turns on, if any. */
@@ -38,6 +42,8 @@ function experimentsOf(pick: VersusPick) {
   const experiments = {
     ...(pick.dodgeLeaps ? { dodgeLeaps: true } : {}),
     ...(pick.foesThink ? { planner: true } : {}),
+    ...(pick.rushing ? { rushing: true } : {}),
+    ...(pick.handSigns ? { handSigns: true } : {}),
   };
   return Object.keys(experiments).length > 0 ? { experiments } : {};
 }

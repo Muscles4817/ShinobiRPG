@@ -34,6 +34,7 @@ import type { CallTrigger, Calls } from './roundCallShape';
 import type { Decision } from './whyShape';
 import type { Reads } from './readShape';
 import type { Minded, Witness } from './mind/shape';
+import type { OnTrial } from './trialShape';
 export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -114,6 +115,7 @@ export interface PlanFighter
     Hive,
     ShroudMemory,
     Minded,
+    OnTrial,
     Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
@@ -181,8 +183,6 @@ export interface PlanFighter
   readonly copied?: readonly string[];
   /** The exchange they went down in, for the fight's summary (`falls.ts`). */
   readonly fellAt?: number;
-  /** A ready Dodge carries them clear when it slips an attack up close (an experiment, `leap.ts`). */
-  readonly leapsClear?: true;
   /** Their last daze and their guard last smashed, and by whom, for the summary's turning point. */
   readonly dazedBy?: Swing;
   readonly guardBrokenBy?: Swing;
@@ -271,7 +271,7 @@ export interface ElementHit {
 export type Distances = Readonly<Record<string, RangeBand>>;
 
 /** One exchange in progress; traced, its `decisions` are this exchange's alone. */
-export interface Round extends Pick<PlanState, 'decisions'> {
+export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'> {
   /** What was done this exchange and who saw it, for the mind (`mind/observe.ts`). */
   readonly witnessed?: readonly Witness[];
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
@@ -296,8 +296,6 @@ export interface Round extends Pick<PlanState, 'decisions'> {
   readonly hits?: readonly ElementHit[];
   /** Only watched: no one plans for the player's fighter, who fights on their own. */
   readonly watching?: true;
-  /** The player's side fights on after the player falls (`CombatSetup.toTheLast`). */
-  readonly toTheLast?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
   /** How the player's slots have fared this round (`slotTrace.ts`). */

@@ -384,9 +384,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
-    them on, and only versus does (its setup's "Rules on trial"): today a ready Dodge that slips an
-    attack up close leaps clear to mid (`plan/leap.ts`, `dodgeLeaps`). A rule is play-tested there
-    before it is adopted or dropped; adopting one moves it out of `experiments`.
+    them on, and only versus does (its setup's "Rules on trial"): a ready Dodge that slips an
+    attack up close leaps clear to mid (`plan/leap.ts`, `dodgeLeaps`); foes think ahead with the
+    planner (`mind/planner/`, `planner`); a taijutsu fighter's step that reaches close carries a
+    lighter blow as they land (`rushing`); and up close a technique that needs hand signs (read from
+    its art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming
+    apart (`handSigns`; both in `plan/closeQuarters.ts`, flags on the fighter from
+    `plan/trialShape.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
+    moves it out of `experiments`. A small area (no `size`) moves no one; only wide and vast blasts
+    throw the fight apart (`plan/blast.ts`).
     A fight is lost when the player falls, as on a job; a versus bout is fought **to the last**
     (`CombatSetup.toTheLast`): lost only once no one on the player's side still fights.
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,

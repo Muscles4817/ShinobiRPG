@@ -57,6 +57,7 @@ export const CAUSE_LABEL: Readonly<Record<NarrationCause, string>> = {
   'cut-off': 'Cut off',
   'kept-pace': 'Kept pace',
   'held-off': 'Held off',
+  crowded: 'No room for the seals',
 };
 
 function reactionChip(reaction: NarrationReaction): JournalChip {

@@ -279,6 +279,38 @@ describe('rules on trial', () => {
     return leaps;
   }
 
+  /** Lines in a watched bout of Konohamaru against Neji that tell a rule on trial. */
+  function linesIn(pick: { rushing?: boolean; handSigns?: boolean }, marker: string): number {
+    let found = 0;
+    for (let seed = 1; seed <= 3; seed++) {
+      const made = createVersus(naruto, {
+        side: ['person:konohamaru'],
+        foes: ['person:neji'],
+        seed,
+        watch: true,
+        ...pick,
+      });
+      if (!made.ok) throw new Error(made.error);
+      let state: GameState = made.value;
+      for (let i = 0; i < 200 && state.combat; i++) {
+        const view = combatScene(state, naruto)!;
+        found += view.log.filter((line) => line.includes(marker)).length;
+        const next = view.options.find((o) => !o.disabledReason && o.id !== 'flee');
+        if (!next) break;
+        state = act(state, { type: 'combatAct', optionId: next.id }, naruto);
+      }
+      if (found > 0) return found;
+    }
+    return found;
+  }
+
+  it('close quarters only in a bout that turns them on', () => {
+    expect(linesIn({ handSigns: true }, 'before the seals are done')).toBeGreaterThan(0);
+    expect(linesIn({}, 'before the seals are done')).toBe(0);
+    expect(linesIn({ rushing: true }, 'as he lands')).toBeGreaterThan(0);
+    expect(linesIn({}, 'as he lands')).toBe(0);
+  });
+
   it('a Dodge leaps clear only in a bout that turns it on', () => {
     expect(leapsIn(true)).toBeGreaterThan(0);
     expect(leapsIn(false)).toBe(0);

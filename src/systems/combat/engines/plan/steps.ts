@@ -18,6 +18,7 @@ import { bandOf, distanceBetween, withMoves } from './distance';
 import { movesFor } from './pairMoves';
 import { causeLine } from '../../rules/causes';
 import { stepCause } from './causes';
+import { rushedIn } from './closeQuarters';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -157,14 +158,18 @@ export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round 
     fighters: patch(round.fighters, actor.id, { movedAt: round.number }),
   };
   if (direction === 'back') return stride(moving, turn, direction);
+  return rushedIn(round, steppedIn(round, moving, turn), turn);
+}
+
+function steppedIn(round: Round, moving: Round, turn: Turn): Round {
   const met = holdOff(moving, turn);
   switch (met.outcome) {
     case 'stopped':
       return walkedThrough(round, met.round, turn) ?? met.round;
     case 'through':
-      return arrive(met.round, turn, stepIn(at));
+      return arrive(met.round, turn, stepIn(from(round, turn)));
     case 'unopposed':
-      return stride(met.round, turn, direction);
+      return stride(met.round, turn, 'in');
   }
 }
 
