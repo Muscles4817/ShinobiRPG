@@ -154,12 +154,14 @@ export {
   reportSound,
   soundAfter,
   writeAudioSettings,
+  type Ambience,
   type AudioSettings,
   type MusicMood,
   type Sound,
   type SoundCue,
   type SoundForce,
 } from './sound';
+export { titleLight, type TitleLight } from './views/titleLight';
 export {
   gearShopView,
   loadoutView,

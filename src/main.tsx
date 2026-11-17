@@ -36,6 +36,7 @@ import '@/ui/styles/cues.css';
 import '@/ui/styles/cues-village.css';
 import '@/ui/styles/motion.css';
 import '@/ui/styles/menu.css';
+import '@/ui/styles/title-sky.css';
 import '@/ui/styles/versus.css';
 import '@/ui/styles/editor.css';
 import '@/ui/styles/finder.css';
