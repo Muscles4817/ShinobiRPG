@@ -101,6 +101,20 @@ describe('versus setup on a desk', () => {
     );
   });
 
+  it('lets teleporters move freely only when you turn it on', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    const onFight = vi.fn();
+    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ teleport: false }));
+    await user.click(
+      screen.getByRole('checkbox', { name: 'Teleporters move without spending the turn' }),
+    );
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ teleport: true }));
+  });
+
   it('holds ground against blasts only when you turn it on', async () => {
     asDesk(true);
     const user = userEvent.setup();

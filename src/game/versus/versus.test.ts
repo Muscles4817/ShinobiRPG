@@ -279,13 +279,17 @@ describe('rules on trial', () => {
     return leaps;
   }
 
-  /** Lines in a watched bout of Konohamaru against Neji that tell a rule on trial. */
-  function linesIn(pick: { rushing?: boolean; handSigns?: boolean }, marker: string): number {
+  /** Lines in a watched bout (Konohamaru against Neji, unless named) that tell a rule on trial. */
+  function linesIn(
+    pick: { rushing?: boolean; handSigns?: boolean; teleport?: boolean },
+    marker: string,
+    who: { side: string; foe: string } = { side: 'person:konohamaru', foe: 'person:neji' },
+  ): number {
     let found = 0;
     for (let seed = 1; seed <= 3; seed++) {
       const made = createVersus(naruto, {
-        side: ['person:konohamaru'],
-        foes: ['person:neji'],
+        side: [who.side],
+        foes: [who.foe],
         seed,
         watch: true,
         ...pick,
@@ -309,6 +313,12 @@ describe('rules on trial', () => {
     expect(linesIn({}, 'before the seals are done')).toBe(0);
     expect(linesIn({ rushing: true }, 'as he lands')).toBeGreaterThan(0);
     expect(linesIn({}, 'as he lands')).toBe(0);
+  });
+
+  it('the Flying Thunder God takes no turn only in a bout that turns it on', () => {
+    const who = { side: 'person:minato', foe: 'person:asuma' };
+    expect(linesIn({ teleport: true }, 'vanishes and is', who)).toBeGreaterThan(0);
+    expect(linesIn({}, 'vanishes and is', who)).toBe(0);
   });
 
   it('a Dodge leaps clear only in a bout that turns it on', () => {

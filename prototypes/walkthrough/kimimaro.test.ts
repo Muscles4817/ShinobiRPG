@@ -31,6 +31,7 @@ it('kimimaro', async () => {
     rushing: rules.includes('rushing'),
     handSigns: rules.includes('handSigns'),
     standFirm: rules.includes('standFirm'),
+    teleport: rules.includes('teleport'),
     side: ['person:kimimaro'],
     foes: ['person:asuma'],
     seed: Number(process.env.WALK_SEED ?? 7),

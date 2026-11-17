@@ -12,4 +12,8 @@ export interface OnTrial {
   readonly crowdable?: true;
   /** May keep their feet when a wide blast catches them (`standing.ts`). */
   readonly standsFirm?: true;
+  /** Changes distance without spending the turn, once a round (`blink.ts`). */
+  readonly teleports?: true;
+  /** Has blinked this round (`blink.ts`). */
+  readonly blinked?: true;
 }

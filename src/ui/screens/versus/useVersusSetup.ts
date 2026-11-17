@@ -38,6 +38,8 @@ export interface VersusChoice {
   readonly handSigns: boolean;
   /** A body may hold its ground against a blast, a rule on trial. */
   readonly standFirm: boolean;
+  /** Teleporters change distance without spending the turn, a rule on trial. */
+  readonly teleport: boolean;
 }
 
 function defaultPack(): string {
@@ -64,6 +66,7 @@ function useTrialRules(initial: VersusChoice | null) {
   const [rushing, setRushing] = useState(initial?.rushing ?? false);
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
   const [standFirm, setStandFirm] = useState(initial?.standFirm ?? false);
+  const [teleport, setTeleport] = useState(initial?.teleport ?? false);
   return {
     dodgeLeaps,
     setDodgeLeaps,
@@ -75,6 +78,8 @@ function useTrialRules(initial: VersusChoice | null) {
     setHandSigns,
     standFirm,
     setStandFirm,
+    teleport,
+    setTeleport,
   };
 }
 

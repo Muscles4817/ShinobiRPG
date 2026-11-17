@@ -103,6 +103,8 @@ export const SENJU_FIGHTERS: readonly PersonDef[] = [
         'substitution-jutsu',
       ],
       gearIds: ['marked-kunai'],
+      // The Flying Thunder God: a change of distance in an instant (a rule on trial, `teleport`).
+      perks: ['teleport'],
     },
   }),
   leafFighter({

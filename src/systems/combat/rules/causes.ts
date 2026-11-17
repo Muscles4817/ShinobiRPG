@@ -6,6 +6,8 @@
  */
 
 export const NARRATION_CAUSES = [
+  // A teleport: a change of distance that took no turn.
+  'teleport',
   // An attack slipped.
   'saw-through',
   'foresaw',

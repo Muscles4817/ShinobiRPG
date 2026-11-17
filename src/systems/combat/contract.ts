@@ -98,7 +98,9 @@ export type CombatPerk =
   | 'tree-walking'
   | 'shield'
   | 'all-seeing'
-  | 'raises';
+  | 'raises'
+  /** Changes distance in an instant (the Flying Thunder God), a rule on trial (`teleport`). */
+  | 'teleport';
 
 export { COMBAT_GROUNDS, type CombatGround } from './groundContract';
 
@@ -327,6 +329,8 @@ export interface CombatExperiments {
   readonly handSigns?: boolean;
   /** A body caught in a wide blast may keep its feet, by strength, size and a Brace (`plan/standing.ts`). */
   readonly standFirm?: boolean;
+  /** A fighter with the `teleport` perk changes distance without spending the turn, once a round (`plan/blink.ts`). */
+  readonly teleport?: boolean;
 }
 
 /**

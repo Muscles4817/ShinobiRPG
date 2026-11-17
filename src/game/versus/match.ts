@@ -37,6 +37,8 @@ export interface VersusPick {
   readonly handSigns?: boolean;
   /** A body may hold its ground against a blast (a rule on trial, `CombatExperiments.standFirm`). */
   readonly standFirm?: boolean;
+  /** Teleporters change distance without spending the turn (a rule on trial, `CombatExperiments.teleport`). */
+  readonly teleport?: boolean;
 }
 
 /** The rules on trial a pick turns on, if any. */
@@ -47,6 +49,7 @@ function experimentsOf(pick: VersusPick) {
     ...(pick.rushing ? { rushing: true } : {}),
     ...(pick.handSigns ? { handSigns: true } : {}),
     ...(pick.standFirm ? { standFirm: true } : {}),
+    ...(pick.teleport ? { teleport: true } : {}),
   };
   return Object.keys(experiments).length > 0 ? { experiments } : {};
 }

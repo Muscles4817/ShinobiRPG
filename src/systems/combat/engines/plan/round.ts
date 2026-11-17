@@ -17,6 +17,7 @@ import { cardId, isOffence, needsAim, type Card } from './cards';
 import { released } from './commitment';
 import { meditationEnds } from './meditation';
 import { play } from './play';
+import { afterBlink, blinkInstead, blinksReady } from './blink';
 import { chooseWhy, type Choice } from './choose';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
@@ -217,6 +218,24 @@ function hasTurn(start: Round, before: PlanFighter): boolean {
   return !keepsOffField(before) && stillFighting(start.fighters, before);
 }
 
+/**
+ * What a fighter plays, after a blink in place of the footwork first chosen (`blink.ts`): the
+ * teleport takes no turn, so they choose again from where they now stand.
+ */
+function chooseAfterBlink(
+  ready: Round,
+  actor: PlanFighter,
+  rng: Rng,
+): { round: Round; actor: PlanFighter; chosen: Chosen } | { spent: Round } {
+  const first = choosePlay(ready, actor, rng);
+  if ('spent' in first) return first;
+  const blinked = blinkInstead(ready, actor, first.card);
+  if (!blinked) return { round: ready, actor, chosen: first };
+  const moved = afterBlink(blinked, actor);
+  const again = choosePlay(blinked, moved, rng);
+  return 'spent' in again ? again : { round: blinked, actor: moved, chosen: again };
+}
+
 function turn(start: Round, actorId: string, rng: Rng): Round {
   const before = start.fighters.find((f) => f.id === actorId);
   if (!before || !hasTurn(start, before)) return start;
@@ -237,13 +256,14 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   if (held.spent) return held.round;
   // A covered eye is uncovered as the turn begins, when the fight calls for it (`veil.ts`).
   const ready = uncoverWhenWorth(held.round, actorId);
-  const actor = ready.fighters.find((f) => f.id === actorId) ?? before;
-  if (!alive(actor)) return ready;
-  const lost = lostTurn(ready, actor);
+  const up = ready.fighters.find((f) => f.id === actorId) ?? before;
+  if (!alive(up)) return ready;
+  const lost = lostTurn(ready, up);
   if (lost) return lost;
-  const chosen = choosePlay(ready, actor, rng);
-  if ('spent' in chosen) return chosen.spent;
-  const round = decided(ready, actor, chosen);
+  const picked = chooseAfterBlink(ready, up, rng);
+  if ('spent' in picked) return picked.spent;
+  const { chosen, actor } = picked;
+  const round = decided(picked.round, actor, chosen);
   const { target } = chosen;
   // A trained fighter's strike is one of their moves, or a chain of them (`repertoire.ts`).
   const planned = { actor, target, rng };
@@ -303,7 +323,8 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const start: Round = {
     number: state.round,
     opening: state.exchange === 0,
-    fighters: [...state.fighters],
+    // A teleport is ready again as each round opens (`blink.ts`).
+    fighters: blinksReady(state.fighters, state.exchange === 0),
     range: state.range,
     ...(state.distances ? { distances: state.distances } : {}),
     lines: [],

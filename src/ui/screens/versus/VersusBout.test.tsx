@@ -38,6 +38,7 @@ function choice(watch: boolean): VersusChoice {
     rushing: false,
     handSigns: false,
     standFirm: false,
+    teleport: false,
   };
 }
 

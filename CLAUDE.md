@@ -392,7 +392,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     apart (`handSigns`; both in `plan/closeQuarters.ts`, flags on the fighter from
     `plan/trialShape.ts`); and a body caught in a wide blast may keep its feet, on the maker's art
     and strength against its own strength, more surely braced or bigger (`standFirm`,
-    `plan/standing.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
+    `plan/standing.ts`); and a fighter with the `teleport` perk (the Flying Thunder God) blinks once a
+    round in place of the footwork their turn chose (a step, a move, an entry's way in), sure and
+    spending no turn (`teleport`, `plan/blink.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
     moves it out of `experiments`. A small area (no `size`) moves no one; only wide and vast blasts
     throw the fight apart (`plan/blast.ts`).
     A fight is lost when the player falls, as on a job; a versus bout is fought **to the last**
