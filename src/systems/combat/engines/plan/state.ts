@@ -271,7 +271,7 @@ export interface ElementHit {
 export type Distances = Readonly<Record<string, RangeBand>>;
 
 /** One exchange in progress; traced, its `decisions` are this exchange's alone. */
-export interface Round extends Pick<PlanState, 'decisions'> {
+export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'> {
   /** What was done this exchange and who saw it, for the mind (`mind/observe.ts`). */
   readonly witnessed?: readonly Witness[];
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
@@ -296,8 +296,6 @@ export interface Round extends Pick<PlanState, 'decisions'> {
   readonly hits?: readonly ElementHit[];
   /** Only watched: no one plans for the player's fighter, who fights on their own. */
   readonly watching?: true;
-  /** The player's side fights on after the player falls (`CombatSetup.toTheLast`). */
-  readonly toTheLast?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
   /** How the player's slots have fared this round (`slotTrace.ts`). */
