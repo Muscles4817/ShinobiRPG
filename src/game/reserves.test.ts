@@ -1,7 +1,15 @@
 import { createRng } from '@/core';
 import type { CombatOutcome } from '@/systems/combat';
 import { maxChakra } from '@/systems/vitals';
-import { act, ctx, fightOut, lastEntry, newGame, withAllStats } from '@/test/gameFixtures';
+import {
+  act,
+  ctx,
+  fightOut,
+  forgetting,
+  lastEntry,
+  newGame,
+  withAllStats,
+} from '@/test/gameFixtures';
 
 import { enemyCombatant, enemyStatLine, playerCombatant } from './combatants';
 import { growFromFight } from './fightGrowth';
@@ -86,7 +94,8 @@ describe('chakra reserves', () => {
   });
 
   it('a fight fought with jutsu leaves them deeper', () => {
-    const strong = withAllStats(newGame(), 12);
+    // Without the palm taught at creation, the kit's way to win is its jutsu.
+    const strong = withAllStats(forgetting(newGame(), 'temple-bell-palm'), 12);
     const ended = fightOut(wraithFight(strong));
     expect(ended.combat).toBeNull();
     expect(ended.character.stats.reserves).toBeGreaterThan(strong.character.stats.reserves);

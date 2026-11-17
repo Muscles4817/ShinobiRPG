@@ -3,6 +3,7 @@ import { createStats, evenAptitude, type StatId, type Stats } from '@/systems/st
 import {
   act,
   ctx,
+  forgetting,
   newGame,
   postEverything,
   pressOn,
@@ -81,7 +82,7 @@ describe('fights teach', () => {
   });
 
   it('says what the fight taught in a journal line and on the fight’s card', () => {
-    const start = postEverything(veteran(fighterAt(9), 3));
+    const start = postEverything(veteran(forgetting(fighterAt(9), 'temple-bell-palm'), 3));
     let s = act(start, { type: 'startMission', missionId: 'storehouse-ghost' });
     for (let i = 0; i < 50 && (s.mission || s.combat); i++) s = pressOn(s);
     const card = s.reports.find((r) => r.kind === 'fight' || r.kind === 'defeat');

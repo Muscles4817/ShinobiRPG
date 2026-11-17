@@ -13,6 +13,7 @@ describe('new game', () => {
       'shadow-feint',
       'lantern-husk',
       'gale-heel',
+      'temple-bell-palm',
     ]);
     expect(state.standing.rank).toBe('genin');
     expect(state.housing).toEqual({

@@ -89,6 +89,15 @@ export function newGame(overrides: Partial<GameState> = {}, context: GameContext
   return { ...ready, daybook: { start: openDay(ready), ended: null } };
 }
 
+/**
+ * The game as if the file hadn't been taught this technique at creation: for tests written
+ * against the academy's older kit (its basics and one starter).
+ */
+export function forgetting(state: GameState, techniqueId: string): GameState {
+  const known = state.techniques.known.filter((id) => id !== techniqueId);
+  return { ...state, techniques: { ...state.techniques, known } };
+}
+
 /** Dispatches an action, failing the test if it is refused. */
 export function act(state: GameState, action: GameAction, context: GameContext = ctx): GameState {
   const result = dispatch(state, action, context);

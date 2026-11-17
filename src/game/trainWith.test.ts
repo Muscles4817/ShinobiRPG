@@ -1,5 +1,5 @@
 import { bondWith } from '@/systems/bonds';
-import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
+import { act, ctx, forgetting, newGame, withAllStats } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
 import { personStats } from './people/progress';
@@ -99,7 +99,10 @@ describe('training with your sensei (the weekly lesson)', () => {
   });
 
   it('says when a teacher’s technique is also on the academy rack', () => {
-    const koun = trainingView(newGame(), ctx)?.teachers.find((t) => t.person.id === 'koun');
+    // Taught the palm at creation, nobody would offer it: this file chose otherwise.
+    const koun = trainingView(forgetting(newGame(), 'temple-bell-palm'), ctx)?.teachers.find(
+      (t) => t.person.id === 'koun',
+    );
     expect(koun?.signature).toMatchObject({
       name: 'Temple-Bell Palm',
       locked: 'Taught once you and Kōun are friends, or study the scroll at the Academy.',
