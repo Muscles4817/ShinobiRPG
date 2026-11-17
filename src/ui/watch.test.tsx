@@ -19,6 +19,7 @@ function beat(over: Partial<FightBeat>): FightBeat {
     health: {},
     pools: {},
     statuses: {},
+    present: [],
     ...over,
   };
 }

@@ -237,7 +237,11 @@ function fightersAt(
   beat: FightBeat | undefined,
   before: readonly CombatantView[] | null,
 ): CombatantView[] {
-  return view.combatants.map((c) => {
+  // Someone who joined during these beats (a clone, a summons) stands on the stage only from the
+  // line that brought them; where the lines say no one, everyone is shown.
+  const present = new Set([...(beat?.present ?? []), ...(before ?? []).map((b) => b.id)]);
+  const onStage = (c: CombatantView) => !beat || beat.present.length === 0 || present.has(c.id);
+  return view.combatants.filter(onStage).map((c) => {
     const was = before?.find((b) => b.id === c.id);
     const start = was
       ? {

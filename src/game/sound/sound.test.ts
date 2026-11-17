@@ -27,6 +27,7 @@ function beat(overrides: Partial<FightBeat>): FightBeat {
     health: {},
     pools: {},
     statuses: {},
+    present: [],
     ...overrides,
   };
 }
