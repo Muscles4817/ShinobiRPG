@@ -85,7 +85,7 @@ export function rushedIn(before: Round, after: Round, turn: Turn): Round {
 }
 
 /** The foe crowding a caster up close: standing, steady, free and seeing them; the quickest. */
-function crowder(round: Round, caster: PlanFighter): PlanFighter | undefined {
+export function crowder(round: Round, caster: PlanFighter): PlanFighter | undefined {
   const close = opponentsOf(round.fighters, caster).filter(
     (f) =>
       alive(f) &&
