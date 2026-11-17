@@ -82,7 +82,7 @@ export const SAKON: PersonDef = soundFighter({
     { shape: 'oval', expression: 'smirk', age: 'young' },
   ),
   specialty: 'taijutsu',
-  bio: 'Leads the Sound Four, and is never alone: his brother Ukon sleeps inside his body and comes out to fight beside him.',
+  bio: 'Leads the Sound Four, and is never alone. His brother Ukon sleeps inside his body and comes out to fight beside him.',
   arsenal: {
     techniqueIds: [
       'multiple-connected-fist',

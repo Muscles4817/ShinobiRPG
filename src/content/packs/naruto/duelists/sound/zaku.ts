@@ -30,7 +30,7 @@ export const ZAKU_ARTS: readonly TechniqueDef[] = [
     id: 'extreme-decapitating-airwaves',
     name: 'Extreme Decapitating Airwaves',
     description:
-      'Both palms at once, at full pressure: the blast tears up the ground and everything on it.',
+      'Both palms at once, at full pressure. The blast tears up the ground and everything on it.',
     discipline: 'ninjutsu',
     reach: ['close', 'mid'],
     effects: [

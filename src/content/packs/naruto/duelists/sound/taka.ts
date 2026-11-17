@@ -18,7 +18,7 @@ export const TAKA_ARTS: readonly TechniqueDef[] = [
     id: 'sage-transformation',
     name: 'Sage Transformation',
     description:
-      'Natural energy drawn in through the skin, and his body changes shape to fit the killing: the skin darkens, the arms swell, the urge takes him over.',
+      'Natural energy drawn in through the skin, and his body changes shape to fit the killing. The skin darkens, the arms swell, and the urge takes him over.',
     discipline: 'taijutsu',
     effects: [
       {
@@ -134,7 +134,7 @@ const JUGO: PersonDef = soundFighter({
     { shape: 'square', figure: 'broad', expression: 'calm', age: 'young' },
   ),
   specialty: 'taijutsu',
-  bio: 'Gentle and afraid of himself: an urge to kill comes over him that he can’t hold back. The curse mark was made from his body.',
+  bio: 'Gentle, and afraid of himself. An urge to kill comes over him that he can’t hold back. The curse mark was made from his body.',
   arsenal: {
     techniqueIds: ['sage-transformation', 'transformed-arm'],
   },
