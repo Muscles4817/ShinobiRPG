@@ -24,6 +24,7 @@ import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './leg
 import { openFight } from './opening';
 import { withLeaps } from './leap';
 import { withCloseQuarters } from './closeQuarters';
+import { withTeleports } from './blink';
 import { withinGround } from '../../rules/ground';
 import { decide, resolveExchange } from './round';
 import {
@@ -189,7 +190,10 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const thinking = withThinking(initialFighters(setup), setup.experiments?.planner === true);
-      const opened = openFight(withCloseQuarters(withLeaps(thinking, setup), setup), setup.opening);
+      const opened = openFight(
+        withTeleports(withCloseQuarters(withLeaps(thinking, setup), setup), setup),
+        setup.opening,
+      );
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
       const planned = plannedFighters(fighters, setup.plan);

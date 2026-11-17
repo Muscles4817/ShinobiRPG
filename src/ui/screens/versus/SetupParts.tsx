@@ -54,8 +54,8 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
 
 /** The rules on trial a bout carries, as the setup has them ticked. */
 export function trialsOf(setup: VersusSetupState) {
-  const { dodgeLeaps, foesThink, rushing, handSigns, standFirm } = setup;
-  return { dodgeLeaps, foesThink, rushing, handSigns, standFirm };
+  const { dodgeLeaps, foesThink, rushing, handSigns, standFirm, teleport } = setup;
+  return { dodgeLeaps, foesThink, rushing, handSigns, standFirm, teleport };
 }
 
 /** Rules on trial: off unless turned on here, for this bout only. */
@@ -138,6 +138,21 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
       <p className="muted">
         A wide blast may fail to throw someone strong, big or braced, as a knock may fail to take
         hold. A blast far stronger than they are still throws them.
+      </p>
+      <label className="versus-trial-rule" htmlFor="versus-teleport">
+        <input
+          id="versus-teleport"
+          type="checkbox"
+          checked={setup.teleport}
+          onChange={(e) => {
+            setup.setTeleport(e.target.checked);
+          }}
+        />
+        Teleporters move without spending the turn
+      </label>
+      <p className="muted">
+        Once a round, a fighter with the Flying Thunder God changes distance in an instant, past any
+        guard and with no one keeping pace, and still takes their turn.
       </p>
     </section>
   );

@@ -1338,6 +1338,21 @@ technique's power plays no part, as with every condition: what throws is who mad
 only ever helps against wide-area foes (+3 points of wins), and it leaves other fights as they
 were.
 
+**The teleport** went on trial next (`teleport`, `plan/blink.ts`), for fighters with the
+`teleport` perk (Minato and Tobirama, through the Flying Thunder God). Once a round, the footwork
+a turn would have played becomes a blink that spends no turn:
+
+- the footwork is a step, a technique that only moves them, or an entry's way in;
+- the blink is sure, goes through any hold-off, and no one keeps pace;
+- it goes straight to the distance they fight at, if they keep one;
+- then they choose their turn again from where they stand.
+
+The first version blinked only in place of a step, and Minato never stepped: Rasengan and the
+Kunai Strike are entries. So an entry's way in counts as footwork too. Over 364 bouts each against
+the roster's jōnin, Kage, Sannin and Akatsuki, Minato blinks about once a bout and wins 92.6%
+(88.5% off). Tobirama blinks every other bout, with his wins unchanged at 89.3%. Both already won
+most of these fights.
+
 **The plan:** Phase A tries these as rules on trial in versus, one PR at a time, with the
 measurements before and after. Phase B adopts what plays well and teaches today's AI what it
 needs (the planner adapts by itself, since it plays the real engine). Phase C resumes the

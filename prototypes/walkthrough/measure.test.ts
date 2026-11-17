@@ -60,6 +60,7 @@ function bout(
     rushing: rules.includes('rushing'),
     handSigns: rules.includes('handSigns'),
     standFirm: rules.includes('standFirm'),
+    teleport: rules.includes('teleport'),
   });
   if (!made.ok || !made.value.combat) return null;
   const start = decode(made.value.combat);
