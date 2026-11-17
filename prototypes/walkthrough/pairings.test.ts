@@ -24,7 +24,13 @@ const PAIRS: [CastId, CastId][] = [
   ['summoner', 'gates'],
   ['trapper', 'shrouded'],
 ];
-const ON = { rushing: true, handSigns: true, standFirm: true } as const;
+/** The rules on trial turned on, by name (`RULES=rushing,handSigns`); all three when unset. */
+const NAMED = (process.env.RULES ?? 'rushing,handSigns,standFirm').split(',');
+const ON = {
+  rushing: NAMED.includes('rushing'),
+  handSigns: NAMED.includes('handSigns'),
+  standFirm: NAMED.includes('standFirm'),
+};
 /** Only these pairings, if named (`a:b,c:d`). */
 const ONLY = (process.env.PAIRS ?? '').split(',').filter(Boolean);
 
@@ -126,5 +132,5 @@ it('pairings', () => {
       }
     }
   }
-  writeFileSync(`${OUT}/pairings.md`, report.join('\n'));
+  writeFileSync(`${OUT}/pairings-${process.env.RULES ?? 'all'}.md`, report.join('\n'));
 });
