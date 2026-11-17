@@ -3,7 +3,7 @@ import type { Stats } from '@/systems/stats';
 import { EMPTY_BOOK, learnabilityFor, learnBlocker, type TechniqueDef } from '@/systems/techniques';
 
 import type { GameContext } from './context';
-import type { CreationDraft } from './creation';
+import type { CreationDraft } from './studentProfile';
 import { placeHere } from './ops';
 import { graduationStats } from './student';
 import { profileOf } from './studentProfile';
