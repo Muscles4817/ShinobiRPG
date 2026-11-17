@@ -36,6 +36,8 @@ export const FIRE_TEMPLE: LocationDef = {
           hours: ['morning', 'evening'],
           icon: 'bowl',
           foodIds: ['temple-vegetable-set', 'temple-sesame-tofu'],
+          ingredientIds: ['mountain-herbs', 'chakra-fruit', 'red-beans'],
+          cookbookIds: ['pilgrims-bowl'],
         },
       ],
     },
