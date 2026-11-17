@@ -1472,14 +1472,40 @@ What the read shows:
     brawler's reach should sometimes lose the heal, and the medic still wins most of these.
   - The trapper casts into a foe who is always on top of it, and loses. That is the trapper caught in
     the open; its fights are the contexts above.
-- **The AI's fault, to teach next: a retreat that can't work.** The sensor and the puppeteer step back
-  every few turns from a rusher who is faster than they are. Each step is cut off half the time
-  ("won't allow it"), and every one that works is undone by the rusher closing again with a free blow
-  as they land (three or four a fight). A mind that reads the fight should see the retreat is
-  hopeless after it has been run down a couple of times, and stand and fight, Brace, or Evade.
+- **Not the AI's fault after all: the retreat.** The sensor and the puppeteer step back every few
+  turns from a rusher who is faster than they are. Each step is cut off half the time ("won't allow
+  it"), and every one that works is undone by the rusher closing again with a free blow as they land
+  (three or four a fight). It looked hopeless, so a mind that reads the fight was taught to give the
+  run up after being run down twice and fight where it stood. That made them worse:
+  - the sensor fell from 25 wins in 60 to 5 with the rules off, and from 7 to 4 with them on;
+  - the puppeteer fell from 16 to 2, and from 6 to 2.
+
+  Running is their best option: with nothing up close, standing is worse. They lose because their
+  builds can't survive a faster rusher, which is the owner's acceptable loss, so the lesson was
+  dropped. Where they should win is the fight contexts above: starting far off, in cover.
+
 - **Still to read:** the shrouded fighter against the powerhouse (fewer wins since it began casting
   its armour up close again), and the medic against the Gates (Evade played far less with the rules
   on).
+- **The owner's note: distance isn't even.** Close to mid is a short gap; mid to far is a long one.
+  - Closing from far to mid should give the far fighter more chance to answer (to see it coming,
+    throw, set something) than closing from mid to close does.
+  - Getting from mid back out to far should be just as hard.
+  - So a fighter who fights from far (most puppeteers) wants to start there, and once there, a good
+    one is hard to reach. Only a way in made for it gets past that.
+
+  Today every gap is the same step. A candidate rule: crossing the far gap is a harder contest both
+  ways, and a holder gets more than one answer to it (`plan/steps.ts`, `plan/zoning.ts`). Versus
+  contexts would then set where a fight starts. To be tried after the retreat finding above, which
+  it bears on: the sensor's and puppeteer's runs are the short close-to-mid steps, where a faster
+  rusher should keep up.
+
+- **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
+  round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
+  where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to
+  knock it aside or blow it away (wind) before he can follow it. A refinement for the teleport trial:
+  marks laid ahead count as prepared, and otherwise the blink follows a thrown kunai that can be
+  answered.
 - **Found on the way:** "strikes as they lands": the rush-in line agreed its second verb with the
   fighter, not the pronoun. Fixed, with a test.
 
