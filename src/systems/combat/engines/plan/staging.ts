@@ -55,9 +55,14 @@ export function turnForce(fighter: PlanFighter, id: CardId | undefined): Narrati
   };
 }
 
-/** Everyone's pools, by id, for a line that says where they stand (`poolsLine`). */
+/**
+ * Everyone's pools, by id, for a line that says where they stand (`poolsLine`), with their health
+ * as the screen shows it: the watch screen reads both forward, line by line, so a hit shows when
+ * its line plays, and a fighter who joins mid-round (a shadow clone, a summons) first appears in
+ * the line that brought them.
+ */
 function poolsOf(fighters: readonly PlanFighter[]): Record<string, Record<string, number>> {
-  return Object.fromEntries(fighters.map((f) => [f.id, poolAmounts(f)]));
+  return Object.fromEntries(fighters.map((f) => [f.id, { ...poolAmounts(f), health: f.health }]));
 }
 
 /** Everyone's statuses, by id, as the screen shows them (`statusLine`). */

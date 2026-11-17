@@ -297,6 +297,12 @@ export interface CombatSetup {
    * on round after round with no planning between. Engines that can't stage a fight ignore it.
    */
   readonly watch?: boolean;
+  /**
+   * The player's side fights on after the player falls, until no one on it is still fighting
+   * (versus, where the player's fighter is one of a team like any other). Unset, the player
+   * falling ends the fight, as it does on a job.
+   */
+  readonly toTheLast?: boolean;
   /** Rules on trial, off unless a fight turns them on (versus play-testing). */
   readonly experiments?: CombatExperiments;
   /**

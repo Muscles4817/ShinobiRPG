@@ -67,6 +67,8 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     allies: allySetups(allies, sandbox, ctx),
     enemies: foeSetups(foes.value, sandbox, ctx),
     canFlee: !watching,
+    // A bout goes on while anyone on your side still fights, as it does for the other side.
+    toTheLast: true,
     ...(pick.ground ? { ground: pick.ground } : {}),
     ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),
     ...experimentsOf(pick),
