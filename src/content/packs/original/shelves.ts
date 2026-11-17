@@ -8,6 +8,11 @@ export const ACADEMY_VARIANTS: readonly string[] = [
   'bridge-knee',
   'catch-and-turn',
   'roof-runner-flurry',
+  'moth-embers',
+  'canal-whip',
+  'stone-knuckle',
+  'reed-whistle',
+  'spark-snare',
 ];
 
 /** The archive's variants (C open, B restricted, A sealed), listed with the shelf below. */
@@ -19,6 +24,20 @@ const ARCHIVE_VARIANTS: readonly string[] = [
   'waterwheel-kick',
   'festival-drum',
   'river-turning-throw',
+  'hearth-wall',
+  'rain-needles',
+  'quarry-spikes',
+  'kite-string-blades',
+  'storm-lance',
+  'kiln-serpent',
+  'millrace-prison',
+  'sickle-gale',
+  'forked-lightning',
+  'festival-pyre',
+  'floodgate-surge',
+  'kiln-quake',
+  'twin-cyclone',
+  'sky-splitter',
 ];
 
 /** The Lantern Archive's shelves: standard techniques C to A, cast armour among them. */
