@@ -25,6 +25,8 @@ const PAIRS: [CastId, CastId][] = [
   ['trapper', 'shrouded'],
 ];
 const ON = { rushing: true, handSigns: true, standFirm: true } as const;
+/** Only these pairings, if named (`a:b,c:d`). */
+const ONLY = (process.env.PAIRS ?? '').split(',').filter(Boolean);
 
 function readable(line: string): string {
   const notes: string[] = [];
@@ -43,6 +45,7 @@ interface Fight {
   readonly log: readonly string[];
   readonly plays: readonly string[];
   readonly whys: readonly string[];
+  readonly foePlays: readonly string[];
 }
 
 function fight(a: CastId, b: CastId, seed: number, rulesOn: boolean): Fight {
@@ -75,13 +78,15 @@ function fight(a: CastId, b: CastId, seed: number, rulesOn: boolean): Fight {
     for (const l of view.log.slice(Math.max(0, seen - off))) log.push(readable(l));
     seen = off + view.log.length;
   }
-  const mine = decisionsOf(state).filter((d) => d.phase === 'turn' && d.fighterId === 'player');
+  const turns = decisionsOf(state).filter((d) => d.phase === 'turn');
+  const mine = turns.filter((d) => d.fighterId === 'player');
   return {
     won: engine.outcome(state)?.result === 'victory',
     exchanges,
     log,
     plays: mine.map((d) => d.card),
     whys: mine.map((d) => d.why),
+    foePlays: turns.filter((d) => d.fighterId === 'foe').map((d) => `${d.card} (${d.why})`),
   };
 }
 
@@ -89,7 +94,7 @@ const count = (xs: readonly string[], p: (x: string) => boolean) => xs.filter(p)
 
 it('pairings', () => {
   const report: string[] = [];
-  for (const [a, b] of PAIRS) {
+  for (const [a, b] of PAIRS.filter(([x, y]) => ONLY.length === 0 || ONLY.includes(`${x}:${y}`))) {
     report.push(`## ${a} against ${b}`, '');
     for (const on of [false, true]) {
       const fights = Array.from({ length: SEEDS }, (_, i) => fight(a, b, i + 1, on));
@@ -97,6 +102,9 @@ it('pairings', () => {
       const plays = new Map<string, number>();
       for (const p of fights.flatMap((f) => f.plays)) plays.set(p, (plays.get(p) ?? 0) + 1);
       const top = [...plays].sort((x, y) => y[1] - x[1]).slice(0, 6);
+      const foe = new Map<string, number>();
+      for (const p of fights.flatMap((f) => f.foePlays)) foe.set(p, (foe.get(p) ?? 0) + 1);
+      const foeTop = [...foe].sort((x, y) => y[1] - x[1]).slice(0, 8);
       const per = (n: number) => (n / SEEDS).toFixed(1);
       report.push(
         `**Rules ${on ? 'on' : 'off'}:** won ${fights.filter((f) => f.won).length}/${SEEDS}, ` +
@@ -108,8 +116,10 @@ it('pairings', () => {
         '',
         `Plays: ${top.map(([c, k]) => `${c} ${k}`).join(', ')}`,
         '',
+        `Foe plays: ${foeTop.map(([c, k]) => `${c} ${k}`).join(', ')}`,
+        '',
       );
-      if (on) {
+      if (on || ONLY.length > 0) {
         for (const f of fights.filter((x) => !x.won).slice(0, 2)) {
           report.push('```', ...f.log.slice(0, 80), '```', '');
         }

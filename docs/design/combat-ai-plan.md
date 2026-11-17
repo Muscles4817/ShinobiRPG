@@ -1484,9 +1484,22 @@ What the read shows:
   builds can't survive a faster rusher, which is the owner's acceptable loss, so the lesson was
   dropped. Where they should win is the fight contexts above: starting far off, in cover.
 
-- **Still to read:** the shrouded fighter against the powerhouse (fewer wins since it began casting
-  its armour up close again), and the medic against the Gates (Evade played far less with the rules
-  on).
+- **The last two, read:**
+  - **The medic against the Gates.** With the rules off, the Gates fighter's White-Flame Heel knocks
+    the medic back to mid. The medic heals there in peace, and Evades when the Gates fighter closes.
+    With them on, every run back in lands a blow as it arrives (two or three a fight), so the
+    closing step is itself the attack and an Evade comes too late. The medic plays it half as often.
+    A heal tried with the Gates fighter on top of it is sometimes broken (one a fight). The medic
+    has lost the breathing room the knock used to give it: a consequence of the rules that makes
+    sense, not an AI fault.
+  - **The shrouded fighter against the powerhouse.** Both throw mostly plain strikes. The shrouded
+    fighter casts its armour up close again and loses it about one fight in two, and takes a rush
+    blow a fight. Casting armour inside a brawler's reach and sometimes losing it makes sense too.
+  - **Found in the story, not the numbers:**
+    - The kit's "glances off" lines ("barely seems to feel it", "little of it bites") are told
+      whenever armour or a shroud takes any share of a blow, however small, even beside a chip of 16. The words should follow how much was kept out. This is exactly the dishonest text the
+      owner's note on reads is about.
+    - Mending Glow, a healing technique, is told as "catches their breath and recovers".
 - **The owner's note: distance isn't even.** Close to mid is a short gap; mid to far is a long one.
   - Closing from far to mid should give the far fighter more chance to answer (to see it coming,
     throw, set something) than closing from mid to close does.
