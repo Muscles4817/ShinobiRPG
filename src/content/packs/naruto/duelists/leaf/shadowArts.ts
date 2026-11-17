@@ -100,7 +100,7 @@ export const SHADOW_ARTS: readonly TechniqueDef[] = [
     id: 'madara-susanoo',
     name: 'Susanoo',
     description:
-      'A towering warrior of blue chakra rises round its user, bone, then flesh, then armour, and blows break on it.',
+      'A towering warrior of blue chakra rises round its user in layers of bone and flesh, and blows break on it.',
     discipline: 'ninjutsu',
     clan: 'uchiha',
     effects: [{ verb: 'shroud', power: 24, kind: 'chakra' }],

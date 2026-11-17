@@ -4,6 +4,7 @@ import type { PuppetDef } from '../../../puppets';
 import type { GearDef, PersonDef } from '../../../types';
 import { KIRI_FIGHTER_ARTS, KIRI_FIGHTER_GEAR, KIRI_FIGHTERS } from './kiri';
 import { SUNA_FIGHTER_ARTS, SUNA_FIGHTER_GEAR, SUNA_FIGHTER_PUPPETS, SUNA_FIGHTERS } from './suna';
+import { SOUND_ARTS, SOUND_FIGHTERS } from './sound';
 import { JIRAIYA, JIRAIYA_TECHNIQUES } from './jiraiya';
 import { TENGEN, TENGEN_GEAR, TENGEN_TECHNIQUES } from './tengen';
 import { OROCHIMARU, OROCHIMARU_TECHNIQUES } from './orochimaru';
@@ -21,6 +22,7 @@ export const DUELISTS: readonly PersonDef[] = /*#__PURE__*/ (() => [
   ...SUNA_FIGHTERS,
   ...KIRI_FIGHTERS,
   ...LEAF_FIGHTERS,
+  ...SOUND_FIGHTERS,
 ])();
 export const DUELIST_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...TENGEN_TECHNIQUES,
@@ -29,6 +31,7 @@ export const DUELIST_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => 
   ...SUNA_FIGHTER_ARTS,
   ...KIRI_FIGHTER_ARTS,
   ...LEAF_ARTS,
+  ...SOUND_ARTS,
 ])();
 export const DUELIST_GEAR: readonly GearDef[] = /*#__PURE__*/ (() => [
   ...TENGEN_GEAR,

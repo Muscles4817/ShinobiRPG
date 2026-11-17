@@ -4,6 +4,7 @@ import type { ContractDef } from '../../contracts';
 import { statLine } from '../../statLine';
 import { LEAF_CONTRACTS } from './duelists/leaf';
 import { REANIMATION } from './duelists/orochimaru';
+import { DOKI } from './duelists/sound';
 import { SAGE_TOADS } from './sageToads';
 
 /**
@@ -232,6 +233,7 @@ export const CONTRACTS: readonly ContractDef[] = [
   NINKEN,
   SNAKES,
   REANIMATION,
+  DOKI,
   ...LEAF_CONTRACTS,
 ];
 

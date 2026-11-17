@@ -112,7 +112,7 @@ export const SLUGS: ContractDef = {
   id: 'shikkotsu-slugs',
   name: 'The Slugs of Shikkotsu Forest',
   description:
-    'Katsuyu and her kin, gentle and polite, who answer only Tsunade of the Sannin and those she trusts.',
+    'Katsuyu and her gentle kin, who answer only Tsunade of the Sannin and those she trusts.',
   summons: [
     {
       id: KATSUYU,
