@@ -309,3 +309,26 @@ describe('cast armour in a planned fight', () => {
     expect(fallen.lines.join(' ')).toContain('sand armour runs off');
   });
 });
+
+describe('healing', () => {
+  it('is told as the technique closing wounds, never as a breath caught', () => {
+    const mend: CombatTechnique = {
+      id: 'mend',
+      name: 'Mending Glow',
+      discipline: 'ninjutsu',
+      effects: [{ verb: 'heal', power: 16 }],
+      chakraCost: 8,
+    };
+    const round = roundWith();
+    const [hero, bandit] = round.fighters;
+    const hurt = { ...hero!, health: 30 };
+    const after = useJutsu(
+      { ...round, fighters: [hurt, bandit!] },
+      { actor: hurt, target: hurt, rng: createRng(1) },
+      mend,
+    );
+    const told = after.lines.map((l) => splitNarration(l).text).join(' ');
+    expect(told).toContain('Mending Glow closes the worst of');
+    expect(told).not.toContain('breath');
+  });
+});
