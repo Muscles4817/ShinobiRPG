@@ -315,6 +315,10 @@ export interface CombatExperiments {
   readonly dodgeLeaps?: boolean;
   /** Foes think ahead with the planner (`engines/plan/mind/planner/`). */
   readonly planner?: boolean;
+  /** A taijutsu fighter's step in carries a blow as they arrive (`plan/closeQuarters.ts`). */
+  readonly rushing?: boolean;
+  /** Up close, a technique that needs hand signs may come apart before it's cast (same). */
+  readonly handSigns?: boolean;
 }
 
 /**

@@ -26,7 +26,10 @@ function readable(line: string): string {
 
 it('kimimaro', async () => {
   const { writeFileSync } = await import('node:fs');
+  const rules = (process.env.RULES ?? '').split(',').filter(Boolean);
   const made = createVersus(naruto, {
+    rushing: rules.includes('rushing'),
+    handSigns: rules.includes('handSigns'),
     side: ['person:kimimaro'],
     foes: ['person:asuma'],
     seed: Number(process.env.WALK_SEED ?? 7),
@@ -87,7 +90,7 @@ it('kimimaro', async () => {
   for (const d of decisionsOf(state).filter((x) => x.phase === 'turn'))
     lines.push(`${d.round} ${d.fighterId} ${d.card} ${d.why}`);
   writeFileSync(
-    `${OUT}/kimimaro-${process.env.KEEP ?? 'any'}-${process.env.WALK_SEED ?? 7}.md`,
+    `${OUT}/kimimaro-${process.env.KEEP ?? 'any'}-${process.env.WALK_SEED ?? 7}-${process.env.RULES || 'none'}.md`,
     lines.join('\n'),
   );
 });

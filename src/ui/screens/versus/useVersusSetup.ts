@@ -32,6 +32,10 @@ export interface VersusChoice {
   readonly dodgeLeaps: boolean;
   /** Foes think ahead, a rule on trial. */
   readonly foesThink: boolean;
+  /** Taijutsu fighters strike as they rush in, a rule on trial. */
+  readonly rushing: boolean;
+  /** Hand signs can be broken up close, a rule on trial. */
+  readonly handSigns: boolean;
 }
 
 function defaultPack(): string {
@@ -51,6 +55,24 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
   return index >= ids.length ? [...ids, id] : ids.map((old, i) => (i === index ? id : old));
 }
 
+/** The rules on trial a bout turns on, each off until ticked, remembered from the last bout. */
+function useTrialRules(initial: VersusChoice | null) {
+  const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
+  const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
+  const [rushing, setRushing] = useState(initial?.rushing ?? false);
+  const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
+  return {
+    dodgeLeaps,
+    setDodgeLeaps,
+    foesThink,
+    setFoesThink,
+    rushing,
+    setRushing,
+    handSigns,
+    setHandSigns,
+  };
+}
+
 /**
  * Everything the versus setup keeps, for either layout: the world, both sides, the ground, the
  * rules on trial, the roster filter, which slot is being chosen for and whose profile is open.
@@ -64,8 +86,7 @@ export function useVersusSetup(initial: VersusChoice | null) {
   const [sideIds, setSideIds] = useState<readonly string[]>(initial?.side ?? []);
   const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
   const [ground, setGround] = useState<VersusGround['id']>(initial?.ground ?? 'arena');
-  const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
-  const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
+  const trials = useTrialRules(initial);
   const [filter, setFilter] = useState<VersusFilter>(OPEN_FILTER);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -133,10 +154,7 @@ export function useVersusSetup(initial: VersusChoice | null) {
     foes,
     ground,
     setGround,
-    dodgeLeaps,
-    setDodgeLeaps,
-    foesThink,
-    setFoesThink,
+    ...trials,
     filter,
     setFilter,
     slot,

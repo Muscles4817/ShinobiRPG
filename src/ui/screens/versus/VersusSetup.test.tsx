@@ -82,6 +82,25 @@ describe('versus setup on a desk', () => {
     expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ dodgeLeaps: true }));
   });
 
+  it('tries rushing in and hand signs up close only when you turn them on', async () => {
+    asDesk(true);
+    const user = userEvent.setup();
+    const onFight = vi.fn();
+    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(
+      expect.objectContaining({ rushing: false, handSigns: false }),
+    );
+    await user.click(
+      screen.getByRole('checkbox', { name: 'Taijutsu fighters strike as they rush in' }),
+    );
+    await user.click(screen.getByRole('checkbox', { name: 'Hand signs can be broken up close' }));
+    await user.click(screen.getByRole('button', { name: 'Fight' }));
+    expect(onFight).toHaveBeenLastCalledWith(
+      expect.objectContaining({ rushing: true, handSigns: true }),
+    );
+  });
+
   it('lets the foes think ahead, for this bout only', async () => {
     asDesk(true);
     const user = userEvent.setup();

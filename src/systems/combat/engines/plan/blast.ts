@@ -60,7 +60,8 @@ const THROWN_BACK = 'The blast throws back everyone it caught.';
  */
 export function aftermath(round: Round, turn: Turn, used: Blast): Round {
   const size = widest(used.t);
-  if (!size) return round;
+  // A small area throws no one anywhere (`AREA_RULES`): only a wide or vast one moves the fight.
+  if (!size || AREA_RULES[size].pushesTo === undefined) return round;
   if (size === 'wide') return thrownBack(round, turn.actor, used.caught);
   const range = afterBlast(round.range, size);
   const apart = round.distances === undefined && range === round.range;

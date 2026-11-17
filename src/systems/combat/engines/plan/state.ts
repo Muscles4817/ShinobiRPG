@@ -34,6 +34,7 @@ import type { CallTrigger, Calls } from './roundCallShape';
 import type { Decision } from './whyShape';
 import type { Reads } from './readShape';
 import type { Minded, Witness } from './mind/shape';
+import type { OnTrial } from './trialShape';
 export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -114,6 +115,7 @@ export interface PlanFighter
     Hive,
     ShroudMemory,
     Minded,
+    OnTrial,
     Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;
@@ -181,8 +183,6 @@ export interface PlanFighter
   readonly copied?: readonly string[];
   /** The exchange they went down in, for the fight's summary (`falls.ts`). */
   readonly fellAt?: number;
-  /** A ready Dodge carries them clear when it slips an attack up close (an experiment, `leap.ts`). */
-  readonly leapsClear?: true;
   /** Their last daze and their guard last smashed, and by whom, for the summary's turning point. */
   readonly dazedBy?: Swing;
   readonly guardBrokenBy?: Swing;

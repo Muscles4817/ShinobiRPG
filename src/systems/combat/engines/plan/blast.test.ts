@@ -91,3 +91,19 @@ describe('area techniques in a fight', () => {
     expect(vast.field?.id).toBe('dust');
   });
 });
+
+describe('a small area leaves the fight where it stands', () => {
+  it('throws no one back, even with pairs at distances of their own', () => {
+    // The fight stands at mid, but the hero has closed on the bandit: their pair is close.
+    const round: Round = {
+      ...facing('guard'),
+      range: 'mid',
+      distances: { 'bandit|hero': 'close' },
+    };
+    for (let seed = 1; seed <= SEEDS; seed++) {
+      const after = cast(round, 'small', seed);
+      expect(distanceBetween(after, 'hero', 'bandit')).toBe('close');
+      expect(after.lines.some((l) => l.includes('throws everyone apart'))).toBe(false);
+    }
+  });
+});

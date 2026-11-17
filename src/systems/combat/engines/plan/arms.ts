@@ -5,6 +5,7 @@ import { react, type Blow } from './react';
 import type { Turn } from './senses';
 import { canDaze, dazeIn } from './daze';
 import { blowWord } from './scene';
+import { RUSH_SCALE } from './rushing';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -65,10 +66,11 @@ function drainOnHit(round: Round, turn: Turn, drained: number): Round {
 }
 
 /** Plays the strike or kunai card at the turn's target. */
-export function strike(round: Round, turn: Turn, thrown: boolean): Round {
+export function strike(round: Round, turn: Turn, thrown: boolean, scale = 1): Round {
   const { actor, target, rng } = turn;
   if (!target) return round;
-  const attack = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
+  const swung = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
+  const attack = scale === 1 ? swung : { ...swung, raw: swung.raw * scale };
   const after = blowsOf(attack, thrown, actor).reduce((now, blow) => {
     const struck = fighterIn(now, target.id);
     if (!struck || !alive(struck)) return now;
@@ -78,4 +80,9 @@ export function strike(round: Round, turn: Turn, thrown: boolean): Round {
   if (damage <= 0) return after;
   const dazed = dazeOnHit(after, turn, attack.daze);
   return attack.drain > 0 ? drainOnHit(dazed, turn, damage * attack.drain) : dazed;
+}
+
+/** The blow a rusher throws as they land: a plain strike, lighter (`closeQuarters.ts`). */
+export function rushStrike(round: Round, turn: Turn): Round {
+  return strike(round, turn, false, RUSH_SCALE);
 }

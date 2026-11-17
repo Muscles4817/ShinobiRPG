@@ -88,6 +88,36 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
         its wits allow, and keeps to the plan unless it breaks. Rounds take a moment longer to
         start.
       </p>
+      <label className="versus-trial-rule" htmlFor="versus-rushing">
+        <input
+          id="versus-rushing"
+          type="checkbox"
+          checked={setup.rushing}
+          onChange={(e) => {
+            setup.setRushing(e.target.checked);
+          }}
+        />
+        Taijutsu fighters strike as they rush in
+      </label>
+      <p className="muted">
+        A step that gets a taijutsu fighter in close carries a lighter blow as they land, so closing
+        in no longer hands the foe a free turn. Closing on someone faster is still hard.
+      </p>
+      <label className="versus-trial-rule" htmlFor="versus-hand-signs">
+        <input
+          id="versus-hand-signs"
+          type="checkbox"
+          checked={setup.handSigns}
+          onChange={(e) => {
+            setup.setHandSigns(e.target.checked);
+          }}
+        />
+        Hand signs can be broken up close
+      </label>
+      <p className="muted">
+        With a foe close enough to touch, a technique that needs hand signs is a contest: speed and
+        chakra control against their speed and taijutsu. Lost, the seals come apart.
+      </p>
     </section>
   );
 }
@@ -139,9 +169,9 @@ export function StartBout({
   readonly setup: VersusSetupState;
   readonly onFight: (choice: VersusChoice) => void;
 }) {
-  const { ctx, side, foes, ground, dodgeLeaps, foesThink, problem } = setup;
+  const { ctx, side, foes, ground, dodgeLeaps, foesThink, rushing, handSigns, problem } = setup;
   const start = (watch: boolean) => {
-    if (ctx) onFight({ ctx, side, foes, ground, watch, dodgeLeaps, foesThink });
+    if (ctx) onFight({ ctx, side, foes, ground, watch, dodgeLeaps, foesThink, rushing, handSigns });
   };
   return (
     <>

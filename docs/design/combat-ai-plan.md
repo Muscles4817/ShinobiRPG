@@ -1285,6 +1285,56 @@ Fixes the prototypes turned up, already merged into `main`:
 
 ---
 
+## Part 13b: Phase A, close quarters (from the owner's review)
+
+The owner walked through fights in versus before the revamp went further
+(`prototypes/walkthrough/`). The worst, Kimimaro against Asuma, was a rules lock, not an AI
+fault: every step in took Kimimaro's turn, and Asuma's next attack threw him back to mid before he
+could act up close. Measured over 2,866 versus bouts: a fighter made to fight up close loses 8
+points of wins against ordinary foes and 15 against foes with wide areas, and in 42% of the
+latter never acts up close at all. Dazes were measured too and are not a broad problem (1% of
+turns).
+
+**What was found:** a small area (no `size`) threw everyone apart whenever pairs stood at
+distances of their own: it reset every pair to the fight's distance. A bug, fixed outright
+(`plan/blast.ts`).
+
+**The owner's decisions:**
+
+- **Rushing in**, for taijutsu fighters only: a step that reaches close carries a lighter blow as
+  they land. Closing on someone faster stays the hard case, since their turn comes first. For
+  some it is a technique (an entry); Chōji's Human Bullet Tank should be one, his guard far up as
+  he rolls in.
+- **Hand signs up close are a contest**: the caster's speed and chakra control against the
+  crowder's speed and taijutsu, harder the more signs the technique takes. A dazed or held foe
+  crowds no one. This also gives casting time without a timing system: a fast closer who arrives
+  first makes the cast happen up close. Long-range fighters are comfortable at far, in trouble at
+  mid, in danger up close. It is a condition of casting, not a reaction, so Part 8's "no
+  reaction faster than a turn" stands.
+- **Teleport** (Minato's Flying Thunder God): a change of distance that costs no turn, once a
+  round.
+- **Knockback** should be resisted on the gap (the area's power against strength and size, and a
+  Brace), so a far stronger blast still throws a strong body.
+- A crowd rule (leaving close range needs a turn the closer doesn't contest) is held back unless
+  the measurements still show casters escaping too easily.
+
+**First results** (rushing and hand signs on trial, the bug fixed; the same bouts):
+
+| Taijutsu fighters made to fight up close | Against wide-area foes | Against other foes |
+| ---------------------------------------- | ---------------------- | ------------------ |
+| Today's rules                            | 30.1% won              | 49.3% won          |
+| Rushing and hand signs on                | 35.7% won              | 53.6% won          |
+
+Kimimaro, fighting up close against Asuma, went from 0 wins in 10 to 10 in 10.
+
+**The plan:** Phase A tries these as rules on trial in versus, one PR at a time, with the
+measurements before and after. Phase B adopts what plays well and teaches today's AI what it
+needs (the planner adapts by itself, since it plays the real engine). Phase C resumes the
+revamp: planning off the main thread, reading reactions through cues (hand signs are already one
+of their channels), team objectives, then the player's controls and the commitment rules.
+
+---
+
 ## Part 14: Open questions for the owner
 
 Settled:

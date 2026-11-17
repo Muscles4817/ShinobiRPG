@@ -28,7 +28,14 @@ const dazesInArea = (f: PlanFighter) =>
     (t) => t.effects.some((e) => e.verb === 'area') && t.effects.some((e) => e.verb === 'daze'),
   );
 
+const ARTS = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
+/** A taijutsu fighter, as `closeQuarters.ts` reads one: taijutsu at C, or their best art. */
+const isRusher = (f: PlanFighter) =>
+  f.attributes.taijutsu >= 13 ||
+  f.attributes.taijutsu >= Math.max(...ARTS.map((a) => f.attributes[a]));
+
 interface BoutStats {
+  readonly rusher: boolean;
   readonly closer: { closeActs: number; steps: number; turns: number; won: boolean };
   readonly foeWide: boolean;
   readonly foeAreaDaze: boolean;
@@ -44,7 +51,15 @@ function bout(
   foe: string,
   { seed, forceClose }: { seed: number; forceClose: boolean },
 ): BoutStats | null {
-  const made = createVersus(naruto, { side: [side], foes: [foe], seed, watch: true });
+  const rules = (process.env.RULES ?? '').split(',').filter(Boolean);
+  const made = createVersus(naruto, {
+    side: [side],
+    foes: [foe],
+    seed,
+    watch: true,
+    rushing: rules.includes('rushing'),
+    handSigns: rules.includes('handSigns'),
+  });
   if (!made.ok || !made.value.combat) return null;
   const start = decode(made.value.combat);
   const data: PlanState = {
@@ -97,7 +112,9 @@ function bout(
     }
   }
   closer.won = engine.outcome(state)?.result === 'victory';
+  const me = start.fighters.find((f) => f.id === 'player')!;
   return {
+    rusher: isRusher(me),
     closer,
     foeWide: isWideArea(foeF),
     foeAreaDaze: dazesInArea(foeF),
@@ -133,9 +150,15 @@ it('measure', () => {
   }
   const lines: string[] = [];
   const share = (n: number, d: number) => (d === 0 ? '—' : `${((100 * n) / d).toFixed(1)}%`);
-  for (const forced of [false, true]) {
+  for (const [forced, onlyRushers] of [
+    [false, false],
+    [true, false],
+    [true, true],
+  ] as const) {
     for (const wide of [true, false]) {
-      const set = rows.filter((r) => r.forced === forced && r.s.foeWide === wide).map((r) => r.s);
+      const set = rows
+        .filter((r) => r.forced === forced && r.s.foeWide === wide && (!onlyRushers || r.s.rusher))
+        .map((r) => r.s);
       const t = set.reduce(
         (a, s) => ({
           close: a.close + s.closer.closeActs,
@@ -147,7 +170,7 @@ it('measure', () => {
         { close: 0, steps: 0, turns: 0, never: 0, won: 0 },
       );
       lines.push(
-        `| ${forced ? 'fights at close (forced)' : 'own plan'} | ${wide ? 'yes' : 'no'} | ${set.length} | ${share(t.close, t.turns)} | ${share(t.steps, t.turns)} | ${share(t.never, set.length)} | ${share(t.won, set.length)} |`,
+        `| ${forced ? (onlyRushers ? 'taijutsu fighters at close' : 'fights at close (forced)') : 'own plan'} | ${wide ? 'yes' : 'no'} | ${set.length} | ${share(t.close, t.turns)} | ${share(t.steps, t.turns)} | ${share(t.never, set.length)} | ${share(t.won, set.length)} |`,
       );
     }
   }
@@ -175,6 +198,6 @@ it('measure', () => {
       sumOf(withAD, (s) => s.turns),
     )} (${withAD.length} bouts).`,
   ];
-  writeFileSync(`${OUT}/measure.md`, report.join('\n'));
+  writeFileSync(`${OUT}/measure-${process.env.RULES ?? 'none'}.md`, report.join('\n'));
   console.warn(report.join('\n'));
 });

@@ -6,6 +6,7 @@ import { gather } from './gather';
 import { useJutsu } from './jutsu';
 import { useTool } from './pouch';
 import { facing } from './distance';
+import { sealsBroken } from './closeQuarters';
 import { dispel, search, type Turn } from './senses';
 import { fighterIn, patch, type PlanFighter, type Round } from './state';
 import { step } from './steps';
@@ -37,6 +38,9 @@ export function play(round: Round, turn: Turn, card: Card): Round {
     case 'dispel':
       return dispel(round, turn);
     case 'jutsu': {
+      // Up close, hand signs may come apart before the technique is cast (`closeQuarters.ts`).
+      const broken = sealsBroken(round, turn, card.technique);
+      if (broken) return broken;
       const trumpsUsed = afterUsing(turn.actor, card.technique);
       const marked = { ...round, fighters: patch(round.fighters, turn.actor.id, { trumpsUsed }) };
       return useJutsu(marked, turn, card.technique);
