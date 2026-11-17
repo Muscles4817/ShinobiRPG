@@ -793,6 +793,25 @@ describe('App (smoke test)', () => {
     expect(store.data).toContain(`"${known?.id ?? 'missing'}"`);
   });
 
+  it('paints the title under the sky of the player’s hour', () => {
+    window.history.replaceState(null, '', '/?hour=13:00');
+    const { unmount } = render(<App store={memoryStore()} />);
+    expect(screen.getByRole('main')).toHaveAttribute('data-sky', 'day');
+    unmount();
+    window.history.replaceState(null, '', '/?hour=23:30');
+    render(<App store={memoryStore()} />);
+    expect(screen.getByRole('main')).toHaveAttribute('data-sky', 'night');
+    window.history.replaceState(null, '', '/');
+  });
+
+  it('lets the day’s weather fall over the title', () => {
+    window.history.replaceState(null, '', '/?hour=21:00&weather=snow');
+    const { container } = render(<App store={memoryStore()} />);
+    expect(screen.getByRole('main')).toHaveAttribute('data-weather', 'snow');
+    expect(container.querySelector('.title-fall.snow')).not.toBeNull();
+    window.history.replaceState(null, '', '/');
+  });
+
   it('reports an unreadable save instead of crashing', () => {
     render(<App store={memoryStore('garbage')} />);
     expect(screen.getByRole('alert')).toHaveTextContent(/could not be loaded/);

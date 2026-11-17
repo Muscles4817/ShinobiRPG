@@ -1,4 +1,6 @@
-import type { AudioSettings, MusicMood, Sound, SoundForce } from '@/game';
+import type { Ambience, AudioSettings, MusicMood, Sound, SoundForce } from '@/game';
+
+import { createAmbience, type AmbienceBed } from './ambience';
 
 import { playSound } from './effects';
 import { LOOPS } from './loops';
@@ -19,6 +21,8 @@ export interface AudioEngine {
   readonly play: (sound: Sound, force?: SoundForce) => void;
   /** The music to play (null for none); a change fades one loop into the next. */
   readonly setMood: (mood: MusicMood | null) => void;
+  /** The world's sounds under the music (null for none), faded in and out like the music. */
+  readonly setAmbience: (ambience: Ambience | null) => void;
   readonly setLevels: (settings: AudioSettings) => void;
   /** Hold everything while the app is out of sight. */
   readonly pause: (paused: boolean) => void;
@@ -174,6 +178,8 @@ export function createAudioEngine(initial: AudioSettings): AudioEngine {
   let cursor: Cursor = { step: 0, nextAt: 0 };
   let timer: ReturnType<typeof setInterval> | null = null;
   let lastSoundAt = -1;
+  let ambience: Ambience | null = null;
+  let bed: AmbienceBed | null = null;
 
   const musicAudible = () => settings.sound && settings.musicVolume > 0;
 
@@ -194,6 +200,13 @@ export function createAudioEngine(initial: AudioSettings): AudioEngine {
     }
   };
 
+  // The world's sounds sit with the music: its volume and its switch govern them too.
+  const syncAmbience = () => {
+    if (!graph) return;
+    bed ??= createAmbience({ ...graph.effects, dest: graph.musicBus });
+    bed.set(musicAudible() ? ambience : null);
+  };
+
   const applyLevels = () => {
     if (!graph) return;
     const at = graph.ctx.currentTime;
@@ -211,6 +224,7 @@ export function createAudioEngine(initial: AudioSettings): AudioEngine {
         graph = buildGraph(new Ctx());
         applyLevels();
         syncMusic();
+        syncAmbience();
       }
       if (graph.ctx.state === 'suspended') void graph.ctx.resume();
     },
@@ -226,10 +240,15 @@ export function createAudioEngine(initial: AudioSettings): AudioEngine {
       mood = next;
       syncMusic();
     },
+    setAmbience: (next) => {
+      ambience = next;
+      syncAmbience();
+    },
     setLevels: (next) => {
       settings = next;
       applyLevels();
       syncMusic();
+      syncAmbience();
     },
     pause: (paused) => {
       if (!graph) return;

@@ -1,7 +1,13 @@
+import type { TitleLight, TitleWeather } from '@/game';
+
+import { HILLS, TitleSky } from './TitleSky';
+import { MistBands, Precipitation, WeatherVeil } from './TitleWeather';
+
 /**
- * The title screen's picture: a string of paper lanterns over a sleeping village, under the
- * moon. The middle lantern is the game's mark (忍 brushed on lit paper). Inline SVG, so it
- * works offline; the lanterns sway and glow by CSS (menu.css), still under reduced motion.
+ * The title screen's picture: a string of paper lanterns over the village, under the sky of the
+ * player's own hour (`TitleSky`): dark paper by day, lit one by one through the evening, all
+ * burning by night. The middle lantern is the game's mark (忍 brushed on its paper). Inline SVG,
+ * so it works offline; the lanterns sway and glow by CSS (menu.css), still under reduced motion.
  */
 
 /** The half-width of a lantern's body at height `y`: it swells in the middle like a chōchin. */
@@ -71,13 +77,23 @@ interface LanternProps {
   readonly glyph?: string;
   /** Which sway: they don't swing in step. */
   readonly sway: 1 | 2 | 3;
+  /** Burning, or paper and a cold wick in daylight. */
+  readonly lit: boolean;
 }
 
-function Lantern({ x, y, scale, kind, glyph, sway }: LanternProps) {
-  const fill = kind === 'paper' ? 'url(#paper-lit)' : 'url(#red-lit)';
+const FILLS = {
+  paper: { lit: 'url(#paper-lit)', dark: 'url(#paper-dark)' },
+  red: { lit: 'url(#red-lit)', dark: 'url(#red-dark)' },
+} as const;
+
+function Lantern({ x, y, scale, kind, glyph, sway, lit }: LanternProps) {
+  const fill = FILLS[kind][lit ? 'lit' : 'dark'];
   return (
-    <g transform={`translate(${x} ${y}) scale(${scale})`}>
-      <circle className="lantern-glow" cx="0" cy="62" r="78" fill="url(#glow)" />
+    <g
+      transform={`translate(${x} ${y}) scale(${scale})`}
+      className={lit ? 'title-lantern lit' : 'title-lantern'}
+    >
+      {lit && <circle className="lantern-glow" cx="0" cy="62" r="78" fill="url(#glow)" />}
       <g className={`lantern-sway sway-${sway}`}>
         <path d="M0 0V14" stroke="#2a1d18" strokeWidth="1.6" />
         <path d="M-20 14h40l2 8h-44Z" fill="#17100e" />
@@ -118,7 +134,19 @@ function Lantern({ x, y, scale, kind, glyph, sway }: LanternProps) {
   );
 }
 
-export function TitleScene() {
+/** The lanterns in the order they are lit: the middle one first, then left, then right. */
+function litAt(light: TitleLight, order: number): boolean {
+  return light.lanternsLit > order;
+}
+
+interface TitleSceneProps {
+  readonly light: TitleLight;
+  /** The day's weather (`TitleWeather.tsx`): cloud, mist, rain or snow over the hour's sky. */
+  readonly weather: TitleWeather;
+}
+
+export function TitleScene({ light, weather }: TitleSceneProps) {
+  const [far, near] = HILLS[light.sky];
   return (
     <svg
       className="title-scene"
@@ -142,28 +170,43 @@ export function TitleScene() {
           <stop offset="0.7" stopColor="#f0a050" stopOpacity="0.05" />
           <stop offset="1" stopColor="#f0a050" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="paper-dark" cx="50%" cy="45%" r="62%">
+          <stop offset="0" stopColor="#d9d0bd" />
+          <stop offset="1" stopColor="#8f846e" />
+        </radialGradient>
+        <radialGradient id="red-dark" cx="50%" cy="45%" r="62%">
+          <stop offset="0" stopColor="#7a3a33" />
+          <stop offset="1" stopColor="#331210" />
+        </radialGradient>
       </defs>
-      <circle cx="292" cy="150" r="46" fill="#f3e6c4" opacity="0.05" />
-      <circle cx="292" cy="150" r="25" fill="#efe1bd" opacity="0.88" />
+      <TitleSky light={light} weather={weather} />
+      <WeatherVeil light={light} weather={weather} />
       <path
         d="M0 214C38 196 62 178 96 186c30 7 44-14 74-10 26 4 40 22 70 16 32-7 52-30 86-24 26 5 44 18 64 26V330H0Z"
-        fill="#221e2f"
+        fill={far}
       />
       <path
         d="M-6 246c34-12 60-8 88-14 34-7 50-20 86-14 30 5 46 20 80 18 36-2 58-16 94-8 20 4 34 10 48 16V330H-6Z"
-        fill="#1b1825"
+        fill={near}
       />
+      <MistBands light={light} weather={weather} />
       <path d={ROOFLINE} fill="var(--bg)" />
-      <path d={WINDOWS} fill="#f0a050" opacity="0.6" />
+      <path
+        d={WINDOWS}
+        fill="#f0a050"
+        opacity={light.windowsLit ? 0.6 : 0}
+        className="title-windows"
+      />
       <path
         d="M-8 38C70 84 130 98 196 92S320 70 398 30"
         stroke="#3b2c27"
         strokeWidth="1.4"
         fill="none"
       />
-      <Lantern x={74} y={66} scale={0.62} kind="red" sway={2} />
-      <Lantern x={196} y={92} scale={1} kind="paper" glyph="忍" sway={1} />
-      <Lantern x={322} y={54} scale={0.55} kind="red" sway={3} />
+      <Lantern x={74} y={66} scale={0.62} kind="red" sway={2} lit={litAt(light, 1)} />
+      <Lantern x={196} y={92} scale={1} kind="paper" glyph="忍" sway={1} lit={litAt(light, 0)} />
+      <Lantern x={322} y={54} scale={0.55} kind="red" sway={3} lit={litAt(light, 2)} />
+      <Precipitation weather={weather} />
     </svg>
   );
 }

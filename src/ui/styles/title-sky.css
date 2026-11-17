@@ -1,0 +1,109 @@
+/*
+ * The title screen by the player's hour (`useTitleLight`): the page takes a wash of the sky at
+ * its top, fading to the night ground where the choices sit, so the lanterns' picture never
+ * ends in an edge. Night is the page as it always was.
+ */
+
+.main-menu[data-sky] {
+  --title-wash: transparent;
+  /* The wash meets the night ground where the village's roofs stand, so they sit on it. */
+  background: linear-gradient(to bottom, var(--title-wash) 0, var(--bg) 36dvh);
+  transition: background 2s ease;
+}
+.main-menu[data-sky='dawn'] {
+  --title-wash: #3a3354;
+}
+.main-menu[data-sky='morning'] {
+  --title-wash: #456f97;
+}
+.main-menu[data-sky='day'] {
+  --title-wash: #3a6c9f;
+}
+.main-menu[data-sky='dusk'] {
+  --title-wash: #34305a;
+}
+.main-menu[data-sky='evening'] {
+  --title-wash: #191834;
+}
+
+/* A wide window's scene stands at the right: the wash comes from there. */
+.main-menu.wide[data-sky] {
+  background: radial-gradient(ellipse 70% 90% at 78% 30%, var(--title-wash) 0, var(--bg) 75%);
+}
+
+/* Lamps come on in the windows, and the sky's cloud drifts. */
+.title-windows {
+  transition: opacity 3s ease;
+}
+.title-clouds {
+  animation: title-drift 90s linear infinite alternate;
+}
+@keyframes title-drift {
+  from {
+    transform: translateX(-12px);
+  }
+  to {
+    transform: translateX(16px);
+  }
+}
+.title-star {
+  animation: title-twinkle 4s ease-in-out infinite alternate;
+}
+.title-star:nth-child(3n) {
+  animation-delay: -1.5s;
+}
+.title-star:nth-child(3n + 1) {
+  animation-delay: -3s;
+}
+@keyframes title-twinkle {
+  from {
+    opacity: 0.25;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-clouds,
+  .title-star {
+    animation: none;
+  }
+}
+
+/* Rain and snow: a tile sliding down by its own height, rain fast and slanting, snow drifting. */
+.title-fall.rain {
+  animation: title-rain 0.45s linear infinite;
+}
+.title-fall.snow {
+  animation: title-snow 7s linear infinite;
+}
+.title-fall.snow-near {
+  animation: title-snow-near 9s linear infinite;
+}
+@keyframes title-snow-near {
+  to {
+    transform: translate(-14px, 120px);
+  }
+}
+@keyframes title-rain {
+  to {
+    transform: translate(-6px, 60px);
+  }
+}
+@keyframes title-snow {
+  to {
+    transform: translate(10px, 60px);
+  }
+}
+.title-mist {
+  animation: title-drift 60s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-fall,
+  .title-mist {
+    animation: none;
+  }
+}
+
+/* The page's wash greys under a falling sky. */
+.main-menu[data-weather='rain'][data-sky],
+.main-menu[data-weather='snow'][data-sky] {
+  --title-wash: #3a4150;
+}

@@ -9,6 +9,7 @@ export {
   type SoundForce,
 } from './sounds';
 export { MUSIC_MOODS, musicMood, type MusicMood } from './music';
+export { AMBIENCES, type Ambience } from './ambience';
 export {
   DEFAULT_AUDIO_SETTINGS,
   MAX_VOLUME,

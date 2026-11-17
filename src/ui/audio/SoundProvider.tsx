@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 import {
   readAudioSettings,
+  type Ambience,
   writeAudioSettings,
   type AudioSettings,
   type MusicMood,
@@ -24,6 +25,7 @@ export interface SoundApi {
   readonly change: (next: AudioSettings) => void;
   readonly play: (sound: Sound, force?: SoundForce) => void;
   readonly setMood: (mood: MusicMood | null) => void;
+  readonly setAmbience: (ambience: Ambience | null) => void;
 }
 
 const SILENT: SoundApi = {
@@ -31,6 +33,7 @@ const SILENT: SoundApi = {
   change: () => undefined,
   play: () => undefined,
   setMood: () => undefined,
+  setAmbience: () => undefined,
 };
 
 const SoundContext = createContext<SoundApi>(SILENT);
@@ -82,6 +85,7 @@ export function SoundProvider({
       },
       play: engine.play,
       setMood: engine.setMood,
+      setAmbience: engine.setAmbience,
     }),
     [engine, prefs, settings],
   );
@@ -98,4 +102,15 @@ export function useMusic(mood: MusicMood | null): void {
   useEffect(() => {
     setMood(mood);
   }, [mood, setMood]);
+}
+
+/** Plays the world's sounds under the music while the calling screen is up. */
+export function useAmbience(ambience: Ambience | null): void {
+  const { setAmbience } = useSound();
+  useEffect(() => {
+    setAmbience(ambience);
+    return () => {
+      setAmbience(null);
+    };
+  }, [ambience, setAmbience]);
 }
