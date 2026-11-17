@@ -58,11 +58,12 @@ export function withCloseQuarters(
   fighters: readonly PlanFighter[],
   setup: Pick<CombatSetup, 'experiments'>,
 ): PlanFighter[] {
-  const { rushing, handSigns } = setup.experiments ?? {};
+  const { rushing, handSigns, standFirm } = setup.experiments ?? {};
   return fighters.map((f) => ({
     ...f,
     ...(rushing && isRusher(f) ? { rushes: true as const } : {}),
     ...(handSigns ? { crowdable: true as const } : {}),
+    ...(standFirm ? { standsFirm: true as const } : {}),
   }));
 }
 

@@ -59,6 +59,7 @@ function bout(
     watch: true,
     rushing: rules.includes('rushing'),
     handSigns: rules.includes('handSigns'),
+    standFirm: rules.includes('standFirm'),
   });
   if (!made.ok || !made.value.combat) return null;
   const start = decode(made.value.combat);

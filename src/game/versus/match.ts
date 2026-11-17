@@ -35,6 +35,8 @@ export interface VersusPick {
   readonly rushing?: boolean;
   /** Hand signs can be broken up close (a rule on trial, `CombatExperiments.handSigns`). */
   readonly handSigns?: boolean;
+  /** A body may hold its ground against a blast (a rule on trial, `CombatExperiments.standFirm`). */
+  readonly standFirm?: boolean;
 }
 
 /** The rules on trial a pick turns on, if any. */
@@ -44,6 +46,7 @@ function experimentsOf(pick: VersusPick) {
     ...(pick.foesThink ? { planner: true } : {}),
     ...(pick.rushing ? { rushing: true } : {}),
     ...(pick.handSigns ? { handSigns: true } : {}),
+    ...(pick.standFirm ? { standFirm: true } : {}),
   };
   return Object.keys(experiments).length > 0 ? { experiments } : {};
 }

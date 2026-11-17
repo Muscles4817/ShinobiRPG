@@ -14,6 +14,7 @@ import {
 import { distanceBetween } from './distance';
 import { movedTo, pairsMoved } from './groundPlay';
 import type { Turn } from './senses';
+import { whoIsThrown } from './standing';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
@@ -62,7 +63,11 @@ export function aftermath(round: Round, turn: Turn, used: Blast): Round {
   const size = widest(used.t);
   // A small area throws no one anywhere (`AREA_RULES`): only a wide or vast one moves the fight.
   if (!size || AREA_RULES[size].pushesTo === undefined) return round;
-  if (size === 'wide') return thrownBack(round, turn.actor, used.caught);
+  if (size === 'wide') {
+    // On trial: a body that holds its feet isn't thrown (`standing.ts`).
+    const held = whoIsThrown(round, turn, used);
+    return thrownBack(held.round, turn.actor, held.thrown);
+  }
   const range = afterBlast(round.range, size);
   const apart = round.distances === undefined && range === round.range;
   const thrown = apart ? round : movedTo(round, range, 'The blast throws everyone apart.');

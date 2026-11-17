@@ -30,6 +30,7 @@ it('kimimaro', async () => {
   const made = createVersus(naruto, {
     rushing: rules.includes('rushing'),
     handSigns: rules.includes('handSigns'),
+    standFirm: rules.includes('standFirm'),
     side: ['person:kimimaro'],
     foes: ['person:asuma'],
     seed: Number(process.env.WALK_SEED ?? 7),
