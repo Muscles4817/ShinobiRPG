@@ -87,7 +87,7 @@ const cast = (round: Round) => ({
 });
 
 describe('keeping the seals clear of a crowder', () => {
-  it('a caster strongest further off steps back rather than cast into the crowder', () => {
+  it('a caster sure to lose the seals, with nothing signless to throw, steps back', () => {
     const round = closeRound({});
     expect(crowdWary(round, caster(round), cast(round))).toMatchObject({
       card: { kind: 'step', direction: 'back' },
@@ -95,7 +95,7 @@ describe('keeping the seals clear of a crowder', () => {
     });
   });
 
-  it('one at home up close throws something that needs no signs instead', () => {
+  it('throws something signless instead when it beats the cast after its risk', () => {
     const round = closeRound({ attributes: { taijutsu: 25 }, techniques: [bolt, elbow] });
     expect(crowdWary(round, caster(round), cast(round))).toMatchObject({
       card: { kind: 'jutsu', technique: { id: 'elbow' } },
@@ -111,6 +111,36 @@ describe('keeping the seals clear of a crowder', () => {
     expect(crowdWary(dull, caster(dull), cast(dull))).toBeNull();
     const { watching: _watched, ...playing } = closeRound({});
     expect(crowdWary(playing, caster(playing), cast(playing))).toBeNull();
+  });
+
+  it('casts a strong attack whose worth carries its risk, even with something signless to hand', () => {
+    const weak: CombatTechnique = { ...elbow, id: 'jab', effects: [{ verb: 'damage', power: 4 }] };
+    const round = closeRound({
+      attributes: { speed: 40, chakraControl: 30 },
+      techniques: [bolt, weak],
+    });
+    expect(crowdWary(round, caster(round), cast(round))).toBeNull();
+  });
+
+  it('lays armour rather than step back while the seals more likely hold', () => {
+    const shroud: CombatTechnique = {
+      id: 'skin',
+      name: 'Skin',
+      discipline: 'ninjutsu',
+      rank: 'C',
+      effects: [{ verb: 'shroud', power: 10, kind: 'earth' }],
+      chakraCost: 10,
+    };
+    const round = closeRound({
+      attributes: { speed: 35, chakraControl: 25 },
+      techniques: [shroud],
+    });
+    const armour = {
+      card: { kind: 'jutsu' as const, technique: shroud },
+      target: undefined,
+      why: 'slot' as const,
+    };
+    expect(crowdWary(round, caster(round), armour)).toBeNull();
   });
 
   it('casts anyway when the seals are quick and sure enough', () => {

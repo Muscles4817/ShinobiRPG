@@ -1424,9 +1424,16 @@ Today's AI knew nothing of the rule.
 make hand signs with an able foe close enough to break them (a quarter chance or more), changes
 course:
 
-- one whose kit is strongest further off steps back to make room;
-- one at home up close plays something that needs no signs, if it is worth half the cast;
-- otherwise it steps back too.
+- one whose kit is strongest further off steps back to make room, whatever the cast;
+- one at home up close throws an attack that needs no signs in place of an attack cast, if it is worth
+  more than the cast after the chance of losing it;
+- a cast that isn't an attack (a heal, armour, a trap, an empower) is never swapped for one;
+- otherwise the cast goes ahead, unless losing it is likelier than not, and then the fighter steps
+  back.
+
+(Revised after step 1 below. The first version swapped any cast for a signless attack worth half of
+it, so a medic up close threw kicks instead of healing, and a trapper never risked a cast worth the
+risk.)
 
 The step may still be kept pace with, and that is the caster's trouble. The player's own plan is
 theirs, as with the kit (`kitPlay`). The decision log calls such a turn `crowded`.
@@ -1443,6 +1450,38 @@ Read back, the casters now do what their kits allow:
 
 The richer play, laying a trap, stepping away and letting the foe run through it, waits for the
 fight contexts above.
+
+**Step 1: the pairings that moved, read move by move** (`prototypes/walkthrough/pairings.test.ts`:
+each fought 60 times with the rules off and on, the story counted and lost fights kept whole).
+
+| Pairing (wins of 60)               | Rules off | Rules on |
+| ---------------------------------- | --------- | -------- |
+| Medic against the rusher           | 60        | 35       |
+| Medic against the Gates            | 26        | 10       |
+| Sensor against the rusher          | 25        | 7        |
+| Illusionist against the powerhouse | 43        | 36       |
+| Shrouded against the powerhouse    | 15        | 4        |
+| Puppeteer against the powerhouse   | 16        | 6        |
+| Summoner against the Gates         | 27        | 27       |
+| Trapper against the shrouded       | 32        | 1        |
+
+What the read shows:
+
+- **Right as it is.**
+  - The medic loses about two heals a fight to the rusher's hands up close. A medic who heals in a
+    brawler's reach should sometimes lose the heal, and the medic still wins most of these.
+  - The trapper casts into a foe who is always on top of it, and loses. That is the trapper caught in
+    the open; its fights are the contexts above.
+- **The AI's fault, to teach next: a retreat that can't work.** The sensor and the puppeteer step back
+  every few turns from a rusher who is faster than they are. Each step is cut off half the time
+  ("won't allow it"), and every one that works is undone by the rusher closing again with a free blow
+  as they land (three or four a fight). A mind that reads the fight should see the retreat is
+  hopeless after it has been run down a couple of times, and stand and fight, Brace, or Evade.
+- **Still to read:** the shrouded fighter against the powerhouse (fewer wins since it began casting
+  its armour up close again), and the medic against the Gates (Evade played far less with the rules
+  on).
+- **Found on the way:** "strikes as they lands": the rush-in line agreed its second verb with the
+  fighter, not the pronoun. Fixed, with a test.
 
 ---
 

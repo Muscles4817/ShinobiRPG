@@ -26,7 +26,7 @@ const UNCOVERING: Bank = {
   id: 'reveal',
   lines: [
     '{a} lift{a.s} the cover from {a.their} hidden eye, and it opens.',
-    '{a} bare{a.s} the eye {a.they} keep{a.s} covered, and it starts to turn.',
+    '{a} bare{a.s} the eye {a.they} keep{a.ps} covered, and it starts to turn.',
   ],
 };
 

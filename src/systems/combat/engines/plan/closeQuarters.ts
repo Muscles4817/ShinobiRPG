@@ -77,7 +77,7 @@ export function rushedIn(before: Round, after: Round, turn: Turn): Round {
   const self = fighterIn(after, actor.id);
   if (was === 'close' || now !== 'close' || !foe || !self || !alive(foe) || !alive(self))
     return after;
-  return rushStrike(say(after, tell('{a} strike{a.s} as {a.they} land{a.s}.', { a: self })), {
+  return rushStrike(say(after, tell('{a} strike{a.s} as {a.they} land{a.ps}.', { a: self })), {
     ...turn,
     actor: self,
     target: foe,
