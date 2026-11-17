@@ -27,6 +27,7 @@ const FAN_MARKERS = [
   'Kankurō',
   'Red Sand Puppetry',
   'Kazekage',
+  'Kimimaro',
 ];
 
 function files(dir) {

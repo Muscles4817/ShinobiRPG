@@ -7,6 +7,7 @@ import { JIROBO, JIROBO_ARTS } from './jirobo';
 import { KIDOMARU, KIDOMARU_ARTS } from './kidomaru';
 import { KIMIMARO, KIMIMARO_ARTS } from './kimimaro';
 import { SAKON, SAKON_ARTS } from './sakon';
+import { TAKA_ARTS, TAKA_FIGHTERS } from './taka';
 import { TAYUYA, TAYUYA_ARTS } from './tayuya';
 import { ZAKU, ZAKU_ARTS } from './zaku';
 
@@ -23,6 +24,7 @@ export const SOUND_FIGHTERS: readonly PersonDef[] = /*#__PURE__*/ (() => [
   SAKON,
   TAYUYA,
   ZAKU,
+  ...TAKA_FIGHTERS,
 ])();
 export const SOUND_ARTS: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...CURSE_MARK_ARTS,
@@ -32,6 +34,7 @@ export const SOUND_ARTS: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...SAKON_ARTS,
   ...TAYUYA_ARTS,
   ...ZAKU_ARTS,
+  ...TAKA_ARTS,
 ])();
 
 export { DOKI } from './tayuya';
