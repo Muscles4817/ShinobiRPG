@@ -66,12 +66,14 @@ describe('character creation', () => {
     expect(Object.keys(ctx.content.startingTools).length).toBeGreaterThan(0);
   });
 
-  it('starts with academy techniques plus a starter for each A grade', () => {
+  it('starts with the academy basics and, unchosen, the starter and best art’s picks', () => {
+    // A middle-of-the-class taijutsu student: two picks, both in taijutsu.
     expect(freshGame().techniques.known).toEqual([
       'palm-strike',
       'shadow-feint',
       'lantern-husk',
       'gale-heel',
+      'temple-bell-palm',
     ]);
   });
 

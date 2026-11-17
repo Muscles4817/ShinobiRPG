@@ -3,7 +3,7 @@
  * adds to the original pack, gathered for the pack's index.
  */
 export { PORT_SHIOMACHI } from './place';
-export { SHIOMACHI_FOODS, SHIOMACHI_INGREDIENTS, SHIOMACHI_RECIPES } from './food';
+export { SHIOMACHI_FOODS } from './food';
 export { SHIOMACHI_GEAR } from './gear';
 export { SHIOMACHI_TRAINING } from './training';
 export { TIDEWIRE_TECHNIQUES } from './techniques';

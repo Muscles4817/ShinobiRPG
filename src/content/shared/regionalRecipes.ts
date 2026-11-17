@@ -1,6 +1,22 @@
-import type { RecipeDef } from '../../../types';
+import type { CookbookDef, IngredientDef, RecipeDef } from '../types';
 
-/** Dishes from the port, the dunes and the mountain, taught by the merchants' cookbooks. */
+/**
+ * Dishes of the coast, the desert and the mountains, and the larder they need. Shared by every
+ * pack: a port anywhere dries fish and kelp, a caravan anywhere carries dates. Each pack sells
+ * them where its own country fits (a harbour market, a desert bazaar, a temple kitchen, or
+ * travelling merchants).
+ */
+
+export const REGIONAL_INGREDIENTS: readonly IngredientDef[] = [
+  { id: 'kelp', name: 'Dried Kelp', cost: 10, icon: 'leaf', road: 10 },
+  { id: 'dried-fish', name: 'Dried Fish', cost: 15, icon: 'fish', road: 30 },
+  { id: 'sea-salt', name: 'Sea Salt', cost: 5, icon: 'rice' },
+  { id: 'dates', name: 'Dates', cost: 14, icon: 'tree', road: 20 },
+  { id: 'dune-spices', name: 'Dune Spices', cost: 18, icon: 'leaf' },
+  { id: 'mountain-herbs', name: 'Mountain Herbs', cost: 12, icon: 'leaf' },
+  { id: 'chakra-fruit', name: 'Chakra Fruit', cost: 60, icon: 'tree' },
+  { id: 'red-beans', name: 'Red Beans', cost: 9, icon: 'bowl' },
+];
 
 const PORT: readonly RecipeDef[] = [
   {
@@ -68,6 +84,22 @@ const PORT: readonly RecipeDef[] = [
     energy: 15,
     buff: { growth: { speed: 1.15, kenjutsu: 1.15 } },
   },
+  {
+    id: 'kelp-fish-broth',
+    name: 'Kelp and Dried Fish Broth',
+    description: 'Simmered slow, salted at the end. It keeps a body going through a cold watch.',
+    icon: 'pot',
+    rank: 'D',
+    method: 'simmer',
+    ingredients: [
+      { id: 'dried-fish', count: 1 },
+      { id: 'kelp', count: 1 },
+      { id: 'sea-salt', count: 1 },
+    ],
+    satiety: 60,
+    energy: 15,
+    buff: { hungerRate: 0.85 },
+  },
 ];
 
 const DUNES: readonly RecipeDef[] = [
@@ -109,7 +141,7 @@ const DUNES: readonly RecipeDef[] = [
   {
     id: 'spiced-dune-rice',
     name: 'Spiced Dune Rice',
-    description: 'Rice fried golden with dune spice. The Sakyū say it puts sand in your fists.',
+    description: 'Rice fried golden with dune spice. Desert folk say it puts sand in your fists.',
     icon: 'rice',
     rank: 'D',
     method: 'fry',
@@ -178,3 +210,32 @@ const MOUNTAIN: readonly RecipeDef[] = [
 ];
 
 export const REGIONAL_RECIPES: readonly RecipeDef[] = [...PORT, ...DUNES, ...MOUNTAIN];
+
+export const REGIONAL_COOKBOOKS: readonly CookbookDef[] = [
+  {
+    id: 'recipes-from-the-port',
+    name: 'Recipes from the Port',
+    description:
+      'A fishwife’s book, swollen with sea air. Every recipe starts “first, buy it fresh”.',
+    cost: 110,
+    icon: 'scroll',
+    recipeIds: ['sea-bream-rice', 'clam-miso', 'kelp-broth', 'grilled-bream', 'kelp-fish-broth'],
+  },
+  {
+    id: 'caravan-cook',
+    name: 'The Caravan Cook',
+    description:
+      'Recipes for a fire made of thorn scrub, written in a hand that sways like a camel.',
+    cost: 120,
+    icon: 'scroll',
+    recipeIds: ['date-cakes', 'caravan-stew', 'spiced-dune-rice'],
+  },
+  {
+    id: 'pilgrims-bowl',
+    name: 'The Pilgrim’s Bowl',
+    description: 'What the mountain monks eat, and why. The last page is about the fruit.',
+    cost: 150,
+    icon: 'scroll',
+    recipeIds: ['herb-tea', 'pilgrims-porridge', 'chakra-fruit-preserve'],
+  },
+];

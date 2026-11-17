@@ -34,11 +34,8 @@ import { MISSIONS } from './missions';
 import { TEAM_MISSIONS } from './teamMissions';
 import { GENERIC_CONVERSATIONS } from '../../shared/conversations';
 import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
-import { COOKBOOKS, INGREDIENTS } from '../../shared/kitchen';
-import { RECIPES } from '../../shared/recipes';
-import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
-import { BEAST_INGREDIENTS } from '../../shared/beastKitchen';
-import { DESERT_INGREDIENTS } from '../../shared/desert';
+import { CAMP_FINDS } from '../../shared/wilds';
+import { NARUTO_COOKBOOKS, NARUTO_INGREDIENTS, NARUTO_RECIPES } from './kitchen';
 import { DESERT_FOX } from '../../shared/wildKinds';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
@@ -252,9 +249,9 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   gear: [...GEAR, ...DUELIST_GEAR, ...KIRI_GEAR, ...SUNA_GEAR],
   tools: TOOLS,
   injuries: INJURIES,
-  ingredients: [...INGREDIENTS, ...WILD_INGREDIENTS, ...BEAST_INGREDIENTS, ...DESERT_INGREDIENTS],
-  recipes: RECIPES,
-  cookbooks: COOKBOOKS,
+  ingredients: NARUTO_INGREDIENTS,
+  recipes: NARUTO_RECIPES,
+  cookbooks: NARUTO_COOKBOOKS,
   campFinds: CAMP_FINDS,
   people: [
     ...SENSEIS,

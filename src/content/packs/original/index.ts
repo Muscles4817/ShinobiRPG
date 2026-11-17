@@ -49,8 +49,12 @@ import { CAMP_FINDS, WILD_INGREDIENTS } from '../../shared/wilds';
 import { BEAST_INGREDIENTS } from '../../shared/beastKitchen';
 import { TOROGAKURE_COOKBOOKS, TOROGAKURE_INGREDIENTS } from './kitchen';
 import { TOROGAKURE_RECIPES } from './recipes';
-import { REGIONAL_COOKBOOKS, REGIONAL_INGREDIENTS } from './regions/merchants';
-import { REGIONAL_RECIPES } from './regions/recipes';
+import {
+  REGIONAL_COOKBOOKS,
+  REGIONAL_INGREDIENTS,
+  REGIONAL_RECIPES,
+} from '../../shared/regionalRecipes';
+import { DESERT_FOX } from '../../shared/wildKinds';
 import { VILLAGE_COOKS } from './villagers';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
@@ -95,10 +99,8 @@ import { ORIGINAL_ATLAS } from './atlas';
 import {
   SHIOMACHI_FOODS,
   SHIOMACHI_GEAR,
-  SHIOMACHI_INGREDIENTS,
   SHIOMACHI_JOBS,
   SHIOMACHI_PEOPLE,
-  SHIOMACHI_RECIPES,
   SHIOMACHI_TRAINING,
   TIDEWIRE_TECHNIQUES,
 } from './shiomachi';
@@ -183,7 +185,7 @@ export const ORIGINAL_PACK: ContentPack = {
     OLD_OWL_ARC,
   ],
   voices: VOICES,
-  companionKinds: COMPANION_KINDS,
+  companionKinds: [...COMPANION_KINDS, DESERT_FOX],
   companionLore: COMPANION_LORE,
   contracts: CONTRACTS,
   strains: [...STRAINS, ...WILD_STRAINS],
@@ -230,9 +232,8 @@ export const ORIGINAL_PACK: ContentPack = {
     ...DESERT_INGREDIENTS,
     ...TOROGAKURE_INGREDIENTS,
     ...REGIONAL_INGREDIENTS,
-    ...SHIOMACHI_INGREDIENTS,
   ],
-  recipes: [...RECIPES, ...TOROGAKURE_RECIPES, ...REGIONAL_RECIPES, ...SHIOMACHI_RECIPES],
+  recipes: [...RECIPES, ...TOROGAKURE_RECIPES, ...REGIONAL_RECIPES],
   cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS, ...REGIONAL_COOKBOOKS],
   campFinds: CAMP_FINDS,
   people: [

@@ -18,6 +18,7 @@ import type { StatId } from '@/systems/stats';
 
 import type { GameContext } from './context';
 import type { CreationDraft } from './creation';
+import { prunedTechniques } from './creationTechniques';
 import { notesAptitude, notesOf } from './notes';
 import { earlyTraining, studentOf } from './student';
 
@@ -53,8 +54,16 @@ export function filledFile(draft: CreationDraft, pick: QuickPick, ctx: GameConte
   return { ...file, gifts };
 }
 
-/** Applies a change to the draft and keeps the rest of it in step. */
+/** Applies a change to the draft and keeps the rest of it in step, its techniques included. */
 export function reviseDraft(
+  draft: CreationDraft,
+  patch: Partial<CreationDraft>,
+  ctx: GameContext,
+): CreationDraft {
+  return prunedTechniques(revisedFile(draft, patch, ctx), ctx);
+}
+
+function revisedFile(
   draft: CreationDraft,
   patch: Partial<CreationDraft>,
   ctx: GameContext,

@@ -2,7 +2,10 @@ import type { MissionDef } from '@/systems/missions';
 
 import type { ContractDef } from '../../contracts';
 import { statLine } from '../../statLine';
+import { LEAF_CONTRACTS } from './duelists/leaf';
+import { AKATSUKI_CONTRACTS } from './duelists/akatsuki';
 import { REANIMATION } from './duelists/orochimaru';
+import { DOKI } from './duelists/sound';
 import { SAGE_TOADS } from './sageToads';
 
 /**
@@ -226,7 +229,15 @@ const SNAKES: ContractDef = {
   ],
 };
 
-export const CONTRACTS: readonly ContractDef[] = [TOADS, NINKEN, SNAKES, REANIMATION];
+export const CONTRACTS: readonly ContractDef[] = [
+  TOADS,
+  NINKEN,
+  SNAKES,
+  REANIMATION,
+  DOKI,
+  ...LEAF_CONTRACTS,
+  ...AKATSUKI_CONTRACTS,
+];
 
 /** A lost toad messenger: see it home safe, and the toads offer you their scroll. */
 export const TOAD_MISSION: MissionDef = {

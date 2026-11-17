@@ -2,7 +2,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { SaveStore } from '@/game';
+import { contextForPack, type SaveStore } from '@/game';
 
 import { App } from './App';
 
@@ -35,7 +35,7 @@ async function startGame(user: User, world = /Land of Embers/) {
   await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
   await user.click(screen.getByRole('button', { name: 'Find your file' }));
   await user.type(screen.getByLabelText('Given name'), 'Aoi');
-  for (let page = 0; page < 10; page++) {
+  for (let page = 0; page < 11; page++) {
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
   }
   await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -398,7 +398,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
     await user.click(screen.getByRole('button', { name: 'Find your file' }));
     await user.type(screen.getByLabelText('Given name'), 'Aoi');
-    for (let page = 0; page < 10; page++) {
+    for (let page = 0; page < 11; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -710,7 +710,7 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: /^Slight/ }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     expect(screen.getByText(/0 gifts to give/)).toBeInTheDocument();
-    for (let page = 0; page < 6; page++) {
+    for (let page = 0; page < 7; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     expect(screen.getByText('Dead last')).toBeInTheDocument();
@@ -751,7 +751,7 @@ describe('App (smoke test)', () => {
     // …so it becomes a flaw instead, which gives points back.
     await user.click(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Gifted' }));
     expect(within(kenjutsu).getByRole('button', { name: 'Kenjutsu: Flawed' })).toBeInTheDocument();
-    for (let page = 0; page < 6; page++) {
+    for (let page = 0; page < 7; page++) {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     await user.click(screen.getByRole('button', { name: /forehead protector/i }));
@@ -762,6 +762,35 @@ describe('App (smoke test)', () => {
     await user.click(screen.getByRole('button', { name: 'Shinobi' }));
     expect(screen.getByRole('heading', { name: 'Itachi Uchiha' })).toBeInTheDocument();
     expect(screen.getByText(/Sharingan/)).toBeInTheDocument();
+  });
+
+  it('chooses the techniques taught beyond the basics on the file', async () => {
+    const user = userEvent.setup();
+    const store = memoryStore();
+    render(<App store={store} />);
+    await user.click(screen.getByRole('button', { name: /^New game/ }));
+    await user.click(screen.getByRole('button', { name: /Land of Embers/ }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getAllByRole('button', { name: /%/ })[0]!);
+    await user.click(screen.getByRole('button', { name: 'Find your file' }));
+    await user.type(screen.getByLabelText('Given name'), 'Aoi');
+    for (let page = 0; page < 9; page++) {
+      await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    }
+    expect(screen.getByRole('heading', { name: 'Techniques taught' })).toBeInTheDocument();
+    expect(screen.getByText('2 of 2 chosen')).toBeInTheDocument();
+    // Putting one back holds the page until another is chosen.
+    const chosen = screen.getAllByRole('button', { name: /^Put back/ });
+    await user.click(chosen[0]!);
+    expect(screen.getByRole('button', { name: 'Turn the page' })).toBeDisabled();
+    const pick = screen.getAllByRole('button', { name: /^Choose / })[0]!;
+    const name = (pick.getAttribute('aria-label') ?? '').replace(/^Choose /, '');
+    await user.click(pick);
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: 'Turn the page' }));
+    await user.click(screen.getByRole('button', { name: /forehead protector/i }));
+    const known = contextForPack('original')?.content.techniques.all.find((t) => t.name === name);
+    expect(store.data).toContain(`"${known?.id ?? 'missing'}"`);
   });
 
   it('reports an unreadable save instead of crashing', () => {

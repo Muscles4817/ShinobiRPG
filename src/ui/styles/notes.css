@@ -145,3 +145,26 @@
   color: var(--paper-ink);
   font-weight: 700;
 }
+
+/* Techniques taught: the basics as a row of cards, then picks that stamp when chosen. */
+.taught-basics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.taught-pick {
+  display: block;
+  min-height: 40px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  text-align: left;
+}
+.taught-pick.selected {
+  border-color: var(--seal);
+  box-shadow: inset 0 0 0 1.5px var(--seal);
+}

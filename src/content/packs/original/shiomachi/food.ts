@@ -1,4 +1,4 @@
-import type { FoodDef, IngredientDef, RecipeDef } from '../../../types';
+import type { FoodDef } from '../../../types';
 
 /** What the coast eats, and what it dries for the road. */
 export const SHIOMACHI_FOODS: readonly FoodDef[] = [
@@ -51,34 +51,5 @@ export const SHIOMACHI_FOODS: readonly FoodDef[] = [
     satiety: 45,
     energy: 10,
     slots: 0,
-  },
-];
-
-/**
- * Sold at the drying racks: dried fish keeps on the road better than the village’s rations.
- * The port's fresh fish, clams and kelp are the regional larder (`regions/merchants.ts`).
- */
-export const SHIOMACHI_INGREDIENTS: readonly IngredientDef[] = [
-  { id: 'dried-fish', name: 'Dried Fish', cost: 15, icon: 'fish', road: 30 },
-  { id: 'sea-salt', name: 'Sea Salt', cost: 5, icon: 'rice' },
-];
-
-/** Cooked at home from what the coast sells. */
-export const SHIOMACHI_RECIPES: readonly RecipeDef[] = [
-  {
-    id: 'kelp-fish-broth',
-    name: 'Kelp and Dried Fish Broth',
-    description: 'Simmered slow, salted at the end. It keeps a body going through a cold watch.',
-    icon: 'pot',
-    rank: 'D',
-    method: 'simmer',
-    ingredients: [
-      { id: 'dried-fish', count: 1 },
-      { id: 'kelp', count: 1 },
-      { id: 'sea-salt', count: 1 },
-    ],
-    satiety: 60,
-    energy: 15,
-    buff: { hungerRate: 0.85 },
   },
 ];

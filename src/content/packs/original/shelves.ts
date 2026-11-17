@@ -1,3 +1,66 @@
+/**
+ * The academy rack's plainer variants (E–D), beside the old favourites listed at the academy:
+ * more than one way to do each thing in each art.
+ */
+export const ACADEMY_VARIANTS: readonly string[] = [
+  'twin-knuckle',
+  'doorstep-jab',
+  'bridge-knee',
+  'catch-and-turn',
+  'roof-runner-flurry',
+  'moth-embers',
+  'canal-whip',
+  'stone-knuckle',
+  'reed-whistle',
+  'spark-snare',
+  'lantern-double',
+  'echoing-steps',
+  'two-beat-cut',
+  'lamppost-lunge',
+  'turning-parry',
+  'flash-tag',
+  'tag-volley',
+];
+
+/** The archive's variants (C open, B restricted, A sealed), listed with the shelf below. */
+const ARCHIVE_VARIANTS: readonly string[] = [
+  'millstone-throw',
+  'gatepost-guard',
+  'reeling-hook',
+  'nerve-point-tap',
+  'waterwheel-kick',
+  'festival-drum',
+  'river-turning-throw',
+  'hearth-wall',
+  'rain-needles',
+  'quarry-spikes',
+  'kite-string-blades',
+  'storm-lance',
+  'kiln-serpent',
+  'millrace-prison',
+  'sickle-gale',
+  'forked-lightning',
+  'festival-pyre',
+  'floodgate-surge',
+  'kiln-quake',
+  'twin-cyclone',
+  'sky-splitter',
+  'crane-swarm',
+  'lantern-crowd',
+  'flooded-room',
+  'masked-procession',
+  'rainfall-cuts',
+  'hilt-shove',
+  'pinwheel-blade',
+  'crossed-riposte',
+  'paper-cut-storm',
+  'shoji-barrier',
+  'blast-kunai',
+  'lamp-oil-circle',
+  'torii-barrier',
+  'hundred-tag-street',
+];
+
 /** The Lantern Archive's shelves: standard techniques C to A, cast armour among them. */
 export const ARCHIVE_SHELF: readonly string[] = [
   'crescent-drop',
@@ -46,4 +109,5 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'lantern-fall',
   'quenching-thrust',
   'pinched-flame',
+  ...ARCHIVE_VARIANTS,
 ];

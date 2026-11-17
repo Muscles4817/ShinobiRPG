@@ -27,12 +27,8 @@ export {
   type UpbringingOption,
   type ArchetypeOption,
 } from './views/creation';
-export { notesProblems } from './notes';
-export { notesPage, toggledNotes, type NoteCard } from './views/creationNotes';
-export { quirkCards } from './views/creationQuirks';
-export { fileReadBack } from './views/fileReadBack';
-export type { FacePalettes } from './views/facePalettes';
-export { fileView, type BloomOption, type FileStatLine, type FileView } from './views/academyFile';
+// The academy file's pages beyond the first (`creationPages.ts`).
+export * from './creationPages';
 export {
   chooseQuickPick,
   lowerStat,

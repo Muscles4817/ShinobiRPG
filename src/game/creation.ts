@@ -16,27 +16,19 @@ import {
   gradesFor,
   giftsKnown,
   STANDING_INFO,
-  topDisciplines,
   withGifts,
-  type AcademyFile,
-  type ClassStanding,
   type Grades,
-  type Look,
-  type Pronouns,
-  type QuickPick,
 } from '@/systems/profile';
 import { NEW_GENIN } from '@/systems/standing';
-import { checkChance, nothingKnown, STAT_INFO, type Sex } from '@/systems/stats';
+import { checkChance, nothingKnown, STAT_INFO } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 import { START_TIME } from '@/systems/time';
 import { NOTHING_TOLD } from '@/systems/telling';
 import { NO_LEAVE } from '@/systems/travel';
 import { homeAtlas } from './atlas';
-import type { HiveShare } from '@/systems/hives';
 import { fullVitals } from '@/systems/vitals';
 
 import { rollCharacterAptitude } from './aptitude';
-import { bornFor } from './born';
 import type { GameContext } from './context';
 import { chip, log, placeHere } from './ops';
 import { newBoard } from './boardState';
@@ -54,7 +46,11 @@ import type { GameState } from './state';
 import { homeClans } from './homeClans';
 import { bornNature } from './nature';
 import { notesAptitude, notesProblems } from './notes';
-import { BASE_STAT, graduationStats, studentProblems, type StudentProfile } from './student';
+import { BASE_STAT, graduationStats, studentProblems } from './student';
+import { profileOf, type CreationDraft } from './studentProfile';
+import { chosenTechniques, creationBasics, techniqueProblems } from './creationTechniques';
+
+export { profileOf, type CreationDraft } from './studentProfile';
 import { graduationMastery } from './weaponMastery';
 
 /**
@@ -63,41 +59,6 @@ import { graduationMastery } from './weaponMastery';
  */
 
 export const TRAIT_COUNT = 2;
-
-export interface CreationDraft {
-  readonly name: string;
-  /** Used only when clanless; clan members take the clan's name. */
-  readonly familyName: string;
-  readonly pronouns: Pronouns;
-  /** Their body's sex, which shapes how it was drawn; never read from pronouns. */
-  readonly sex: Sex;
-  /**
-   * The seed their body and mind were drawn from (`game/born.ts`), set by the creation scene; null
-   * is the middle of the class.
-   */
-  readonly bornSeed: number | null;
-  readonly appearance: Look;
-  readonly clanId: string;
-  /** Where they stood in their class; with fate, what the file turned out to say. */
-  readonly standing: ClassStanding;
-  /** The player let fate decide the standing (the file revealed it). */
-  readonly fated?: boolean;
-  /** How they were raised (`UpbringingDef`): their early training. */
-  readonly upbringingId: string;
-  /** Their frame (`BuildDef`). */
-  readonly buildId: string;
-  /** Early training, known gifts and flaws, and when they bloomed. */
-  readonly file: AcademyFile;
-  /** The kind of student the file was filled for, or null when it was written by hand. */
-  readonly quickPick: QuickPick | null;
-  readonly traitIds: readonly string[];
-  readonly talentIds: readonly string[];
-  readonly quirkIds: readonly string[];
-  readonly nindoId: string;
-  readonly breakInApproachId: string;
-  /** How much of their chakra a child of a hive clan gave the hive at birth. */
-  readonly hiveShare?: HiveShare;
-}
 
 export interface NewGameOptions {
   readonly draft: CreationDraft;
@@ -143,29 +104,13 @@ export function draftProblems(draft: CreationDraft, ctx: GameContext): string[] 
       first !== undefined &&
       'Those two traits contradict each other.',
     ...studentProblems(profileOf(draft), ctx),
+    ...techniqueProblems(draft, ctx),
   ];
   return problems.filter((p): p is string => typeof p === 'string');
 }
 
-/** The draft as the student it describes. */
-export function profileOf(draft: CreationDraft): StudentProfile {
-  return {
-    clanId: draft.clanId,
-    talentIds: draft.talentIds,
-    buildId: draft.buildId,
-    upbringingId: draft.upbringingId,
-    standing: draft.standing,
-    file: draft.file,
-    born: bornFor(draft.bornSeed, draft.sex),
-  };
-}
-
-function startingTechniques(draft: CreationDraft, grades: Grades, ctx: GameContext): string[] {
-  const { content } = ctx;
-  const clan = content.clans.require(draft.clanId);
-  const starters = topDisciplines(grades).map((d) => content.disciplineStarters[d]);
-  const academy = [...content.academyTechniques, ...content.academyBasics];
-  return [...new Set([...academy, ...clan.startingTechniqueIds, ...starters])];
+function startingTechniques(draft: CreationDraft, ctx: GameContext): string[] {
+  return [...new Set([...creationBasics(draft, ctx), ...chosenTechniques(draft, ctx)])];
 }
 
 /** The arts graded highest on the file: the roll never voids them, and a genius's are gifted. */
@@ -202,7 +147,7 @@ export function createNewGame({ draft, seed }: NewGameOptions, ctx: GameContext)
   const rolled = rollCharacterAptitude(dice, clan, notes, shape);
   // What a special note fixes (an art that never takes) stands over any gift.
   const aptitude = { ...withGifts(rolled, draft.file.gifts), ...notesAptitude(notes) };
-  const known = startingTechniques(draft, grades, ctx);
+  const known = startingTechniques(draft, ctx);
   const hive = bornHive(clan, draft.hiveShare ?? DEFAULT_SHARE, stats, ctx);
 
   const state: GameState = {

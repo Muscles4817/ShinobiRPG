@@ -10,6 +10,7 @@ import {
   packChoices,
   reviseDraft,
   rollBreakIn,
+  taughtProblems,
   type BreakInRoll,
   type CreationDraft,
   type GameContext,
@@ -28,6 +29,7 @@ import { BuildStep, UpbringingStep } from './FrameSteps';
 import { NotesStep, QuirksStep, ReadBackStep } from './NotesSteps';
 import { RecordStep } from './RecordStep';
 import { StandingStep } from './StandingStep';
+import { TechniquesStep } from './TechniquesStep';
 import type { StepProps } from './types';
 import { WorldStep } from './WorldStep';
 
@@ -43,6 +45,7 @@ type StepId =
   | 'notes'
   | 'quirks'
   | 'readback'
+  | 'jutsu'
   | 'nindo'
   | 'caught';
 
@@ -58,6 +61,7 @@ const TITLES: Readonly<Record<StepId, string>> = {
   notes: 'Special notes',
   quirks: 'What people notice',
   readback: 'The file, read back',
+  jutsu: 'Techniques taught',
   nindo: 'Application essay',
   caught: 'Caught',
 };
@@ -70,6 +74,8 @@ interface BlockerInput {
   readonly fileProblems: readonly string[];
   /** What is wrong with the special notes on it (too many for the standing). */
   readonly noteProblems: readonly string[];
+  /** What is wrong with the techniques chosen beyond the basics. */
+  readonly taught: readonly string[];
 }
 
 const NO_BLOCKER = (): string | null => null;
@@ -87,6 +93,7 @@ const BLOCKERS: Readonly<Record<StepId, (input: BlockerInput) => string | null>>
   notes: ({ noteProblems }) => noteProblems[0] ?? null,
   quirks: NO_BLOCKER,
   readback: NO_BLOCKER,
+  jutsu: ({ taught }) => taught[0] ?? null,
   nindo: NO_BLOCKER,
   caught: ({ problems }) => problems[0] ?? null,
 };
@@ -149,6 +156,8 @@ function StepBody({
       return <QuirksStep {...props} ctx={ctx} />;
     case 'readback':
       return <ReadBackStep {...props} ctx={ctx} />;
+    case 'jutsu':
+      return <TechniquesStep {...props} ctx={ctx} />;
     case 'nindo':
       return <NindoStep {...props} />;
     case 'caught':
@@ -175,6 +184,7 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
     'notes',
     'quirks',
     'readback',
+    'jutsu',
     'nindo',
     'caught',
   ];
@@ -206,7 +216,8 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   const problems = draftProblems(draft, ctx);
   const fileProblems = fileView(draft, ctx).problems;
   const noteProblems = notesProblems(draft, ctx);
-  const blocker = stepBlocker(step, { draft, roll, problems, fileProblems, noteProblems });
+  const taught = taughtProblems(draft, ctx);
+  const blocker = stepBlocker(step, { draft, roll, problems, fileProblems, noteProblems, taught });
   const props = { view, draft, update };
 
   return (

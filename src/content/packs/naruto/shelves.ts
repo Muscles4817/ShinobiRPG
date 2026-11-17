@@ -2,7 +2,7 @@ import { PINCER_STRIKE } from '../../shared/beastTechniques';
 
 /**
  * What the village's shelves hold: the academy's rack of standard E–D techniques and the
- * Archives' C–B stacks (C on the open shelves, B restricted to chūnin). Clan techniques are
+ * Archives' C–A stacks (C on the open shelves, B restricted to chūnin, A sealed for jōnin). Clan techniques are
  * never shelved; teachers and mission scrolls hold the rest.
  */
 
@@ -60,6 +60,17 @@ export const ACADEMY_SHELF: readonly string[] = [
   'manipulated-shuriken',
   'practice-brick',
   'unsealing-shuriken',
+  'short-elbow-strike',
+  'spinning-backfist',
+  'knee-hook-pull',
+  'water-whip',
+  'rock-fist',
+  'wind-cutter',
+  'lightning-snare',
+  'ringing-ears',
+  'two-step-cut',
+  'sword-parry',
+  'flash-seal',
 ];
 
 /** The Village Archives. */
@@ -129,4 +140,30 @@ export const ARCHIVE_SHELF: readonly string[] = [
   'exploding-dragon-strike',
   'heavenly-chain-disaster',
   'segmented-iron-dome',
+  'hip-throw',
+  'whirlwind-kick',
+  'flame-wall',
+  'water-trumpet',
+  'earth-spikes',
+  'wind-barrier',
+  'thunder-spear',
+  'mirage-crowd',
+  'lunging-thrust',
+  'exploding-kunai',
+  'pressure-point-strike',
+  'axe-kick-combo',
+  'running-fire',
+  'scything-gale',
+  'swallowing-earth',
+  'whirling-blade',
+  'shield-barrier',
+  'hundred-fist-barrage',
+  'ground-breaker-throw',
+  'flame-tornado',
+  'raging-waves',
+  'earth-upheaval',
+  'thunderclap-strike',
+  'nightmare-field',
+  'thousand-cut-storm',
+  'barrier-prison',
 ];
