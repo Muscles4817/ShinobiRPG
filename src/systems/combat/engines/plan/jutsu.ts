@@ -112,7 +112,10 @@ function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   return say(
     healed,
     healLine(
-      tell('{a} catch{a.es} {a.their} breath and recover{a.s}.', { a: actor }),
+      tell('{a.poss} {what} closes the worst of {a.their} wounds.', {
+        a: actor,
+        what: use.technique.name,
+      }),
       health - actor.health,
     ),
   );
