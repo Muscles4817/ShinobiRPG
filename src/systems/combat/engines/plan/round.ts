@@ -109,9 +109,16 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Chosen {
   return { card, target: targetFor(hittable(card, open, round.fighters), rng), ...told };
 }
 
-export function decide(fighters: readonly PlanFighter[]): CombatResult | null {
-  if (!alive(playerOf({ fighters }))) return 'defeat';
-  return fighters.some((f) => f.side === 'enemy' && stillFighting(fighters, f)) ? null : 'victory';
+/**
+ * Whether the fight is decided: lost when the player falls (or, fought to the last, when no one
+ * on their side still fights), won when no foe still fights.
+ */
+export function decide(fighters: readonly PlanFighter[], toTheLast = false): CombatResult | null {
+  const fighting = (side: PlanFighter['side']) =>
+    fighters.some((f) => f.side === side && stillFighting(fighters, f));
+  const lost = toTheLast ? !fighting('player') : !alive(playerOf({ fighters }));
+  if (lost) return 'defeat';
+  return fighting('enemy') ? null : 'victory';
 }
 
 function remember(seen: Round['seen'], fighterId: string, id: string): Round['seen'] {
@@ -205,7 +212,7 @@ function offPlanOf(actor: PlanFighter, play: Play): Pick<Round, 'offPlan'> {
  * and not a mind's source or a body its mind has left (`sharedMind.ts`).
  */
 function hasTurn(start: Round, before: PlanFighter): boolean {
-  if (!alive(before) || decide(start.fighters) || start.acted?.includes(before.id)) return false;
+  if (!alive(before) || decide(start.fighters, start.toTheLast) || start.acted?.includes(before.id)) return false;
   return !keepsOffField(before) && stillFighting(start.fighters, before);
 }
 
@@ -270,6 +277,7 @@ function carriedIn(state: PlanState): Partial<Round> {
     ...(state.mark ? { mark: state.mark } : {}),
     ...(state.foeMark ? { foeMark: state.foeMark } : {}),
     ...(state.watching ? { watching: true as const } : {}),
+    ...(state.toTheLast ? { toTheLast: true as const } : {}),
     ...(state.slotTrace ? { slotTrace: state.slotTrace } : {}),
     ...(state.decisions ? { decisions: [] } : {}),
   };
@@ -318,7 +326,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
       secondWinds(lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round)),
     ),
   );
-  const result = decide(end.fighters);
+  const result = decide(end.fighters, state.toTheLast);
   const { field, lines: fading } = fieldAfter(end.field, state.round);
   const fighters = end.fighters.map((f) => ({
     ...wearOffDaze(f, state.round),

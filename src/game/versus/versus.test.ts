@@ -64,6 +64,29 @@ describe('versus bouts', () => {
     expect(report?.kind === 'fight' && report.verdict).toMatch(/^(Kakashi Hatake|Might Guy) wins$/);
   });
 
+  it('fights a team bout on after your fighter falls, until a whole side is down', () => {
+    // A green genin beside a jōnin, against two jōnin: the genin falls long before the end.
+    const made = createVersus(naruto, {
+      side: ['person:konohamaru', 'person:kakashi'],
+      foes: ['person:guy', 'person:asuma'],
+      seed: 7,
+      watch: true,
+    });
+    if (!made.ok) throw new Error(made.error);
+    // Step the bout: once the genin is down, the fight must still be going while Kakashi stands.
+    let state: GameState = made.value;
+    let foughtOnWithoutYou = false;
+    for (let i = 0; i < 300 && state.combat; i++) {
+      const view = combatScene(state, naruto)!;
+      const you = view.combatants.find((c) => c.id === 'player');
+      const friend = view.combatants.find((c) => c.side === 'player' && c.id !== 'player');
+      if (you && you.health <= 0 && friend && friend.health > 0) foughtOnWithoutYou = true;
+      const next = view.options.find((o) => o.kind === 'continue')!;
+      state = act(state, { type: 'combatAct', optionId: next.id }, naruto);
+    }
+    expect(foughtOnWithoutYou).toBe(true);
+  });
+
   it('is fought on the ground picked, which the screen names', () => {
     const made = createVersus(naruto, {
       side: ['person:kakashi'],
