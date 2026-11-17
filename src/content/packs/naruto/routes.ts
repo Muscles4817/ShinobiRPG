@@ -1,5 +1,6 @@
 import type { RouteDef } from '@/systems/travel';
 
+import { FAR_VILLAGE_ROUTES } from './farVillages';
 import { SUNA_BARGE_PASSAGE } from './kageroLanding';
 
 /**
@@ -10,7 +11,9 @@ import { SUNA_BARGE_PASSAGE } from './kageroLanding';
  * east to the pleasure quarter, up the Thousand Steps to the Fire Temple, north to the Valley of
  * the End, and the long way to the toads.
  */
-export const NARUTO_ROUTES: readonly RouteDef[] = [
+// Joined in a pure-annotated function: the spreads would otherwise keep the fan pack's
+// places alive in a release build.
+export const NARUTO_ROUTES: readonly RouteDef[] = /*#__PURE__*/ (() => [
   {
     id: 'waves-road',
     from: 'konohagakure',
@@ -263,4 +266,5 @@ export const NARUTO_ROUTES: readonly RouteDef[] = [
     trail: [{ x: 55, y: 25 }],
     danger: 'deadly',
   },
-];
+  ...FAR_VILLAGE_ROUTES,
+])();
