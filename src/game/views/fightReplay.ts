@@ -20,7 +20,8 @@ import { combatLog, type CombatLogLine } from './combatLog';
  * always matches the screen; in between, an amount goes to the fighter the line is about.
  * Pools (chakra, breath, a hive, dust) and statuses are read forwards from the lines that say where they
  * stand (each exchange's divider, and a turn that moved them), so they are only known from the
- * first such line on.
+ * first such line on. Where those lines say health too, it is read forwards with them, never
+ * ahead of the line that dealt it; the walk back only fills in where they don't.
  */
 
 /** "— Second exchange —": dividers between exchanges and rounds. */
@@ -42,6 +43,12 @@ export interface FightBeat {
   readonly pools: NarrationPools;
   /** Fighters' statuses once this beat has played, by id, as far as the lines have said them. */
   readonly statuses: NarrationStatuses;
+  /**
+   * Who the lines have put on the field so far: everyone a line has said the pools of. Empty when
+   * the engine says none (the stage then shows everyone); a fighter called mid-round is in it
+   * only from the line that brought them.
+   */
+  readonly present: readonly string[];
 }
 
 interface Named {
@@ -111,6 +118,13 @@ function withPools(was: NarrationPools, said: NarrationPools): NarrationPools {
   return { ...was, ...Object.fromEntries(ids.map((id) => [id, { ...was[id], ...said[id] }])) };
 }
 
+/** Health as the lines have said it (a pool like any other), by fighter. */
+function saidHealth(pools: NarrationPools): Record<string, number> {
+  return Object.fromEntries(
+    Object.entries(pools).flatMap(([id, p]) => (p.health === undefined ? [] : [[id, p.health]])),
+  );
+}
+
 /** Where the story has reached: its place after the last line, counting lines let go. */
 export function storyEnd(view: CombatView): number {
   return (view.logOffset ?? 0) + view.log.length;
@@ -141,6 +155,7 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
   return parsed.map(({ said, shown, targetId }, i): FightBeat => {
     range = said.range ?? range;
     pools = said.pools ? withPools(pools, said.pools) : pools;
+    const walkedBack = health[i] ?? {};
     statuses = said.statuses ? { ...statuses, ...said.statuses } : statuses;
     const divider = shown.kind === 'round' || said.text.startsWith(DIVIDER);
     return {
@@ -151,9 +166,10 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
       targetId,
       range,
       force: said.force ?? null,
-      health: health[i] ?? {},
+      health: { ...walkedBack, ...saidHealth(pools) },
       pools,
       statuses,
+      present: Object.keys(pools),
     };
   });
 }

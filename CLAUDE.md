@@ -393,6 +393,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `plan/trialShape.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
     moves it out of `experiments`. A small area (no `size`) moves no one; only wide and vast blasts
     throw the fight apart (`plan/blast.ts`).
+    A fight is lost when the player falls, as on a job; a versus bout is fought **to the last**
+    (`CombatSetup.toTheLast`): lost only once no one on the player's side still fights.
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,
     swift, pack, coward, spirit) on `EnemyDef.traits` → `CombatantSetup.traits`. What they
     mean lives once in `rules/kit.ts` (reach, which a technique that names its own reach overrides, `namesReach`, so an archer's senbon still fly up close; `kitDamageScale` by `AttackKind`, pack, coward)

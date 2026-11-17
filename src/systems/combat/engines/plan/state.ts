@@ -254,6 +254,8 @@ export interface PlanState {
   readonly reads?: Reads;
   /** Only watched (`CombatSetup.watch`): no card table between rounds, both sides adapt. */
   readonly watching?: true;
+  /** The player's side fights on after the player falls (`CombatSetup.toTheLast`). */
+  readonly toTheLast?: true;
   /** Traced (`CombatSetup.trace`): every choice so far, oldest first (`decisionLog.ts`). */
   readonly decisions?: readonly Decision[];
 }
@@ -294,6 +296,8 @@ export interface Round extends Pick<PlanState, 'decisions'> {
   readonly hits?: readonly ElementHit[];
   /** Only watched: no one plans for the player's fighter, who fights on their own. */
   readonly watching?: true;
+  /** The player's side fights on after the player falls (`CombatSetup.toTheLast`). */
+  readonly toTheLast?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */
   readonly played?: CardId;
   /** How the player's slots have fared this round (`slotTrace.ts`). */

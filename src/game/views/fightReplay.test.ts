@@ -97,7 +97,7 @@ describe('the watch screen’s beats', () => {
     ]);
   });
 
-  it('says everyone’s chakra and breath at each exchange of a real fight', () => {
+  it('says everyone’s chakra, breath and health at each exchange of a real fight', () => {
     const before = begun();
     const seen = combatScene(before, ctx)!.log.length;
     const after = act(before, { type: 'combatAct', optionId: 'next' });
@@ -106,9 +106,48 @@ describe('the watch screen’s beats', () => {
     const ids = view.combatants.map((c) => c.id).sort();
     for (const b of beats) {
       expect(Object.keys(b.pools).sort()).toEqual(ids);
-      for (const id of ids) expect(Object.keys(b.pools[id]!)).toEqual(['chakra', 'breath']);
+      for (const id of ids) {
+        expect(Object.keys(b.pools[id]!)).toEqual(['chakra', 'breath', 'health']);
+      }
       expect(Object.keys(b.statuses).sort()).toEqual(ids);
     }
+  });
+
+  it('shows a hit when the line that dealt it plays, never before', () => {
+    const base = combatScene(begun(), ctx)!;
+    // The fight as it ends: Kaen hurt by a hit and a burn whose lines the walk back can't place.
+    const hurt = base.combatants.map((c) => (c.id === 'person:kaen' ? { ...c, health: 50 } : c));
+    const view = {
+      ...base,
+      combatants: hurt,
+      log: [
+        '— First exchange — ⟦pl:player=health:100|person:kaen=health:100⟧',
+        'Kaito readies a guard. ⟦by:player⟧',
+        "Kaito's Ember Breath catches them all. ⟦-30⟧ ⟦by:player⟧ ⟦pl:person:kaen=health:70⟧",
+        'The burn bites. ⟦-20⟧',
+        '— Second exchange — ⟦pl:player=health:100|person:kaen=health:50⟧',
+      ],
+    };
+    const kaen = fightReplay(view, 0).map((b) => b.health['person:kaen']);
+    expect(kaen).toEqual([100, 100, 70, 70, 50]);
+  });
+
+  it('brings a fighter called mid-round on stage only from the line that brought them', () => {
+    const base = combatScene(begun(), ctx)!;
+    const view = {
+      ...base,
+      log: [
+        '— First exchange — ⟦pl:player=health:100|person:kaen=health:100⟧',
+        'Kaito steps in. ⟦by:player⟧',
+        'Kaito splits into shadow clones. ⟦by:player⟧ ⟦pl:clone-1=chakra:20,health:100⟧',
+      ],
+    };
+    const present = fightReplay(view, 0).map((b) => [...b.present].sort());
+    expect(present).toEqual([
+      ['person:kaen', 'player'],
+      ['person:kaen', 'player'],
+      ['clone-1', 'person:kaen', 'player'],
+    ]);
   });
 
   it('keeps its place in a long fight, after the engine lets its oldest lines go', () => {

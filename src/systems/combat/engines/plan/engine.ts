@@ -4,6 +4,7 @@ import type {
   CombatChoice,
   CombatEngine,
   CombatOutcome,
+  CombatSetup,
   CombatState,
   CombatView,
 } from '../../contract';
@@ -171,6 +172,14 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   }
 }
 
+/** How the fight is fought, as the setup asks: only watched, and whether your side fights on. */
+function howItIsFought(setup: CombatSetup): Pick<PlanState, 'watching' | 'toTheLast'> {
+  return {
+    ...(setup.watch ? { watching: true as const } : {}),
+    ...(setup.toTheLast ? { toTheLast: true as const } : {}),
+  };
+}
+
 export function createPlanEngine(): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
@@ -212,7 +221,7 @@ export function createPlanEngine(): CombatEngine {
         ...(setup.occasion ? { occasion: setup.occasion } : {}),
         result: null,
         canFlee: setup.canFlee && !watching,
-        ...(watching ? { watching: true as const } : {}),
+        ...howItIsFought(setup),
         ...(firstMover === undefined ? {} : { firstMover }),
         ...(field ? { field } : {}),
         ...(setup.trace ? { decisions: [] } : {}),
@@ -247,7 +256,7 @@ export function createPlanEngine(): CombatEngine {
 
     outcome(state): CombatOutcome | null {
       const plan = read(state);
-      const result = plan.result ?? decide(plan.fighters);
+      const result = plan.result ?? decide(plan.fighters, plan.toTheLast);
       if (!result) return null;
       const player = playerOf(plan);
       return {
