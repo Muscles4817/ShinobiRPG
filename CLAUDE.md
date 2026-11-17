@@ -899,7 +899,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and all burning by night, and an `Ambience` under the music (`ui/audio/ambience.ts`: a dawn
     chorus, birdsong, crickets, the night wind), on the music's volume. Its **weather** is made up,
     never looked up (`views/titleWeather.ts`: drawn from the calendar day by the season's odds, the
-    same for everyone that day; snow only in winter): cloud, mist, rain or snow drawn over the sky
+    same for everyone that day; snow only in winter, and the seasons turned over for a clock
+    south of the equator, read from the device's time zone: `views/hemisphere.ts`): cloud, mist, rain or snow drawn over the sky
     (`ui/art/TitleWeather.tsx`), rain or a snow hush in place of the hour's sounds, held with
     `?weather=rain`.
 

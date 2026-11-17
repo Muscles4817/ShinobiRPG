@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { titleLight, titleWeather, type TitleLight, type TitleWeather } from '@/game';
+import { hemisphereOf, titleLight, titleWeather, type TitleLight, type TitleWeather } from '@/game';
 
 /**
  * The title screen's light and weather by the player's own clock and calendar, looked at again
@@ -28,6 +28,15 @@ function heldWeather(): TitleWeather | null {
   return WEATHERS.find((w) => w === wanted) ?? null;
 }
 
+/** The device's time zone name ("Australia/Sydney"), or undefined where it can't say. */
+function deviceTimeZone(): string | undefined {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return undefined;
+  }
+}
+
 function skyNow(): TitleSkyNow {
   const now = new Date();
   const match = HOUR_PARAM.exec(asked('hour') ?? '');
@@ -36,7 +45,7 @@ function skyNow(): TitleSkyNow {
   const today = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
   return {
     light: titleLight(hour, minute),
-    weather: heldWeather() ?? titleWeather(today),
+    weather: heldWeather() ?? titleWeather(today, hemisphereOf(deviceTimeZone())),
   };
 }
 
