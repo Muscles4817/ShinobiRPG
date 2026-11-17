@@ -26,7 +26,7 @@ import { PORT_SHIOMACHI } from './shiomachi';
 import { TOROGAKURE_LEISURE } from './leisure';
 import { TOROGAKURE_WILDS } from './wilds';
 import { TOROGAKURE_COMPOUNDS } from './compounds';
-import { ARCHIVE_SHELF } from './shelves';
+import { ACADEMY_VARIANTS, ARCHIVE_SHELF } from './shelves';
 import { WILD_COUNTRY } from './wildCountry';
 
 export const ORIGINAL_TEXT: SettingText = {
@@ -219,6 +219,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
           'bleeding-cut',
           'sticking-tag',
           'leech-tag',
+          ...ACADEMY_VARIANTS,
         ],
       },
       {

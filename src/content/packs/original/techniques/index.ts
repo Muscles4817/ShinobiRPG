@@ -11,6 +11,7 @@ import { SCHOOL_TECHNIQUES } from './schools';
 import { SEALED_ARCHIVE } from './sealedArchive';
 import { SEVEN_WICKS } from './sevenWicks';
 import { TAIJUTSU } from './taijutsu';
+import { TAIJUTSU_VARIANTS } from './taijutsuVariants';
 
 /**
  * The general techniques of the setting, one file per art, E to S. Clan, sensei, roster and
@@ -18,6 +19,7 @@ import { TAIJUTSU } from './taijutsu';
  */
 export const TECHNIQUES: readonly TechniqueDef[] = [
   ...TAIJUTSU,
+  ...TAIJUTSU_VARIANTS,
   ...NINJUTSU,
   ...ELEMENTAL_NINJUTSU,
   ...GENJUTSU,
