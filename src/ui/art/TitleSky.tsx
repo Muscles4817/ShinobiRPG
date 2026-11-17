@@ -1,4 +1,4 @@
-import type { TitleLight } from '@/game';
+import type { TitleLight, TitleWeather } from '@/game';
 
 /**
  * The sky behind the title's lanterns, by the hour on the player's clock: a sun climbing out of
@@ -56,10 +56,18 @@ function sunAt(sky: Sky, progress: number): { x: number; y: number } | null {
   }
 }
 
-function SunAndGlow({ x, y, sky }: { readonly x: number; readonly y: number; readonly sky: Sky }) {
+interface SunProps {
+  readonly x: number;
+  readonly y: number;
+  readonly sky: Sky;
+  /** Behind cloud or mist: a pale disc. */
+  readonly veiled: boolean;
+}
+
+function SunAndGlow({ x, y, sky, veiled }: SunProps) {
   const low = sky === 'dawn' || sky === 'dusk';
   return (
-    <g className="title-sun">
+    <g className="title-sun" opacity={veiled ? 0.45 : 1}>
       <circle cx={x} cy={y} r={low ? 70 : 54} fill="url(#sun-glow)" />
       <circle cx={x} cy={y} r={low ? 22 : 18} fill={low ? '#ffd39a' : '#fff6dc'} />
     </g>
@@ -81,10 +89,35 @@ function Clouds() {
   );
 }
 
-export function TitleSky({ light }: { readonly light: TitleLight }) {
+/** What the weather leaves of the sky: a falling sky hides the sun, moon and stars. */
+function seen(weather: TitleWeather): { lights: boolean; stars: boolean } {
+  const falling = weather === 'rain' || weather === 'snow';
+  return { lights: !falling, stars: weather === 'clear' || weather === 'mist' };
+}
+
+/** The moon: full over the night, low and faint as the evening comes on. */
+function Moon({ sky }: { readonly sky: Sky }) {
+  if (sky === 'evening') return <circle cx="320" cy="176" r="20" fill="#efe1bd" opacity="0.55" />;
+  if (sky !== 'night') return null;
+  return (
+    <>
+      <circle cx="292" cy="150" r="46" fill="#f3e6c4" opacity="0.05" />
+      <circle cx="292" cy="150" r="25" fill="#efe1bd" opacity="0.88" />
+    </>
+  );
+}
+
+export function TitleSky({
+  light,
+  weather,
+}: {
+  readonly light: TitleLight;
+  readonly weather: TitleWeather;
+}) {
   const { sky, progress } = light;
   const gradient = sky === 'night' ? null : GRADIENTS[sky];
-  const sun = sunAt(sky, progress);
+  const show = seen(weather);
+  const sun = show.lights ? sunAt(sky, progress) : null;
   return (
     <>
       <defs>
@@ -101,7 +134,8 @@ export function TitleSky({ light }: { readonly light: TitleLight }) {
         </radialGradient>
       </defs>
       {gradient && <rect x="-20" y="-20" width="430" height="300" fill="url(#title-sky)" />}
-      {(sky === 'night' || sky === 'evening') &&
+      {show.stars &&
+        (sky === 'night' || sky === 'evening') &&
         STARS.map(([x, y, r]) => (
           <circle
             key={`${String(x)}-${String(y)}`}
@@ -113,15 +147,9 @@ export function TitleSky({ light }: { readonly light: TitleLight }) {
             opacity={sky === 'night' ? 0.7 : 0.35}
           />
         ))}
-      {sun && <SunAndGlow x={sun.x} y={sun.y} sky={sky} />}
-      {(sky === 'morning' || sky === 'day') && <Clouds />}
-      {sky === 'night' && (
-        <>
-          <circle cx="292" cy="150" r="46" fill="#f3e6c4" opacity="0.05" />
-          <circle cx="292" cy="150" r="25" fill="#efe1bd" opacity="0.88" />
-        </>
-      )}
-      {sky === 'evening' && <circle cx="320" cy="176" r="20" fill="#efe1bd" opacity="0.55" />}
+      {sun && <SunAndGlow x={sun.x} y={sun.y} sky={sky} veiled={weather !== 'clear'} />}
+      {weather === 'clear' && (sky === 'morning' || sky === 'day') && <Clouds />}
+      {show.lights && <Moon sky={sky} />}
     </>
   );
 }

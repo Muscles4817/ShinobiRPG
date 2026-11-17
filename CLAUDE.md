@@ -897,7 +897,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     in `ui/screens/menu/useTitleLight.ts`, held with `?hour=19:30` to see any sky): dawn, morning,
     day, dusk, evening and night skies (`ui/art/TitleSky.tsx`), lanterns lit one by one from dusk
     and all burning by night, and an `Ambience` under the music (`ui/audio/ambience.ts`: a dawn
-    chorus, birdsong, crickets, the night wind), on the music's volume.
+    chorus, birdsong, crickets, the night wind), on the music's volume. Its **weather** is made up,
+    never looked up (`views/titleWeather.ts`: drawn from the calendar day by the season's odds, the
+    same for everyone that day; snow only in winter): cloud, mist, rain or snow drawn over the sky
+    (`ui/art/TitleWeather.tsx`), rain or a snow hush in place of the hour's sounds, held with
+    `?weather=rain`.
 
 30. **Days end with a sheet** (`docs/design/day-end-plan.md`). The day's record
     (`GameState.daybook`, `game/daybook/`) is a snapshot taken at dawn (`openDay`) and compared

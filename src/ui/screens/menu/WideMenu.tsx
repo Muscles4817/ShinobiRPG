@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { SaveSummary } from '@/game';
+import { titleAmbience, type SaveSummary } from '@/game';
 
 import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
@@ -10,7 +10,7 @@ import { ConfirmNewGame } from './ConfirmNewGame';
 import { menuOptions, type MainMenuProps } from './menuOptions';
 import { SaveCard } from './SaveCard';
 import { gameAddress, whatsAppShareLink } from './ShareLink';
-import { useTitleLight } from './useTitleLight';
+import { useTitleSky } from './useTitleLight';
 
 /**
  * The title menu on a wide window, laid out as a game's title screen: the lantern scene behind,
@@ -106,8 +106,8 @@ export function WideMenu(props: MainMenuProps) {
   const { save, notice } = props;
   const [asking, setAsking] = useState(false);
   const [marked, setMarked] = useState(0);
-  const light = useTitleLight();
-  useAmbience(light.ambience);
+  const { light, weather } = useTitleSky();
+  useAmbience(titleAmbience(light, weather));
   const items: ListItem[] = [
     ...menuOptions(props, () => {
       setAsking(true);
@@ -126,8 +126,8 @@ export function WideMenu(props: MainMenuProps) {
   useMenuKeys({ items, marked, mark, keep: asking ? keep : null });
   const current = items[marked] ?? items[0];
   return (
-    <main className="main-menu wide" data-sky={light.sky}>
-      <TitleScene light={light} />
+    <main className="main-menu wide" data-sky={light.sky} data-weather={weather}>
+      <TitleScene light={light} weather={weather} />
       <p className="menu-vertical" lang="ja" aria-hidden="true">
         忍の道を、一日ずつ。
       </p>

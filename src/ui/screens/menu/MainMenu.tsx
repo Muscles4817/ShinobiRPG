@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { titleAmbience } from '@/game';
+
 import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
 import { useWideScreen } from '../../layout/useWideScreen';
@@ -7,7 +9,7 @@ import { useAmbience } from '../../audio/SoundProvider';
 import { ConfirmNewGame } from './ConfirmNewGame';
 import { menuOptions, type MainMenuProps, type MenuOption } from './menuOptions';
 import { ShareLink } from './ShareLink';
-import { useTitleLight } from './useTitleLight';
+import { useTitleSky } from './useTitleLight';
 import { WideMenu } from './WideMenu';
 
 /** One choice on the menu, stamped with its character. */
@@ -33,16 +35,16 @@ function OptionButton({ option }: { readonly option: MenuOption }) {
 function PhoneMenu(props: MainMenuProps) {
   const { save, notice } = props;
   const [asking, setAsking] = useState(false);
-  const light = useTitleLight();
-  useAmbience(light.ambience);
+  const { light, weather } = useTitleSky();
+  useAmbience(titleAmbience(light, weather));
   const options = menuOptions(props, () => {
     setAsking(true);
   });
   return (
-    <main className="main-menu" data-sky={light.sky}>
+    <main className="main-menu" data-sky={light.sky} data-weather={weather}>
       {notice && <Notice text={notice} onDismiss={props.onDismissNotice} />}
       <header className="menu-hero">
-        <TitleScene light={light} />
+        <TitleScene light={light} weather={weather} />
         <p className="menu-vertical" lang="ja" aria-hidden="true">
           忍の道を、一日ずつ。
         </p>

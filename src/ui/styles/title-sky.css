@@ -66,3 +66,44 @@
     animation: none;
   }
 }
+
+/* Rain and snow: a tile sliding down by its own height, rain fast and slanting, snow drifting. */
+.title-fall.rain {
+  animation: title-rain 0.45s linear infinite;
+}
+.title-fall.snow {
+  animation: title-snow 7s linear infinite;
+}
+.title-fall.snow-near {
+  animation: title-snow-near 9s linear infinite;
+}
+@keyframes title-snow-near {
+  to {
+    transform: translate(-14px, 120px);
+  }
+}
+@keyframes title-rain {
+  to {
+    transform: translate(-6px, 60px);
+  }
+}
+@keyframes title-snow {
+  to {
+    transform: translate(10px, 60px);
+  }
+}
+.title-mist {
+  animation: title-drift 60s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-fall,
+  .title-mist {
+    animation: none;
+  }
+}
+
+/* The page's wash greys under a falling sky. */
+.main-menu[data-weather='rain'][data-sky],
+.main-menu[data-weather='snow'][data-sky] {
+  --title-wash: #3a4150;
+}

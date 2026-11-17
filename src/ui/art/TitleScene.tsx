@@ -1,6 +1,7 @@
-import type { TitleLight } from '@/game';
+import type { TitleLight, TitleWeather } from '@/game';
 
 import { HILLS, TitleSky } from './TitleSky';
+import { MistBands, Precipitation, WeatherVeil } from './TitleWeather';
 
 /**
  * The title screen's picture: a string of paper lanterns over the village, under the sky of the
@@ -138,7 +139,13 @@ function litAt(light: TitleLight, order: number): boolean {
   return light.lanternsLit > order;
 }
 
-export function TitleScene({ light }: { readonly light: TitleLight }) {
+interface TitleSceneProps {
+  readonly light: TitleLight;
+  /** The day's weather (`TitleWeather.tsx`): cloud, mist, rain or snow over the hour's sky. */
+  readonly weather: TitleWeather;
+}
+
+export function TitleScene({ light, weather }: TitleSceneProps) {
   const [far, near] = HILLS[light.sky];
   return (
     <svg
@@ -172,7 +179,8 @@ export function TitleScene({ light }: { readonly light: TitleLight }) {
           <stop offset="1" stopColor="#331210" />
         </radialGradient>
       </defs>
-      <TitleSky light={light} />
+      <TitleSky light={light} weather={weather} />
+      <WeatherVeil light={light} weather={weather} />
       <path
         d="M0 214C38 196 62 178 96 186c30 7 44-14 74-10 26 4 40 22 70 16 32-7 52-30 86-24 26 5 44 18 64 26V330H0Z"
         fill={far}
@@ -181,6 +189,7 @@ export function TitleScene({ light }: { readonly light: TitleLight }) {
         d="M-6 246c34-12 60-8 88-14 34-7 50-20 86-14 30 5 46 20 80 18 36-2 58-16 94-8 20 4 34 10 48 16V330H-6Z"
         fill={near}
       />
+      <MistBands light={light} weather={weather} />
       <path d={ROOFLINE} fill="var(--bg)" />
       <path
         d={WINDOWS}
@@ -197,6 +206,7 @@ export function TitleScene({ light }: { readonly light: TitleLight }) {
       <Lantern x={74} y={66} scale={0.62} kind="red" sway={2} lit={litAt(light, 1)} />
       <Lantern x={196} y={92} scale={1} kind="paper" glyph="忍" sway={1} lit={litAt(light, 0)} />
       <Lantern x={322} y={54} scale={0.55} kind="red" sway={3} lit={litAt(light, 2)} />
+      <Precipitation weather={weather} />
     </svg>
   );
 }

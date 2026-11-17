@@ -26,6 +26,8 @@ interface Bed {
   readonly call: (where: Where, at: number, draw: () => number) => void;
   /** A wind under it all, at this level (0 for none). */
   readonly wind: number;
+  /** Rain falling on roofs and leaves, at this level (0 for none). */
+  readonly rain?: number;
 }
 
 const SILENT = 0.0001;
@@ -82,6 +84,23 @@ function cricket(where: Where, at: number, gain: number): void {
   }
 }
 
+/** A drop off the eaves: a tiny high tick. */
+function drip(where: Where, at: number, draw: () => number): void {
+  const { ctx } = where;
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(SILENT, at);
+  env.gain.exponentialRampToValueAtTime(0.012 + draw() * 0.01, at + 0.003);
+  env.gain.exponentialRampToValueAtTime(SILENT, at + 0.04);
+  env.connect(where.dest);
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1600 + draw() * 1400, at);
+  osc.frequency.exponentialRampToValueAtTime(900, at + 0.035);
+  osc.connect(env);
+  osc.start(at);
+  osc.stop(at + 0.05);
+}
+
 const BEDS: Readonly<Record<Ambience, Bed>> = {
   'dawn-chorus': {
     every: [0.5, 1.8],
@@ -111,6 +130,22 @@ const BEDS: Readonly<Record<Ambience, Bed>> = {
       if (draw() < 0.7) cricket(where, at, 0.012);
     },
     wind: 0.6,
+  },
+  rain: {
+    every: [0.15, 0.6],
+    call: (where, at, draw) => {
+      drip(where, at, draw);
+    },
+    wind: 0.2,
+    rain: 1,
+  },
+  // Snow falls silent: only the softest wind, and now and then one bird.
+  'snow-hush': {
+    every: [8, 16],
+    call: (where, at, draw) => {
+      if (draw() < 0.3) birdCall(where, at, draw, 0.012);
+    },
+    wind: 0.25,
   },
 };
 
@@ -153,10 +188,38 @@ function startWind(where: Where, level: number): () => void {
   };
 }
 
+/** Rain: the same noise, high and steady, swelling a little as showers come and go. */
+function startRain(where: Where, level: number): () => void {
+  const { ctx } = where;
+  const source = ctx.createBufferSource();
+  source.buffer = where.noise;
+  source.loop = true;
+  const high = ctx.createBiquadFilter();
+  high.type = 'highpass';
+  high.frequency.value = 900;
+  const low = ctx.createBiquadFilter();
+  low.type = 'lowpass';
+  low.frequency.value = 5200;
+  const fall = ctx.createGain();
+  fall.gain.value = level * 0.04;
+  const shower = ctx.createOscillator();
+  shower.frequency.value = 0.03;
+  const showerDepth = ctx.createGain();
+  showerDepth.gain.value = level * 0.015;
+  shower.connect(showerDepth).connect(fall.gain);
+  source.connect(high).connect(low).connect(fall).connect(where.dest);
+  for (const node of [source, shower]) node.start();
+  return () => {
+    for (const node of [source, shower]) node.stop();
+    fall.disconnect();
+  };
+}
+
 interface Playing {
   readonly bed: Bed;
   readonly fader: GainNode;
   readonly stopWind: (() => void) | null;
+  readonly stopRain: (() => void) | null;
   nextAt: number;
 }
 
@@ -168,6 +231,7 @@ function fadeOut(ctx: BaseAudioContext, playing: Playing): void {
   setTimeout(
     () => {
       playing.stopWind?.();
+      playing.stopRain?.();
       playing.fader.disconnect();
     },
     (FADE_S + 1) * 1000,
@@ -182,7 +246,8 @@ function fadeIn(where: Where, bed: Bed): Playing {
   fader.connect(where.dest);
   const into = { ...where, dest: fader };
   const stopWind = bed.wind > 0 ? startWind(into, bed.wind) : null;
-  return { bed, fader, stopWind, nextAt: ctx.currentTime + 0.5 };
+  const stopRain = bed.rain ? startRain(into, bed.rain) : null;
+  return { bed, fader, stopWind, stopRain, nextAt: ctx.currentTime + 0.5 };
 }
 
 /** The ambience for one audio graph, playing into `where.dest`. */

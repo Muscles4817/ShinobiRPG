@@ -804,6 +804,14 @@ describe('App (smoke test)', () => {
     window.history.replaceState(null, '', '/');
   });
 
+  it('lets the day’s weather fall over the title', () => {
+    window.history.replaceState(null, '', '/?hour=21:00&weather=snow');
+    const { container } = render(<App store={memoryStore()} />);
+    expect(screen.getByRole('main')).toHaveAttribute('data-weather', 'snow');
+    expect(container.querySelector('.title-fall.snow')).not.toBeNull();
+    window.history.replaceState(null, '', '/');
+  });
+
   it('reports an unreadable save instead of crashing', () => {
     render(<App store={memoryStore('garbage')} />);
     expect(screen.getByRole('alert')).toHaveTextContent(/could not be loaded/);
