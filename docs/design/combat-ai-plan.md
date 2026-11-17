@@ -1375,6 +1375,41 @@ and a result that makes sense stays, however far outside the band it falls.
 already laid, cover to hide in (a forest). A trapper, an assassin or a sensor comes into their own
 in those fights, and that is where their strength is meant to show, never by tuning the duel.
 
+**The fight as the fighter lives it, for later.** The owner's note on why combat feels poor: the
+text doesn't read as if you are that person in that fight. Players should decide from what their
+fighter notices, and the fight should keep telling them what they notice as it goes.
+
+- **Before the fight, a read of the foe.** What the fighter can see, and what it means for them:
+  - a sword at the hip means a kenjutsu fighter;
+  - armour means blows will glance off;
+  - a big, heavy build means "hard to hurt, harder still when braced";
+  - struggling for footing in the forest means "he won't dodge well here".
+
+  How much is seen, and how sure it is, comes from perception, intellect and intuition (and eyes
+  like insight). A dull fighter sees less and can be wrong.
+
+- **During and after each round, a read of what happened.** Not only what hit, but what it told
+  you:
+  - "he wasn't ready for that, it hurt him";
+  - "he read it coming";
+  - "he keeps going back to the same cut";
+  - "he's slowing, his breath is going".
+
+  The plan screen between rounds carries the read forward, so the next plan is made from it.
+
+- **Where it comes from.** This is the beliefs layer (Part 5, in shadow since #306) given a voice.
+  What a fighter believes about a foe is exactly what they have noticed. The pieces it can build on:
+  - scouting (`game/scouting.ts`) and kit counters;
+  - reads (`plan/reads.ts`) and familiarity;
+  - the round's why (`views/roundWhy.ts`);
+  - the cues of Part 5.
+- **Rules it keeps.** Story text never carries numbers. A read is said with the confidence the
+  fighter has ("he looks", "he's clearly"). The words come from what was seen, never from the true
+  state behind it.
+
+It is its own piece of work after Phase B, and probably the biggest single gain in how the fight
+feels.
+
 **First measurement.** With all four Phase A rules on in every fight, the matrix (chūnin, 100
 seeds a pairing) moved:
 
