@@ -17,7 +17,7 @@ export const TOBI_ARTS: readonly TechniqueDef[] = [
     id: 'kamui-intangibility',
     name: 'Kamui: Intangibility',
     description:
-      'Blades, fists and fire pass through him as if he weren’t there. Part of him isn’t: it is in another world.',
+      'Blades, fists and fire pass through him as if he weren’t there. Part of him isn’t. It is in another world.',
     discipline: 'ninjutsu',
     clan: 'uchiha',
     effects: [{ verb: 'substitute', power: 18, spins: true }],

@@ -93,7 +93,7 @@ export const DEIDARA_ARTS: readonly TechniqueDef[] = [
 export const EXPLOSIVE_CLAY: ContractDef = {
   id: 'explosive-clay',
   name: 'Explosive Clay',
-  description: 'Not a clan but an art: clay shaped and given life, his own and nobody else’s.',
+  description: 'Not a clan but an art, clay shaped and given life, and his own and nobody else’s.',
   summons: [
     {
       id: CLAY_BIRD,

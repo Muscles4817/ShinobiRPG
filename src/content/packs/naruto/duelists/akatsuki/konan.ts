@@ -50,7 +50,7 @@ export const KONAN_ARTS: readonly TechniqueDef[] = [
     id: 'paper-person-of-god',
     name: 'Paper Person of God',
     description:
-      'A lake parts and it is paper underneath: six hundred billion explosive tags, going off for ten minutes.',
+      'A lake parts and it is paper underneath. Six hundred billion explosive tags go off for ten minutes.',
     discipline: 'ninjutsu',
     effects: [{ verb: 'area', power: 34, size: 'vast' }],
     chakraCost: 40,

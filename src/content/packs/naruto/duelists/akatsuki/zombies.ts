@@ -134,7 +134,8 @@ function mask(id: string, name: string, art: { tech: string; desc: string }): Su
 export const EARTH_GRUDGE: ContractDef = {
   id: 'earth-grudge',
   name: 'Earth Grudge Fear',
-  description: 'Not a clan but a forbidden art of the Waterfall: hearts torn out and kept alive.',
+  description:
+    'Not a clan but a forbidden art of the Waterfall, which tears hearts out and keeps them alive.',
   summons: [
     mask(FIRE_MASK, 'Fire mask', { tech: 'searing-migraine', desc: 'A heart that breathes fire.' }),
     mask(WIND_MASK, 'Wind mask', { tech: 'pressure-damage', desc: 'A heart that breathes wind.' }),
