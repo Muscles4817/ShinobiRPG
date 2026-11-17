@@ -7,8 +7,11 @@ import { FOURTH_ARTS, FOURTH_GEAR } from './fourthArts';
 import { MEDIC_ARTS, SLUGS } from './medicArts';
 import { MEDIC_FIGHTERS } from './medics';
 import { SENJU_ARTS } from './senjuArts';
+import { SHADOW_ARTS } from './shadowArts';
+import { SHADOW_FIGHTERS } from './shadows';
 import { SENJU_FIGHTERS } from './senju';
 import { THUNDER_GOD_ARTS, THUNDER_GOD_GEAR } from './thunderGod';
+import { UCHIHA_FIGHTERS } from './uchiha';
 
 /**
  * The Leaf's own who aren't in the world yet, as fighters for versus: Hokage past and present,
@@ -19,12 +22,15 @@ export const LEAF_FIGHTERS: readonly PersonDef[] = /*#__PURE__*/ (() => [
   ...MEDIC_FIGHTERS,
   ...SENJU_FIGHTERS,
   ...FOURTH_FIGHTERS,
+  ...SHADOW_FIGHTERS,
+  ...UCHIHA_FIGHTERS,
 ])();
 export const LEAF_ARTS: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...MEDIC_ARTS,
   ...SENJU_ARTS,
   ...THUNDER_GOD_ARTS,
   ...FOURTH_ARTS,
+  ...SHADOW_ARTS,
 ])();
 export const LEAF_GEAR: readonly GearDef[] = /*#__PURE__*/ (() => [
   ...THUNDER_GOD_GEAR,
