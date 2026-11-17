@@ -33,7 +33,10 @@ it('teleport', () => {
   const foes = roster.filter(
     (f) => f.id.startsWith('person:') && /Jōnin|Kage|Sannin|Akatsuki/i.test(f.group),
   );
-  const lines: string[] = ['| Fighter | Rule | Bouts | Won | Blinks a bout |', '| --- | --- | --- | --- | --- |'];
+  const lines: string[] = [
+    '| Fighter | Rule | Bouts | Won | Blinks a bout |',
+    '| --- | --- | --- | --- | --- |',
+  ];
   for (const me of ['person:minato', 'person:tobirama']) {
     for (const on of [false, true]) {
       let n = 0;
@@ -49,7 +52,9 @@ it('teleport', () => {
           blinks += r.blinks;
         }
       }
-      lines.push(`| ${me} | ${on ? 'on' : 'off'} | ${n} | ${((100 * won) / n).toFixed(1)}% | ${(blinks / n).toFixed(2)} |`);
+      lines.push(
+        `| ${me} | ${on ? 'on' : 'off'} | ${n} | ${((100 * won) / n).toFixed(1)}% | ${(blinks / n).toFixed(2)} |`,
+      );
     }
   }
   writeFileSync(`${OUT}/teleport.md`, lines.join('\n'));
