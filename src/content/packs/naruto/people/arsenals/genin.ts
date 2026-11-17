@@ -83,6 +83,21 @@ export const KIBA_ARSENAL: PersonArsenal = {
   techniqueIds: ['fang-over-fang', 'passing-fang', 'shuriken-jutsu', 'substitution-jutsu'],
 };
 
+/** The Akimichi arts: a fist swollen huge, then the whole body rolled into a ball and sent in. */
+export const CHOJI_ARSENAL: PersonArsenal = {
+  techniqueIds: [
+    'partial-expansion',
+    'human-bullet-tank',
+    'shuriken-jutsu',
+    'substitution-jutsu',
+    'multi-size',
+    'spiked-human-bullet-tank',
+    'super-multi-size',
+    'butterfly-mode',
+    'butterfly-bullet-bombing',
+  ],
+};
+
 /** The swarm, and the copy of himself it makes. */
 export const SHINO_ARSENAL: PersonArsenal = {
   techniqueIds: [

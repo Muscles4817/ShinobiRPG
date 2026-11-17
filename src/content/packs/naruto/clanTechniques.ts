@@ -85,13 +85,17 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     description: 'Expand, tuck, and roll over everything in your path.',
     discipline: 'taijutsu',
     moulded: true,
+    // A ball of body rolling in: it closes behind its own guard, and what it hits stays in reach.
+    guarded: true,
+    reach: ['close', 'mid'],
     effects: [
+      { verb: 'move', power: 10, to: 'close' },
       { verb: 'break', power: 18 },
-      { verb: 'knock', power: 8, to: 'far' },
     ],
     chakraCost: 10,
-    rank: 'C',
-    difficulty: 75,
+    // The clan's plain roll, a step below its spiked form: a genin of the clan rolls in already.
+    rank: 'D',
+    difficulty: 60,
     clan: 'akimichi',
   },
   {

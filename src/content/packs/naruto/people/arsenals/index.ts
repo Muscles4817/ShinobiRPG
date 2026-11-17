@@ -4,6 +4,7 @@
  */
 export { HANA_ARSENAL } from './chunin';
 export {
+  CHOJI_ARSENAL,
   HINATA_ARSENAL,
   KIBA_ARSENAL,
   NARUTO_ARSENAL,

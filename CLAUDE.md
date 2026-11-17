@@ -305,7 +305,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     fire is told as the holder's (with why it worked). A fighter making for a distance readies the
     charge first (an empower, clones) and goes in with an **entry** where they have one (a technique
     that moves them in to strike, `isEntry` in `plan/stepping.ts`), which meets a hold-off as a step
-    does (`charge` in `plan/steps.ts`). Clones on the closer's side (theirs or a teammate's) run
+    does (`charge` in `plan/steps.ts`), unless it is `guarded` (a body rolled into a ball): its user
+    comes in braced and rolls on through the shot. Clones on the closer's side (theirs or a teammate's) run
     ahead and may draw the shot (`plan/screening.ts`: solid ones as often as they'd take a hit,
     illusions half that; an area bursts them all), clones crowding round a fighter help their
     step, and a hit heavy enough tears through the clone it strikes into its maker with half its force (`carriesThrough`).

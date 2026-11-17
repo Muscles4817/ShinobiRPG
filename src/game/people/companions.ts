@@ -45,8 +45,8 @@ export function companionTraits(person: PersonDef): readonly CombatTrait[] {
 /**
  * What a person fights with: the part of their own arsenal they can do by now (`capable.ts`),
  * else what a genin knows: the academy's techniques, their specialty's starter, their clan's,
- * and the half of each combination technique in their specialty (no clan's), so a teammate can
- * join yours.
+ * and the half of each person's combination technique in their specialty (no clan's, none
+ * that needs a beast), so a teammate can join yours.
  */
 function companionTechniques(
   person: PersonDef,
@@ -58,8 +58,18 @@ function companionTechniques(
   const { content } = ctx;
   const specialty: Discipline | undefined = person.specialty;
   const clan = person.clanId ? content.clans.get(person.clanId) : undefined;
+  // Only halves a person can know whose partner a person can know too: a beast's half, and the
+  // human half that needs a beast beside it, wait for a companion (`companions/arts.ts`).
+  const beasts = new Set(
+    content.companionKinds.all.flatMap((k) => (k.techniques ?? []).map((t) => t.techniqueId)),
+  );
   const combos = content.techniques.all.filter(
-    (t) => t.combo && !t.clan && t.discipline === specialty,
+    (t) =>
+      t.combo &&
+      !t.clan &&
+      t.discipline === specialty &&
+      !beasts.has(t.id) &&
+      !beasts.has(t.combo.partnerTechniqueId),
   );
   return [
     ...new Set([

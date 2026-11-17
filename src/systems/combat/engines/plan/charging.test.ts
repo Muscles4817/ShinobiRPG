@@ -121,4 +121,16 @@ describe('closing in', () => {
     // A flying kick is a body move: it spends breath, not chakra (`rules/breath.ts`).
     expect(stopped!.round.fighters[0]!.breath).toBeDefined();
   });
+
+  it('a guarded entry comes in braced and rolls on through the hold-off', () => {
+    const tank: CombatTechnique = { ...entry, id: 'tank', name: 'Tank', guarded: true };
+    const charged = Array.from({ length: 30 }, (_, i) => {
+      const round = atMid(true);
+      const [brawler, caster] = round.fighters;
+      const turn = { actor: brawler!, target: caster, rng: createRng(i + 1) };
+      return charge(round, turn, { kind: 'jutsu', technique: tank });
+    });
+    expect(charged.every((c) => !c.stopped)).toBe(true);
+    expect(charged.every((c) => c.round.fighters[0]!.committed === 'brace')).toBe(true);
+  });
 });

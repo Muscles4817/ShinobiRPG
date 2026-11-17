@@ -83,6 +83,11 @@ export interface TechniqueDef {
    * run along an edge): it costs chakra like any jutsu, where a plain body move costs breath.
    */
   readonly moulded?: true;
+  /**
+   * An entry made behind its own guard (a body rolled into a ball): its user comes in braced, as
+   * if they had committed to a Brace, and a hold-off's shot doesn't stop them (`plan/steps.ts`).
+   */
+  readonly guarded?: true;
 }
 
 /**

@@ -173,6 +173,18 @@ function steppedIn(round: Round, moving: Round, turn: Turn): Round {
   }
 }
 
+/** A guarded technique brings its user in braced, with no breath spent on it. */
+function guardedFor(round: Round, { actor }: Turn, card: Card): Round {
+  if (card.kind !== 'jutsu' || !card.technique.guarded) return round;
+  return { ...round, fighters: patch(round.fighters, actor.id, { committed: 'brace' }) };
+}
+
+/** Whether the charger is still on their feet after whatever met them. */
+function stillUp(round: Round, { actor }: Turn): boolean {
+  const now = fighterIn(round, actor.id);
+  return now !== undefined && alive(now);
+}
+
 /** A charge met: what became of the round, whether it was stopped, and lines told after it. */
 export interface Charged {
   readonly round: Round;
@@ -185,12 +197,15 @@ export interface Charged {
  * A charge: an entry played from further off meets a hold-off as a step does. Stopped, the
  * technique is lost (`round` is what became of it); otherwise it goes on to land.
  */
-export function charge(round: Round, turn: Turn, card: Card): Charged {
+export function charge(start: Round, turn: Turn, card: Card): Charged {
+  const round = guardedFor(start, turn, card);
   if (!isEntry(turn.actor, card, from(round, turn)) || isPinned(turn.actor)) {
     return { round, stopped: false, after: [] };
   }
   const met = holdOff(round, turn);
-  if (met.outcome !== 'stopped' || card.kind !== 'jutsu') {
+  // A guarded entry takes the shot through its guard and rolls on (`TechniqueDef.guarded`).
+  const rollsOn = card.kind === 'jutsu' && card.technique.guarded && stillUp(met.round, turn);
+  if (met.outcome !== 'stopped' || card.kind !== 'jutsu' || rollsOn) {
     const after = met.round.lines.slice(round.lines.length);
     return { round: { ...met.round, lines: round.lines }, stopped: false, after };
   }
