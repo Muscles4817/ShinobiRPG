@@ -27,11 +27,12 @@ export const CANON_AKIMICHI: readonly TechniqueDef[] = [
     description: 'The Human Bullet Tank again, wrapped in ropes studded with kunai.',
     discipline: 'taijutsu',
     clan: 'akimichi',
+    guarded: true,
     reach: ['close', 'mid'],
     effects: [
+      { verb: 'move', power: 10, to: 'close' },
       { verb: 'break', power: 18 },
       { verb: 'afflict', power: 6, harm: 'bleed' },
-      { verb: 'knock', power: 8, to: 'far' },
     ],
     chakraCost: 12,
     rank: 'C',

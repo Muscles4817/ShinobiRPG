@@ -1,6 +1,7 @@
 import { look } from '../../../look';
 import { statLine } from '../../../statLine';
 import type { PersonDef } from '../../../types';
+import { CHOJI_ARSENAL } from './arsenals';
 
 /** Team Ten of your year: the Ino–Shika–Chō trio. */
 export const TEAM_TEN_GENIN: readonly PersonDef[] = [
@@ -74,6 +75,7 @@ export const TEAM_TEN_GENIN: readonly PersonDef[] = [
     ),
     specialty: 'taijutsu',
     bio: 'Big-hearted and loyal, and never without a bag of chips. Do not call him fat.',
+    arsenal: CHOJI_ARSENAL,
     schedule: {
       morning: 'shopping-district',
       afternoon: 'training-grounds',
