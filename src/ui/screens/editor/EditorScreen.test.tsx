@@ -70,10 +70,9 @@ describe('the editor', () => {
     await user.click(within(pages).getByRole('button', { name: 'Next' }));
     expect(adds()[0]!.getAttribute('aria-label')).not.toBe(firstPage);
 
+    // Power-ups run past a page once every fighter's cloaks and gates are counted, so the
+    // gate is looked for once the element and rank have narrowed the list too.
     await user.selectOptions(within(sheet).getByLabelText('Kind'), 'power-up');
-    expect(
-      within(sheet).getByRole('button', { name: /^Add Eight Gates: Gate of Opening/ }),
-    ).toBeVisible();
     await user.selectOptions(within(sheet).getByLabelText('Element'), 'none');
     await user.selectOptions(within(sheet).getByLabelText('Rank'), 'C');
     expect(adds().map((b) => b.getAttribute('aria-label'))).toContain(

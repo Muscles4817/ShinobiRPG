@@ -17,6 +17,7 @@ import { OTAFUKU_TOWN } from './otafuku';
 import { FIRE_TEMPLE } from './fireTemple';
 import { NARUTO_WILD_COUNTRY } from './wildCountry';
 import { NARUTO_LETTINGS } from './homes';
+import { FAR_VILLAGES } from './farVillages';
 
 export const NARUTO_TEXT: SettingText = {
   nation: 'the Land of Fire',
@@ -41,7 +42,9 @@ export const NARUTO_TEXT: SettingText = {
   promotionRoutes: PROMOTION_ROUTES,
 };
 
-export const NARUTO_LOCATIONS: readonly LocationDef[] = [
+// Joined in a pure-annotated function: the spreads would otherwise keep the fan pack's
+// places alive in a release build.
+export const NARUTO_LOCATIONS: readonly LocationDef[] = /*#__PURE__*/ (() => [
   {
     id: 'konohagakure',
     name: 'Konohagakure',
@@ -271,6 +274,7 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
   OTAFUKU_TOWN,
   FIRE_TEMPLE,
   ...NARUTO_WILD_COUNTRY,
+  ...FAR_VILLAGES,
   {
     id: 'mount-myoboku',
     name: 'Mount Myōboku',
@@ -282,4 +286,4 @@ export const NARUTO_LOCATIONS: readonly LocationDef[] = [
     places: [],
     lockedReason: 'Needs a summoning contract',
   },
-];
+])();

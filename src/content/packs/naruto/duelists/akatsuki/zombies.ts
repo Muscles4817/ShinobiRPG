@@ -147,6 +147,7 @@ export const HIDAN_SCYTHE: GearDef = {
 export const ZOMBIE_FIGHTERS: readonly PersonDef[] = [
   akatsukiFighter({
     id: 'kakuzu',
+    homeLocationId: 'takigakure',
     name: 'Kakuzu',
     familyName: '',
     pronouns: 'he',

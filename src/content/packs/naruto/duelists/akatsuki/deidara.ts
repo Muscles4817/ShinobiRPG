@@ -113,6 +113,7 @@ export const EXPLOSIVE_CLAY: ContractDef = {
 
 export const DEIDARA: PersonDef = akatsukiFighter({
   id: 'deidara',
+  homeLocationId: 'iwagakure',
   name: 'Deidara',
   familyName: '',
   pronouns: 'he',

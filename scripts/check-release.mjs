@@ -29,6 +29,9 @@ const FAN_MARKERS = [
   'Kazekage',
   'Kimimaro',
   'Akatsuki',
+  'Kumogakure',
+  'Raikage',
+  'Tsuchikage',
 ];
 
 function files(dir) {

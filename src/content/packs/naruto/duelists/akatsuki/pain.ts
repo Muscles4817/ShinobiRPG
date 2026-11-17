@@ -170,6 +170,7 @@ export const SIX_PATHS: ContractDef = {
 
 export const PAIN: PersonDef = akatsukiFighter({
   id: 'pain',
+  homeLocationId: 'amegakure',
   name: 'Pain',
   familyName: '',
   pronouns: 'he',

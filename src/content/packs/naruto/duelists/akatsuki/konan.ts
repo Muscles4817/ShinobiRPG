@@ -63,6 +63,7 @@ export const KONAN_ARTS: readonly TechniqueDef[] = [
 
 export const KONAN: PersonDef = akatsukiFighter({
   id: 'konan',
+  homeLocationId: 'amegakure',
   name: 'Konan',
   familyName: '',
   pronouns: 'she',
