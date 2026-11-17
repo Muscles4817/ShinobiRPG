@@ -71,6 +71,8 @@ export const TURN_WHYS = [
   'clash',
   /** A teammate's hold came first: pulling them free, or going for its caster (`struggle.ts`). */
   'aid',
+  /** A foe close enough to break their hand signs: something signless, or a step back (`crowding.ts`). */
+  'crowded',
 ] as const;
 
 export type PlanWhy = (typeof PLAN_WHYS)[number];

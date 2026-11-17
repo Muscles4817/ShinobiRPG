@@ -309,7 +309,10 @@ describe('rules on trial', () => {
   }
 
   it('close quarters only in a bout that turns them on', () => {
-    expect(linesIn({ handSigns: true }, 'before the seals are done')).toBeGreaterThan(0);
+    // A caster who reads the fight keeps clear of a crowder (`crowding.ts`); Naruto casts anyway.
+    const crowded = { side: 'person:kiba', foe: 'person:naruto' };
+    expect(linesIn({ handSigns: true }, 'before the seals are done', crowded)).toBeGreaterThan(0);
+    expect(linesIn({}, 'before the seals are done', crowded)).toBe(0);
     expect(linesIn({}, 'before the seals are done')).toBe(0);
     expect(linesIn({ rushing: true }, 'as he lands')).toBeGreaterThan(0);
     expect(linesIn({}, 'as he lands')).toBe(0);

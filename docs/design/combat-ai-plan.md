@@ -1359,6 +1359,56 @@ needs (the planner adapts by itself, since it plays the real engine). Phase C re
 revamp: planning off the main thread, reading reactions through cues (hand signs are already one
 of their channels), team objectives, then the player's controls and the commitment rules.
 
+### Phase B: what the measurements are for
+
+**The owner's principle.** The archetype matrix and the benches tell us where to look, never
+what to tune to. This game isn't balanced like a fighting game, where every archetype gets an
+equal chance. It offers different approaches, each strong in the fights that suit it. A trapper's
+whole game is setup, so in an open duel against someone who rushes them, they should lose almost
+every time. What matters is how a lopsided result comes about. A trapper who tries to get clear,
+tries what their kit allows, and still loses because their build isn't made to survive a rush is
+right. A trapper who stands still and casts into a foe who breaks their seals is the AI's fault.
+So every lopsided pairing is read move by move (the decision log) before anything is changed,
+and a result that makes sense stays, however far outside the band it falls.
+
+**Fight contexts, for later.** Versus should offer contexts beyond the open duel: an ambush, traps
+already laid, cover to hide in (a forest). A trapper, an assassin or a sensor comes into their own
+in those fights, and that is where their strength is meant to show, never by tuning the duel.
+
+**First measurement.** With all four Phase A rules on in every fight, the matrix (chūnin, 100
+seeds a pairing) moved:
+
+- close fighters gained (rusher 67% to 73% overall, powerhouse 69% to 74%, Gates 79% to 85%);
+- casters who need hand signs up close lost (trapper 37% to 27%, the medic against the rusher
+  100% to 56%, the sensor against the rusher 43% to 16%).
+
+Read move by move, the casters stood in reach and kept casting into foes who broke their seals.
+Today's AI knew nothing of the rule.
+
+**Taught: keeping the seals clear** (`plan/crowding.ts`). A fighter who reads the fight, about to
+make hand signs with an able foe close enough to break them (a quarter chance or more), changes
+course:
+
+- one whose kit is strongest further off steps back to make room;
+- one at home up close plays something that needs no signs, if it is worth half the cast;
+- otherwise it steps back too.
+
+The step may still be kept pace with, and that is the caster's trouble. The player's own plan is
+theirs, as with the kit (`kitPlay`). The decision log calls such a turn `crowded`.
+
+Read back, the casters now do what their kits allow:
+
+- the illusionist steps back or switches a couple of times a fight, and holds 55–58% against the
+  powerhouse and the Gates;
+- the sensor already stepped back on its own;
+- the medic's control keeps its odds under the line, so it casts its heals and sometimes loses one;
+- the trapper cuts with its sword rather than lose its trap signs. Its sword is its best attack, so
+  its kit reads as a close fighter. It still loses to the rusher almost every time, for the right
+  reason: caught without its setup.
+
+The richer play, laying a trap, stepping away and letting the foe run through it, waits for the
+fight contexts above.
+
 ---
 
 ## Part 14: Open questions for the owner

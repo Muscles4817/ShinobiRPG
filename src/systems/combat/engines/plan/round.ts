@@ -17,6 +17,7 @@ import { cardId, isOffence, needsAim, type Card } from './cards';
 import { released } from './commitment';
 import { meditationEnds } from './meditation';
 import { play } from './play';
+import { crowdWary } from './crowding';
 import { afterBlink, blinkInstead, blinksReady } from './blink';
 import { chooseWhy, type Choice } from './choose';
 import { cloneFollowUp } from './clones';
@@ -200,7 +201,10 @@ function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Chosen | { spen
   const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
   const helping = aid(round, { actor, rng }, planned.card);
   if (helping.kind === 'spent') return { spent: decided(helping.round, actor, PULLED_FREE) };
-  return helping.kind === 'strike' ? { ...planned, target: helping.at, why: 'aid' } : planned;
+  const chosen: Chosen =
+    helping.kind === 'strike' ? { ...planned, target: helping.at, why: 'aid' } : planned;
+  // A caster who reads the fight keeps their seals clear of a crowder (`crowding.ts`).
+  return crowdWary(round, actor, chosen) ?? chosen;
 }
 
 /** The player is told when their turn played something they never slotted (`staging.ts`). */
