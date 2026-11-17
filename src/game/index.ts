@@ -163,6 +163,7 @@ export {
 } from './sound';
 export { titleLight, type TitleLight } from './views/titleLight';
 export { titleAmbience, titleWeather, type TitleWeather } from './views/titleWeather';
+export { hemisphereOf } from './views/hemisphere';
 export {
   gearShopView,
   loadoutView,

@@ -262,11 +262,24 @@ export function techniqueSheet(
   def: TechniqueDef,
   you: Reader = playerCombatant(state, ctx),
 ): TechniqueSheet {
+  const unstable = state.techniques.unstable.includes(def.id);
+  return sheetFor({ ctx, def, you, unstable });
+}
+
+/** What a sheet is read from: the technique, who reads it, and whether it is still unsteady. */
+export interface SheetReading {
+  readonly ctx: GameContext;
+  readonly def: TechniqueDef;
+  readonly you: Reader;
+  readonly unstable: boolean;
+}
+
+/** A technique's sheet for any reader, a game or not (the academy file reads one before). */
+export function sheetFor({ ctx, def, you, unstable }: SheetReading): TechniqueSheet {
   const reach = reachOf(def);
   const wounding = def.effects.filter((e) => WOUNDING.has(e.verb));
   const power = wounding.reduce((sum, e) => sum + e.power, 0);
   const share = equalHitShare(you, def);
-  const unstable = state.techniques.unstable.includes(def.id);
   return {
     reach: RANGE_BANDS.map((band) => ({ band: RANGE_LABEL[band], reaches: reach.includes(band) })),
     strength: wounding.length > 0 ? { word: strengthWord(power), power } : null,

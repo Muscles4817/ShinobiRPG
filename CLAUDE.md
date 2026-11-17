@@ -899,7 +899,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and all burning by night, and an `Ambience` under the music (`ui/audio/ambience.ts`: a dawn
     chorus, birdsong, crickets, the night wind), on the music's volume. Its **weather** is made up,
     never looked up (`views/titleWeather.ts`: drawn from the calendar day by the season's odds, the
-    same for everyone that day; snow only in winter): cloud, mist, rain or snow drawn over the sky
+    same for everyone that day; snow only in winter, and the seasons turned over for a clock
+    south of the equator, read from the device's time zone: `views/hemisphere.ts`): cloud, mist, rain or snow drawn over the sky
     (`ui/art/TitleWeather.tsx`), rain or a snow hush in place of the hour's sounds, held with
     `?weather=rain`.
 
@@ -1464,6 +1465,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Versus setup on a desk (`VersusDesk`) fills the window: the bout, the roster and a profile,
   each scrolling on its own; the profile follows the pointer through the roster and is never
   empty, and Enter fights.
+  The academy file on a desk (`CreationScreen`, `FileRail`, `wide-creation.css`) sets a lacquer
+  rail beside the page: the student as they stand (face, standing, fighting grade, report card,
+  techniques chosen) and the file's pages, any turned already open to go back to; the page lays
+  its options out in a grid, and Enter turns it, Esc goes back. Techniques are slips on paper
+  there (`TechniqueCard slip`), never the deck's tall cards.
   The editor on a desk fills the window too: the roster, then the fighter's stats and their
   techniques side by side (stacked below 1300px), the cards short as on a profile.
   The Record on a desk keeps its header in view, lists the journal's days beside the feed (the

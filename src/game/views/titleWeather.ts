@@ -1,13 +1,15 @@
 import { hashUnit } from '@/core';
 
 import type { Ambience } from '../sound/ambience';
+import type { Hemisphere } from './hemisphere';
 import type { TitleLight } from './titleLight';
 
 /**
  * The title screen's weather: made up, never looked up. Each calendar day on the player's clock
  * draws its weather from the date alone, by the season's odds, so everyone playing on the same
  * day sees the same sky: clear more often than not, cloud and mist in spring and autumn, rain
- * most in summer, and snow only in winter. Read with the northern seasons.
+ * most in summer, and snow only in winter. South of the equator the seasons turn over
+ * (`hemisphere.ts`): July is winter there.
  */
 
 export const TITLE_WEATHERS = ['clear', 'cloudy', 'mist', 'rain', 'snow'] as const;
@@ -54,20 +56,28 @@ const ODDS: Readonly<Record<TitleSeason, Odds>> = {
   ],
 };
 
-/** The season of a month, as the northern half of the world has them. */
-export function seasonOf(month: number): TitleSeason {
+/** Months between a season and the same season in the other half of the world. */
+const HALF_YEAR = 6;
+
+/** The season of a month (1–12) in a half of the world. */
+export function seasonOf(month: number, hemisphere: Hemisphere = 'north'): TitleSeason {
+  const turned = hemisphere === 'south' ? ((month - 1 + HALF_YEAR) % 12) + 1 : month;
+  return northernSeason(turned);
+}
+
+function northernSeason(month: number): TitleSeason {
   if (month === 12 || month <= 2) return 'winter';
   if (month <= 5) return 'spring';
   if (month <= 8) return 'summer';
   return 'autumn';
 }
 
-/** The weather the title screen shows on a calendar day. */
-export function titleWeather(date: CalendarDay): TitleWeather {
+/** The weather the title screen shows on a calendar day, in the player's half of the world. */
+export function titleWeather(date: CalendarDay, hemisphere: Hemisphere = 'north'): TitleWeather {
   // The date's parts come first: the hash mixes what follows them, so close days part ways.
   const roll = hashUnit(date.year, date.month, date.day, 'title-weather');
   let left = roll;
-  for (const [weather, chance] of ODDS[seasonOf(date.month)]) {
+  for (const [weather, chance] of ODDS[seasonOf(date.month, hemisphere)]) {
     left -= chance;
     if (left < 0) return weather;
   }

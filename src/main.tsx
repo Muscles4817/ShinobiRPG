@@ -24,6 +24,7 @@ import '@/ui/styles/arcs.css';
 import '@/ui/styles/encounter.css';
 import '@/ui/styles/exam.css';
 import '@/ui/styles/creation.css';
+import '@/ui/styles/wide-creation.css';
 import '@/ui/styles/people.css';
 import '@/ui/styles/profile.css';
 import '@/ui/styles/teachers.css';

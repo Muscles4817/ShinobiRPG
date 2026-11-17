@@ -63,12 +63,28 @@ describe('techniques chosen at creation', () => {
     ]);
   });
 
-  it('puts back the earliest pick when one more is chosen than the standing allows', () => {
+  it('takes no more once the file is full: one must be put back first', () => {
     const offer = techniqueOffer(draft(), ctx).map((t) => t.id);
     const [a = '', b = '', c = ''] = offer;
     const two = draft({ techniqueIds: [a, b] });
-    expect(toggledTechnique(two, c, ctx)).toEqual([b, c]);
+    expect(toggledTechnique(two, c, ctx)).toEqual([a, b]);
     expect(toggledTechnique(two, a, ctx)).toEqual([b]);
+    const page = techniquesPage(two, ctx);
+    expect(page.full).toBe(true);
+    const others = page.groups.flatMap((g) => g.cards).filter((card) => !card.selected);
+    expect(others.every((card) => card.blocker !== null)).toBe(true);
+  });
+
+  it('says what the rack keeps back, and reads each offer’s sheet for the student', () => {
+    const page = techniquesPage(draft(), ctx);
+    expect(page.groups.some((g) => g.heldBack?.startsWith('Still on the rack:'))).toBe(true);
+    const offered = page.groups.flatMap((g) => g.cards);
+    expect(offered.every((card) => card.sheet.reach.length > 0)).toBe(true);
+    // Ranks run from the easiest within each art.
+    for (const group of page.groups) {
+      const ranks = group.cards.map((card) => card.rank);
+      expect([...ranks].sort((x, y) => (x < y ? 1 : -1))).toEqual(ranks);
+    }
   });
 
   it('drops picks a lower standing no longer carries', () => {
@@ -84,7 +100,7 @@ describe('techniques chosen at creation', () => {
   it('lays the page out by art with the basics first, in both packs', () => {
     const page = techniquesPage(draft(), ctx);
     expect(page.basics.map((c) => c.id)).toEqual(creationBasics(draft(), ctx));
-    expect(page.chosen).toBe(2);
+    expect(page.chosen).toHaveLength(2);
     expect(page.groups.length).toBeGreaterThan(1);
     const naruto = contextForPack('naruto')!;
     const leaf = draft({}, naruto);

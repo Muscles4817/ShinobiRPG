@@ -7,7 +7,7 @@ function daysOf(year: number, month: number): CalendarDay[] {
 
 describe('the title screen’s weather', () => {
   it('reads the season from the month', () => {
-    expect([1, 4, 7, 10, 12].map(seasonOf)).toEqual([
+    expect([1, 4, 7, 10, 12].map((m) => seasonOf(m))).toEqual([
       'winter',
       'spring',
       'summer',
@@ -23,8 +23,12 @@ describe('the title screen’s weather', () => {
 
   it('snows only in winter, and every season sees more than one sky', () => {
     const years = Array.from({ length: 10 }, (_, i) => 2025 + i);
-    const summer = years.flatMap((y) => [6, 7, 8].flatMap((m) => daysOf(y, m))).map(titleWeather);
-    const winter = years.flatMap((y) => [12, 1, 2].flatMap((m) => daysOf(y, m))).map(titleWeather);
+    const summer = years
+      .flatMap((y) => [6, 7, 8].flatMap((m) => daysOf(y, m)))
+      .map((d) => titleWeather(d));
+    const winter = years
+      .flatMap((y) => [12, 1, 2].flatMap((m) => daysOf(y, m)))
+      .map((d) => titleWeather(d));
     expect(summer).not.toContain('snow');
     expect(winter).toContain('snow');
     expect(summer).toContain('rain');
@@ -41,5 +45,15 @@ describe('the title screen’s weather', () => {
     expect(titleAmbience(dawn, 'mist')).toBe('dawn-chorus');
     expect(titleAmbience(dawn, 'rain')).toBe('rain');
     expect(titleAmbience(dawn, 'snow')).toBe('snow-hush');
+  });
+
+  it('turns the seasons over south of the equator', () => {
+    expect(seasonOf(7, 'south')).toBe('winter');
+    expect(seasonOf(1, 'south')).toBe('summer');
+    expect(seasonOf(10, 'south')).toBe('spring');
+    expect(seasonOf(4, 'south')).toBe('autumn');
+    const julys = Array.from({ length: 10 }, (_, i) => 2025 + i).flatMap((y) => daysOf(y, 7));
+    expect(julys.map((d) => titleWeather(d, 'south'))).toContain('snow');
+    expect(julys.map((d) => titleWeather(d))).not.toContain('snow');
   });
 });

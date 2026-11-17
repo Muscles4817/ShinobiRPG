@@ -1,0 +1,257 @@
+/*
+ * The academy file on a wide window (`CreationScreen`, `FileRail`): under the village, the
+ * student as they stand and the file's pages on a lacquer rail, beside a page wide enough to lay
+ * its options out in a grid, with Back and the forward button kept at its foot. Every rule is
+ * under `.creation.wide`, so the phone's file never changes with it.
+ */
+
+.app.creation.wide {
+  max-width: none;
+  padding-bottom: 0;
+}
+.creation.wide .ng-hero {
+  height: 190px;
+}
+.creation.wide .ng-hero-text {
+  left: max(32px, calc(50% - 620px));
+  bottom: 44px;
+}
+
+.creation.wide .file-desk {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 920px);
+  justify-content: center;
+  align-items: start;
+  gap: 28px;
+  margin-top: -24px;
+  padding: 0 32px 40px;
+}
+.creation.wide .file-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.creation.wide .file {
+  margin: 0;
+  padding: 26px 34px 28px;
+  border-radius: 4px 4px 0 0;
+  gap: 14px;
+}
+.creation.wide .file-nav {
+  margin: 0;
+  padding: 12px 34px 14px;
+  border-radius: 0 0 4px 4px;
+}
+.creation.wide .file-nav .row-buttons {
+  justify-content: flex-end;
+}
+.creation.wide .file-nav .row-buttons .btn {
+  flex: 0 0 auto;
+  min-width: 180px;
+}
+.creation.wide .file-progress {
+  text-align: right;
+}
+.creation.wide .key-note {
+  margin-left: 8px;
+}
+
+/* Desk reading sizes: the file's small print is easy to read at arm's length. */
+.creation.wide .opt-desc,
+.creation.wide .file small,
+.creation.wide .file .muted {
+  font-size: 0.9rem;
+}
+
+/* Options lie side by side on the page; headings and notes between them span the row. */
+.creation.wide .opt-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  align-items: stretch;
+}
+.creation.wide .opt-list > :not(.opt-card) {
+  grid-column: 1 / -1;
+}
+
+/* Techniques taught: the slips, and beside them the tray and the technique pointed at. */
+.creation.wide .taught {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: start;
+  gap: 26px;
+}
+.creation.wide .taught-side {
+  order: 0;
+  position: sticky;
+  top: 16px;
+}
+.creation.wide .taught-reading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-muted);
+}
+.creation.wide .taught-reading .story {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.creation.wide .taught-strip,
+.creation.wide .taught-fold {
+  display: none;
+}
+.creation.wide .taught-reading-empty {
+  display: block;
+  margin: 0;
+}
+
+/* The rail: the student as they stand, then the file's pages. */
+.file-rail {
+  position: sticky;
+  top: 16px;
+  /* A laptop's screen is shorter than the rail at full length: it scrolls within itself. */
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: var(--grain), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+}
+.rail-student {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rail-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.rail-head > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.rail-name {
+  font-family: var(--font-story);
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+.rail-grade {
+  font-size: 0.9rem;
+}
+.rail-card {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+.rail-card div {
+  padding: 6px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.rail-card dt {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.rail-card dd {
+  margin: 0;
+}
+.rail-letter {
+  font-family: var(--font-story);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+.rail-taught {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.rail-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rail-page {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.92rem;
+  text-align: left;
+}
+.rail-page.open {
+  color: var(--ink);
+  cursor: pointer;
+}
+.rail-page.open:hover {
+  background: var(--raise);
+}
+.rail-page.current {
+  color: var(--ink);
+  background: var(--raise);
+  font-weight: 700;
+}
+.rail-page:disabled {
+  cursor: default;
+}
+.rail-tick {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-story);
+  font-size: 0.8rem;
+}
+.rail-page.open .rail-tick {
+  color: var(--seal);
+  border-color: var(--seal);
+}
+
+/* The rail holds the student's face; the page's own preview would only repeat it. */
+.creation.wide .face-preview {
+  display: none;
+}
+
+.rail-label {
+  margin: 0 0 6px;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  font-weight: normal;
+}
+.rail-blank {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-story);
+  font-size: 2rem;
+  color: var(--muted);
+}
+.rail-room .note-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}

@@ -20,6 +20,7 @@ import {
 import { Backdrop } from '../../art/Backdrop';
 import { Notice } from '../../components/Notice';
 import { useEdits } from '../../edits/EditsProvider';
+import { useWideScreen } from '../../layout/useWideScreen';
 import { randomSeed } from '../../randomSeed';
 import { BreakInStep } from './BreakInStep';
 import { CaughtStep } from './CaughtStep';
@@ -28,6 +29,8 @@ import { FileStep } from './FileStep';
 import { BuildStep, UpbringingStep } from './FrameSteps';
 import { NotesStep, QuirksStep, ReadBackStep } from './NotesSteps';
 import { RecordStep } from './RecordStep';
+import { FileNav } from './FileNav';
+import { FileRail, railShows } from './FileRail';
 import { StandingStep } from './StandingStep';
 import { TechniquesStep } from './TechniquesStep';
 import type { StepProps } from './types';
@@ -200,6 +203,8 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   );
   const [roll, setRoll] = useState<BreakInRoll | null>(null);
   const [index, setIndex] = useState(0);
+  const [reached, setReached] = useState(0);
+  const wide = useWideScreen();
   if (!ctx || !draft) return null;
 
   const view = creationView(ctx);
@@ -219,9 +224,24 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
   const taught = taughtProblems(draft, ctx);
   const blocker = stepBlocker(step, { draft, roll, problems, fileProblems, noteProblems, taught });
   const props = { view, draft, update };
+  const last = step === 'caught';
+  const forward = last
+    ? view.world.graduate
+    : step === 'breakin'
+      ? 'Find your file'
+      : 'Turn the page';
+  const canForward = last ? problems.length === 0 : blocker === null;
+  const goForward = () => {
+    if (last) {
+      onStart(packId, draft, seed);
+      return;
+    }
+    setReached(Math.max(reached, index + 1));
+    setIndex(index + 1);
+  };
 
   return (
-    <div className="app creation">
+    <div className={wide ? 'app creation wide' : 'app creation'}>
       <header className="ng-hero sky" data-slot="night">
         <Backdrop id={view.world.backdrop} />
         <div className="ng-hero-text">
@@ -229,67 +249,54 @@ export function CreationScreen({ notice, onStart }: CreationScreenProps) {
           <h1 className="ng-title">{view.world.village}</h1>
         </div>
       </header>
-      <main className="file">
-        {notice && <Notice text={notice} />}
-        <p className="file-stamp">Confidential</p>
-        <h2 className="file-title">{TITLES[step]}</h2>
-        <StepBody
-          step={step}
-          {...props}
-          packs={packs}
-          packId={packId}
-          onPickPack={choosePack}
-          roll={roll}
-          onAttempt={(id) => {
-            update({ breakInApproachId: id });
-            setRoll(rollBreakIn(ctx, id, seed));
-          }}
-          seed={seed}
-          ctx={ctx}
-          setDraft={setDraft}
-        />
-      </main>
-      <nav className="file-nav">
-        {blocker && <p className="blocker">{blocker}</p>}
-        <div className="row-buttons">
-          <button
-            type="button"
-            className="btn ghost"
-            disabled={index === 0}
-            onClick={() => {
+      <div className="file-desk">
+        {wide && (
+          <FileRail
+            pages={steps.map((id) => ({ id, title: TITLES[id] }))}
+            index={index}
+            reached={reached}
+            onOpen={setIndex}
+            shows={railShows(steps, index)}
+            draft={draft}
+            view={view}
+            ctx={ctx}
+          />
+        )}
+        <div className="file-column">
+          <main className="file">
+            {' '}
+            {notice && <Notice text={notice} />} <p className="file-stamp">Confidential</p>{' '}
+            <h2 className="file-title">{TITLES[step]}</h2>{' '}
+            <StepBody
+              step={step}
+              {...props}
+              packs={packs}
+              packId={packId}
+              onPickPack={choosePack}
+              roll={roll}
+              onAttempt={(id) => {
+                update({ breakInApproachId: id });
+                setRoll(rollBreakIn(ctx, id, seed));
+              }}
+              seed={seed}
+              ctx={ctx}
+              setDraft={setDraft}
+            />{' '}
+          </main>
+          <FileNav
+            blocker={blocker}
+            index={index}
+            pages={steps.length}
+            forward={forward}
+            canForward={canForward}
+            onForward={goForward}
+            onBack={() => {
               setIndex(index - 1);
             }}
-          >
-            Back
-          </button>
-          {step === 'caught' ? (
-            <button
-              type="button"
-              className="btn"
-              disabled={problems.length > 0}
-              onClick={() => {
-                onStart(packId, draft, seed);
-              }}
-            >
-              {view.world.graduate}
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn"
-              disabled={blocker !== null}
-              onClick={() => {
-                setIndex(index + 1);
-              }}
-            >
-              {step === 'breakin' ? 'Find your file' : 'Turn the page'}
-            </button>
-          )}
+            wide={wide}
+          />
         </div>
-        <p className="file-progress num">
-          Page {index + 1} of {steps.length}
-        </p>
-      </nav>
+      </div>
     </div>
   );
 }

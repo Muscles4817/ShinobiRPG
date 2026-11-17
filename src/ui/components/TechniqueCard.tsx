@@ -21,11 +21,19 @@ interface TechniqueCardProps {
   readonly unstable?: boolean;
   /** A body move your strike plays from (your style): stamped. */
   readonly inStyle?: boolean;
+  /**
+   * A slip rather than a deck card: short and wide, for lists on paper (the academy file) where
+   * a deck card's tall face would only be empty space.
+   */
+  readonly slip?: boolean;
+  /** A word stamped on the card in seal ink ("Chosen", "Clan art"). */
+  readonly stamp?: string;
 }
 
 /**
- * The card used for techniques everywhere: the Jutsu deck and the hand in fights. Its rank, an
- * unsteady technique and a move of your style show as ink stamps.
+ * The card used for techniques everywhere: the Jutsu deck and the hand in fights, and as a short
+ * slip in lists on paper. Its rank, an unsteady technique and a move of your style show as ink
+ * stamps.
  */
 export function TechniqueCard({
   name,
@@ -35,9 +43,12 @@ export function TechniqueCard({
   rank,
   unstable = false,
   inStyle = false,
+  slip = false,
+  stamp,
 }: TechniqueCardProps) {
+  const kind = `${ghost ? ' ghost' : ''}${slip ? ' slip' : ''}`;
   return (
-    <span className={`tcard t-${discipline}${ghost ? ' ghost' : ''}`}>
+    <span className={`tcard t-${discipline}${kind}`}>
       <span className="tname">{name}</span>
       {rank && (
         <span className="badge trank" data-grade={rank} aria-label={`Rank ${rank}`}>
@@ -49,6 +60,7 @@ export function TechniqueCard({
       </span>
       {unstable && <span className="badge tunstable">Unstable</span>}
       {inStyle && <span className="badge tstyle">Style</span>}
+      {stamp && <span className="badge tstamp">{stamp}</span>}
       <span className="tdetail">{detail}</span>
     </span>
   );
