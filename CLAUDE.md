@@ -391,8 +391,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     lighter blow as they land (`rushing`); and up close a technique that needs hand signs (read from
     its art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming
     apart (`handSigns`; both in `plan/closeQuarters.ts`, flags on the fighter from
-    `plan/trialShape.ts`; a mind that reads the fight doesn't cast into a crowder but steps back,
-    or throws something signless if close is its home, `plan/crowding.ts`); and a body caught in a wide blast may keep its feet, on the maker's art
+    `plan/trialShape.ts`; a mind that reads the fight weighs a cast against a crowder: a caster
+    strongest further off steps back to make room, one at home up close throws a signless attack
+    worth more than the cast after its risk, never in place of a heal or armour, and anything else
+    is cast unless losing it is likelier than not, `plan/crowding.ts`); and a body caught in a wide blast may keep its feet, on the maker's art
     and strength against its own strength, more surely braced or bigger (`standFirm`,
     `plan/standing.ts`); and a fighter with the `teleport` perk (the Flying Thunder God) blinks once a
     round in place of the footwork their turn chose (a step, a move, an entry's way in), sure and

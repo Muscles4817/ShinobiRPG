@@ -124,7 +124,10 @@ describe('rushing in', () => {
     const arrived: Round = { ...before, distances: { 'foe|hero': 'close' } };
     expect(distanceBetween(arrived, 'hero', 'foe')).toBe('close');
     const turn = { actor: hero, target: foe, rng: createRng(3) };
-    expect(rushedIn(before, arrived, turn).lines.length).toBeGreaterThan(0);
+    const told = rushedIn(before, arrived, turn).lines;
+    expect(told.length).toBeGreaterThan(0);
+    // A fighter with no grammar reads as "they", and the verb after it agrees.
+    expect(told[0]).toContain('as they land.');
     expect(rushedIn(arrived, arrived, turn)).toBe(arrived);
   });
 });
