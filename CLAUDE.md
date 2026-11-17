@@ -148,7 +148,11 @@ ui ──► game ──► content ──► systems ──► core
     in their clan like a clan-born player; graduation day reads out the year's **honours**
     (`views/classHonours.ts`: the year in order by real standing, your place kept in your
     standing's band, top of the year, the clear best in each art, honours by trait, dead last,
-    and how strong a year it was) before the teams. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. Chakra
+    and how strong a year it was) before the teams. Academy grades are a reading of the starting arts (`gradesFor`), never chosen. **Techniques taught** (`game/creationTechniques.ts`, a page of the file) are chosen: beside
+    the academy's basics and the clan's starting arts, a few the start village's academy rack (and
+    a clan child's clan) teaches steadily at the file's grades, as many as the standing allows
+    (`StandingInfo.techniques`: one at the bottom, three for the genius); a file that never
+    chose gets the academy's starter in each best art, then that art's rack. Chakra
     **nature is found, not picked** (`game/nature.ts`): read from the seed at creation (a clan's
     nature most of the time) and hidden (`natureKnown`) until the chakra paper scene that follows
     team assignment (`testChakraPaper`). Until then it counts in fights only: no study bonus, no

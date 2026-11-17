@@ -46,6 +46,8 @@ export interface StandingInfo {
   readonly modifiers: ModifierSpec;
   /** How often fate deals this standing. */
   readonly fateWeight: number;
+  /** Techniques the graduate chose beyond the academy's basics (`game/creationTechniques.ts`). */
+  readonly techniques: number;
 }
 
 /** Hard work's floor for whoever finished at the bottom: solo practice keeps paying through C. */
@@ -67,6 +69,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     schooling: { intellect: -3, chakraControl: -3 },
     modifiers: { soloEfficiencyFloor: everyStat(DEAD_LAST_FLOOR) },
     fateWeight: 0.1,
+    techniques: 1,
   },
   'below-average': {
     label: 'Below average',
@@ -78,6 +81,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     schooling: { intellect: -1, chakraControl: -1 },
     modifiers: { soloEfficiencyFloor: everyStat(BELOW_AVERAGE_FLOOR) },
     fateWeight: 0.2,
+    techniques: 1,
   },
   middle: {
     label: 'Middle of the class',
@@ -89,6 +93,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     schooling: {},
     modifiers: {},
     fateWeight: 0.4,
+    techniques: 2,
   },
   top: {
     label: 'Among the best',
@@ -100,6 +105,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     schooling: { intellect: 2, chakraControl: 2 },
     modifiers: {},
     fateWeight: 0.2,
+    techniques: 2,
   },
   genius: {
     label: 'Genius of the year',
@@ -111,6 +117,7 @@ export const STANDING_INFO: Readonly<Record<ClassStanding, StandingInfo>> = {
     schooling: { intellect: 4, chakraControl: 4 },
     modifiers: {},
     fateWeight: 0.1,
+    techniques: 3,
   },
 };
 
