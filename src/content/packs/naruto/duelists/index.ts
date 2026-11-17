@@ -7,6 +7,7 @@ import { SUNA_FIGHTER_ARTS, SUNA_FIGHTER_GEAR, SUNA_FIGHTER_PUPPETS, SUNA_FIGHTE
 import { JIRAIYA, JIRAIYA_TECHNIQUES } from './jiraiya';
 import { TENGEN, TENGEN_GEAR, TENGEN_TECHNIQUES } from './tengen';
 import { OROCHIMARU, OROCHIMARU_TECHNIQUES } from './orochimaru';
+import { LEAF_ARTS, LEAF_FIGHTERS, LEAF_GEAR } from './leaf';
 
 /**
  * Authored fighters for versus mode who don't live in the world yet (`ContentPack.duelists`),
@@ -19,6 +20,7 @@ export const DUELISTS: readonly PersonDef[] = /*#__PURE__*/ (() => [
   OROCHIMARU,
   ...SUNA_FIGHTERS,
   ...KIRI_FIGHTERS,
+  ...LEAF_FIGHTERS,
 ])();
 export const DUELIST_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...TENGEN_TECHNIQUES,
@@ -26,11 +28,13 @@ export const DUELIST_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => 
   ...OROCHIMARU_TECHNIQUES,
   ...SUNA_FIGHTER_ARTS,
   ...KIRI_FIGHTER_ARTS,
+  ...LEAF_ARTS,
 ])();
 export const DUELIST_GEAR: readonly GearDef[] = /*#__PURE__*/ (() => [
   ...TENGEN_GEAR,
   ...SUNA_FIGHTER_GEAR,
   ...KIRI_FIGHTER_GEAR,
+  ...LEAF_GEAR,
 ])();
 export const DUELIST_PUPPETS: readonly PuppetDef[] = /*#__PURE__*/ (() => [
   ...SUNA_FIGHTER_PUPPETS,
