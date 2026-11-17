@@ -778,13 +778,15 @@ describe('App (smoke test)', () => {
       await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     }
     expect(screen.getByRole('heading', { name: 'Techniques taught' })).toBeInTheDocument();
-    expect(screen.getByText('2 of 2 chosen')).toBeInTheDocument();
+    const tray = within(screen.getByRole('region', { name: 'Chosen techniques' }));
+    expect(tray.getByText(/2 of 2/)).toBeInTheDocument();
     // Putting one back holds the page until another is chosen.
-    const chosen = screen.getAllByRole('button', { name: /^Put back/ });
-    await user.click(chosen[0]!);
+    await user.click(tray.getAllByRole('button', { name: 'Put back' })[0]!);
     expect(screen.getByRole('button', { name: 'Turn the page' })).toBeDisabled();
-    const pick = screen.getAllByRole('button', { name: /^Choose / })[0]!;
-    const name = (pick.getAttribute('aria-label') ?? '').replace(/^Choose /, '');
+    const pick = screen
+      .getAllByRole('button', { pressed: false })
+      .find((b) => b.classList.contains('taught-pick'))!;
+    const name = pick.querySelector('.tname')?.textContent ?? '';
     await user.click(pick);
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));
     await user.click(screen.getByRole('button', { name: 'Turn the page' }));

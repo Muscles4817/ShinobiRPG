@@ -1,13 +1,22 @@
-import { techniquesPage, toggledTechnique, type GameContext, type TaughtCard } from '@/game';
+import { useState } from 'react';
+
+import {
+  techniquesPage,
+  toggledTechnique,
+  type Discipline,
+  type GameContext,
+  type TaughtCard,
+} from '@/game';
 
 import { TechniqueCard } from '../../components/TechniqueCard';
+import { TechniqueSheet } from '../../components/TechniqueSheet';
 import type { StepProps } from './types';
 
 interface TechniquesStepProps extends StepProps {
   readonly ctx: GameContext;
 }
 
-const ART_LABEL: Readonly<Record<TaughtCard['discipline'], string>> = {
+const ART_LABEL: Readonly<Record<Discipline, string>> = {
   taijutsu: 'Taijutsu',
   ninjutsu: 'Ninjutsu',
   genjutsu: 'Genjutsu',
@@ -15,61 +24,173 @@ const ART_LABEL: Readonly<Record<TaughtCard['discipline'], string>> = {
   fuuinjutsu: 'Fūinjutsu',
 };
 
-function detailOf(card: TaughtCard): string {
-  return card.fromClan ? `Your clan’s art. ${card.description}` : card.description;
+/** A technique on offer: a slip that is chosen or put back, and read beside the list. */
+function Offer({
+  card,
+  onToggle,
+  onRead,
+}: {
+  readonly card: TaughtCard;
+  readonly onToggle: () => void;
+  readonly onRead: () => void;
+}) {
+  const stamp = card.selected ? 'Chosen' : card.fromClan ? 'Clan art' : undefined;
+  return (
+    <li>
+      <button
+        type="button"
+        className={`taught-pick${card.selected ? ' selected' : ''}`}
+        aria-pressed={card.selected}
+        aria-disabled={card.blocker !== null}
+        title={card.blocker ?? undefined}
+        onClick={card.blocker ? onRead : onToggle}
+        onMouseEnter={onRead}
+        onFocus={onRead}
+      >
+        <TechniqueCard
+          name={card.name}
+          detail={card.description}
+          discipline={card.discipline}
+          rank={card.rank}
+          slip
+          {...(stamp ? { stamp } : {})}
+        />
+      </button>
+    </li>
+  );
+}
+
+/** The slots the standing allows, filled in the order chosen, each with a way to put it back. */
+function ChosenTray({
+  chosen,
+  picks,
+  onPutBack,
+}: {
+  readonly chosen: readonly TaughtCard[];
+  readonly picks: number;
+  readonly onPutBack: (id: string) => void;
+}) {
+  const open = Math.max(0, picks - chosen.length);
+  return (
+    <section className="taught-tray" aria-label="Chosen techniques">
+      <h3 className="note-group">
+        Chosen{' '}
+        <span className="num">
+          {chosen.length} of {picks}
+        </span>
+      </h3>
+      <ol className="taught-slots">
+        {chosen.map((c) => (
+          <li key={c.id} className={`taught-slot filled t-${c.discipline}`}>
+            <span className="taught-slot-name">{c.name}</span>
+            <button
+              type="button"
+              className="btn ghost small"
+              onClick={() => {
+                onPutBack(c.id);
+              }}
+            >
+              Put back
+            </button>
+          </li>
+        ))}
+        {Array.from({ length: open }, (_, i) => (
+          <li key={`open-${String(i)}`} className="taught-slot">
+            <span className="muted">Choose a technique below</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+/** The technique being read: what it is and what it does in a fight, for the student on file. */
+function Reading({ card }: { readonly card: TaughtCard | null }) {
+  if (!card) {
+    return <p className="muted taught-reading-empty">Point at a technique to read it.</p>;
+  }
+  return (
+    <section className="taught-reading" aria-label={`Technique: ${card.name}`}>
+      <h3 className="note-group">
+        {card.name}{' '}
+        <span className="badge" data-grade={card.rank}>
+          Rank {card.rank}
+        </span>
+      </h3>
+      <p className="story">{card.description}</p>
+      {card.blocker && <p className="blocker">{card.blocker}</p>}
+      <TechniqueSheet sheet={card.sheet} />
+    </section>
+  );
 }
 
 /** What the academy taught you: the basics, then the techniques you chose at your grades. */
 export function TechniquesStep({ draft, update, ctx }: TechniquesStepProps) {
   const page = techniquesPage(draft, ctx);
+  const [readingId, setReadingId] = useState<string | null>(null);
+  const all = [...page.basics, ...page.groups.flatMap((g) => g.cards)];
+  const reading = all.find((c) => c.id === readingId) ?? page.chosen[0] ?? null;
+  const toggle = (id: string) => {
+    update({ techniqueIds: toggledTechnique(draft, id, ctx) });
+  };
   return (
     <div className="step taught">
-      <section className="opt-list">
-        <h3 className="note-group">Every graduate knows</h3>
-        <ul className="taught-basics">
-          {page.basics.map((card) => (
-            <li key={card.id}>
-              <TechniqueCard
-                name={card.name}
-                detail={detailOf(card)}
-                discipline={card.discipline}
-                rank={card.rank}
-              />
-            </li>
-          ))}
-        </ul>
-      </section>
-      <div className="note-room">
-        <p>{page.allowance}</p>
-        <small className="num">
-          {page.chosen} of {page.picks} chosen
-        </small>
-      </div>
-      {page.groups.map((group) => (
-        <section key={group.discipline} className="opt-list">
-          <h3 className="note-group">{ART_LABEL[group.discipline]}</h3>
-          {group.cards.map((card) => (
-            <button
-              key={card.id}
-              type="button"
-              className={`taught-pick${card.selected ? ' selected' : ''}`}
-              aria-pressed={card.selected}
-              aria-label={`${card.selected ? 'Put back' : 'Choose'} ${card.name}`}
-              onClick={() => {
-                update({ techniqueIds: toggledTechnique(draft, card.id, ctx) });
-              }}
-            >
-              <TechniqueCard
-                name={card.name}
-                detail={detailOf(card)}
-                discipline={card.discipline}
-                rank={card.rank}
-                ghost={!card.selected}
-              />
-            </button>
-          ))}
+      <div className="taught-list">
+        <p className="taught-allowance">{page.allowance}</p>
+        <section className="opt-list">
+          <h3 className="note-group">Every graduate knows</h3>
+          <ul className="taught-grid">
+            {page.basics.map((card) => (
+              <li
+                key={card.id}
+                onMouseEnter={() => {
+                  setReadingId(card.id);
+                }}
+              >
+                <TechniqueCard
+                  name={card.name}
+                  detail={card.description}
+                  discipline={card.discipline}
+                  rank={card.rank}
+                  slip
+                />
+              </li>
+            ))}
+          </ul>
         </section>
-      ))}
+        {page.groups.map((group) => (
+          <section key={group.discipline} className="opt-list">
+            <h3 className="note-group">
+              {ART_LABEL[group.discipline]}{' '}
+              <span className="taught-grade">you learn it up to rank {group.grade}</span>
+            </h3>
+            {group.cards.length > 0 && (
+              <ul className="taught-grid">
+                {group.cards.map((card) => (
+                  <Offer
+                    key={card.id}
+                    card={card}
+                    onToggle={() => {
+                      toggle(card.id);
+                    }}
+                    onRead={() => {
+                      setReadingId(card.id);
+                    }}
+                  />
+                ))}
+              </ul>
+            )}
+            {group.heldBack && <p className="muted taught-held">{group.heldBack}</p>}
+          </section>
+        ))}
+      </div>
+      <aside className="taught-side">
+        <ChosenTray chosen={page.chosen} picks={page.picks} onPutBack={toggle} />
+        {page.full && (
+          <p className="muted taught-full">Your file is full. Put one back to choose another.</p>
+        )}
+        <Reading card={reading} />
+      </aside>
     </div>
   );
 }

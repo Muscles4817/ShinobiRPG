@@ -9,6 +9,16 @@
   position: absolute;
   left: var(--gutter);
   bottom: 34px;
+  /* The village's lit windows sit behind the title: a shadow keeps the words on top. */
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.9),
+    0 0 14px rgb(0 0 0 / 0.75);
+}
+
+/* The desk's frame (a rail beside the page) only exists on a wide window. */
+.file-desk,
+.file-column {
+  display: contents;
 }
 
 .file {
@@ -36,9 +46,9 @@
 }
 .file-stamp {
   align-self: flex-end;
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--seal);
   border: 1.5px solid var(--seal);
   padding: 1px 8px;
@@ -213,10 +223,12 @@
   min-height: 40px;
 }
 
+/* The picked one is stamped in seal ink, as a chosen option card is. */
 .seg.on {
-  background: var(--paper-ink);
-  color: var(--paper);
-  border-color: var(--paper-ink);
+  background: #fbf3e2;
+  color: var(--seal);
+  border-color: var(--seal);
+  box-shadow: inset 0 0 0 1px var(--seal);
 }
 .segments.mode {
   align-self: flex-start;

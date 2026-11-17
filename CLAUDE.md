@@ -1465,6 +1465,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   Versus setup on a desk (`VersusDesk`) fills the window: the bout, the roster and a profile,
   each scrolling on its own; the profile follows the pointer through the roster and is never
   empty, and Enter fights.
+  The academy file on a desk (`CreationScreen`, `FileRail`, `wide-creation.css`) sets a lacquer
+  rail beside the page: the student as they stand (face, standing, fighting grade, report card,
+  techniques chosen) and the file's pages, any turned already open to go back to; the page lays
+  its options out in a grid, and Enter turns it, Esc goes back. Techniques are slips on paper
+  there (`TechniqueCard slip`), never the deck's tall cards.
   The editor on a desk fills the window too: the roster, then the fighter's stats and their
   techniques side by side (stacked below 1300px), the cards short as on a profile.
   The Record on a desk keeps its header in view, lists the journal's days beside the feed (the

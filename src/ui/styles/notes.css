@@ -146,25 +146,181 @@
   font-weight: 700;
 }
 
-/* Techniques taught: the basics as a row of cards, then picks that stamp when chosen. */
-.taught-basics {
+/*
+ * Techniques taught: slips on the file, chosen ones stamped in seal ink and gathered in the tray
+ * of slots the standing allows; the technique pointed at is read in full beside the list.
+ */
+.taught {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 14px;
+}
+/* On a phone the tray comes first, where the thumb is about to choose. */
+.taught-side {
+  order: -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.taught-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.taught-allowance {
+  margin: 0;
+  font-family: var(--font-story);
+  font-size: 1.02rem;
+}
+.taught-grade {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+.taught-grid {
+  list-style: none;
   margin: 0;
   padding: 0;
-  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 8px;
+}
+.taught-held {
+  margin: 0;
+  font-size: 0.85rem;
 }
 .taught-pick {
   display: block;
-  min-height: 40px;
+  width: 100%;
+  height: 100%;
+  min-height: 44px;
   padding: 0;
-  border: 1px solid transparent;
+  border: none;
   border-radius: var(--radius);
   background: none;
   text-align: left;
+  cursor: pointer;
 }
-.taught-pick.selected {
+.taught-pick .tcard {
+  height: 100%;
+}
+.taught-pick:hover .tcard {
+  border-color: var(--paper-ink);
+}
+.taught-pick.selected .tcard {
   border-color: var(--seal);
   box-shadow: inset 0 0 0 1.5px var(--seal);
+  background: #fbf3e2;
+}
+.taught-pick[aria-disabled='true'] .tcard {
+  opacity: 0.72;
+}
+.taught-pick:focus-visible {
+  outline: 2px solid var(--seal);
+  outline-offset: 2px;
+}
+
+/* A technique as a slip on paper: short, its art's kanji small in the corner. */
+.tcard.slip {
+  aspect-ratio: auto;
+  min-height: 78px;
+  gap: 4px;
+  padding: 8px 10px;
+  justify-content: flex-start;
+  background: #f8f2e5;
+  color: var(--paper-ink);
+  border: 1px solid #c9b994;
+  box-shadow: none;
+}
+.tcard.slip .tname {
+  font-family: var(--font-story);
+  font-size: 0.98rem;
+  padding-right: 26px;
+}
+.tcard.slip .tdetail {
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  padding-right: 26px;
+}
+.tcard.slip .tglyph {
+  place-items: end end;
+  padding: 0 8px 4px 0;
+  font-size: 1.5rem;
+  opacity: 0.55;
+}
+.tcard .tstamp {
+  position: relative;
+  align-self: flex-start;
+  color: var(--seal);
+  font-size: 0.7rem;
+  transform: rotate(-2deg);
+}
+
+/* The tray: one slot for each technique the standing allows. */
+.taught-tray {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.taught-tray .note-group {
+  margin: 0;
+}
+.taught-slots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.taught-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 6px 4px 12px;
+  border: 1.5px dashed #c9b994;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+.taught-slot.filled {
+  border: 1.5px solid var(--d);
+  background: #fbf3e2;
+}
+.taught-slot-name {
+  font-family: var(--font-story);
+  font-size: 1rem;
+}
+.taught-full {
+  margin: 0;
+  font-size: 0.85rem;
+}
+/* The reading needs a desk's room; a phone reads each slip's own line. */
+.taught-reading,
+.taught-reading-empty {
+  display: none;
+}
+
+/* On paper every stamp is in ink: the grade colours are mixed for the night's dark cards. */
+.file .tcard.slip .trank,
+.file .taught-reading .badge {
+  color: var(--paper-ink);
+  border-color: currentColor;
+}
+.file .btn.ghost {
+  color: var(--paper-ink);
+  border-color: #c9b994;
+}
+.file .tsheet dt {
+  color: var(--paper-muted);
+}
+.file .tsheet-reach span {
+  border-color: #c9b994;
+  color: var(--paper-muted);
+}
+.file .tsheet-reach span.on {
+  color: var(--paper-ink);
+  border-color: var(--seal);
 }

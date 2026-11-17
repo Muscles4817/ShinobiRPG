@@ -103,12 +103,41 @@ export function techniqueProblems(draft: CreationDraft, ctx: GameContext): strin
   return [];
 }
 
-/** Picks or puts back a technique; picking past the limit puts back the earliest picked. */
+/**
+ * Picks or puts back a technique. A full file takes no more: one must be put back first, so
+ * nothing chosen is ever dropped out of sight.
+ */
 export function toggledTechnique(draft: CreationDraft, id: string, ctx: GameContext): string[] {
-  const chosen = chosenTechniques(draft, ctx);
+  const chosen = [...chosenTechniques(draft, ctx)];
   if (chosen.includes(id)) return chosen.filter((t) => t !== id);
-  const next = [...chosen, id];
-  return next.slice(Math.max(0, next.length - techniquePicks(draft)));
+  return chosen.length >= techniquePicks(draft) ? chosen : [...chosen, id];
+}
+
+/** Why a technique of the rack isn't on offer: the art's grade, or a need the body hasn't met. */
+export type HeldBack = 'grade' | 'nature' | 'body';
+
+/** The rack's techniques this draft could one day learn but isn't offered, and why. */
+export function heldBackTechniques(
+  draft: CreationDraft,
+  ctx: GameContext,
+): { readonly def: TechniqueDef; readonly why: HeldBack }[] {
+  const { content } = ctx;
+  if (!content.clans.get(draft.clanId)) return [];
+  const stats = graduationStats(profileOf(draft), ctx);
+  const basics = new Set(creationBasics(draft, ctx));
+  const offered = new Set(techniqueOffer(draft, ctx).map((t) => t.id));
+  return rackIds(ctx)
+    .filter((id) => !basics.has(id) && !offered.has(id))
+    .flatMap((id) => content.techniques.get(id) ?? [])
+    .filter((def) => def.clan === undefined || def.clan === draft.clanId)
+    .map((def) => ({ def, why: heldBackWhy(def, stats, draft.clanId) }));
+}
+
+function heldBackWhy(def: TechniqueDef, stats: Stats, clanId: string): HeldBack {
+  const blocker = learnBlocker(EMPTY_BOOK, def, { stats, clanId, nature: null });
+  if (blocker?.kind === 'nature') return 'nature';
+  if (blocker === null || blocker.kind === 'rank') return 'grade';
+  return 'body';
 }
 
 /**
