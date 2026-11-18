@@ -52,7 +52,8 @@ export type Card =
   | { readonly kind: 'throw' }
   | { readonly kind: 'step'; readonly direction: 'in' | 'back' }
   | { readonly kind: 'guard' }
-  | { readonly kind: 'dodge' }
+  /** A ready Dodge; `clear`, one that springs back a distance as it slips (`leap.ts`). */
+  | { readonly kind: 'dodge'; readonly clear?: true }
   | { readonly kind: 'counter' }
   /** Committed defence, played as an action (`commitment.ts`). */
   | { readonly kind: 'evade' }
@@ -74,6 +75,7 @@ const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'step-back', card: { kind: 'step', direction: 'back' } },
   { id: 'guard', card: { kind: 'guard' } },
   { id: 'dodge', card: { kind: 'dodge' } },
+  { id: 'dodge-clear', card: { kind: 'dodge', clear: true } },
   { id: 'counter', card: { kind: 'counter' } },
   { id: 'evade', card: { kind: 'evade' } },
   { id: 'brace', card: { kind: 'brace' } },
@@ -89,6 +91,7 @@ export function slotLimit(fighter: Pick<PlanFighter, 'attributes'>): number {
 export function cardId(card: Card): CardId {
   if (card.kind === 'jutsu') return `${JUTSU_PREFIX}${card.technique.id}`;
   if (card.kind === 'item') return `${ITEM_PREFIX}${card.item.id}`;
+  if (card.kind === 'dodge' && card.clear) return 'dodge-clear';
   return card.kind === 'step' ? `step-${card.direction}` : card.kind;
 }
 
@@ -134,6 +137,8 @@ export function playsAnywhere(card: Card): card is Anywhere {
 }
 
 export function fitsBand(card: Card, band: RangeBand): boolean {
+  // From far there is no further to spring back to.
+  if (card.kind === 'dodge' && card.clear) return band !== 'far';
   if (playsAnywhere(card)) return true;
   switch (card.kind) {
     case 'strike':

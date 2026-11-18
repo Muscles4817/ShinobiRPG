@@ -1,3 +1,4 @@
+import type { Rng } from '@/core';
 import type { CombatTechnique } from '../../contract';
 import { payFor } from './effort';
 import { alive, hasPerk, holdTurns } from '../../rules/body';
@@ -43,6 +44,7 @@ import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 import { distanceBetween } from './distance';
 import { leapClear } from './leap';
+import { weightOf } from './weight';
 import { slipCause, slipCauseBeside, withCause } from './causes';
 import type { NarrationCause } from '../../rules/causes';
 
@@ -284,7 +286,7 @@ function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): 
 }
 
 /** Tells a foe slipping a technique: read and ready for it, or (a ready Dodge) clear of it. */
-function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
+function toldSlip(round: Round, { actor, foe, t, rng }: Slipped & { readonly rng: Rng }): Round {
   const moment = momentOf(round, foe.id);
   const slip = { target: foe, attacker: actor, what: t.name };
   const cause = slipCauseOf(round, { actor, foe, t });
@@ -297,7 +299,10 @@ function toldSlip(round: Round, { actor, foe, t }: Slipped): Round {
   const told = missLine(moment, why, slip);
   const said = say(noted, withCause(reactionLine(told, 'dodged'), slipCauseBeside(cause, true)));
   // A ready Dodge may leap clear of what it slipped (`leap.ts`); an illusion seen through isn't.
-  return t.discipline === 'genjutsu' ? said : leapClear(said, foe, actor);
+  if (t.discipline === 'genjutsu') return said;
+  const incoming = techniqueIncoming(actor, foe, t, round);
+  const weight = incoming ? weightOf(incoming) : 'medium';
+  return leapClear(said, foe, { attacker: actor, weight, rng });
 }
 
 interface Slipped {
@@ -316,7 +321,7 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const targets = targetsOf(paid, turn, t);
   if (isHarmful(t) && targets.length === 0) return paid;
   const seen = targets.filter((foe) => slips(paid, turn, foe, t));
-  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t }), paid);
+  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t, rng: turn.rng }), paid);
   if (isHarmful(t) && seen.length === targets.length) {
     return aftermath(told, turn, { t, caught: targets });
   }

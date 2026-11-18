@@ -100,6 +100,8 @@ export interface AvoidRoll {
   readonly read: number;
   /** A Dodge is the defender's ready defence. */
   readonly dodging: boolean;
+  /** How much a ready Dodge's stance counts against this attack, by its weight (absent: fully). */
+  readonly dodgeScale?: number;
   /** The defender committed to Evade this turn (`commitment.ts`). */
   readonly evading?: boolean;
   /** Share of the defender's health it would take: an evader who reads it saves Evade for it. */
@@ -123,7 +125,8 @@ export function avoidChance(roll: AvoidRoll): number {
   // Eyes that see it coming read every attack clearly: Evade goes where it matters.
   const focusRead = seesAll ? Infinity : roll.read;
   const lift = evading ? EVADE_STANCE[roll.form] * evadeFocus(focusRead, roll.threat) : 0;
-  const stance = STANCE[roll.form][roll.dodging ? 'dodging' : 'open'] + lift;
+  const dodge = roll.dodging ? STANCE[roll.form].dodging * (roll.dodgeScale ?? 1) : 0;
+  const stance = (roll.dodging ? dodge : STANCE[roll.form].open) + lift;
   const area = roll.areaSize ? AREA_RULES[roll.areaSize].dodge : 1;
   const chance = base * stance * roll.read + (roll.bonus ?? 0);
   const keepsUp = roll.rating * (seesAll ? SEEING_PACE : 1);

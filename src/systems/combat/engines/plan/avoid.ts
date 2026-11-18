@@ -43,6 +43,7 @@ import { isOpen } from './finishers';
 import { seesThroughIllusions } from '../../rules/eyes';
 import { watched } from './sharedMind';
 import { distanceBetween } from './distance';
+import { DODGE_BY_WEIGHT, weightOf } from './weight';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -119,6 +120,7 @@ function avoidRoll(round: Round, incoming: Incoming): number {
     arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
     read: read * (incoming.familiar ?? 1),
     dodging,
+    ...(dodging ? { dodgeScale: DODGE_BY_WEIGHT[weightOf(incoming)] } : {}),
     evading,
     ...(incoming.threat === undefined ? {} : { threat: incoming.threat }),
     ...(incoming.paceSpeed === undefined ? {} : { paceSpeed: incoming.paceSpeed }),

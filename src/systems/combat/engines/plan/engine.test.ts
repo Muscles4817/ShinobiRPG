@@ -1,7 +1,7 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatEngine, CombatState, CombatTechnique } from '../../contract';
-import { cardsFor, reactionsFor, slotLimit, type Card } from './cards';
+import { cardId, cardsFor, reactionsFor, slotLimit, type Card } from './cards';
 import { defaultLoadout, defaultReadiness } from './defaults';
 import { chooseCard } from './choose';
 import { createPlanEngine, ROUND_EXCHANGES } from './engine';
@@ -74,7 +74,7 @@ describe('plan & watch cards', () => {
   it('each distance offers the actions that reach it; defences are chosen apart', () => {
     const [hero] = bodies();
     const ids = (cards: readonly Card[]) =>
-      cards.map((c) => (c.kind === 'jutsu' ? c.technique.id : c.kind));
+      cards.map((c) => (c.kind === 'jutsu' ? c.technique.id : cardId(c)));
     expect(ids(cardsFor(hero!, 'close'))).toEqual([
       'evade',
       'brace',
@@ -92,7 +92,7 @@ describe('plan & watch cards', () => {
       'daze',
       'blast',
     ]);
-    expect(ids(reactionsFor(hero!, 'close'))).toEqual(['guard', 'dodge', 'counter']);
+    expect(ids(reactionsFor(hero!, 'close'))).toEqual(['guard', 'dodge', 'dodge-clear', 'counter']);
     expect(ids(reactionsFor(hero!, 'far'))).toEqual(['guard', 'dodge']);
   });
 
