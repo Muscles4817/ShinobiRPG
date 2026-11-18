@@ -4,7 +4,7 @@ import { statTier } from '@/systems/stats';
 import { alive } from '../../../../rules/body';
 import type { Announcement } from '../../decisionLog';
 import { bandOf } from '../../distance';
-import { intendedCard, intentOf } from '../../intent';
+import { byIntent, intendedCard, intentOf } from '../../intent';
 import type { PlanFighter, PlanState } from '../../state';
 import type { HeldPlan } from '../shape';
 import { holdsNow } from './facts';
@@ -71,9 +71,12 @@ function thought(
   return planned(state, f, budget) ?? intentOf(state, f, rng);
 }
 
-/** What every standing foe means to do next exchange, thinking foes by their plans. */
+/**
+ * What every standing foe (and, in a bout only watched, everyone who thinks) means to do next
+ * exchange, thinking fighters by their plans.
+ */
 export function foresee(state: PlanState, rng: Rng): Readonly<Record<string, Announcement>> {
-  const foes = state.fighters.filter((f) => f.side === 'enemy' && alive(f) && f.stunned === 0);
+  const foes = state.fighters.filter((f) => byIntent(f) && alive(f) && f.stunned === 0);
   const thinkers = foes.filter((f) => f.thinks);
   const weights = thinkers.reduce((sum, f) => sum + tierOf(f).weight, 0);
   const budget = roundBudget(state.fighters.filter(alive).length);
@@ -87,9 +90,16 @@ export function foresee(state: PlanState, rng: Rng): Readonly<Record<string, Ann
   );
 }
 
-/** Every foe thinks ahead, in a fight that tries it (`CombatExperiments.planner`). */
-export function withThinking(fighters: readonly PlanFighter[], on: boolean): PlanFighter[] {
-  return on
-    ? fighters.map((f) => (f.side === 'enemy' ? { ...f, thinks: true as const } : f))
-    : [...fighters];
+/**
+ * Every foe thinks ahead, in a fight that tries it (`CombatExperiments.planner`); in a bout only
+ * watched, so does everyone on your side, or the two sides would not be fighting with the same
+ * minds. A fight you plan yourself keeps your side to the plans you set.
+ */
+export function withThinking(
+  fighters: readonly PlanFighter[],
+  { on, watched }: { on: boolean; watched: boolean },
+): PlanFighter[] {
+  if (!on) return [...fighters];
+  const thinks = (f: PlanFighter) => f.side === 'enemy' || watched;
+  return fighters.map((f) => (thinks(f) ? { ...f, thinks: true as const } : f));
 }

@@ -29,7 +29,7 @@ export interface VersusChoice {
   readonly ground: VersusGround['id'];
   /** Only watch: your side fights on its own too. */
   readonly watch: boolean;
-  /** Foes think ahead, a rule on trial. */
+  /** Fighters think ahead (foes; both sides when only watched), a rule on trial. */
   readonly foesThink: boolean;
   /** Hand signs can be broken up close, a rule on trial. */
   readonly handSigns: boolean;

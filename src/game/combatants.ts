@@ -171,6 +171,7 @@ export function summonCall(summon: SummonDef, ctx: GameContext): CombatCall {
     ...(summon.mount ? { mount: true as const } : {}),
     ...(summon.perch ? { perch: true as const } : {}),
     ...(summon.shared ? { shared: true as const } : {}),
+    ...(summon.present ? { present: true as const } : {}),
   };
 }
 

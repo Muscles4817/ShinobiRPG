@@ -2,7 +2,7 @@ import { createRng } from '@/core';
 
 import type { RangeBand } from '../../../../contract';
 import { findCard, fitsBand } from '../../cards';
-import { rollIntents } from '../../intent';
+import { byIntent, rollIntents } from '../../intent';
 import { resolveExchange } from '../../round';
 import { endOfRound } from '../../roundEnd';
 import {
@@ -35,7 +35,7 @@ function steered(state: PlanState, selfId: string, card: CardId | null): PlanSta
   if (card === null) return state;
   const self = state.fighters.find((f) => f.id === selfId);
   if (!self) return state;
-  if (self.side === 'enemy') return { ...state, intents: { ...state.intents, [selfId]: card } };
+  if (byIntent(self)) return { ...state, intents: { ...state.intents, [selfId]: card } };
   const loadout = forcedLoadout(self, card);
   return {
     ...state,

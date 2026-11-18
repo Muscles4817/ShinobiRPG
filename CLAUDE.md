@@ -404,7 +404,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     partners and mission notices, from the same stats the fight uses.
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
     them on, and only versus does (its setup's "Rules on trial"): foes think ahead with the
-    planner (`mind/planner/`, `planner`), a bout's steps then played in a Web Worker off the page's
+    planner (`mind/planner/`, `planner`; in a bout only watched, your side too, `withThinking`,
+    and anyone thinking plays what they announce, `byIntent`), a bout's steps then played in a Web Worker off the page's
     thread (`ui/fight/`, `dispatchAlone` rebuilding the context from the state); up close a technique that needs hand signs (read from its
     art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart
     (`handSigns`, `plan/closeQuarters.ts`, flags on the fighter from `plan/trialShape.ts`; a mind
@@ -474,7 +475,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     they go home unpaid, beaten or when the caller falls (`CombatOutcome.summons`); one hurt to
     `BROKEN_SHARE` goes before it falls and won't answer again that fight, and a caller who reads
     the fight sends one home hurt first (`SAVED_SHARE`) or lets the smallest go to spare chakra
-    (`UPKEEP_HORIZON`). A kit that calls more than one summon fights **by summoning**
+    (`UPKEEP_HORIZON`). A call that is `present` (Pain's Paths, `SummonDef.present`) already stands
+    beside its caller as the fight begins, placed as a summoning places it, with no turn spent
+    (`plan/present.ts`). A kit that calls more than one summon fights **by summoning**
     (`plan/calling.ts`): calls take no plan slot; against anyone strong the whole style at once,
     otherwise only what the fight shows they need (read as a ladder's step is, `climbReasons`):
     the biggest body when outmatched or hurt, else the cheapest that answers; a killer's answer

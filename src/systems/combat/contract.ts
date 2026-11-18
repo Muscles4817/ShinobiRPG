@@ -247,6 +247,11 @@ export interface CombatCall {
   readonly perch?: true;
   /** Of its caller's mind, not its own: it thinks and aims as they do (`mindContract.ts`). */
   readonly shared?: true;
+  /**
+   * Already on the field as the fight begins, beside its caller (Pain's Paths): no turn spent
+   * calling it, its upkeep paid as any summons' (`plan/present.ts`).
+   */
+  readonly present?: true;
 }
 
 /** How a summon's part in a fight ended: still there, beaten, or sent home unpaid. */
@@ -320,7 +325,7 @@ export interface CombatSetup {
  * don't know one ignore it.
  */
 export interface CombatExperiments {
-  /** Foes think ahead with the planner (`engines/plan/mind/planner/`). */
+  /** Foes think ahead with the planner (and, in a bout only watched, your side too) (`engines/plan/mind/planner/`). */
   readonly planner?: boolean;
   /** Up close, a technique that needs hand signs may come apart before it's cast (`plan/closeQuarters.ts`). */
   readonly handSigns?: boolean;
