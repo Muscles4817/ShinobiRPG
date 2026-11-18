@@ -26,6 +26,7 @@ import { fightMeters, Gauges, type SightOf } from './Gauges';
 import { PlanPreviewContext, type PreviewFor } from './planPreview';
 import { PlansByOwner, TeamOrders } from './TeamOrders';
 import { useHealthPulses } from './useHealthPulses';
+import { WhoPlans } from './WhoPlans';
 
 type Pick = (option: CombatOption) => void;
 
@@ -208,6 +209,11 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
   const shown = view.combatants.find((c) => c.id === hover.previewId) ?? picked;
   const names = Object.fromEntries(view.combatants.map((c) => [c.id, c.name]));
   const plans = view.options.filter((o) => o.kind === 'plan');
+  // At orders the mind plans the round, so its list folds away under your order (`WhoPlans`).
+  const byOrders = view.options.some((o) => o.planning === 'order');
+  const table = (
+    <PlansByOwner options={plans} names={names} here={hereFor(view)} onPick={pickCard} />
+  );
   const formation = (
     <Formation
       fighters={view.combatants}
@@ -230,8 +236,18 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
   const fighterRead = <FighterRead fighter={shown} read={shown ? reads[shown.id] : undefined} />;
   const cards = (
     <section className="your-cards" aria-label="Your cards">
-      <h3 className="plan-heading">Your cards</h3>
-      <PlansByOwner options={plans} names={names} here={hereFor(view)} onPick={pickCard} />
+      <WhoPlans options={view.options} onPick={pickCard} />
+      {byOrders ? (
+        <details className="plan-folded">
+          <summary className="plan-heading">What the mind will play</summary>
+          {table}
+        </details>
+      ) : (
+        <>
+          <h3 className="plan-heading">Your cards</h3>
+          {table}
+        </>
+      )}
     </section>
   );
   const head = (

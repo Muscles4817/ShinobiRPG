@@ -1004,6 +1004,24 @@ Still open from the mockup:
 
 Per-exchange choice (5) stays out. Orders without pins (2) is simply level 3 with no pins.
 
+**Built (the player controls).** The plan screen has the switch, "Who plans this round"
+(`plan/whoPlans.ts`, `plan/drafting.ts`, `ui/.../WhoPlans.tsx`):
+
+- **Your list:** as before, with "Ask for a plan" filling only empty slots. No stamps.
+- **Plan, then edit:** each round the mind drafts every slot you haven't set from the plan it
+  would fight with (`defaultLoadout`), each drafted slot stamped with its one-line reason; a slot
+  you change becomes yours (stamped, with "Hand it back"), and the mind drafts around it.
+- **Orders:** an order bends the draft (as the mind sees fit, press in close, keep your distance,
+  play it safe, set them up) and "Never use" forbids a card from every draft; the card list folds
+  under "What the mind will play".
+- Moving up from your list keeps every slot as yours, with "Hand the list back" to let the mind
+  draft it all; back to your list adopts everything. The level, order, pins and forbids carry over
+  with the plan (`planningMemory.ts`).
+
+Not yet: doctrine ("How you fight", a standing preference the draft reads), the draft by the
+planner rather than the default plan, and a mid-round call opening on the level you were on (it
+does today, since the level is kept on the fighter).
+
 ### Teammates
 
 Teammates already fight by `stance` and take `orders` the bond has earned (`teamOrders.ts`).

@@ -322,3 +322,73 @@
   gap: 8px;
   margin-bottom: 10px;
 }
+
+/* Who plans this round: a three-stop switch of lacquered stops over the same plan. */
+.who-plans {
+  margin-bottom: 12px;
+}
+.who-levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.who-level {
+  min-height: 44px;
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  border-left: 1px solid var(--line);
+  font: inherit;
+  cursor: pointer;
+}
+.who-level:first-child {
+  border-left: none;
+}
+.who-level.on {
+  background: var(--raise);
+  box-shadow: inset 0 -2px 0 var(--lantern);
+  color: var(--ink);
+  font-weight: 600;
+}
+.who-order,
+.who-forbid,
+.who-asks {
+  margin-top: 8px;
+}
+.who-forbid summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  cursor: pointer;
+}
+.who-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.who-chip {
+  min-height: 40px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.who-chip.on {
+  border-color: var(--cost);
+  color: var(--cost);
+  text-decoration: line-through;
+}
+.plan-owned .badge {
+  margin-right: 4px;
+}
+.plan-folded summary {
+  min-height: 40px;
+  cursor: pointer;
+}

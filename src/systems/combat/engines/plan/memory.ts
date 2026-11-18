@@ -2,6 +2,7 @@ import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, keepsInLoadout, slotLimit } from './cards';
 import type { HoldOff } from './footing';
+import { planningFrom, type KeptPlanning } from './planningMemory';
 import { cleanReactions, reactionAt, type Reactions } from './readiness';
 import { defaultHoldOff, holdOffChoices } from './zoning';
 import {
@@ -25,7 +26,7 @@ import {
  */
 
 /** A plan as the engine hands it back: its actions, its defences, and where it fights. */
-export interface PlanMemory {
+export interface PlanMemory extends KeptPlanning {
   readonly loadout: Loadout;
   readonly reactions: Reactions;
   readonly holdOff?: HoldOff;
@@ -136,5 +137,6 @@ export function rememberedPlan(plan: unknown, fighter: PlanFighter): PlanMemory 
     reactions: cleanReactions(fighter, reactions),
     holdOff: holdOffFrom(record.holdOff, fighter),
     ...(isBand(record.keepAt) ? { keepAt: record.keepAt } : {}),
+    ...planningFrom(record),
   };
 }

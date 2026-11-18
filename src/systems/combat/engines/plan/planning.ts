@@ -3,6 +3,7 @@ import { defaultLoadout, defaultReadiness } from './defaults';
 import { foeStances } from './foeTeam';
 import { setsOthersUp } from './roles';
 import { rememberedPlan, type PlanMemory } from './memory';
+import { planningKept } from './planningMemory';
 import { defaultReactions } from './readiness';
 import type { PlanFighter } from './state';
 import { withStances } from './team';
@@ -37,5 +38,6 @@ export function planOf(player: PlanFighter): PlanMemory {
     reactions: player.reactions ?? defaultReactions(player),
     holdOff: player.holdOff ?? NO_HOLD_OFF,
     ...(player.keepAt === undefined ? {} : { keepAt: player.keepAt }),
+    ...planningKept(player),
   };
 }
