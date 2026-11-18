@@ -1656,6 +1656,14 @@ What the read shows:
   below A-rank and no kage at all, and Shadow Clone Jutsu is a D-rank costing 14. The owner
   chooses what to change next.
 
+- **The chakra economy, the owner's choices from the audit (built).** Chakra comes back by the
+  tank's doublings, not as a share of it (`REGEN_PER_DOUBLING`: about 2 an exchange for a genin,
+  3 for a jōnin, 6 for the median kage and 9 for Pain, who had 57), and each shadow clone that
+  fights costs its maker a tenth of their tank before the split (`SHADOW_BODY_SHARE`). Itachi
+  against Pain, ten bouts each: under today's AI Pain wins two (one before); thinking ahead, he
+  wins all ten (four before), calling his Paths at once and outlasting the clones. Two matrix
+  pairs moved a fight past the band (a medic heals less often over a long fight).
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to
@@ -1664,6 +1672,78 @@ What the read shows:
   answered.
 - **Found on the way:** "strikes as they lands": the rush-in line agreed its second verb with the
   fighter, not the pronoun. Fixed, with a test.
+
+---
+
+## Part 13c: Rank, cost and genjutsu (a proposal, for the owner)
+
+Asked after the jutsu audit (`prototypes/jutsu-audit/RESULTS.md`): chakra costs are locked to
+rank by a floor (C 10, B 18, A 30, S 45), learning is locked to rank (two ranks above your grade
+is impossible), and genjutsu is resolved like any attack. The owner's direction:
+
+- **Rank is a bundle, not a cost.** It reflects how hard a technique is: what it costs to mould,
+  the control it asks for, the risk to its user. A technique's cost should be what that technique
+  asks, not its rank's floor.
+- **Anyone can learn any technique; rank sets how long it takes.** Only real prerequisites lock
+  one: a clan, a nature, a bloodline, a control grade, reserves.
+- **Genjutsu is its own kind of fight.** It takes high control to learn and high control to land.
+  Someone braced for an illusion and expecting it can fight it off with their own chakra control.
+  Many illusions must be maintained, costing the caster attention or chakra while they hold.
+
+### 1. What rank means
+
+A technique's rank stays one letter, E to S, and stays on its card. It no longer sets anything
+directly. Each thing it used to set is a field of its own, and validation checks that the rank
+agrees with them (a rank is a summary of its costs, not a cause of them):
+
+| What              | Today                                         | Proposed                                                                  |
+| ----------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
+| Chakra to mould   | the authored cost, raised to the rank's floor | the authored cost, read from what it does (section 2)                     |
+| Control to use it | `needs.control` on a few                      | `control`: the grade of chakra control it asks; most B and above ask some |
+| Risk to the user  | `unstable`, health prices on a few            | the same, and a technique used above your control is unstable             |
+| Study time        | `difficulty`, slowed by the rank gap          | `difficulty` alone, slowed by the gap between your grade and the rank     |
+| Who may learn it  | at most one rank above your grade             | anyone, unless a prerequisite says no                                     |
+
+### 2. Chakra cost, read from what a technique does
+
+Rather than a floor by rank, a technique's cost is checked against what it does, the way its
+kinds are read (`techniqueKinds`): its damage power, how many it can reach (an area, a flurry),
+the control verbs it carries (daze, pin, seal, confuse: a turn of the target's is worth a lot),
+what it leaves behind (a lingering burn, a shroud held), and what it summons or makes (clones,
+bodies). Validation reports a technique whose authored cost is far below what it does (a
+"cheap for its effect" list, like the audit's), and the content is re-costed against that, by
+hand, so the numbers stay authored.
+
+### 3. The pool and its regeneration
+
+Built already (this PR's sibling): regeneration grows with the log of the tank, not as a share of
+it, so a deep pool lasts longer but doesn't refill like a spring. Whether tanks themselves should
+grow more slowly (a doubling every 15 points of reserves rather than 10) is left until costs are
+re-read, since the two balance each other.
+
+### 4. Genjutsu
+
+- **Landing it** is a contest of the caster's genjutsu and chakra control against the target's
+  perception and willpower (as now) and their chakra control.
+- **Braced for it.** A target who expects an illusion (has seen this foe cast one this fight, reads
+  it coming through the cues, or keeps a Dispel or a Brace) meets it with their chakra control as
+  well: an expected illusion is far likelier to be broken as it lands.
+- **Maintained.** A lingering illusion (confusion, a binding, a nightmare that holds) costs its
+  caster chakra each exchange it holds, or their attention: while they keep it, their own next
+  action is weaker or they can't cast another illusion. Letting it go ends it. The heaviest
+  (Tsukuyomi) are channelled: the caster does nothing else while it holds, as a channelled pin
+  already works (`holding.ts`).
+- **Control to cast.** Most genjutsu ask chakra control at a grade; below it the illusion is
+  unstable (it may come apart, as hand signs do up close).
+
+### Order of work
+
+1. This proposal agreed (and anything here the owner would change).
+2. The learning rule: anyone may learn anything; rank sets time; prerequisites lock.
+3. Costs read from effects, with a validation list of the cheap ones; content re-costed in passes.
+4. Genjutsu: landing with control, braced resistance, maintenance.
+
+Each step its own PR, measured on the benches and played.
 
 ---
 

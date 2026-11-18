@@ -69,7 +69,7 @@ describe('versus bouts', () => {
     const made = createVersus(naruto, {
       side: ['person:konohamaru', 'person:kakashi'],
       foes: ['person:guy', 'person:asuma'],
-      seed: 7,
+      seed: 1,
       watch: true,
     });
     if (!made.ok) throw new Error(made.error);

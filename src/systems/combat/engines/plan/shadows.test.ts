@@ -66,14 +66,15 @@ function cast(round: Round): Round {
 }
 
 describe('shadow clones', () => {
-  it('split the maker’s chakra evenly, each clone a fighter with the maker’s kit', () => {
+  it('cost a tenth of the tank each, then split what is left evenly, each a fighter with the kit', () => {
     const round = cast(roundOf());
     const clones = shadowsOf(round, 'hero');
     expect(clones).toHaveLength(2);
     const maker = round.fighters[0]!;
-    expect(maker.chakra).toBe(30);
+    // 90 chakra, two bodies at 9 each, then 72 split three ways.
+    expect(maker.chakra).toBe(24);
     for (const c of clones) {
-      expect(c.chakra).toBe(30);
+      expect(c.chakra).toBe(24);
       expect(c.side).toBe('player');
       expect(c.isPlayer).toBe(false);
       expect(c.attributes).toEqual(maker.attributes);

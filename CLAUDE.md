@@ -319,7 +319,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     can't pay for fade) and its trick: earth may stand a hit and rebuilds, lightning shocks a
     blow that bursts it up close, wind screens a charge best, fire feeds itself. **Shadow clones**
     are fighters (`rules/shadowClones.ts`, `plan/shadows.ts`): a technique that only makes solid
-    clones of no element splits its maker's chakra evenly with them, and each comes in on the
+    clones of no element costs its maker a tenth of their tank for each body (`SHADOW_BODY_SHARE`),
+    then splits what is left evenly with them, and each comes in on the
     maker's side with the maker's body and kit, its own turn and a plan of its own, popping at the
     first hit that lands and going with its maker if the maker falls; a few stand at once
     (`SHADOW_BODIES_MAX`), the rest a crowd of decoys, and an attack aimed at the maker may go into
@@ -363,7 +364,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     checked by `chainProblem` before they are kept); otherwise they are built from the moves known. A full tank doubles every 10 points of reserves (`maxChakra`, `systems/vitals`), so deep wells dwarf ordinary ones. Chakra ebbs and flows (`rules/chakra.ts`): a technique costs at least its rank's floor
     (`RANK_COST_FLOOR`: C 10 up to S 45, before control), so a jōnin's best takes a real share of
     a full tank; an area costs more for the ground it covers (wide ×1.5, vast ×2.2), and each
-    exchange gives back a little, or a share of deep reserves. **Gather** (`rules/gather.ts`,
+    exchange gives back a little, a little more for each doubling of the tank (never a share of it,
+    `REGEN_PER_DOUBLING`). **Gather** (`rules/gather.ts`,
     `plan/gather.ts`) is an action that spends the turn drawing back a fifth of the fighter's
     chakra and a share of their breath, and leaves them open until their next turn (they slip
     far less, and only a Guard of the ready defences comes up); a foe whose attacks are out of

@@ -5,6 +5,8 @@ import type { Rng } from '@/core';
 import { alive, hasPerk } from '../../rules/body';
 import { needsAim, type Card } from './cards';
 import {
+  bodiesAfforded,
+  bodyCost,
   misleadChance,
   shadowBodies,
   shadowShare,
@@ -79,14 +81,22 @@ function copyOf(maker: PlanFighter, index: number, chakra: number): PlanFighter 
 export function makeShadows(round: Round, actor: PlanFighter, use: EffectUse<'clone'>): Round {
   const maker = fighterIn(round, actor.id) ?? actor;
   const standing = shadowsOf(round, maker.id).length;
-  const bodies = Math.min(shadowBodies(use.effect.power), SHADOW_BODIES_MAX - standing);
+  const wanted = Math.min(shadowBodies(use.effect.power), SHADOW_BODIES_MAX - standing);
+  // Each body costs its maker a share of their tank before the split (`bodyCost`).
+  const bodies = bodiesAfforded(maker.chakra, maker.maxChakra, wanted);
+  if (wanted > 0 && bodies <= 0) {
+    return say(
+      round,
+      tell('{a} lack{a.s} the chakra to make a clone that can fight.', { a: actor }),
+    );
+  }
   if (bodies <= 0) {
     return say(
       round,
       tell('{a} already {a.has} as many clones as {a.they} can hold.', { a: actor }),
     );
   }
-  const share = shadowShare(maker.chakra, bodies);
+  const share = shadowShare(maker.chakra - bodies * bodyCost(maker.maxChakra), bodies);
   const made = round.fighters.filter((f) => f.shadowOf === maker.id).length;
   const clones = Array.from({ length: bodies }, (_, i) => copyOf(maker, made + i + 1, share));
   const crowd = Math.max(0, cloneCount(maker.maxChakra, use) - bodies);

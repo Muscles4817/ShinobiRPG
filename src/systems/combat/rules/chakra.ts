@@ -6,10 +6,11 @@ import type { CombatTechnique } from '../contract';
 /**
  * Chakra's ebb and flow in a fight. A technique that covers more ground costs more to mould
  * (`AREA_COST`, on top of its authored cost), so the great sweeping techniques can't be thrown
- * every exchange. Every fighter gathers chakra back each exchange, a little, or a share of
- * deep reserves (`REGEN_SHARE`), so a jōnin's or a kage's comes back faster: a big technique spends more than
- * an exchange gives back, and a fighter who has spent hard has to lean on cheaper moves for a
- * while before the next one.
+ * every exchange. Every fighter gathers a little chakra back each exchange, a little more the
+ * deeper the well, but only by its doublings (`REGEN_PER_DOUBLING`), never as a share of it: a
+ * deep well lasts longer, it doesn't refill like a spring (the jutsu audit,
+ * `prototypes/jutsu-audit/RESULTS.md`, found a share let a kage regain an S-rank technique every
+ * exchange).
  */
 
 /**
@@ -36,10 +37,11 @@ export function rankedCost(t: { readonly chakraCost: number; readonly rank?: Sta
 /** How much more an area technique costs, by the ground it covers. */
 export const AREA_COST: Readonly<Record<AreaSize, number>> = { small: 1, wide: 1.5, vast: 2.2 };
 
-/** Chakra everyone gathers each exchange at least… */
+/** Chakra everyone gathers each exchange… */
 export const CHAKRA_REGEN = 2;
-/** …or this share of their reserves, for deep ones. */
-export const REGEN_SHARE = 0.025;
+/** …and this much more for every doubling of their full tank past `REGEN_FROM`. */
+export const REGEN_PER_DOUBLING = 1.5;
+const REGEN_FROM = 100;
 
 /** How much more a technique costs for the ground it covers. */
 export function areaCostScale(t: { readonly effects?: CombatTechnique['effects'] }): number {
@@ -49,6 +51,7 @@ export function areaCostScale(t: { readonly effects?: CombatTechnique['effects']
 
 /** Chakra after an exchange's gathering. */
 export function gathered(f: { readonly chakra: number; readonly maxChakra: number }): number {
-  const regen = Math.max(CHAKRA_REGEN, Math.round(f.maxChakra * REGEN_SHARE));
+  const doublings = Math.max(0, Math.log2(f.maxChakra / REGEN_FROM));
+  const regen = CHAKRA_REGEN + Math.round(doublings * REGEN_PER_DOUBLING);
   return Math.min(f.maxChakra, f.chakra + regen);
 }

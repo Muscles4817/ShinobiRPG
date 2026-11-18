@@ -12,6 +12,9 @@
  * more to those who close (the sensor, trapper and illusionist to the rusher, the puppeteer to
  * the powerhouse), read move by move as kiters caught by someone faster. Most of the rest are one
  * fight in eight past the band.
+ * Chakra comes back by the tank's doublings, not as a share of it (the jutsu audit,
+ * `prototypes/jutsu-audit/RESULTS.md`), so a medic heals less often over a long fight (the
+ * illusionist outlasts them) and the sensor's long game ebbs (foresight outlasts it).
  */
 const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   rusher:
@@ -21,7 +24,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   versatile:
     'rusher powerhouse stalker areaCaster sealer trapper medic sensor cloner counterer summoner puppeteer hive dust assassin foresight mimic',
   illusionist:
-    'stalker mistBlade areaCaster sealer trapper sensor counterer shrouded summoner puppeteer hive dust gates assassin',
+    'stalker mistBlade areaCaster sealer trapper sensor counterer shrouded summoner puppeteer hive dust gates assassin medic',
   stalker:
     'powerhouse illusionist sealer trapper medic counterer shrouded summoner puppeteer hive dust assassin foresight mimic cloner',
   mistBlade:
@@ -51,7 +54,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   assassin:
     'rusher powerhouse versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded summoner hive dust gates foresight mimic',
   foresight:
-    'rusher powerhouse versatile illusionist mistBlade sealer trapper medic cloner puppeteer hive dust assassin areaCaster shrouded',
+    'rusher powerhouse versatile illusionist mistBlade sealer trapper medic cloner puppeteer hive dust assassin areaCaster shrouded sensor',
   mimic:
     'rusher powerhouse versatile illusionist mistBlade sealer trapper medic cloner puppeteer hive dust assassin areaCaster shrouded gates',
 };
