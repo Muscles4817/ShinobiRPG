@@ -37,6 +37,7 @@ import type { Reads } from './readShape';
 import type { Minded, Witness } from './mind/shape';
 import type { OnTrial } from './trialShape';
 import type { PlayerPlanning } from './planningShape';
+import type { ExchangeMarks } from './exchangeShape';
 export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -258,17 +259,11 @@ export interface PlanState extends RoundOpened {
 }
 
 /** A hit with an element that landed this exchange, for element combos (`combo.ts`). */
-export interface ElementHit {
-  readonly targetId: string;
-  readonly fighterId: string;
-  readonly element: NonNullable<PlanFighter['nature']>;
-}
-
 /** Pairs of foes standing at a distance of their own, by `pairKey` (`distance.ts`). */
 export type Distances = Readonly<Record<string, RangeBand>>;
 
 /** One exchange in progress; traced, its `decisions` are this exchange's alone. */
-export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'> {
+export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'>, ExchangeMarks {
   /** What was done this exchange and who saw it, for the mind (`mind/observe.ts`). */
   readonly witnessed?: readonly Witness[];
   /** The exchange number (`PlanState.round`), which decides when illusionists slip away. */
@@ -289,8 +284,6 @@ export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'> {
   readonly reads?: Reads;
   /** Who has acted this exchange (a clash spends the answerer's turn early, `clash.ts`). */
   readonly acted?: readonly string[];
-  /** Elemental hits landed this exchange. */
-  readonly hits?: readonly ElementHit[];
   /** Only watched: no one plans for the player's fighter, who fights on their own. */
   readonly watching?: true;
   /** The card the turn just taken played, for its narration's force (`force.ts`). */

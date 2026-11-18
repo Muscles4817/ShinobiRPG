@@ -45,6 +45,7 @@ import { raiseShroud } from './shrouds';
 import { distanceBetween } from './distance';
 import { leapClear } from './leap';
 import { weightOf } from './weight';
+import { stillFree, sunkIn } from './oneNightmare';
 import { slipCause, slipCauseBeside, withCause } from './causes';
 import type { NarrationCause } from '../../rules/causes';
 
@@ -318,10 +319,12 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
     const line = '{what} comes apart in {a.poss} hands before it is steady.';
     return say(paid, tell(line, { a: actor, what: t.name }));
   }
-  const targets = targetsOf(paid, turn, t);
-  if (isHarmful(t) && targets.length === 0) return paid;
-  const seen = targets.filter((foe) => slips(paid, turn, foe, t));
-  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t, rng: turn.rng }), paid);
+  // One mind's illusion holds once on a target this exchange (`oneNightmare.ts`).
+  const free = stillFree(paid, actor, { t, targets: targetsOf(paid, turn, t) });
+  const targets = free.targets;
+  if (isHarmful(t) && targets.length === 0) return free.round;
+  const seen = targets.filter((foe) => slips(free.round, turn, foe, t));
+  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t, rng: turn.rng }), free.round);
   if (isHarmful(t) && seen.length === targets.length) {
     return aftermath(told, turn, { t, caught: targets });
   }
@@ -331,7 +334,8 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   const flying = aimedAt?.round ?? told;
   // Weakened by a clash it won, it lands with what it has left.
   const carrying = aimedAt?.boost === undefined ? turn : { ...turn, boost: aimedAt.boost };
-  const start: Flight = { round: flying, reaching: targets.filter((f) => !seen.includes(f)) };
+  const reached = targets.filter((f) => !seen.includes(f));
+  const start: Flight = { round: sunkIn(flying, actor, { t, reached }), reaching: reached };
   const end = t.effects.reduce(
     (flight, effect) => applyEffect(flight, carrying, { technique: t, effect }),
     start,

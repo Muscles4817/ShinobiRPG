@@ -1643,6 +1643,19 @@ What the read shows:
   it gives up the Guard's cover against every blow. Whether a mind should choose it is left to the
   mind; the weight rule alone moved no bench.
 
+- **Itachi against Pain, and one mind's nightmare (built).** Itachi made two shadow clones
+  and all three cast Coercion Sharingan before Pain could act: dazed in the second exchange,
+  down in the third, Pain never had a turn in nine fights of ten. The daze rule already gives a
+  dazed fighter their turns between dazes (one turn lost, open the next exchange, steady the one
+  after), so no daze rule changed; the damage of three full-strength illusions was what killed
+  him. Built: a shadow clone thinks with its maker's mind, and one mind's harmful illusion takes a
+  target once an exchange (`plan/oneNightmare.ts`). It isn't enough on its own (Itachi still
+  wins nine of ten under the default AI, six of ten against a Pain who thinks ahead, which calls
+  his Paths at once), because his clones carry his whole kit at full strength. The jutsu audit
+  (`prototypes/jutsu-audit/RESULTS.md`) found the deeper cause: chakra limits almost no one
+  below A-rank and no kage at all, and Shadow Clone Jutsu is a D-rank costing 14. The owner
+  chooses what to change next.
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to
