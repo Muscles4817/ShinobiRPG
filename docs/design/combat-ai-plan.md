@@ -1629,6 +1629,20 @@ What the read shows:
   the retreat rule was. What would test it next: one search over the side's joint moves (a hold
   and a finisher planned together), given the budget the members would have split.
 
+- **The owner's decision on the Dodge (built).** A Dodge was always meant to be a choice: slip
+  and stay in range, or slip and get out, which drains breath. And what is slipped matters: a
+  heavy attack (a big share of health, a wide area, a wild swing) is easier to slip and its
+  thrower is too committed to follow; a light one is harder to slip, and its thrower can likely
+  follow. Built: **Dodge clear** is a ready defence beside Dodge at close and mid (`plan/leap.ts`,
+  `LEAP_BREATH`), springing back a distance unless a light attacker keeps pace (faster the more
+  surely, a medium one half as often, a heavy one never); every ready Dodge counts for more against
+  a heavy attack and less against a light one (`plan/weight.ts`, `DODGE_BY_WEIGHT`). It replaces
+  the "A Dodge leaps clear" rule on trial. Fighters' defaults are unchanged: measured, making a
+  fighter who fights from further off keep Dodge clear up close in place of a Guard shortened a
+  fresh genin's fights (3.4 exchanges against a 3.9 floor) and moved eleven matrix pairs, because
+  it gives up the Guard's cover against every blow. Whether a mind should choose it is left to the
+  mind; the weight rule alone moved no bench.
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to

@@ -290,8 +290,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. A plan is
     **actions** per distance, three to six by intellect grade (`slotLimit`: E–D 3, C 4, B–A 5, S 6):
     techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
-    (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Counter or a
-    substitution; never stacked) that reacts on its own (a **spin**, a substitution that `spins`
+    (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Dodge clear, Counter
+    or a substitution; never stacked: a Dodge is a choice, staying in reach or, with Dodge clear,
+    springing back a distance for breath, `plan/leap.ts`, where a light attack's thrower can likely
+    follow and a heavy one's can't; a heavy attack is easier to slip with a ready Dodge, a light one
+    harder, `plan/weight.ts`) that reacts on its own (a **spin**, a substitution that `spins`
     like Palm Rotation, turns aside every hit and hold it meets for chakra each time (`spinCost`: less the finer
     its user's control) instead of
     swapping out of one a round, kept ready ahead of a plain swap; only illusions and an empty
@@ -396,8 +399,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
-    them on, and only versus does (its setup's "Rules on trial"): a ready Dodge that slips an
-    attack up close leaps clear to mid (`plan/leap.ts`, `dodgeLeaps`); foes think ahead with the
+    them on, and only versus does (its setup's "Rules on trial"): foes think ahead with the
     planner (`mind/planner/`, `planner`), a bout's steps then played in a Web Worker off the page's
     thread (`ui/fight/`, `dispatchAlone` rebuilding the context from the state); up close a technique that needs hand signs (read from its
     art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart

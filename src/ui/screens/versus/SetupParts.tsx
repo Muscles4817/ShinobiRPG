@@ -54,8 +54,8 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
 
 /** The rules on trial a bout carries, as the setup has them ticked, and where it starts. */
 export function trialsOf(setup: VersusSetupState) {
-  const { dodgeLeaps, foesThink, handSigns, teleport, farGap, start } = setup;
-  return { dodgeLeaps, foesThink, handSigns, teleport, farGap, start };
+  const { foesThink, handSigns, teleport, farGap, start } = setup;
+  return { foesThink, handSigns, teleport, farGap, start };
 }
 
 /** Where the bout starts, with what starting there means. */
@@ -88,21 +88,6 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
   return (
     <section className="versus-slot versus-trial">
       <span className="versus-trial-head">Rules on trial</span>
-      <label className="versus-trial-rule" htmlFor="versus-dodge-leaps">
-        <input
-          id="versus-dodge-leaps"
-          type="checkbox"
-          checked={setup.dodgeLeaps}
-          onChange={(e) => {
-            setup.setDodgeLeaps(e.target.checked);
-          }}
-        />
-        A Dodge leaps clear
-      </label>
-      <p className="muted">
-        Anyone who slips an attack up close with a Dodge ready lands at mid range, clear of whoever
-        threw it. It helps a fighter who wants distance and costs one who wants to stay close.
-      </p>
       <label className="versus-trial-rule" htmlFor="versus-foes-think">
         <input
           id="versus-foes-think"

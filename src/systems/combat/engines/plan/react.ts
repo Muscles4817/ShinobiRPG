@@ -22,6 +22,7 @@ import { throughClones } from './decoys';
 import { substituted, type Swap } from './footwork';
 import { riposteFirst } from './lingering';
 import { leapClear } from './leap';
+import { weightOf } from './weight';
 import { taken, wound } from './wound';
 import { committedTo } from './commitment';
 import { BRACE_LETS } from '../../rules/commitment';
@@ -233,7 +234,9 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const told = withCause(reactionLine(line, tried ? 'dodged' : 'missed'), cause);
   // A ready Dodge may leap clear of the blow (`leap.ts`); an Evade or a plain slip stays put.
   const said = say(round, told);
-  return { slipped: tried && has('dodge') ? leapClear(said, target, attacker) : said, tried };
+  const weight = weightOf(blowIncoming(hit));
+  const leapt = tried && has('dodge') ? leapClear(said, target, { attacker, weight, rng }) : said;
+  return { slipped: leapt, tried };
 }
 
 /** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */

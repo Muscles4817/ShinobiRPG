@@ -25,7 +25,6 @@ import { objectivesAfter } from './mind';
 import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
-import { withLeaps } from './leap';
 import { withCloseQuarters } from './closeQuarters';
 import { withTeleports } from './blink';
 import { withinGround } from '../../rules/ground';
@@ -194,10 +193,7 @@ export function createPlanEngine(): CombatEngine {
     start(setup, rng) {
       const thinking = withThinking(initialFighters(setup), setup.experiments?.planner === true);
       const opened = openFight(
-        withFarGap(
-          withTeleports(withCloseQuarters(withLeaps(thinking, setup), setup), setup),
-          setup,
-        ),
+        withFarGap(withTeleports(withCloseQuarters(thinking, setup), setup), setup),
         setup.opening,
       );
       const { fighters, lines, field } = opened;

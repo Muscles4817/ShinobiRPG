@@ -1,3 +1,4 @@
+import { LEAP_BREATH } from './leap';
 import { listed } from '@/core';
 import type { TechniqueEffect, Verb } from '@/systems/techniques';
 
@@ -110,6 +111,7 @@ function namedPlainly(card: Card): card is Extract<Card, { kind: Plainly }> {
 }
 
 export function cardLabel(card: Card, fighter: Armed): string {
+  if (card.kind === 'dodge' && card.clear) return 'Dodge clear';
   if (namedPlainly(card)) return PLAIN_LABELS[card.kind];
   switch (card.kind) {
     case 'strike':
@@ -124,17 +126,24 @@ export function cardLabel(card: Card, fighter: Armed): string {
   }
 }
 
+/** Dodge clear, as its card says. */
+const DODGE_CLEAR_DETAIL = `Always ready, may slip a hit and spring back a distance, ${LEAP_BREATH} breath`;
+
 /** What each defence does, as its card says. */
 const DEFENCE_DETAIL: Readonly<Record<DefenceCard['kind'], string>> = {
   guard: 'Always ready, takes the edge off every hit',
-  dodge: 'Always ready, may slip any hit',
+  dodge: 'Always ready, may slip any hit and stay in reach',
   counter: 'Always ready, hits back up close',
   evade: `Spend the turn keeping clear of everything, ${COMMIT_BREATH.evade} breath`,
   brace: `Spend the turn standing firm against blows and holds, ${COMMIT_BREATH.brace} breath`,
 };
 
+function defenceDetail(card: DefenceCard): string {
+  return card.kind === 'dodge' && card.clear ? DODGE_CLEAR_DETAIL : DEFENCE_DETAIL[card.kind];
+}
+
 export function cardDetail(card: Card, fighter: PlanFighter): string {
-  if (isDefenceCard(card)) return DEFENCE_DETAIL[card.kind];
+  if (isDefenceCard(card)) return defenceDetail(card);
   switch (card.kind) {
     case 'strike':
       return styleWords(fighter) ?? armsWords(card.kind, fighter).detail;

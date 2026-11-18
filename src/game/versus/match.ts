@@ -27,8 +27,6 @@ export interface VersusPick {
   readonly ground?: CombatGround;
   /** Only watch: both sides fight on their own, round after round. */
   readonly watch?: boolean;
-  /** Try the Dodge that leaps clear (a rule on trial, `CombatExperiments.dodgeLeaps`). */
-  readonly dodgeLeaps?: boolean;
   /** Foes think ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
   readonly foesThink?: boolean;
   /** Hand signs can be broken up close (a rule on trial, `CombatExperiments.handSigns`). */
@@ -44,7 +42,6 @@ export interface VersusPick {
 /** The rules on trial a pick turns on, if any. */
 function experimentsOf(pick: VersusPick) {
   const experiments = {
-    ...(pick.dodgeLeaps ? { dodgeLeaps: true } : {}),
     ...(pick.foesThink ? { planner: true } : {}),
     ...(pick.handSigns ? { handSigns: true } : {}),
     ...(pick.teleport ? { teleport: true } : {}),

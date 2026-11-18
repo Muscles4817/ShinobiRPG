@@ -29,8 +29,6 @@ export interface VersusChoice {
   readonly ground: VersusGround['id'];
   /** Only watch: your side fights on its own too. */
   readonly watch: boolean;
-  /** Try the Dodge that leaps clear, a rule on trial. */
-  readonly dodgeLeaps: boolean;
   /** Foes think ahead, a rule on trial. */
   readonly foesThink: boolean;
   /** Hand signs can be broken up close, a rule on trial. */
@@ -65,15 +63,12 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
  * the last bout.
  */
 function useTrialRules(initial: VersusChoice | null) {
-  const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
   const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
   const [teleport, setTeleport] = useState(initial?.teleport ?? false);
   const [farGap, setFarGap] = useState(initial?.farGap ?? false);
   const [start, setStart] = useState<VersusStart['id']>(initial?.start ?? 'mid');
   return {
-    dodgeLeaps,
-    setDodgeLeaps,
     foesThink,
     setFoesThink,
     handSigns,

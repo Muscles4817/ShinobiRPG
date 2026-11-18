@@ -68,20 +68,6 @@ describe('versus setup on a desk', () => {
     expect(onFight).toHaveBeenCalledWith(expect.objectContaining({ watch: false }));
   });
 
-  it('tries the Dodge that leaps clear only when you turn it on', async () => {
-    asDesk(true);
-    const user = userEvent.setup();
-    const onFight = vi.fn();
-    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
-    const rule = screen.getByRole('checkbox', { name: 'A Dodge leaps clear' });
-    expect(rule).not.toBeChecked();
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ dodgeLeaps: false }));
-    await user.click(rule);
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ dodgeLeaps: true }));
-  });
-
   it('tries hand signs up close only when you turn it on', async () => {
     asDesk(true);
     const user = userEvent.setup();
@@ -125,7 +111,7 @@ describe('versus setup on a desk', () => {
     const user = userEvent.setup();
     render(<VersusSetup initial={null} onFight={() => undefined} onBack={() => undefined} />);
     expect(screen.queryByRole('region', { name: 'Fighters' })).toBeNull();
-    expect(screen.getByRole('checkbox', { name: 'A Dodge leaps clear' })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Foes think ahead' })).not.toBeChecked();
     await user.click(screen.getByRole('button', { name: 'Add an opponent' }));
     expect(screen.getByRole('dialog', { name: 'Opponent 2' })).toBeInTheDocument();
   });

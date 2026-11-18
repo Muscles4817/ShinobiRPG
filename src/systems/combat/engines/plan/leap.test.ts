@@ -1,12 +1,14 @@
 import { createRng } from '@/core';
 
 import type { CombatantSetup } from '../../contract';
+import { maxBreath } from '../../rules/breath';
 import { distanceBetween } from './distance';
-import { leapClear } from './leap';
+import { LEAP_BREATH, leapClear } from './leap';
+import { weightOf } from './weight';
 import { resolveExchange } from './round';
 import { initialFighters, plainSlots, type PlanState, type Reactions } from './state';
 
-/** A ready Dodge leaps clear of what it slips up close, in a fight that tries the rule (`leap.ts`). */
+/** Dodge clear springs back from what it slips; a plain Dodge stays (`leap.ts`, `weight.ts`). */
 
 const attributes = {
   strength: 20,
@@ -36,7 +38,7 @@ function setup(id: string): CombatantSetup {
   };
 }
 
-function fight(ready: 'dodge' | 'guard', leaps = true): PlanState {
+function fight(ready: 'dodge' | 'dodge-clear' | 'guard'): PlanState {
   const reactions: Reactions = { close: ready, mid: ready, far: ready };
   const fighters = initialFighters({
     player: setup('hero'),
@@ -46,7 +48,7 @@ function fight(ready: 'dodge' | 'guard', leaps = true): PlanState {
   }).map((f) =>
     f.isPlayer
       ? { ...f, loadout: { close: plainSlots(['strike']), mid: [], far: [] } }
-      : { ...f, reactions, ...(leaps ? { leapsClear: true as const } : {}) },
+      : { ...f, reactions },
   );
   return {
     phase: 'fight',
@@ -63,40 +65,62 @@ function fight(ready: 'dodge' | 'guard', leaps = true): PlanState {
   };
 }
 
-describe('a Dodge leaps clear', () => {
-  it('moves only the pair, only from close', () => {
-    const state = fight('dodge');
+const roundOf = (state: PlanState) => ({
+  number: 1,
+  fighters: [...state.fighters],
+  range: 'close' as const,
+  lines: [],
+  seen: {},
+  intents: {},
+});
+
+describe('Dodge clear', () => {
+  it('springs back from a heavy attack, pays breath, and moves only the pair', () => {
+    const state = fight('dodge-clear');
     const [hero, foe] = state.fighters;
-    expect(foe?.leapsClear).toBe(true);
-    const round = {
-      number: 1,
-      fighters: [...state.fighters],
-      range: 'close' as const,
-      lines: [],
-      seen: {},
-      intents: {},
-    };
-    const leapt = leapClear(round, foe!, hero!);
+    const round = roundOf(state);
+    const heavy = { attacker: hero!, weight: 'heavy' as const, rng: createRng(1) };
+    const leapt = leapClear(round, foe!, heavy);
     expect(distanceBetween(leapt, 'foe', 'hero')).toBe('mid');
-    expect(leapClear(leapt, foe!, hero!)).toBe(leapt);
+    const after = leapt.fighters.find((f) => f.id === 'foe')!;
+    expect(after.breath).toBe((foe!.breath ?? maxBreath(foe!.attributes)) - LEAP_BREATH);
   });
 
-  it('a slip with Dodge ready leaves the pair at mid; with Guard ready nobody moves', () => {
-    const counts = { dodge: 0, guard: 0 };
+  it('a light attack’s thrower keeps pace more often than a heavy one’s', () => {
+    const state = fight('dodge-clear');
+    const [hero, foe] = state.fighters;
+    const kept = (weight: 'light' | 'heavy') =>
+      Array.from({ length: 60 }, (_, i) =>
+        leapClear(roundOf(state), foe!, { attacker: hero!, weight, rng: createRng(i + 1) }),
+      ).filter((r) => distanceBetween(r, 'foe', 'hero') === 'close').length;
+    expect(kept('heavy')).toBe(0);
+    expect(kept('light')).toBeGreaterThan(10);
+  });
+
+  it('a plain Dodge stays in range; a Guard nobody moves', () => {
     for (const ready of ['dodge', 'guard'] as const) {
       for (let seed = 1; seed <= 60; seed++) {
         const after = resolveExchange(fight(ready), createRng(seed));
-        if (distanceBetween(after, 'hero', 'foe') === 'mid') counts[ready]++;
+        expect(distanceBetween(after, 'hero', 'foe')).toBe('close');
       }
     }
-    expect(counts.dodge).toBeGreaterThan(0);
-    expect(counts.guard).toBe(0);
   });
 
-  it('leaves everyone where they are in a fight that does not try the rule', () => {
+  it('springs back in a real exchange, sometimes', () => {
+    let moved = 0;
     for (let seed = 1; seed <= 60; seed++) {
-      const after = resolveExchange(fight('dodge', false), createRng(seed));
-      expect(distanceBetween(after, 'hero', 'foe')).toBe('close');
+      const after = resolveExchange(fight('dodge-clear'), createRng(seed));
+      if (distanceBetween(after, 'hero', 'foe') === 'mid') moved += 1;
     }
+    expect(moved).toBeGreaterThan(0);
+  });
+});
+
+describe('an attack’s weight', () => {
+  it('reads a wide area or a big share as heavy and a small one as light', () => {
+    expect(weightOf({ form: 'technique', areaSize: 'wide', threat: 0.05 })).toBe('heavy');
+    expect(weightOf({ form: 'technique', threat: 0.3 })).toBe('heavy');
+    expect(weightOf({ form: 'blow', threat: 0.05 })).toBe('light');
+    expect(weightOf({ form: 'technique', threat: 0.15 })).toBe('medium');
   });
 });
