@@ -122,6 +122,16 @@ function SlotRow({
           ))}
         </div>
       )}
+      {entry.mine && (
+        <p className="plan-trace plan-owned">
+          <span className="badge">Yours</span> The mind drafts around it.
+        </p>
+      )}
+      {entry.draftedWhy && (
+        <p className="plan-trace plan-owned">
+          <span className="badge">Drafted</span> {entry.draftedWhy}
+        </p>
+      )}
       {entry.note && <p className="plan-trace">{entry.note}</p>}
       {entry.forecast && <p className="plan-trace plan-forecast">{entry.forecast}</p>}
       {pickers.length > 0 && (

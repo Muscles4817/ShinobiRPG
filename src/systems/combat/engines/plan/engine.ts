@@ -42,7 +42,7 @@ import {
 import { editTeam } from './orders';
 import { summonFatesOf, summonSharesOf } from './summons';
 import { metersOf, poolsLeft } from './swarmView';
-import { editPlan } from './table';
+import { draftedForRound, editWhoPlans } from './whoPlans';
 import { foeMarkFor } from './foeTeam';
 import { planOf, plannedFighters } from './planning';
 import { squareUpLine } from '../../rules/narration';
@@ -150,7 +150,7 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
   const option = options(state).find((o) => o.id === optionId);
   if (!option) return err(`Unknown combat option "${optionId}".`);
   if (option.disabledReason) return err(option.disabledReason);
-  const planned = editPlan(state, optionId) ?? editTeam(state, optionId);
+  const planned = editWhoPlans(state, optionId) ?? editTeam(state, optionId);
   if (planned) return ok(planned);
   switch (optionId) {
     case 'halt':
@@ -242,7 +242,8 @@ export function createPlanEngine(): CombatEngine {
         ...(field ? { field } : {}),
         ...(setup.trace ? { decisions: [] } : {}),
       };
-      return encode(announced(state, foresee(state, rng)));
+      const ready = draftedForRound(state);
+      return encode(announced(ready, foresee(ready, rng)));
     },
 
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {

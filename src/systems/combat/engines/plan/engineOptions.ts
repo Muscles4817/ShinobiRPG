@@ -13,6 +13,7 @@ import { playerOf, type PlanState } from './state';
 import { seenByPlayer } from './statusView';
 import { survivalWarning } from './survival';
 import { tableOptions } from './table';
+import { planningOptions, withOwnership } from './whoPlans';
 import { ROUND_EXCHANGES } from './roundEnd';
 
 /**
@@ -60,15 +61,19 @@ export function options(state: PlanState): readonly CombatOption[] {
     const player = playerOf(state);
     const begin = beginLabel(state);
     return [
-      ...withForecasts(
-        withTraceNotes(
-          tableOptions(
-            player,
-            state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+      ...planningOptions(state),
+      ...withOwnership(
+        withForecasts(
+          withTraceNotes(
+            tableOptions(
+              player,
+              state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+            ),
+            state.slotTrace,
           ),
-          state.slotTrace,
+          state,
         ),
-        state,
+        player,
       ),
       ...teamOptions(state),
       { id: 'begin', label: begin, detail: '', kind: 'continue' },

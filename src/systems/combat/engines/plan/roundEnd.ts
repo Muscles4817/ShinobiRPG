@@ -8,6 +8,7 @@ import { playerOf, type PlanState } from './state';
 import { healthNow } from './roundOpened';
 import { roundReads } from './roundReads';
 import { quietAfter } from './tiring';
+import { draftedForRound } from './whoPlans';
 
 /**
  * The end of a round: a fight no one is winning ends in a stalemate (`tiring.ts`); otherwise
@@ -29,7 +30,8 @@ export function endOfRound(ended: PlanState): PlanState {
   const watching = next.watching ?? false;
   const restanced = foesRestanced(next.fighters);
   const fighters = betweenRounds(restanced, next.reads, watching);
-  return {
+  // At plan-then-edit or orders, the mind drafts the new round around your slots (`whoPlans.ts`).
+  return draftedForRound({
     ...next,
     phase: watching ? 'fight' : 'loadout',
     bout: next.bout + 1,
@@ -46,5 +48,5 @@ export function endOfRound(ended: PlanState): PlanState {
       ...roundReads(next),
       ...nextRound(watching),
     ],
-  };
+  });
 }

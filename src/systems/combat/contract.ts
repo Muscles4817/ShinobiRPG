@@ -400,7 +400,25 @@ export interface CombatOption {
    * end-turn in the choice bar, escape apart.
    */
   readonly kind:
-    'basic' | 'technique' | 'move' | 'item' | 'plan' | 'order' | 'continue' | 'end' | 'escape';
+    | 'basic'
+    | 'technique'
+    | 'move'
+    | 'item'
+    | 'plan'
+    | 'order'
+    | 'planning'
+    | 'continue'
+    | 'end'
+    | 'escape';
+  /**
+   * For a `planning` option, what it sets about who plans your round: the level (your list, plan
+   * then edit, orders), the order given, a card forbidden, or an action (ask for a plan).
+   */
+  readonly planning?: 'level' | 'order' | 'forbid' | 'ask';
+  /** A slot the mind drafted for you, and why, when it plans with you. */
+  readonly draftedWhy?: string;
+  /** A slot you set yourself, while the mind plans with you: it drafts around it, never over it. */
+  readonly mine?: true;
   readonly discipline?: TechniqueDef['discipline'];
   /** The technique this option plays, so a view can show its sheet. */
   readonly techniqueId?: string;
