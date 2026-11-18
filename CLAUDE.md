@@ -393,7 +393,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
     them on, and only versus does (its setup's "Rules on trial"): a ready Dodge that slips an
     attack up close leaps clear to mid (`plan/leap.ts`, `dodgeLeaps`); foes think ahead with the
-    planner (`mind/planner/`, `planner`); up close a technique that needs hand signs (read from its
+    planner (`mind/planner/`, `planner`), a bout's steps then played in a Web Worker off the page's
+    thread (`ui/fight/`, `dispatchAlone` rebuilding the context from the state); up close a technique that needs hand signs (read from its
     art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart
     (`handSigns`, `plan/closeQuarters.ts`, flags on the fighter from `plan/trialShape.ts`; a mind
     that reads the fight weighs a cast against a crowder: a caster strongest further off steps back

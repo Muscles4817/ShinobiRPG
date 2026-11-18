@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 
 import { contextForPack, versusRoster } from '@/game';
 
@@ -24,7 +24,7 @@ afterEach(() => {
   Reflect.deleteProperty(window, 'matchMedia');
 });
 
-function choice(watch: boolean): VersusChoice {
+function choice(watch: boolean, foesThink = false): VersusChoice {
   const ctx = contextForPack('naruto')!;
   const [first, second] = versusRoster(ctx);
   return {
@@ -34,7 +34,7 @@ function choice(watch: boolean): VersusChoice {
     ground: 'arena',
     watch,
     dodgeLeaps: false,
-    foesThink: false,
+    foesThink,
     handSigns: false,
     teleport: false,
     farGap: false,
@@ -42,8 +42,8 @@ function choice(watch: boolean): VersusChoice {
   };
 }
 
-function renderBout(watch: boolean) {
-  const bout = choice(watch);
+function renderBout(watch: boolean, foesThink = false) {
+  const bout = choice(watch, foesThink);
   return render(
     <VersusBout
       choice={bout}
@@ -73,6 +73,16 @@ describe('a versus bout', () => {
     renderBout(false);
     const bars = screen.getByRole('region', { name: 'Every fighter’s bars' });
     expect(within(bars).getAllByRole('article')).toHaveLength(2);
+  });
+
+  it('plays a round with foes who think ahead, off the page where it can', async () => {
+    asDesk(false);
+    renderBout(false, true);
+    fireEvent.click(screen.getByRole('button', { name: /Begin the fight/ }));
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /Begin the fight/ })).toBeNull();
+    });
+    expect(screen.queryByRole('status')?.textContent ?? '').not.toContain('thinking');
   });
 
   it('takes the fight’s desktop arrangement on a desk', () => {

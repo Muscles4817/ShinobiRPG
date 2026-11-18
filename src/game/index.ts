@@ -39,6 +39,7 @@ export {
 } from './creationDraft';
 export type { GameAction, GameActionType } from './actions/types';
 export { dispatch, blockerFor } from './dispatch';
+export { dispatchAlone } from './offThread';
 // The content editor's whole public API (`edits/index.ts`).
 export * from './edits';
 export * from './finder';
