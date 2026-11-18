@@ -208,3 +208,8 @@
   font-size: 0.8rem;
   color: var(--muted);
 }
+
+.main-menu.wide .build-line {
+  margin: 0;
+  text-align: left;
+}

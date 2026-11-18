@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { titleAmbience, type SaveSummary } from '@/game';
+import { buildLine, titleAmbience, type SaveSummary } from '@/game';
 
 import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
@@ -177,6 +177,7 @@ export function WideMenu(props: MainMenuProps) {
           )}
         </div>
         <p className="key-note">Arrows move, Enter or a number chooses.</p>
+        <p className="build-line">{buildLine()}</p>
       </div>
     </main>
   );

@@ -101,6 +101,7 @@ describe('App (smoke test)', () => {
     const share = within(menu).getByRole('link', { name: /Share on WhatsApp/ });
     expect(share.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/\?text=Shinobi%20RPG/);
     expect(share.getAttribute('href')).toContain(encodeURIComponent('http://localhost'));
+    expect(screen.getByText(/^Build \w+, made \d+ \w+ \d{4}$/)).toBeInTheDocument();
   });
 
   it('starts in the chosen world’s village and autosaves', async () => {

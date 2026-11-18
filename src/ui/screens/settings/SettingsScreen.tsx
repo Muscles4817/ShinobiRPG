@@ -1,3 +1,5 @@
+import { buildLine } from '@/game';
+
 import type { ScreenProps } from '../types';
 import { SettingsPanel } from '../SettingsPanel';
 import { SaveData, type SaveKeeping } from './SaveData';
@@ -27,6 +29,7 @@ export function SettingsScreen({ game, saves, onBack }: SettingsScreenProps) {
       <SoundSettings />
       {game && <SettingsPanel ctx={game.ctx} state={game.state} perform={game.perform} />}
       <SaveData saves={saves} canLoad={game === null} />
+      <p className="build-line">{buildLine()}</p>
     </main>
   );
 }
