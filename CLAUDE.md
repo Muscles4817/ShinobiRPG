@@ -371,7 +371,13 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     for the caster instead), and breaks when they are hurt or dazed, freeing its target of it and
     its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
-    foe's names the technique they telegraph. The bench (`src/test/bench`) asserts the
+    foe's names the technique they telegraph. The player's fighter **reads** the fight as they live it: as it opens
+    (`plan/fighterReads.ts`: a blade in hand, armour, a big body, a foe off their footing, and for
+    sharper eyes who is quicker or hits harder) and after each round (`plan/roundReads.ts`: a foe
+    caught unready and hurt, the worse of it going to you, a foe winded or running dry, a habit of
+    theirs or one of yours they have read); perception sets how many and how surely they are said,
+    intellect how much a round tells, and each is a `readLine` the plan screen lists as what you
+    noticed (`views/noticed.ts`). The bench (`src/test/bench`) asserts the
     lethality targets (equals fight two to three rounds and win about half) and the content bench
     (`contentBench.test.ts`) a fresh character's real fights: against an AI copy, the genin of
     their year and D-rank foes; retune the named constants there, not by eye.

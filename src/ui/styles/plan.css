@@ -273,6 +273,24 @@
   border-bottom: 1px solid var(--line);
   color: var(--story);
 }
+/* What your fighter noticed: their own read of the foes, in the story's voice. */
+.noticed h3 {
+  margin: 10px 0 4px;
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.noticed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.noticed li {
+  padding: 4px 0;
+  font-family: var(--font-story);
+  font-style: italic;
+  color: var(--story);
+}
 /* One thing to try next round, set apart in the lantern's ink. */
 .round-advice {
   margin: 8px 0 0;

@@ -5,6 +5,8 @@ import { asRound } from './intent';
 import { adaptLines } from './learned';
 import { foesRestanced } from './restance';
 import { playerOf, type PlanState } from './state';
+import { healthNow } from './roundOpened';
+import { roundReads } from './roundReads';
 import { quietAfter } from './tiring';
 
 /**
@@ -36,6 +38,13 @@ export function endOfRound(ended: PlanState): PlanState {
     ...foeMarkFor(next.fighters),
     // Between rounds the plan screen says what to do; the story only marks the new round.
     // A foe that changes the defence it keeps says so (`learned.ts`).
-    log: [...next.log, ...adaptLines(restanced, fighters, playerOf(next)), ...nextRound(watching)],
+    healthAtRound: healthNow(fighters),
+    // What the player's fighter made of the round (`roundReads.ts`).
+    log: [
+      ...next.log,
+      ...adaptLines(restanced, fighters, playerOf(next)),
+      ...roundReads(next),
+      ...nextRound(watching),
+    ],
   };
 }

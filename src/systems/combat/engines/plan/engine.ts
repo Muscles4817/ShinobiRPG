@@ -13,6 +13,8 @@ import { alive, hasPerk } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
+import { openingReads } from './fighterReads';
+import { healthNow } from './roundOpened';
 import { fieldMeter } from './field';
 import { endOfRound } from './roundEnd';
 import { CALLED_FOR, calledBack, callOwn } from './roundCalls';
@@ -220,7 +222,13 @@ export function createPlanEngine(): CombatEngine {
         seen: {},
         ...foeMarkFor(planned),
         intents: {},
-        log: [intro, ...lines, ...(watching ? [FIGHT_BEGINS] : [])],
+        log: [
+          intro,
+          ...lines,
+          ...openingReads(aimed, setup.ground),
+          ...(watching ? [FIGHT_BEGINS] : []),
+        ],
+        healthAtRound: healthNow(aimed),
         ...(setup.ground ? { ground: setup.ground } : {}),
         ...(setup.occasion ? { occasion: setup.occasion } : {}),
         result: null,

@@ -2,8 +2,10 @@ import { useState } from 'react';
 
 import {
   combatLog,
+  noticed,
   roundAdvice,
   roundWhy,
+  withoutReads,
   type CombatOption,
   type CombatView,
   type JutsuCard,
@@ -48,7 +50,7 @@ const RECENT_LINES = 5;
 
 /** The story's last lines, as the log tells them. */
 function LastLines({ view }: { readonly view: CombatView }) {
-  const lines = combatLog(view.log.slice(-RECENT_LINES));
+  const lines = combatLog(withoutReads(view.log).slice(-RECENT_LINES));
   return (
     <>
       {lines.map((line, i) =>
@@ -66,6 +68,22 @@ function LastLines({ view }: { readonly view: CombatView }) {
   );
 }
 
+/** What your fighter noticed: of the foes as it opens, then of the round just played. */
+function Noticed({ view }: { readonly view: CombatView }) {
+  const reads = noticed(view);
+  if (reads.length === 0) return null;
+  return (
+    <section className="noticed" aria-label="What you noticed">
+      <h3>What you noticed</h3>
+      <ul>
+        {reads.map((read) => (
+          <li key={read}>{read}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /**
  * How the fight has gone so far: the opening's last lines, or why the round just played went as
  * it did (`roundWhy`) and one thing to try (`roundAdvice`), with its last lines folded under it.
@@ -78,6 +96,7 @@ function HowItWent({ view }: { readonly view: CombatView }) {
     return (
       <details className="how-it-went" open>
         <summary>{view.round > 1 ? 'How the last round went' : 'How it starts'}</summary>
+        <Noticed view={view} />
         <LastLines view={view} />
       </details>
     );
@@ -92,6 +111,7 @@ function HowItWent({ view }: { readonly view: CombatView }) {
           </li>
         ))}
       </ul>
+      <Noticed view={view} />
       {advice && <p className="round-advice">{advice}</p>}
       <details className="round-lines">
         <summary>Its last lines</summary>

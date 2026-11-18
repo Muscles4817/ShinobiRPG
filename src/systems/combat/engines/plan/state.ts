@@ -1,3 +1,4 @@
+import type { RoundOpened } from './roundOpened';
 import type {
   CombatGround,
   CombatOccasion,
@@ -203,7 +204,7 @@ export function paying(
   return { chakra: f.chakra - paid, chakraSpent: (f.chakraSpent ?? 0) + paid };
 }
 
-export interface PlanState {
+export interface PlanState extends RoundOpened {
   /** Setting up cards between rounds, then watching the round play out. */
   readonly phase: 'loadout' | 'fight';
   /** Exchanges fought so far, plus one. */
@@ -225,12 +226,6 @@ export interface PlanState {
   /** Lines let go from the front of `log` to keep it to `LOG_LIMIT` (absent: none). */
   readonly logDropped?: number;
   readonly result: CombatResult | null;
-  /** Rounds in a row that ended with no one worse off (`tiring.ts`); none when absent. */
-  readonly quietRounds?: number;
-  /** Everyone's health together as the round began (`tiring.ts`); unknown when absent. */
-  readonly roundHealth?: number;
-  /** Both sides have tired, and nothing comes back between exchanges (`tiring.ts`). */
-  readonly tired?: true;
   /** How the player's slots fared over the round just played (`slotTrace.ts`). */
   readonly slotTrace?: SlotTrace;
   /** Mid-round calls made this fight (`roundCalls.ts`); none when absent. */
