@@ -28,9 +28,7 @@ it('kimimaro', async () => {
   const { writeFileSync } = await import('node:fs');
   const rules = (process.env.RULES ?? '').split(',').filter(Boolean);
   const made = createVersus(naruto, {
-    rushing: rules.includes('rushing'),
     handSigns: rules.includes('handSigns'),
-    standFirm: rules.includes('standFirm'),
     teleport: rules.includes('teleport'),
     side: ['person:kimimaro'],
     foes: ['person:asuma'],

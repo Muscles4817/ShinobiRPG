@@ -11,8 +11,7 @@ import type { Turn } from './senses';
 import { say, type PlanFighter, type Round } from './state';
 
 /**
- * Holding your ground against a blast, a rule on trial (`CombatExperiments.standFirm`; the
- * owner's decision in `docs/design/combat-ai-plan.md` Part 13b): a wide area throws back only those
+ * Holding your ground against a blast (adopted for every fight; the owner's decision in `docs/design/combat-ai-plan.md` Part 13b): a wide area throws back only those
  * it caught who don't hold their feet. Holding is read as a knock is (the maker's art and
  * strength against the body's strength), as odds on the ratio between them, so it stays relative:
  * equals are usually thrown, a body twice as strong holds about half the time, and a maker far
@@ -46,10 +45,9 @@ export function whoIsThrown(
   turn: Turn,
   { t, caught }: { t: CombatTechnique; caught: readonly PlanFighter[] },
 ): { round: Round; thrown: PlanFighter[] } {
-  if (!caught.some((f) => f.standsFirm)) return { round, thrown: [...caught] };
   let told = round;
   const thrown = caught.filter((f) => {
-    if (!f.standsFirm || !turn.rng.chance(holdChance(turn.actor, f, t))) return true;
+    if (!turn.rng.chance(holdChance(turn.actor, f, t))) return true;
     const cause = committedTo(f, 'brace') ? 'braced' : 'resisted';
     told = say(told, causeLine(tell('{t} keep{t.s} {t.their} feet.', { t: f }), cause));
     return false;

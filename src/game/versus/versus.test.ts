@@ -281,7 +281,7 @@ describe('rules on trial', () => {
 
   /** Lines in a watched bout (Konohamaru against Neji, unless named) that tell a rule on trial. */
   function linesIn(
-    pick: { rushing?: boolean; handSigns?: boolean; teleport?: boolean },
+    pick: { handSigns?: boolean; teleport?: boolean },
     marker: string,
     who: { side: string; foe: string } = { side: 'person:konohamaru', foe: 'person:neji' },
   ): number {
@@ -308,14 +308,13 @@ describe('rules on trial', () => {
     return found;
   }
 
-  it('close quarters only in a bout that turns them on', () => {
+  it('hand signs break only in a bout that turns them on; rushing in is in every bout', () => {
     // A caster who reads the fight keeps clear of a crowder (`crowding.ts`); Naruto casts anyway.
     const crowded = { side: 'person:kiba', foe: 'person:naruto' };
     expect(linesIn({ handSigns: true }, 'before the seals are done', crowded)).toBeGreaterThan(0);
     expect(linesIn({}, 'before the seals are done', crowded)).toBe(0);
     expect(linesIn({}, 'before the seals are done')).toBe(0);
-    expect(linesIn({ rushing: true }, 'as he lands')).toBeGreaterThan(0);
-    expect(linesIn({}, 'as he lands')).toBe(0);
+    expect(linesIn({}, 'as he lands')).toBeGreaterThan(0);
   });
 
   it('the Flying Thunder God takes no turn only in a bout that turns it on', () => {

@@ -82,23 +82,16 @@ describe('versus setup on a desk', () => {
     expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ dodgeLeaps: true }));
   });
 
-  it('tries rushing in and hand signs up close only when you turn them on', async () => {
+  it('tries hand signs up close only when you turn it on', async () => {
     asDesk(true);
     const user = userEvent.setup();
     const onFight = vi.fn();
     render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
     await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(
-      expect.objectContaining({ rushing: false, handSigns: false }),
-    );
-    await user.click(
-      screen.getByRole('checkbox', { name: 'Taijutsu fighters strike as they rush in' }),
-    );
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ handSigns: false }));
     await user.click(screen.getByRole('checkbox', { name: 'Hand signs can be broken up close' }));
     await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(
-      expect.objectContaining({ rushing: true, handSigns: true }),
-    );
+    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ handSigns: true }));
   });
 
   it('lets teleporters move freely only when you turn it on', async () => {
@@ -113,18 +106,6 @@ describe('versus setup on a desk', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Fight' }));
     expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ teleport: true }));
-  });
-
-  it('holds ground against blasts only when you turn it on', async () => {
-    asDesk(true);
-    const user = userEvent.setup();
-    const onFight = vi.fn();
-    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ standFirm: false }));
-    await user.click(screen.getByRole('checkbox', { name: 'Hold your ground against blasts' }));
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ standFirm: true }));
   });
 
   it('lets the foes think ahead, for this bout only', async () => {

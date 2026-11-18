@@ -7,7 +7,7 @@ import { alive } from '../../rules/body';
 import { reachLead } from '../../rules/blades';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
-import { charge, type Charged } from './steps';
+import { afterStep, charge, type Charged } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
 import { threadsRetaken } from './puppets';
@@ -66,7 +66,7 @@ import { tracedLine } from './sceneVoice';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';
-import { bandOf, sameSpacing, spacingOf } from './distance';
+import { bandOf, spacingOf } from './distance';
 
 /**
  * One exchange of a planned fight: everyone acts in speed order, playing a card slotted for
@@ -187,11 +187,6 @@ function afterTheCast(played: Round, { round, after }: Charged): Round {
   return { ...played, lines: [...played.lines.slice(0, at), ...after, ...played.lines.slice(at)] };
 }
 
-/** A step that moved the fight springs any foe's trap waiting where it now stands. */
-function afterStep(before: Round, after: Round, actorId: string, rng: Rng): Round {
-  return sameSpacing(before, after) ? after : springTraps(after, actorId, rng, true);
-}
-
 /**
  * What a fighter plays: the player and their teammates their cards in priority order, foes on
  * instinct; but a teammate caught in a hold comes first (`struggle.ts`), whether that means
@@ -276,7 +271,7 @@ function turn(start: Round, actorId: string, rng: Rng): Round {
   // A maker's shadow clones look like them (`shadows.ts`).
   const aimed = { actor, target: misled(aim.round, { actor, target: aim.target, rng }, card), rng };
   const tried = followThrough(aim.round, attempt(aim.round, aimed, card), aimed, follow);
-  const played = afterStep(aim.round, tried, actor.id, rng);
+  const played = afterStep(aim.round, tried, aimed, card);
   const noted = noteAttack(played, actor.id, card);
   const acted = [...(noted.acted ?? []), actor.id];
   const id = cardId(card);

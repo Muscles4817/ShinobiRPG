@@ -54,8 +54,8 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
 
 /** The rules on trial a bout carries, as the setup has them ticked. */
 export function trialsOf(setup: VersusSetupState) {
-  const { dodgeLeaps, foesThink, rushing, handSigns, standFirm, teleport } = setup;
-  return { dodgeLeaps, foesThink, rushing, handSigns, standFirm, teleport };
+  const { dodgeLeaps, foesThink, handSigns, teleport } = setup;
+  return { dodgeLeaps, foesThink, handSigns, teleport };
 }
 
 /** Rules on trial: off unless turned on here, for this bout only. */
@@ -94,21 +94,6 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
         its wits allow, and keeps to the plan unless it breaks. Rounds take a moment longer to
         start.
       </p>
-      <label className="versus-trial-rule" htmlFor="versus-rushing">
-        <input
-          id="versus-rushing"
-          type="checkbox"
-          checked={setup.rushing}
-          onChange={(e) => {
-            setup.setRushing(e.target.checked);
-          }}
-        />
-        Taijutsu fighters strike as they rush in
-      </label>
-      <p className="muted">
-        A step that gets a taijutsu fighter in close carries a lighter blow as they land, so closing
-        in no longer hands the foe a free turn. Closing on someone faster is still hard.
-      </p>
       <label className="versus-trial-rule" htmlFor="versus-hand-signs">
         <input
           id="versus-hand-signs"
@@ -123,21 +108,6 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
       <p className="muted">
         With a foe close enough to touch, a technique that needs hand signs is a contest: speed and
         chakra control against their speed and taijutsu. Lost, the seals come apart.
-      </p>
-      <label className="versus-trial-rule" htmlFor="versus-stand-firm">
-        <input
-          id="versus-stand-firm"
-          type="checkbox"
-          checked={setup.standFirm}
-          onChange={(e) => {
-            setup.setStandFirm(e.target.checked);
-          }}
-        />
-        Hold your ground against blasts
-      </label>
-      <p className="muted">
-        A wide blast may fail to throw someone strong, big or braced, as a knock may fail to take
-        hold. A blast far stronger than they are still throws them.
       </p>
       <label className="versus-trial-rule" htmlFor="versus-teleport">
         <input

@@ -324,12 +324,8 @@ export interface CombatExperiments {
   readonly dodgeLeaps?: boolean;
   /** Foes think ahead with the planner (`engines/plan/mind/planner/`). */
   readonly planner?: boolean;
-  /** A taijutsu fighter's step in carries a blow as they arrive (`plan/closeQuarters.ts`). */
-  readonly rushing?: boolean;
-  /** Up close, a technique that needs hand signs may come apart before it's cast (same). */
+  /** Up close, a technique that needs hand signs may come apart before it's cast (`plan/closeQuarters.ts`). */
   readonly handSigns?: boolean;
-  /** A body caught in a wide blast may keep its feet, by strength, size and a Brace (`plan/standing.ts`). */
-  readonly standFirm?: boolean;
   /** A fighter with the `teleport` perk changes distance without spending the turn, once a round (`plan/blink.ts`). */
   readonly teleport?: boolean;
 }

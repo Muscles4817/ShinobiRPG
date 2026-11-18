@@ -24,7 +24,7 @@ const PAIRS: [CastId, CastId][] = [
   ['summoner', 'gates'],
   ['trapper', 'shrouded'],
 ];
-const ON = { rushing: true, handSigns: true, standFirm: true } as const;
+const ON = { handSigns: true } as const;
 /** Only these pairings, if named (`a:b,c:d`). */
 const ONLY = (process.env.PAIRS ?? '').split(',').filter(Boolean);
 

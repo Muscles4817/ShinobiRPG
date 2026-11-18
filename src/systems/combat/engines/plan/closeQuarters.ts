@@ -14,14 +14,13 @@ import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 
 /**
- * Close quarters, two rules on trial (`CombatExperiments.rushing`, `handSigns`; owner's decisions
- * in `docs/design/combat-ai-plan.md`, "Close quarters"):
+ * Close quarters (owner's decisions in `docs/design/combat-ai-plan.md`, Part 13b):
  *
- * - **Rushing in.** A taijutsu fighter's step that reaches close carries a blow as they arrive,
+ * - **Rushing in**, adopted for every fight. A taijutsu fighter's step that reaches close carries a blow as they arrive,
  *   lighter than a set strike and met by the ready defence as any blow is. Getting in is no
  *   longer a turn handed to the foe; getting in on someone faster still is the hard case, since
  *   their turn comes first.
- * - **Hand signs up close.** A technique that needs hand signs (read from its art and rank: the
+ * - **Hand signs up close**, still on trial (`CombatExperiments.handSigns`). A technique that needs hand signs (read from its art and rank: the
  *   body arts need none) is a contest when an able foe stands close and can see its caster: the
  *   caster's speed and chakra control against the crowder's speed and taijutsu, harder the more
  *   signs it takes. Lost, the seals come apart, the turn is gone and half the chakra with it. A
@@ -53,17 +52,16 @@ function isRusher(f: PlanFighter): boolean {
   return grade >= STAT_GRADES.indexOf(RUSHER_FROM) || a.taijutsu >= best;
 }
 
-/** The rules a fight tries, on the fighters it applies to. */
+/** Who rushes in, and the hand-sign rule where a fight tries it, on the fighters it applies to. */
 export function withCloseQuarters(
   fighters: readonly PlanFighter[],
   setup: Pick<CombatSetup, 'experiments'>,
 ): PlanFighter[] {
-  const { rushing, handSigns, standFirm } = setup.experiments ?? {};
+  const handSigns = setup.experiments?.handSigns === true;
   return fighters.map((f) => ({
     ...f,
-    ...(rushing && isRusher(f) ? { rushes: true as const } : {}),
+    ...(isRusher(f) ? { rushes: true as const } : {}),
     ...(handSigns ? { crowdable: true as const } : {}),
-    ...(standFirm ? { standsFirm: true as const } : {}),
   }));
 }
 
@@ -77,6 +75,8 @@ export function rushedIn(before: Round, after: Round, turn: Turn): Round {
   const self = fighterIn(after, actor.id);
   if (was === 'close' || now !== 'close' || !foe || !self || !alive(foe) || !alive(self))
     return after;
+  // A trap that dazed or held them as they landed leaves no blow to throw.
+  if (isDazed(self) || isPinned(self)) return after;
   return rushStrike(say(after, tell('{a} strike{a.s} as {a.they} land{a.ps}.', { a: self })), {
     ...turn,
     actor: self,

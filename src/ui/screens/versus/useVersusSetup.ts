@@ -32,12 +32,8 @@ export interface VersusChoice {
   readonly dodgeLeaps: boolean;
   /** Foes think ahead, a rule on trial. */
   readonly foesThink: boolean;
-  /** Taijutsu fighters strike as they rush in, a rule on trial. */
-  readonly rushing: boolean;
   /** Hand signs can be broken up close, a rule on trial. */
   readonly handSigns: boolean;
-  /** A body may hold its ground against a blast, a rule on trial. */
-  readonly standFirm: boolean;
   /** Teleporters change distance without spending the turn, a rule on trial. */
   readonly teleport: boolean;
 }
@@ -63,21 +59,15 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
 function useTrialRules(initial: VersusChoice | null) {
   const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
   const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
-  const [rushing, setRushing] = useState(initial?.rushing ?? false);
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
-  const [standFirm, setStandFirm] = useState(initial?.standFirm ?? false);
   const [teleport, setTeleport] = useState(initial?.teleport ?? false);
   return {
     dodgeLeaps,
     setDodgeLeaps,
     foesThink,
     setFoesThink,
-    rushing,
-    setRushing,
     handSigns,
     setHandSigns,
-    standFirm,
-    setStandFirm,
     teleport,
     setTeleport,
   };
