@@ -1593,6 +1593,24 @@ What the read shows:
   unchanged: the player can compare the two in play before the cues take the telegraph's place
   (and before foes read the player the same way). Eyes that read foes keep the telegraph alone.
 
+- **Phase C3, team objectives (measured, dropped).** A side's mark as a shared objective for
+  thinking foes, in the planner's value (the design's rule: an objective says what an outcome is
+  worth, never a move): health taken off the foes' mark (`foeMarkFor`) counted half again, and the
+  mark left held or dazed for a teammate still standing worth 20 health. Teams of the cast at
+  chūnin, 300 fights each (150 teams, two seeds), foe wins:
+
+  | Fight | Today | Thinking | Thinking + team aim | Team aim ×4 |
+  | ----- | ----: | -------: | ------------------: | ----------: |
+  | 2v2   | 58.7% |    58.0% |               58.3% |           — |
+  | 3v3   | 59.7% |    64.7% |               65.3% |       64.3% |
+
+  Thinking now pays in 3v3 (+5 points), but the team objective adds nothing measurable, even at
+  four times the weight. So what a team's outcome is worth isn't what holds thinking teams back:
+  each foe still plans alone, with a thin share of the round's budget, and keeps its usual move
+  unless a plan clearly beats it (#310), so the extra worth seldom changes a choice. Dropped, as
+  the retreat rule was. What would test it next: one search over the side's joint moves (a hold
+  and a finisher planned together), given the budget the members would have split.
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to
