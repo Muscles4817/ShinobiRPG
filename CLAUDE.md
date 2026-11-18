@@ -371,7 +371,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     for the caster instead), and breaks when they are hurt or dazed, freeing its target of it and
     its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
     breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
-    foe's names the technique they telegraph. The player's fighter **reads** the fight as they live it: as it opens
+    foe's names the technique they telegraph. Beside the telegraph, in shadow until it takes its place, is
+    your **read from cues** (`plan/mind/cues/`, `CombatantView.cueRead`): what a readied card gives
+    off (body, hands, chakra, stillness, eyes, its form), what you see of it (your perception
+    against the foe's concealment, by hash), and what you make of it, a kind of move with how sure
+    you are, a technique named only when its form was seen and known to you, and an unfamiliar one
+    described by what was clearly seen. The player's fighter **reads** the fight as they live it: as it opens
     (`plan/fighterReads.ts`: a blade in hand, armour, a big body, a foe off their footing, and for
     sharper eyes who is quicker or hits harder) and after each round (`plan/roundReads.ts`: a foe
     caught unready and hurt, the worse of it going to you, a foe winded or running dry, a habit of

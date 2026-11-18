@@ -32,6 +32,7 @@ function StandingNotes({ fighter: f }: { readonly fighter: CombatantView }) {
         <p className="muted small fighter-distance">{DISTANCE_LINE[f.distance]}</p>
       )}
       {f.intent && <p className="intent">{f.intent}</p>}
+      {f.cueRead && <p className="muted small cue-read">Your read: {f.cueRead}</p>}
       {f.known && <p className="muted small known-cards">{f.known}</p>}
       {f.learned && <p className="muted small learned">{f.learned}</p>}
       {f.beliefs && <YourRead beliefs={f.beliefs} />}
