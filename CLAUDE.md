@@ -323,7 +323,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     maker's side with the maker's body and kit, its own turn and a plan of its own, popping at the
     first hit that lands and going with its maker if the maker falls; a few stand at once
     (`SHADOW_BODIES_MAX`), the rest a crowd of decoys, and an attack aimed at the maker may go into
-    a clone instead (`misleadChance`: more clones, sharper eyes, insight). A technique that wounds
+    a clone instead (`misleadChance`: more clones, sharper eyes, insight). A shadow clone thinks with its maker's
+    mind, so one mind's illusion takes a target once an exchange: another of its bodies casting at
+    a target it has already sunk an illusion into adds nothing (`plan/oneNightmare.ts`). A technique that wounds
     as it makes clones (a clone body blow) keeps them as decoys. Without one, they step home only when nothing slotted does anything
     there, else throw a plain blow (never slotted). Foes play
     their default plan by priority, as the player does, as often as their judgement keeps them to
