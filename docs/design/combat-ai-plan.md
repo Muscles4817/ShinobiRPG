@@ -1577,6 +1577,15 @@ What the read shows:
   it gains nothing; a puppet's threads reaching from far may need their own answer. Left on
   trial to be played, with fight contexts (where a bout starts) the place it matters most.
 
+- **Phase C3, planning off the main thread (done).** A bout whose foes think ahead now plays each
+  fight step in a Web Worker (`ui/fight/fightWorker.ts`, `useOffThread`), with a slip saying they
+  are thinking. Plans were already pure functions of the fight (seeded from the round and who is
+  planning, never the game's Rng), so the worker plays the whole step: the state and action go
+  in, and `dispatchAlone` (`game/offThread.ts`) rebuilds the context from the save's own pack
+  and edits. The result is the same as on the page, which a test checks. Where there are no
+  workers, or one fails, the step is played on the page. The worker is its own bundle (about
+  2 MB), precached for offline play. Still to do: measure it on a phone.
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to

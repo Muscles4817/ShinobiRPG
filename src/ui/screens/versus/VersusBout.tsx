@@ -7,6 +7,7 @@ import { appClass } from '../../layout/sceneLayout';
 import { useWideScreen } from '../../layout/useWideScreen';
 import { ReportCard } from '../../components/ReportCard';
 import { randomSeed } from '../../randomSeed';
+import { useOffThread } from '../../fight/useOffThread';
 import { CombatScene } from '../scenes/CombatScene';
 import type { VersusChoice } from './VersusSetup';
 
@@ -70,14 +71,29 @@ export function VersusBout(props: VersusBoutProps) {
   const [notice, setNotice] = useState(initial.notice);
   const wide = useWideScreen();
 
+  const offThread = useOffThread();
+  const [thinking, setThinking] = useState(false);
+  const thinks = props.choice.foesThink;
+
   const perform = useCallback(
     (action: GameAction) => {
-      if (!state) return;
-      const result = dispatch(state, action, ctx);
-      if (result.ok) setState(result.value);
-      else setNotice(result.error);
+      if (!state || thinking) return;
+      const settle = (result: ReturnType<typeof dispatch>) => {
+        if (result.ok) setState(result.value);
+        else setNotice(result.error);
+      };
+      // Foes who think ahead plan off the page's thread, so the screen keeps breathing.
+      if (!thinks || action.type !== 'combatAct') {
+        settle(dispatch(state, action, ctx));
+        return;
+      }
+      setThinking(true);
+      void offThread(state, action).then((result) => {
+        setThinking(false);
+        settle(result);
+      });
     },
-    [state, ctx],
+    [state, ctx, thinks, thinking, offThread],
   );
 
   if (!state) {
@@ -102,6 +118,11 @@ export function VersusBout(props: VersusBoutProps) {
             setNotice(null);
           }}
         />
+      )}
+      {thinking && (
+        <p className="versus-thinking" role="status">
+          They are thinking ahead.
+        </p>
       )}
       {fighting ? (
         <div className="wide-scene">
