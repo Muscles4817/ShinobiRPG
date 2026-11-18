@@ -23,7 +23,7 @@ import { chooseWhy, type Choice } from './choose';
 import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField } from './field';
-import { intendedCard, keepsTo } from './intent';
+import { byIntent, intendedCard, keepsTo } from './intent';
 import { momentIn } from './moment';
 import { recovered } from './tiring';
 import { tracedTurn } from './slotTrace';
@@ -188,12 +188,12 @@ function afterTheCast(played: Round, { round, after }: Charged): Round {
 }
 
 /**
- * What a fighter plays: the player and their teammates their cards in priority order, foes on
- * instinct; but a teammate caught in a hold comes first (`struggle.ts`), whether that means
+ * What a fighter plays: the player and their teammates their cards in priority order, foes (and
+ * anyone thinking ahead) what they announced or on instinct; but a teammate caught in a hold comes first (`struggle.ts`), whether that means
  * aiming at its caster or spending the turn pulling them free.
  */
 function choosePlay(round: Round, actor: PlanFighter, rng: Rng): Chosen | { spent: Round } {
-  const planned = actor.side === 'player' ? plannedPlay(actor, round) : instinct(round, actor, rng);
+  const planned = byIntent(actor) ? instinct(round, actor, rng) : plannedPlay(actor, round);
   const helping = aid(round, { actor, rng }, planned.card);
   if (helping.kind === 'spent') return { spent: decided(helping.round, actor, PULLED_FREE) };
   const chosen: Chosen =

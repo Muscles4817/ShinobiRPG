@@ -45,6 +45,8 @@ export interface SummonDef {
   readonly perch?: true;
   /** Of its caller's mind, with none of its own (the Reanimation's bodies; `mindContract.ts`). */
   readonly shared?: true;
+  /** Already standing beside its caller as a fight begins (Pain's Paths), never called mid-fight. */
+  readonly present?: true;
 }
 
 export interface ContractDef {

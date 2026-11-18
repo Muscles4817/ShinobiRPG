@@ -71,6 +71,26 @@ function summoned(round: Round, caller: Fighter, call: CombatCall): Fighter {
   return fighter;
 }
 
+/**
+ * A called body on the field beside its caller, and the caller marked as keeping it out: what a
+ * summoning does, and what a fight opens with for a body that is `present` (`present.ts`).
+ */
+export function placed(round: Round, caller: Fighter, call: CombatCall, blood = 0): Round {
+  const body = summoned(round, caller, call);
+  const out = [...(caller.summonsOut ?? []), call.id];
+  // A puppeteer steps back behind what they unsealed and works it from there.
+  const row = call.puppet ? { row: 'back' as const } : {};
+  const fighters = round.fighters.map((f) =>
+    f.id === caller.id ? { ...f, health: f.health - blood, summonsOut: out, ...row } : f,
+  );
+  // A body of its caller's mind thinks as sharply as they do (`oneMind.ts`).
+  return {
+    ...round,
+    fighters: call.shared ? withOneMind([...fighters, body]) : [...fighters, body],
+    ...joinedBeside(round, [body.id], caller),
+  };
+}
+
 /** The caller's turn on a summoning technique: the body answers, if they hold the call. */
 export function callSummon(round: Round, actor: PlanFighter, callId: string): Round {
   const caller: Fighter = actor;
@@ -78,27 +98,14 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   if (!call || !answers(caller, callId)) {
     return say(round, tell('{a.their} summoning finds nothing to answer it.', { a: actor }));
   }
-  const body = summoned(round, caller, call);
   // A sage toad lands on its caller's shoulder, never on the field (`perching.ts`).
-  if (call.perch) return perchOn(round, caller, body);
+  if (call.perch) return perchOn(round, caller, summoned(round, caller, call));
   const blood = Math.min(call.bloodPrice ?? 0, Math.max(0, caller.health - BLOOD_FLOOR));
-  const out = [...(caller.summonsOut ?? []), callId];
-  // A puppeteer steps back behind what they unsealed and works it from there.
-  const row = call.puppet ? { row: 'back' as const } : {};
-  const fighters = round.fighters.map((f) =>
-    f.id === caller.id ? { ...f, health: f.health - blood, summonsOut: out, ...row } : f,
-  );
-  // A body of its caller's mind thinks as sharply as they do (`oneMind.ts`).
-  const answered = say(
-    {
-      ...round,
-      fighters: call.shared ? withOneMind([...fighters, body]) : [...fighters, body],
-      ...joinedBeside(round, [body.id], actor),
-    },
-    tell(call.puppet ? PUPPET_CALL : SUMMON_CALL, { a: actor, b: body }),
-  );
+  const answered = placed(round, caller, call, blood);
+  const body = answered.fighters[answered.fighters.length - 1] ?? caller;
+  const told = say(answered, tell(call.puppet ? PUPPET_CALL : SUMMON_CALL, { a: actor, b: body }));
   const paid = harmLine(tell('{a} pay{a.s} in blood.', { a: actor }), blood);
-  return blood > 0 ? say(answered, paid) : answered;
+  return blood > 0 ? say(told, paid) : told;
 }
 
 const SUMMON_CALL = '{a} slam{a.s} a palm down, and {b} answers the call in a burst of smoke.';

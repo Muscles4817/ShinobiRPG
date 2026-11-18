@@ -97,12 +97,12 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
             setup.setFoesThink(e.target.checked);
           }}
         />
-        Foes think ahead
+        Fighters think ahead
       </label>
       <p className="muted">
         The other side plans each round by playing out its options before it moves, as far ahead as
-        its wits allow, and keeps to the plan unless it breaks. Rounds take a moment longer to
-        start.
+        its wits allow, and keeps to the plan unless it breaks. When you only watch, your side
+        thinks ahead too. Rounds take a moment longer to start.
       </p>
       <label className="versus-trial-rule" htmlFor="versus-hand-signs">
         <input

@@ -83,9 +83,17 @@ function instinctNow(table: Table, self: PlanFighter, rng: Rng): Choice {
   return chooseWhy(self, momentIn(asRound(table), self, foe), rng);
 }
 
+/**
+ * Whether a fighter plays what it announces rather than a plan of slots: every foe, and anyone
+ * who thinks ahead (in a bout only watched, your side thinks too: `withThinking`).
+ */
+export function byIntent(f: PlanFighter): boolean {
+  return f.side === 'enemy' || f.thinks === true;
+}
+
 /** What every standing foe means to do next exchange, and why. A dazed foe loses it. */
 export function announce(table: Table, rng: Rng): Readonly<Record<string, Announcement>> {
-  const planners = table.fighters.filter((f) => f.side === 'enemy' && alive(f) && f.stunned === 0);
+  const planners = table.fighters.filter((f) => byIntent(f) && alive(f) && f.stunned === 0);
   return Object.fromEntries(planners.map((f) => [f.id, intentOf(table, f, rng)]));
 }
 

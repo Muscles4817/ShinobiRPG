@@ -25,6 +25,7 @@ import { objectivesAfter } from './mind';
 import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
+import { presentAtStart } from './present';
 import { withCloseQuarters } from './closeQuarters';
 import { withTeleports } from './blink';
 import { withinGround } from '../../rules/ground';
@@ -191,14 +192,21 @@ export function createPlanEngine(): CombatEngine {
       'Slot cards for each distance, then watch each round play out. Re-plan between rounds.',
 
     start(setup, rng) {
-      const thinking = withThinking(initialFighters(setup), setup.experiments?.planner === true);
+      const thinking = withThinking(initialFighters(setup), {
+        on: setup.experiments?.planner === true,
+        watched: setup.watch === true,
+      });
       const opened = openFight(
         withFarGap(withTeleports(withCloseQuarters(thinking, setup), setup), setup),
         setup.opening,
       );
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
-      const planned = plannedFighters(fighters, setup.plan);
+      // Bodies already standing beside their callers join before anyone moves (`present.ts`).
+      const present = presentAtStart(
+        asRound({ fighters: plannedFighters(fighters, setup.plan), range, exchange: 0, round: 1 }),
+      );
+      const planned = present.fighters;
       const table = {
         fighters: planned,
         ...foeMarkFor(planned),
@@ -225,6 +233,7 @@ export function createPlanEngine(): CombatEngine {
         log: [
           intro,
           ...lines,
+          ...present.lines,
           ...openingReads(aimed, setup.ground),
           ...(watching ? [FIGHT_BEGINS] : []),
         ],

@@ -9,8 +9,9 @@ import { akatsukiFighter } from './fighter';
 
 /**
  * Pain: the Deva Path in versus, and the other five paths as bodies of his mind (`shared`, a
- * contract no one signs), all worked by Nagato from out of sight through the Rinnegan. The
- * engine can't call bodies from a summon, so the Deva Path calls them; and a summon carries no
+ * contract no one signs), all worked by Nagato from out of sight through the Rinnegan. They
+ * stand with the Deva Path as a fight begins (`present`); a path sent home can be called back by
+ * the Deva Path, since the engine can't call bodies from a summon. A summon carries no
  * perks, so the Naraka Path's restoring of fallen paths is the Deva Path's `raises`.
  */
 
@@ -152,6 +153,8 @@ function path(id: string, name: string, kit: { desc: string; arts: readonly stri
     techniqueIds: [...kit.arts, 'chakra-receiver'],
     upkeep: PATH_UPKEEP,
     shared: true,
+    // The paths stand with the Deva Path before a fight starts; nobody waits for them to be called.
+    present: true,
   };
 }
 

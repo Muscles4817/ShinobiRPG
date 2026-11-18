@@ -99,7 +99,7 @@ describe('versus setup on a desk', () => {
     const user = userEvent.setup();
     const onFight = vi.fn();
     render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
-    const rule = screen.getByRole('checkbox', { name: 'Foes think ahead' });
+    const rule = screen.getByRole('checkbox', { name: 'Fighters think ahead' });
     expect(rule).not.toBeChecked();
     await user.click(rule);
     await user.click(screen.getByRole('button', { name: 'Fight' }));
@@ -111,7 +111,7 @@ describe('versus setup on a desk', () => {
     const user = userEvent.setup();
     render(<VersusSetup initial={null} onFight={() => undefined} onBack={() => undefined} />);
     expect(screen.queryByRole('region', { name: 'Fighters' })).toBeNull();
-    expect(screen.getByRole('checkbox', { name: 'Foes think ahead' })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Fighters think ahead' })).not.toBeChecked();
     await user.click(screen.getByRole('button', { name: 'Add an opponent' }));
     expect(screen.getByRole('dialog', { name: 'Opponent 2' })).toBeInTheDocument();
   });
