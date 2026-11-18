@@ -43,6 +43,24 @@ export function misleadChance(
   return Math.min(MISLEAD_MAX, alike * read * (insight ? INSIGHT_SCALE : 1));
 }
 
+/**
+ * What each fighting clone costs its maker before the split, as a share of their full tank (the
+ * owner's decision after the jutsu audit): a body is a real commitment, and a deep well buys more
+ * of them.
+ */
+export const SHADOW_BODY_SHARE = 0.1;
+
+/** What one fighting clone costs its maker, before the split. */
+export function bodyCost(maxChakra: number): number {
+  return Math.max(1, Math.ceil(maxChakra * SHADOW_BODY_SHARE));
+}
+
+/** How many of the bodies wanted the maker can pay for, keeping some chakra to split. */
+export function bodiesAfforded(chakra: number, maxChakra: number, wanted: number): number {
+  const each = bodyCost(maxChakra);
+  return Math.max(0, Math.min(wanted, Math.floor((chakra - 1) / each)));
+}
+
 /** Each one's share of the maker's chakra once it is split between maker and clones. */
 export function shadowShare(chakra: number, clones: number): number {
   return Math.floor(chakra / (clones + 1));
