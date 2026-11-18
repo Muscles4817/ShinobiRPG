@@ -66,12 +66,15 @@ function drainOnHit(round: Round, turn: Turn, drained: number): Round {
 }
 
 /** Plays the strike or kunai card at the turn's target. */
-export function strike(round: Round, turn: Turn, thrown: boolean, scale = 1): Round {
+export function strike(round: Round, turn: Turn, thrown: boolean, rush = false): Round {
   const { actor, target, rng } = turn;
   if (!target) return round;
   const swung = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
-  const attack = scale === 1 ? swung : { ...swung, raw: swung.raw * scale };
-  const after = blowsOf(attack, thrown, actor).reduce((now, blow) => {
+  const attack = rush ? { ...swung, raw: swung.raw * RUSH_SCALE } : swung;
+  const blows = blowsOf(attack, thrown, actor).map((b) =>
+    rush ? { ...b, light: true as const } : b,
+  );
+  const after = blows.reduce((now, blow) => {
     const struck = fighterIn(now, target.id);
     if (!struck || !alive(struck)) return now;
     return react(now, { attacker: actor, target: struck, blow, rng });
@@ -84,5 +87,5 @@ export function strike(round: Round, turn: Turn, thrown: boolean, scale = 1): Ro
 
 /** The blow a rusher throws as they land: a plain strike, lighter (`closeQuarters.ts`). */
 export function rushStrike(round: Round, turn: Turn): Round {
-  return strike(round, turn, false, RUSH_SCALE);
+  return strike(round, turn, false, true);
 }

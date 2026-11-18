@@ -64,7 +64,7 @@ export function aftermath(round: Round, turn: Turn, used: Blast): Round {
   // A small area throws no one anywhere (`AREA_RULES`): only a wide or vast one moves the fight.
   if (!size || AREA_RULES[size].pushesTo === undefined) return round;
   if (size === 'wide') {
-    // On trial: a body that holds its feet isn't thrown (`standing.ts`).
+    // A body that holds its feet isn't thrown (`standing.ts`).
     const held = whoIsThrown(round, turn, used);
     return thrownBack(held.round, turn.actor, held.thrown);
   }

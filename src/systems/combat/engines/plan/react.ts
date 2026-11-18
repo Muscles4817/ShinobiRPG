@@ -86,6 +86,8 @@ export interface Blow {
   readonly followUp?: true;
   /** Its technique already made the avoid roll and reached the target (`jutsu.ts`). */
   readonly reached?: true;
+  /** A rush's light blow as its thrower lands: a ready substitution isn't spent on it (`rushing.ts`). */
+  readonly light?: true;
 }
 
 export interface Hit {
@@ -315,7 +317,7 @@ export function react(start: Round, struck: Hit): Round {
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
   const evasion = evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;
-  const swap = throughSwap(round, ready, hit);
+  const swap = blow.light ? { round, escaped: false } : throughSwap(round, ready, hit);
   if (swap.escaped) return swap.round;
   const { guarded, smashed, lets } = guardOn(hit, has('guard'));
   const met = Math.max(1, Math.round(kitted(swap.round, attacker, target, blow) * lets));

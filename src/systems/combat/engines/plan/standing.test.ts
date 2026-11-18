@@ -5,7 +5,7 @@ import { withCloseQuarters } from './closeQuarters';
 import { holdChance, whoIsThrown } from './standing';
 import { initialFighters, type PlanFighter, type Round } from './state';
 
-/** Holding your ground against a blast, a rule on trial (`standing.ts`). */
+/** Holding your ground against a blast (`standing.ts`). */
 
 const base: CombatantSetup['attributes'] = {
   strength: 20,
@@ -34,10 +34,7 @@ const gale = (power: number): CombatTechnique => ({
   chakraCost: 20,
 });
 
-function pair(
-  rules: { standFirm?: boolean },
-  caught: Partial<CombatantSetup['attributes']> = {},
-): readonly PlanFighter[] {
+function pair(caught: Partial<CombatantSetup['attributes']> = {}): readonly PlanFighter[] {
   const setup = (id: string, extra: Partial<CombatantSetup['attributes']> = {}) => ({
     id,
     name: id,
@@ -54,7 +51,7 @@ function pair(
     enemies: [setup('foe')],
     canFlee: false,
   });
-  return withCloseQuarters(all, { experiments: rules });
+  return withCloseQuarters(all, {});
 }
 
 const hero = (fs: readonly PlanFighter[]) => fs.find((f) => f.id === 'hero')!;
@@ -62,13 +59,13 @@ const foe = (fs: readonly PlanFighter[]) => fs.find((f) => f.id === 'foe')!;
 
 describe('holding your ground against a blast', () => {
   it('is likelier the stronger the body, and a far stronger maker still throws it', () => {
-    const weak = pair({ standFirm: true }, { strength: 10 });
-    const strong = pair({ standFirm: true }, { strength: 40 });
+    const weak = pair({ strength: 10 });
+    const strong = pair({ strength: 40 });
     const t = gale(20);
     expect(holdChance(foe(strong), hero(strong), t)).toBeGreaterThan(
       holdChance(foe(weak), hero(weak), t),
     );
-    const brute = pair({ standFirm: true }, { strength: 40 }).map((f) =>
+    const brute = pair({ strength: 40 }).map((f) =>
       f.id === 'foe' ? { ...f, attributes: { ...f.attributes, strength: 60, ninjutsu: 60 } } : f,
     );
     expect(holdChance(foe(brute), hero(brute), t)).toBeLessThan(
@@ -77,7 +74,7 @@ describe('holding your ground against a blast', () => {
   });
 
   it('holds far more surely braced, and more for a bigger body', () => {
-    const fs = pair({ standFirm: true });
+    const fs = pair();
     const t = gale(20);
     const plain = holdChance(foe(fs), hero(fs), t);
     const braced: PlanFighter = { ...hero(fs), committed: 'brace' };
@@ -86,8 +83,8 @@ describe('holding your ground against a blast', () => {
     expect(holdChance(foe(fs), big, t)).toBeGreaterThan(plain);
   });
 
-  it('throws everyone caught when the rule is off', () => {
-    const fs = pair({}, { strength: 60 });
+  it('throws a far weaker body almost every time', () => {
+    const fs = pair({ strength: 2 });
     const round = {
       number: 1,
       fighters: [...fs],
@@ -96,15 +93,17 @@ describe('holding your ground against a blast', () => {
       seen: {},
       intents: {},
     } satisfies Round;
+    let kept = 0;
     for (let seed = 1; seed <= 20; seed++) {
       const turn = { actor: foe(fs), target: hero(fs), rng: createRng(seed) };
       const { thrown } = whoIsThrown(round, turn, { t: gale(20), caught: [hero(fs)] });
-      expect(thrown).toHaveLength(1);
+      kept += thrown.length === 0 ? 1 : 0;
     }
+    expect(kept).toBeLessThanOrEqual(2);
   });
 
-  it('with the rule on, a strong body sometimes keeps its feet and says so', () => {
-    const fs = pair({ standFirm: true }, { strength: 60 });
+  it('a strong body sometimes keeps its feet, and says so', () => {
+    const fs = pair({ strength: 60 });
     const round = {
       number: 1,
       fighters: [...fs],

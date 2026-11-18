@@ -1,3 +1,5 @@
+import { rushedIn } from './closeQuarters';
+import { springTraps } from './traps';
 import { payFor } from './effort';
 import { clamp } from '@/core';
 
@@ -14,11 +16,10 @@ import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
 import { sizeGap, STEP_PER_SIZE, walksThrough } from '../../rules/size';
-import { bandOf, distanceBetween, withMoves } from './distance';
+import { bandOf, distanceBetween, sameSpacing, withMoves } from './distance';
 import { movesFor } from './pairMoves';
 import { causeLine } from '../../rules/causes';
 import { stepCause } from './causes';
-import { rushedIn } from './closeQuarters';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
@@ -158,7 +159,7 @@ export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round 
     fighters: patch(round.fighters, actor.id, { movedAt: round.number }),
   };
   if (direction === 'back') return stride(moving, turn, direction);
-  return rushedIn(round, steppedIn(round, moving, turn), turn);
+  return steppedIn(round, moving, turn);
 }
 
 function steppedIn(round: Round, moving: Round, turn: Turn): Round {
@@ -216,4 +217,12 @@ export function charge(start: Round, turn: Turn, card: Card): Charged {
   const paid = payFor(fighterIn(met.round, actor.id) ?? actor, card.technique);
   const fighters = patch(met.round.fighters, actor.id, paid);
   return { round: { ...met.round, lines, fighters }, stopped: true, after: [] };
+}
+
+/** A step that moved the fight springs any foe's trap waiting where it now stands. */
+export function afterStep(before: Round, after: Round, turn: Turn, card: Card): Round {
+  if (sameSpacing(before, after)) return after;
+  const sprung = springTraps(after, turn.actor.id, turn.rng, true);
+  // A rusher who got in strikes as they land, once any trap there has sprung (`closeQuarters.ts`).
+  return card.kind === 'step' && card.direction === 'in' ? rushedIn(before, sprung, turn) : sprung;
 }

@@ -1503,6 +1503,30 @@ What the read shows:
       some, and nothing when it kept out little.
     - Mending Glow, a healing technique, was told as "catches their breath and recovers". Fixed: a
       heal names the technique closing the wounds.
+- **Adopted (the owner's decision): rushing in and holding ground.** Each rule measured alone
+  against the same pairings:
+  - Rushing hurts the kiters (the sensor, puppeteer, illusionist and trapper against a closer):
+    each time they get clear, the closer comes back with a blow. Those are the owner's sensible
+    losses.
+  - Hand signs hurts fighters who cast up close (the medic's heals, the shrouded fighter's armour,
+    the trapper above all). It stays on trial for play, and for the fight contexts.
+  - Holding ground changes nothing without wide blasts. It is the narrowest of the three.
+
+  Adopting rushing for every fight showed three things to settle first:
+  - **The blow was too heavy.** At half a strike, a fighter a grade stronger ended 77% of fights
+    within the first plan, and the weaker side never planned twice. At 0.3 of a strike it is 10%,
+    and the stronger fighter still gains by closing.
+  - **A ready substitution was spent on the light blow**, so the real attack after it landed
+    whole. A swap now lets the rush blow through and waits for the attack.
+  - **The blow came before the trap** the rusher stepped onto. It now comes after any trap has
+    sprung, and not at all from a rusher it dazed or pinned.
+
+  What moved and was kept, with reasons:
+  - fights a shade shorter (the experience bench's new baselines);
+  - the old cave bear, a charging beast that now hits as it lands, brought down a step (health 1.8
+    to 1.7) so it stays a fight at its own scale;
+  - the matrix's new outliers, most of them one fight in eight past the band.
+
 - **The owner's note: distance isn't even.** Close to mid is a short gap; mid to far is a long one.
   - Closing from far to mid should give the far fighter more chance to answer (to see it coming,
     throw, set something) than closing from mid to close does.

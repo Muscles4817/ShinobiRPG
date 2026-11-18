@@ -5,7 +5,7 @@ import { crowdedChance, rushedIn, sealsBroken, signsOf, withCloseQuarters } from
 import { distanceBetween } from './distance';
 import { initialFighters, type PlanFighter, type Round } from './state';
 
-/** Close quarters, rules on trial: rushing in, and hand signs broken up close (`closeQuarters.ts`). */
+/** Close quarters: rushing in, and hand signs broken up close, on trial (`closeQuarters.ts`). */
 
 const base: CombatantSetup['attributes'] = {
   strength: 20,
@@ -31,10 +31,7 @@ const blast: CombatTechnique = {
   chakraCost: 20,
 };
 
-function fighters(
-  rules: { rushing?: boolean; handSigns?: boolean },
-  foe: Partial<CombatantSetup['attributes']> = {},
-) {
+function fighters(rules: { handSigns?: boolean }, foe: Partial<CombatantSetup['attributes']> = {}) {
   const setup = (
     id: string,
     extra: Partial<CombatantSetup['attributes']> = {},
@@ -106,18 +103,14 @@ describe('hand signs up close', () => {
 });
 
 describe('rushing in', () => {
-  it('only a taijutsu fighter rushes, and only with the rule on', () => {
-    const on = fighters({ rushing: true });
-    expect(on.find((f) => f.id === 'hero')?.rushes).toBe(true);
-    expect(fighters({}).find((f) => f.id === 'hero')?.rushes).toBeUndefined();
-    const caster = fighters({ rushing: true }, { taijutsu: 5, ninjutsu: 30 }).find(
-      (f) => f.id === 'foe',
-    );
+  it('only a taijutsu fighter rushes', () => {
+    expect(fighters({}).find((f) => f.id === 'hero')?.rushes).toBe(true);
+    const caster = fighters({}, { taijutsu: 5, ninjutsu: 30 }).find((f) => f.id === 'foe');
     expect(caster?.rushes).toBeUndefined();
   });
 
   it('strikes as they land close, not when they were already there', () => {
-    const fs = fighters({ rushing: true });
+    const fs = fighters({});
     const hero = fs.find((f) => f.id === 'hero')!;
     const foe = fs.find((f) => f.id === 'foe')!;
     const before = at(fs, 'mid');
