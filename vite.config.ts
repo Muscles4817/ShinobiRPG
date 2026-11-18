@@ -1,11 +1,28 @@
 /// <reference types="vitest/config" />
+import { execSync } from 'node:child_process';
 import { fileURLToPath, URL } from 'node:url';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+/** The commit this build was made from, or 'dev' where git can't say (a copied folder). */
+function buildCommit(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim();
+  } catch {
+    return 'dev';
+  }
+}
+
 export default defineConfig({
+  // Which build this is, shown on the title screen and in Settings (`game/buildStamp.ts`).
+  define: {
+    __BUILD_COMMIT__: JSON.stringify(buildCommit()),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   // Relative base so the build works from any static host sub-path (e.g. GitHub Pages).
   base: './',
   resolve: {

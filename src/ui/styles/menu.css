@@ -354,3 +354,11 @@ a.menu-option {
   font-family: var(--font-story);
   border-radius: var(--radius);
 }
+
+/* Which build this is, so an update can be told from what the offline cache still holds. */
+.build-line {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}

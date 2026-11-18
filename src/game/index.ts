@@ -29,6 +29,7 @@ export {
 } from './views/creation';
 // The academy file's pages beyond the first (`creationPages.ts`).
 export * from './creationPages';
+export { buildLine } from './buildStamp';
 export {
   chooseQuickPick,
   lowerStat,

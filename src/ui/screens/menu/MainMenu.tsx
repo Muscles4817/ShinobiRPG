@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { titleAmbience } from '@/game';
+import { buildLine, titleAmbience } from '@/game';
 
 import { InkSeal, TitleScene } from '../../art/TitleScene';
 import { Notice } from '../../components/Notice';
@@ -73,6 +73,7 @@ function PhoneMenu(props: MainMenuProps) {
         )}
         <ShareLink />
       </nav>
+      <p className="build-line">{buildLine()}</p>
     </main>
   );
 }
