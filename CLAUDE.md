@@ -387,20 +387,22 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
     them on, and only versus does (its setup's "Rules on trial"): a ready Dodge that slips an
     attack up close leaps clear to mid (`plan/leap.ts`, `dodgeLeaps`); foes think ahead with the
-    planner (`mind/planner/`, `planner`); a taijutsu fighter's step that reaches close carries a
-    lighter blow as they land (`rushing`); and up close a technique that needs hand signs (read from
-    its art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming
-    apart (`handSigns`; both in `plan/closeQuarters.ts`, flags on the fighter from
-    `plan/trialShape.ts`; a mind that reads the fight weighs a cast against a crowder: a caster
-    strongest further off steps back to make room, one at home up close throws a signless attack
-    worth more than the cast after its risk, never in place of a heal or armour, and anything else
-    is cast unless losing it is likelier than not, `plan/crowding.ts`); and a body caught in a wide blast may keep its feet, on the maker's art
-    and strength against its own strength, more surely braced or bigger (`standFirm`,
-    `plan/standing.ts`); and a fighter with the `teleport` perk (the Flying Thunder God) blinks once a
-    round in place of the footwork their turn chose (a step, a move, an entry's way in), sure and
-    spending no turn (`teleport`, `plan/blink.ts`). A rule is play-tested there before it is adopted or dropped; adopting one
-    moves it out of `experiments`. A small area (no `size`) moves no one; only wide and vast blasts
-    throw the fight apart (`plan/blast.ts`).
+    planner (`mind/planner/`, `planner`); up close a technique that needs hand signs (read from its
+    art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart
+    (`handSigns`, `plan/closeQuarters.ts`, flags on the fighter from `plan/trialShape.ts`; a mind
+    that reads the fight weighs a cast against a crowder: a caster strongest further off steps back
+    to make room, one at home up close throws a signless attack worth more than the cast after its
+    risk, never in place of a heal or armour, and anything else is cast unless losing it is likelier
+    than not, `plan/crowding.ts`); and a fighter with the `teleport` perk (the Flying Thunder God)
+    blinks once a round in place of the footwork their turn chose (a step, a move, an entry's way
+    in), sure and spending no turn (`teleport`, `plan/blink.ts`). A rule is play-tested there before
+    it is adopted or dropped; adopting one moves it out of `experiments`. Adopted so far (Phase B,
+    `docs/design/combat-ai-plan.md` Part 13b): a taijutsu fighter's step that reaches close carries
+    a light blow as they land (`RUSH_SCALE` of a strike, once any trap there has sprung; a ready
+    substitution isn't spent on it: `plan/closeQuarters.ts`, `plan/steps.ts`), and a body caught in
+    a wide blast may keep its feet, on the maker's art and strength against its own strength, more
+    surely braced or bigger (`plan/standing.ts`). A small area (no `size`) moves no one; only wide
+    and vast blasts throw the fight apart (`plan/blast.ts`).
     A fight is lost when the player falls, as on a job; a versus bout is fought **to the last**
     (`CombatSetup.toTheLast`): lost only once no one on the player's side still fights.
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,

@@ -98,7 +98,9 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
     blow: 'claw',
     description: 'Has slept in the same cave for twenty winters and woken up angry for every one.',
     ...foeStats(8, [28, 11, 17, 13], { ...NO_ARTS, taijutsu: 12, willpower: 13 }),
-    healthScale: 1.8,
+    // 1.8 before a charging beast struck as it landed (rushing in, adopted): a step down kept it
+    // a fight at its own scale.
+    healthScale: 1.7,
     ...PLAIN,
     traits: ['brawler'],
   },
