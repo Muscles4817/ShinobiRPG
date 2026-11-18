@@ -328,6 +328,8 @@ export interface CombatExperiments {
   readonly handSigns?: boolean;
   /** A fighter with the `teleport` perk changes distance without spending the turn, once a round (`plan/blink.ts`). */
   readonly teleport?: boolean;
+  /** Crossing between mid and far is a harder step both ways, and a far holder shoots twice (`plan/farGap.ts`). */
+  readonly farGap?: boolean;
 }
 
 /**

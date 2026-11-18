@@ -11,6 +11,7 @@ import {
   type VersusFighter,
   type VersusFilter,
   type VersusGround,
+  type VersusStart,
 } from '@/game';
 
 import { useEdits } from '../../edits/EditsProvider';
@@ -36,6 +37,10 @@ export interface VersusChoice {
   readonly handSigns: boolean;
   /** Teleporters change distance without spending the turn, a rule on trial. */
   readonly teleport: boolean;
+  /** The far gap is a harder crossing, a rule on trial. */
+  readonly farGap: boolean;
+  /** Where the bout starts. */
+  readonly start: VersusStart['id'];
 }
 
 function defaultPack(): string {
@@ -55,12 +60,17 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
   return index >= ids.length ? [...ids, id] : ids.map((old, i) => (i === index ? id : old));
 }
 
-/** The rules on trial a bout turns on, each off until ticked, remembered from the last bout. */
+/**
+ * The rules on trial a bout turns on, each off until ticked, and where it starts, remembered from
+ * the last bout.
+ */
 function useTrialRules(initial: VersusChoice | null) {
   const [dodgeLeaps, setDodgeLeaps] = useState(initial?.dodgeLeaps ?? false);
   const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
   const [teleport, setTeleport] = useState(initial?.teleport ?? false);
+  const [farGap, setFarGap] = useState(initial?.farGap ?? false);
+  const [start, setStart] = useState<VersusStart['id']>(initial?.start ?? 'mid');
   return {
     dodgeLeaps,
     setDodgeLeaps,
@@ -70,6 +80,10 @@ function useTrialRules(initial: VersusChoice | null) {
     setHandSigns,
     teleport,
     setTeleport,
+    farGap,
+    setFarGap,
+    start,
+    setStart,
   };
 }
 

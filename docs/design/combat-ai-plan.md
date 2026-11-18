@@ -1558,6 +1558,25 @@ What the read shows:
   it bears on: the sensor's and puppeteer's runs are the short close-to-mid steps, where a faster
   rusher should keep up.
 
+- **Phase C2, the far gap on trial (measured).** `CombatExperiments.farGap` (`plan/farGap.ts`):
+  a step between mid and far keeps `FAR_GAP_STEP` (0.7) of its contest both ways, and a holder at
+  far gets a second shot at a closer who slipped the first ("it is a long way in"). Versus can
+  now set where a bout starts (`VERSUS_STARTS`: mid as usual, up close, far apart). The cast at
+  chūnin, 24 seeds a pair, each one's win rate against everyone:
+
+  | Starts at, rule     | rusher | powerhouse | areaCaster | summoner | dust | hive | puppeteer |
+  | ------------------- | -----: | ---------: | ---------: | -------: | ---: | ---: | --------: |
+  | mid, off (as today) |     72 |         67 |         68 |       54 |   15 |    2 |        12 |
+  | mid, on             |     71 |         66 |         69 |       54 |   17 |    2 |        13 |
+  | far, off            |     68 |         64 |         78 |       58 |   18 |    3 |         9 |
+  | far, on             |     64 |         61 |         80 |       68 |   22 |    9 |         8 |
+
+  Starting at mid the rule hardly shows: few fights ever cross the far gap. Starting far apart,
+  it does what the owner's note asked: long-range kits gain, rushers pay a little to get in. The
+  puppeteer is the exception: its puppets must cross the gap too and meet the second shot, so
+  it gains nothing; a puppet's threads reaching from far may need their own answer. Left on
+  trial to be played, with fight contexts (where a bout starts) the place it matters most.
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to

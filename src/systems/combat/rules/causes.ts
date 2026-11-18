@@ -28,6 +28,8 @@ export const NARRATION_CAUSES = [
   'cut-off',
   'kept-pace',
   'held-off',
+  // A hold-off with time for a second shot: the long way in from far.
+  'far-gap',
   // A technique that came apart before it was cast.
   'crowded',
 ] as const;

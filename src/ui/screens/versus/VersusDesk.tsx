@@ -9,6 +9,7 @@ import { RosterBrowser } from './RosterBrowser';
 import {
   BothSides,
   GroundPicker,
+  StartPicker,
   StartBout,
   TrialRules,
   trialsOf,
@@ -102,6 +103,7 @@ export function VersusDesk({
         <WorldPicker setup={setup} />
         <BothSides setup={setup} active={slot} onOpen={setup.openSlot} />
         <GroundPicker setup={setup} />
+        <StartPicker setup={setup} />
         <TrialRules setup={setup} />
         <div className="versus-start">
           <StartBout setup={setup} onFight={onFight} />

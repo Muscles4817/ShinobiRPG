@@ -1,4 +1,4 @@
-import { VERSUS_GROUNDS } from '@/game';
+import { VERSUS_GROUNDS, VERSUS_STARTS } from '@/game';
 
 import { SideSlots, type Slot } from './SideSlots';
 import type { VersusChoice, VersusSetupState } from './useVersusSetup';
@@ -52,10 +52,35 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
   );
 }
 
-/** The rules on trial a bout carries, as the setup has them ticked. */
+/** The rules on trial a bout carries, as the setup has them ticked, and where it starts. */
 export function trialsOf(setup: VersusSetupState) {
-  const { dodgeLeaps, foesThink, handSigns, teleport } = setup;
-  return { dodgeLeaps, foesThink, handSigns, teleport };
+  const { dodgeLeaps, foesThink, handSigns, teleport, farGap, start } = setup;
+  return { dodgeLeaps, foesThink, handSigns, teleport, farGap, start };
+}
+
+/** Where the bout starts, with what starting there means. */
+export function StartPicker({ setup }: { readonly setup: VersusSetupState }) {
+  const chosen = VERSUS_STARTS.find((s) => s.id === setup.start);
+  return (
+    <section className="versus-slot">
+      <label htmlFor="versus-start">Starting distance</label>
+      <select
+        id="versus-start"
+        value={setup.start}
+        onChange={(e) => {
+          const picked = VERSUS_STARTS.find((s) => s.id === e.target.value);
+          if (picked) setup.setStart(picked.id);
+        }}
+      >
+        {VERSUS_STARTS.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.name}
+          </option>
+        ))}
+      </select>
+      {chosen && <p className="muted">{chosen.line}</p>}
+    </section>
+  );
 }
 
 /** Rules on trial: off unless turned on here, for this bout only. */
@@ -123,6 +148,21 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
       <p className="muted">
         Once a round, a fighter with the Flying Thunder God changes distance in an instant, past any
         guard and with no one keeping pace, and still takes their turn.
+      </p>
+      <label className="versus-trial-rule" htmlFor="versus-far-gap">
+        <input
+          id="versus-far-gap"
+          type="checkbox"
+          checked={setup.farGap}
+          onChange={(e) => {
+            setup.setFarGap(e.target.checked);
+          }}
+        />
+        The far gap is a long way
+      </label>
+      <p className="muted">
+        Getting between mid range and far is harder both ways, and anyone holding off from far has
+        time for a second shot at someone who slipped the first.
       </p>
     </section>
   );

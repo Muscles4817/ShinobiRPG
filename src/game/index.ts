@@ -43,23 +43,8 @@ export { dispatch, blockerFor } from './dispatch';
 export * from './edits';
 export * from './finder';
 export { saveSummary, type SaveSummary } from './views/menu';
-export {
-  browseRoster,
-  createVersus,
-  OPEN_FILTER,
-  VERSUS_GROUNDS,
-  VERSUS_SIDE_MAX,
-  versusProblem,
-  versusProfile,
-  versusRoster,
-  withGroup,
-  type FacetOption,
-  type RosterBrowse,
-  type VersusFighter,
-  type VersusFilter,
-  type VersusGround,
-  type VersusProfile,
-} from './versus';
+// Versus mode's whole public API (`versus/index.ts`).
+export * from './versus';
 export { chakraPaperScene, type ChakraPaperScene } from './views/chakraPaper';
 export * from './persistence';
 export type { Choice, Discipline } from './views/common';
