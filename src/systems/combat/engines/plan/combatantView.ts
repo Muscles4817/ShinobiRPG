@@ -3,7 +3,7 @@ import { viewOf } from '../../rules/body';
 import { bandOf, distanceBetween } from './distance';
 import { intentLine, knownLine } from './intent';
 import { learnedLine } from './learned';
-import { beliefLines } from './mind';
+import { beliefLines, cueReadLine } from './mind';
 import { playerOf, type PlanFighter, type PlanState } from './state';
 import { seenByPlayer, statuses, statusesShown } from './statusView';
 import { onStage } from './swarmView';
@@ -40,12 +40,24 @@ function beliefsOf(plan: PlanState, f: PlanFighter): Pick<CombatantView, 'belief
   return beliefs.length > 0 ? { beliefs } : {};
 }
 
+/** Your read of what a foe is readying, from its cues (eyes that read foes have the telegraph). */
+function cueReadOf(
+  plan: PlanState,
+  f: PlanFighter,
+  insight: boolean,
+): Pick<CombatantView, 'cueRead'> {
+  if (f.side !== 'enemy' || insight) return {};
+  const cueRead = cueReadLine(plan, f);
+  return cueRead ? { cueRead } : {};
+}
+
 export function combatantView(plan: PlanState, f: PlanFighter, insight: boolean): CombatantView {
   return {
     ...viewOf(f, statuses(plan, f), intentLine(plan, f, insight)),
     ...knownOf(plan, f, insight),
     ...learnedOf(plan, f),
     ...beliefsOf(plan, f),
+    ...cueReadOf(plan, f, insight),
     ...distanceOf(plan, f),
     // A hidden foe the player sees anyway is shown, and aimed at, as seen.
     ...(seenByPlayer(plan, f) ? { statuses: statusesShown(plan, f), targetable: true } : {}),

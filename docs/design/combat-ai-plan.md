@@ -1586,6 +1586,13 @@ What the read shows:
   workers, or one fails, the step is played on the page. The worker is its own bundle (about
   2 MB), precached for offline play. Still to do: measure it on a phone.
 
+- **Phase C3, cues in shadow (done).** The prototype's cue model (`prototypes/cues/`) is now the
+  engine's (`engines/plan/mind/cues/`: `profile.ts`, `observe.ts`, `hypotheses.ts`, `infer.ts`,
+  `describe.ts`, `read.ts`), with the watchful-hides concealment the owner chose and without the
+  bench's feints. The foe's read panel shows it as "Your read" beside today's telegraph, which is
+  unchanged: the player can compare the two in play before the cues take the telegraph's place
+  (and before foes read the player the same way). Eyes that read foes keep the telegraph alone.
+
 - **The teleport needs its kunai.** Minato's Flying Thunder God on trial is a free blink once a
   round. In canon it goes anywhere he has prepared with marks. Without that time to prepare, it goes
   where a marked kunai lies, and the kunai must be thrown first. That gives a far fighter a chance to

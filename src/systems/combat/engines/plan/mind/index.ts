@@ -13,3 +13,4 @@ export { assess, type Assessment } from './assess';
 export { objectivesAfter } from './aims';
 export { choose, scored } from './objectives';
 export { OBJECTIVES, type HeldObjective, type Objective } from './shape';
+export { cueReadLine } from './cues/read';

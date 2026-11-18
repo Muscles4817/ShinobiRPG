@@ -356,6 +356,11 @@ export interface CombatantView {
   readonly statuses: readonly string[];
   /** What they seem about to do (a telegraph or tell), when the engine shows one. */
   readonly intent?: string;
+  /**
+   * Your read of what they are readying from the cues it gives off, in graded words, when the
+   * engine reads cues (Plan & Watch, beside the telegraph for now).
+   */
+  readonly cueRead?: string;
   /** The cards you know they hold (all of them here, to eyes that read foes; else those seen). */
   readonly known?: string;
   /** What a foe has learned of you: defences it has seen you keep, moves it reads (`learned`). */

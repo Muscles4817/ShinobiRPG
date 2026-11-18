@@ -28,4 +28,16 @@ describe('the read on a foe', () => {
     render(<FighterRead fighter={foe} read={undefined} />);
     expect(screen.queryByText('What you make of them')).toBeNull();
   });
+
+  it('gives your read of what they are readying, from its cues', () => {
+    const foe: CombatantView = {
+      id: 'goro',
+      name: 'Goro',
+      side: 'enemy',
+      ...body,
+      cueRead: 'Likely an attacking technique: fairly sure.',
+    };
+    render(<FighterRead fighter={foe} read={undefined} />);
+    expect(screen.getByText('Your read: Likely an attacking technique: fairly sure.')).toBeTruthy();
+  });
 });
