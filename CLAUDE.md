@@ -401,7 +401,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     risk, never in place of a heal or armour, and anything else is cast unless losing it is likelier
     than not, `plan/crowding.ts`); and a fighter with the `teleport` perk (the Flying Thunder God)
     blinks once a round in place of the footwork their turn chose (a step, a move, an entry's way
-    in), sure and spending no turn (`teleport`, `plan/blink.ts`). A rule is play-tested there before
+    in), sure and spending no turn (`teleport`, `plan/blink.ts`); and the far gap is a long way
+    (`farGap`, `plan/farGap.ts`): a step between mid and far is a harder contest both ways, and a
+    holder at far has time for a second shot at a closer who slipped the first. Versus also sets
+    where a bout starts (`VERSUS_STARTS`, `CombatOpening.range`). A rule is play-tested there before
     it is adopted or dropped; adopting one moves it out of `experiments`. Adopted so far (Phase B,
     `docs/design/combat-ai-plan.md` Part 13b): a taijutsu fighter's step that reaches close carries
     a light blow as they land (`RUSH_SCALE` of a strike, once any trap there has sprung; a ready

@@ -14,6 +14,7 @@ import { itemsLeft } from '../../rules/items';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
 import { openingReads } from './fighterReads';
+import { withFarGap } from './farGap';
 import { healthNow } from './roundOpened';
 import { fieldMeter } from './field';
 import { endOfRound } from './roundEnd';
@@ -193,7 +194,10 @@ export function createPlanEngine(): CombatEngine {
     start(setup, rng) {
       const thinking = withThinking(initialFighters(setup), setup.experiments?.planner === true);
       const opened = openFight(
-        withTeleports(withCloseQuarters(withLeaps(thinking, setup), setup), setup),
+        withFarGap(
+          withTeleports(withCloseQuarters(withLeaps(thinking, setup), setup), setup),
+          setup,
+        ),
         setup.opening,
       );
       const { fighters, lines, field } = opened;

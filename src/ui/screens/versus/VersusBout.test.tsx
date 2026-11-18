@@ -37,6 +37,8 @@ function choice(watch: boolean): VersusChoice {
     foesThink: false,
     handSigns: false,
     teleport: false,
+    farGap: false,
+    start: 'mid',
   };
 }
 

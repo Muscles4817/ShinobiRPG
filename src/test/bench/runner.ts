@@ -5,6 +5,7 @@ import {
   type CombatEngine,
   type Decision,
   type CombatResult,
+  type CombatSetup,
   type CombatState,
 } from '@/systems/combat';
 
@@ -62,6 +63,8 @@ export interface Skirmish {
   readonly foes: readonly FighterSpec[];
   /** Both sides fight by their own judgement: no one keeps the player's plan for them. */
   readonly watch?: boolean;
+  /** What the fight is fought under: rules on trial, how it opens, the ground. */
+  readonly context?: Pick<CombatSetup, 'experiments' | 'opening' | 'ground'>;
 }
 
 /** One seeded fight of `player` against `opponent`. */
@@ -86,7 +89,7 @@ export interface TracedFight {
 }
 
 function played(
-  { player, allies, foes, watch }: Skirmish,
+  { player, allies, foes, watch, context }: Skirmish,
   seed: number,
   trace: boolean,
 ): { record: FightRecord; state: CombatState } {
@@ -101,6 +104,7 @@ function played(
       ...(player.plan ? { plan: player.plan } : {}),
       ...(watch ? { watch: true } : {}),
       ...(trace ? { trace: true } : {}),
+      ...context,
     },
     rng,
   );

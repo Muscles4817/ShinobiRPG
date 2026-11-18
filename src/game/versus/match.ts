@@ -1,5 +1,5 @@
 import { createRng, err, ok, type Result } from '@/core';
-import type { CombatGround } from '@/systems/combat';
+import type { CombatGround, RangeBand } from '@/systems/combat';
 
 import type { GameContext } from '../context';
 import { createNewGame } from '../creation';
@@ -35,6 +35,10 @@ export interface VersusPick {
   readonly handSigns?: boolean;
   /** Teleporters change distance without spending the turn (a rule on trial, `CombatExperiments.teleport`). */
   readonly teleport?: boolean;
+  /** The far gap is a harder crossing (a rule on trial, `CombatExperiments.farGap`). */
+  readonly farGap?: boolean;
+  /** Where the bout starts; mid range, as fights do, when absent. */
+  readonly start?: RangeBand;
 }
 
 /** The rules on trial a pick turns on, if any. */
@@ -44,6 +48,7 @@ function experimentsOf(pick: VersusPick) {
     ...(pick.foesThink ? { planner: true } : {}),
     ...(pick.handSigns ? { handSigns: true } : {}),
     ...(pick.teleport ? { teleport: true } : {}),
+    ...(pick.farGap ? { farGap: true } : {}),
   };
   return Object.keys(experiments).length > 0 ? { experiments } : {};
 }
@@ -76,6 +81,7 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     // A bout goes on while anyone on your side still fights, as it does for the other side.
     toTheLast: true,
     ...(pick.ground ? { ground: pick.ground } : {}),
+    ...(pick.start && pick.start !== 'mid' ? { opening: { range: pick.start } } : {}),
     ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),
     ...experimentsOf(pick),
   };

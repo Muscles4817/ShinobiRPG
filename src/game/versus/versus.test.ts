@@ -282,7 +282,7 @@ describe('rules on trial', () => {
 
   /** Lines in a watched bout (Konohamaru against Neji, unless named) that tell a rule on trial. */
   function linesIn(
-    pick: { handSigns?: boolean; teleport?: boolean },
+    pick: { handSigns?: boolean; teleport?: boolean; farGap?: boolean; start?: 'far' },
     marker: string,
     who: { side: string; foe: string } = { side: 'person:konohamaru', foe: 'person:neji' },
   ): number {
@@ -322,6 +322,16 @@ describe('rules on trial', () => {
     const who = { side: 'person:minato', foe: 'person:asuma' };
     expect(linesIn({ teleport: true }, 'vanishes and is', who)).toBeGreaterThan(0);
     expect(linesIn({}, 'vanishes and is', who)).toBe(0);
+  });
+
+  it('a bout starts where it is set to, and the far gap is long only when turned on', () => {
+    expect(linesIn({ start: 'far' }, 'It starts at a distance.')).toBeGreaterThan(0);
+    expect(linesIn({}, 'It starts at a distance.')).toBe(0);
+    const marksman = { side: 'person:tenten', foe: 'person:lee' };
+    expect(linesIn({ start: 'far' }, 'time for another', marksman)).toBe(0);
+    expect(linesIn({ start: 'far', farGap: true }, 'time for another', marksman)).toBeGreaterThan(
+      0,
+    );
   });
 
   it('a Dodge leaps clear only in a bout that turns it on', () => {

@@ -57,6 +57,7 @@ export const CAUSE_LABEL: Readonly<Record<NarrationCause, string>> = {
   'cut-off': 'Cut off',
   'kept-pace': 'Kept pace',
   'held-off': 'Held off',
+  'far-gap': 'A long way in',
   crowded: 'No room for the seals',
   teleport: 'Teleported, no turn spent',
 };
