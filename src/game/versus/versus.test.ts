@@ -181,7 +181,8 @@ describe('versus bouts', () => {
     if (!watched.ok) throw new Error(watched.error);
     const done = fightOut(watched.value, naruto);
     expect(done.reports[0]?.kind).toBe('fight');
-    expect(done.combatFinale?.log.join(' ')).toMatch(/Crow unfolds out of it/);
+    // The story keeps only its last lines (`LOG_LIMIT`): by the end, Crow is out and fighting.
+    expect(done.combatFinale?.log.join(' ')).toMatch(/Crow lands its Hidden Blades/);
   });
 
   it('fields a summoner with the toads, who calls them and meditates into Sage Mode', () => {

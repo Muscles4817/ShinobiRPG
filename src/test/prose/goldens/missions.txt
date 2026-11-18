@@ -413,6 +413,7 @@ view:
   The storehouse wraith goes back to Whispering Dread.
   You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed] [Read it coming]
   You trace the illusion back to the storehouse wraith.
+  That round went badly for you.
   prompt: The round is over. Round 2: pick up to 3 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 2)
@@ -462,6 +463,7 @@ view:
   Little of it bites on the storehouse wraith.
   The storehouse wraith’s touch chills you. [Guarded] [−1]
   Your senses swim in the storehouse wraith’s illusion.
+  That looked like it hurt the storehouse wraith.
   prompt: The round is over. Round 3: pick up to 3 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 3)
@@ -473,8 +475,6 @@ view:
 >>> combatAct (Watch the round)
 
 --- combat (day 2, slot 1) ---
-  Your Gale Heel cuts into the storehouse wraith cleanly. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
   The storehouse wraith is gone again, and the air where it stood is empty.
   Hurt and running short of time, the storehouse wraith reaches for Whispering Dread.
   The storehouse wraith finds the strength from somewhere, and the storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−13]
@@ -2035,6 +2035,8 @@ view:
 
 --- combat (day 3, slot 0) ---
   Two bandit thugs square up.
+  The first bandit thug is slower than you.
+  The second bandit thug is slower than you.
   prompt: Round 1: pick up to 6 actions for each distance, higher first, and the defence you keep ready there.
 
 >>> combatAct (Begin the fight)

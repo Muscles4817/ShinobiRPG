@@ -1410,6 +1410,24 @@ fighter notices, and the fight should keep telling them what they notice as it g
 It is its own piece of work after Phase B, and probably the biggest single gain in how the fight
 feels.
 
+**Phase C1, the first cut (done).** The player's fighter now reads the fight in their own words,
+each line a `readLine` (marker `⟦rd⟧`), listed on the plan screen under "What you noticed"
+(`views/noticed.ts`) and kept in the watched story:
+
+- As it opens (`plan/fighterReads.ts`): the obvious first (a blade in hand, armour, a bigger body,
+  a foe off their footing on this ground), then, from perception C, who is quicker or hits harder.
+  Perception sets how many (one to six) and how surely: from B a read is said plainly ("Gōran is
+  armoured: plain blows will glance off."), below it as it looks ("Gōran looks well protected.").
+- After each round (`plan/roundReads.ts`, from each fighter's health as the round began,
+  `roundOpened.ts`): a foe who lost a quarter of their health to it ("wasn't ready for that, and it
+  hurt"), the worse of it going to you, a foe winded, and from perception B a foe's chakra running
+  thin; from intellect C, a foe leaning on one technique three turns running, or a foe who reads
+  the fight having your own habit read. Intellect sets how many a round tells (one to three).
+
+Not yet: reads that can be wrong (a dull eye mistaking a feint), intuition as its own stat, eyes
+like insight saying more, and "read it coming" from a foe's slip of your attack. Those wait for the
+beliefs layer to take the place of the true state these reads still look at.
+
 **First measurement.** With all four Phase A rules on in every fight, the matrix (chūnin, 100
 seeds a pairing) moved:
 

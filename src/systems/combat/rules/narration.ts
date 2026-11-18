@@ -67,6 +67,8 @@ export interface Narration {
   readonly offPlan?: NarrationOffPlan;
   /** The line opens a round (`roundStartLine`): what follows is that round's story. */
   readonly roundStart?: true;
+  /** What the player's fighter noticed (`readLine`): a read of a foe, in their own terms. */
+  readonly read?: true;
   /** Why it went as it did (`causeLine`): a slip, a hold that didn't take, a failed step. */
   readonly cause?: NarrationCause;
 }
@@ -91,6 +93,7 @@ const MARKER = /\s*⟦([+-])(\d+)⟧/g;
 const REACTION_MARKER = /\s*⟦r:([a-z-]+)⟧/g;
 const OFF_PLAN_MARKER = /\s*⟦op:([a-z-]+)⟧/;
 const ROUND_START_MARKER = /\s*⟦rs⟧/;
+const READ_MARKER = /\s*⟦rd⟧/;
 const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
@@ -122,6 +125,11 @@ export function reactionLine(text: string, ...reactions: readonly NarrationReact
 /** The line that opens a round (its first exchange's divider), so a round's lines can be found. */
 export function roundStartLine(text: string): string {
   return `${text} ⟦rs⟧`;
+}
+
+/** A read the player's fighter makes of a foe: what they noticed, said as surely as they can tell. */
+export function readLine(text: string): string {
+  return `${text} ⟦rd⟧`;
 }
 
 /** A line from a player's turn that played off their plan, saying why. */
@@ -263,10 +271,12 @@ export function splitNarration(line: string): Narration {
   const statuses = statusesIn(line);
   const offPlan = OFF_PLAN_MARKER.exec(line)?.[1];
   const roundStart = ROUND_START_MARKER.test(line);
+  const read = READ_MARKER.test(line);
   const markers = [
     CAUSE_MARKER,
     OFF_PLAN_MARKER,
     ROUND_START_MARKER,
+    READ_MARKER,
     MARKER,
     REACTION_MARKER,
     ACTOR_MARKER,
@@ -293,6 +303,7 @@ export function splitNarration(line: string): Narration {
     ...(statuses ? { statuses } : {}),
     ...(isOffPlan(offPlan) ? { offPlan } : {}),
     ...(roundStart ? { roundStart: true as const } : {}),
+    ...(read ? { read: true as const } : {}),
     ...causeIn(line),
   };
 }

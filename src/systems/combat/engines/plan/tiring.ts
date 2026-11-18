@@ -1,6 +1,7 @@
 import { alive } from '../../rules/body';
 import { gathered } from '../../rules/chakra';
 import { rested } from './effort';
+import type { Quiet } from './roundOpened';
 import type { PlanFighter, PlanState } from './state';
 
 /**
@@ -18,15 +19,6 @@ export const QUIET_SHARE = 0.05;
 export const TIRE_AFTER = 3;
 /** Quiet rounds in a row before the fight is called a stalemate. */
 export const STALEMATE_AFTER = 8;
-
-export interface Quiet {
-  /** Rounds in a row that ended with no one much worse off. */
-  readonly quietRounds?: number;
-  /** Everyone's health together as the round began, to tell how much the round hurt. */
-  readonly roundHealth?: number;
-  /** Both sides have tired: nothing comes back between exchanges any more. */
-  readonly tired?: true;
-}
 
 function totalOf(fighters: readonly PlanFighter[], of: 'health' | 'maxHealth'): number {
   return fighters.reduce((sum, f) => sum + Math.max(0, f[of]), 0);
