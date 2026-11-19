@@ -88,11 +88,18 @@ describe('daily actions', () => {
     expect(state.techniques.known).toContain('ember-breath');
   });
 
-  it('blocks studying a technique two ranks above your grade, saying what opens it', () => {
+  it('lets you study a technique far above your grade: rank sets the time, never a lock', () => {
     const game = newGame();
     const chunin = { ...game, standing: { ...game.standing, rank: 'chunin' as const } };
-    const result = dispatch(chunin, { type: 'study', techniqueId: 'tide-lash' }, ctx);
-    expect(result).toEqual({ ok: false, error: "Needs D ninjutsu; you're E." });
+    // Tide Lash asks D chakra control: a real prerequisite still locks it.
+    const study = { type: 'study', techniqueId: 'tide-lash' } as const;
+    expect(dispatch(chunin, study, ctx)).toEqual({
+      ok: false,
+      error: "Needs D chakra control; you're E.",
+    });
+    const steady = { ...chunin.character.stats, chakraControl: 10 };
+    const able = { ...chunin, character: { ...chunin.character, stats: steady } };
+    expect(act(able, study).techniques.progress['tide-lash']).toBeGreaterThan(0);
   });
 });
 

@@ -1,10 +1,5 @@
 import { statTier, type StatGrade, type Stats } from '@/systems/stats';
-import {
-  DISCIPLINES,
-  gradeToAttempt,
-  type Discipline,
-  type TechniqueDef,
-} from '@/systems/techniques';
+import { DISCIPLINES, type Discipline, type TechniqueDef } from '@/systems/techniques';
 import { maxChakra, MAX_HEALTH } from '@/systems/vitals';
 
 import { attributesOf } from '../combatants';
@@ -107,7 +102,7 @@ const NAMED = 2;
 function heldWords(def: TechniqueDef, why: HeldBack): string {
   switch (why) {
     case 'grade':
-      return `${def.name} waits for ${ART_NAME[def.discipline]} ${gradeToAttempt(def.rank)}`;
+      return `${def.name} waits for ${ART_NAME[def.discipline]} ${def.rank}`;
     case 'nature':
       return `${def.name} needs a chakra nature you haven’t found yet`;
     case 'body':

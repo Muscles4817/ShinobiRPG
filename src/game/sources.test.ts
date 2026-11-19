@@ -144,16 +144,15 @@ describe('scrolls you own', () => {
     });
   });
 
-  it('are read at home, at a bare scroll’s pace, by the same rank gate', () => {
+  it('are read at home, at a bare scroll’s pace, however far above you', () => {
     const owner = { ...ready(), inventory: addScroll(ready().inventory, 'kindled-pulse') };
     expect(scrollDesk(owner, ctx).scrolls.map((s) => s.id)).toEqual(['kindled-pulse']);
     const after = act(owner, read);
     expect(after.techniques.progress['kindled-pulse']).toBeGreaterThan(0);
     const novice = { ...withAllStats(newGame(), 5), inventory: owner.inventory };
-    expect(dispatch(novice, read, ctx)).toEqual({
-      ok: false,
-      error: "Needs D taijutsu; you're E.",
-    });
+    const slow = act(novice, read).techniques.progress['kindled-pulse'] ?? 0;
+    expect(slow).toBeGreaterThan(0);
+    expect(slow).toBeLessThan(after.techniques.progress['kindled-pulse'] ?? 0);
   });
 });
 
@@ -180,7 +179,8 @@ describe('mission gifts', () => {
       ...owner,
       character: { ...owner.character, stats: { ...owner.character.stats, taijutsu: value } },
     });
-    const noted = noteGradeUps(withTaijutsu(7.95), withTaijutsu(8.05), ctx);
+    // Kindled Pulse is rank C: grade C opens it steady.
+    const noted = noteGradeUps(withTaijutsu(12.95), withTaijutsu(13.05), ctx);
     const card = noted.reports.find((r) => r.kind === 'grade');
     expect(card?.kind === 'grade' && card.opens).toContainEqual({
       name: 'Kindled Pulse',

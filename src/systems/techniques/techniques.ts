@@ -10,7 +10,8 @@ import {
   gradeOf,
   learnability,
   SOURCE_QUALITY,
-  UNSTABLE_STUDY,
+  rankGap,
+  studyPace,
   type Learnability,
   type StudySource,
 } from './learning';
@@ -115,7 +116,7 @@ export interface TechniqueNeeds {
 
 /**
  * Techniques the character has mastered, plus partial study progress on others. Unstable ones
- * (learned a rank above the learner's grade) are known too, and listed again in `unstable`
+ * (learned above the learner's grade) are known too, and listed again in `unstable`
  * until the learner's grade catches up.
  */
 export interface TechniqueBook {
@@ -155,7 +156,6 @@ export interface Learner {
 export type LearnBlocker =
   | { readonly kind: 'already-known' }
   | { readonly kind: 'clan'; readonly clan: string }
-  | { readonly kind: 'rank'; readonly rank: StatGrade; readonly grade: StatGrade }
   | { readonly kind: 'nature'; readonly nature: Element }
   | { readonly kind: 'reserves'; readonly min: number; readonly have: number }
   | { readonly kind: 'control'; readonly grade: StatGrade; readonly have: StatGrade }
@@ -193,9 +193,6 @@ export function learnBlocker(
   if (book.known.includes(def.id)) return { kind: 'already-known' };
   if (def.clan !== undefined && def.clan !== learner.clanId) {
     return { kind: 'clan', clan: def.clan };
-  }
-  if (learnabilityFor(def, learner.stats) === 'impossible') {
-    return { kind: 'rank', rank: def.rank, grade: gradeOf(learner.stats[def.discipline]) };
   }
   return def.needs ? needsBlocker(def.needs, learner) : null;
 }
@@ -240,7 +237,7 @@ export interface StudyConditions {
 
 /**
  * One session's study: the base points × aptitude in the art × chakra control (chakra arts) ×
- * the source's quality, at half pace for a technique a rank above the learner.
+ * the source's quality, at half pace for each rank the technique sits above the learner.
  */
 export function sessionStudyPoints(
   stats: Stats,
@@ -250,8 +247,8 @@ export function sessionStudyPoints(
   const control = CHAKRA_ARTS.includes(def.discipline)
     ? controlStudyFactor(stats.chakraControl)
     : 1;
-  const unstable = learnabilityFor(def, stats) === 'unstable' ? UNSTABLE_STUDY : 1;
-  return studyPoints(stats, def) * aptitude * control * SOURCE_QUALITY[source] * unstable;
+  const pace = studyPace(rankGap(def.rank, gradeOf(stats[def.discipline])));
+  return studyPoints(stats, def) * aptitude * control * SOURCE_QUALITY[source] * pace;
 }
 
 export interface StudyResult {

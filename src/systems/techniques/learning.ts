@@ -2,14 +2,16 @@ import { STAT_GRADES, statTier, type StatGrade } from '@/systems/stats';
 
 /**
  * How far a technique sits from the learner, and how fast it is studied. A technique's rank
- * uses the same letters as ability grades. Against your grade in its discipline: at or below
- * it learns normally; one above learns slowly and arrives unstable; two or more above can't
- * be learned at all, teacher or not.
+ * uses the same letters as ability grades. Anyone may learn anything; the rank sets the time
+ * (`docs/design/combat-ai-plan.md` Part 13c). Against your grade in its discipline: at or below
+ * it learns normally; above it is studied more slowly the further it sits (`UNSTABLE_STUDY` for
+ * each rank of the gap) and arrives unstable until your grade catches up. Only real
+ * prerequisites lock a technique (a clan, a nature, control, reserves: `learnBlocker`).
  */
 
-export type Learnability = 'normal' | 'unstable' | 'impossible';
+export type Learnability = 'normal' | 'unstable';
 
-/** A technique one rank above you is studied at this fraction of the usual pace. */
+/** Each rank a technique sits above you slows its study by this much again. */
 export const UNSTABLE_STUDY = 0.5;
 
 /**
@@ -41,15 +43,18 @@ export function gradeOf(value: number): StatGrade {
   return statTier(value).grade;
 }
 
-/** The lowest grade from which a technique of this rank can be learned at all. */
-export function gradeToAttempt(rank: StatGrade): StatGrade {
-  return STAT_GRADES[Math.max(0, gradeIndex(rank) - 1)] ?? 'E';
+/** How many ranks a technique sits above a grade (0 at or below it). */
+export function rankGap(rank: StatGrade, grade: StatGrade): number {
+  return Math.max(0, gradeIndex(rank) - gradeIndex(grade));
 }
 
 export function learnability(rank: StatGrade, grade: StatGrade): Learnability {
-  const gap = gradeIndex(rank) - gradeIndex(grade);
-  if (gap <= 0) return 'normal';
-  return gap === 1 ? 'unstable' : 'impossible';
+  return rankGap(rank, grade) === 0 ? 'normal' : 'unstable';
+}
+
+/** The pace a technique is studied at, this many ranks above the learner: half for each. */
+export function studyPace(gap: number): number {
+  return UNSTABLE_STUDY ** gap;
 }
 
 /** Chakra control's multiplier on studying a chakra art. */

@@ -22,19 +22,19 @@ describe('grade-ups', () => {
   });
 
   it('stamps a card with the new grade and what it opens, from content', () => {
-    const genin = withStats(withAllStats(newGame(), 5), { kenjutsu: 7.95 });
+    const genin = withStats(withAllStats(newGame(), 5), { kenjutsu: 12.95 });
     const before = { ...genin, standing: { ...genin.standing, rank: 'chunin' as const } };
-    const after = withStats(before, { kenjutsu: 8.02 });
+    const after = withStats(before, { kenjutsu: 13.02 });
     const noted = noteGradeUps(before, after, ctx);
     const [card] = gradeCards(noted);
-    expect(card).toMatchObject({ stat: 'Kenjutsu', grade: 'D', rank: 'Good genin' });
-    // Moonfall Slash is rank C: two above grade E, one above grade D (learnable, unstable).
+    expect(card).toMatchObject({ stat: 'Kenjutsu', grade: 'C' });
+    // Moonfall Slash is rank C: grade C learns it at full pace and steady.
     // It is kept in the library's stacks, which a chūnin may use.
     expect(card?.opens.map((o) => o.name)).toContain('Moonfall Slash');
-    const geninCard = gradeCards(noteGradeUps(genin, withStats(genin, { kenjutsu: 8.02 }), ctx));
+    const geninCard = gradeCards(noteGradeUps(genin, withStats(genin, { kenjutsu: 13.02 }), ctx));
     expect(geninCard[0]?.opens.map((o) => o.name)).not.toContain('Moonfall Slash');
     expect(card?.opens.every((o) => o.where.length > 0)).toBe(true);
-    expect(lastEntry(noted)?.heading).toBe('Kenjutsu reaches grade D');
+    expect(lastEntry(noted)?.heading).toBe('Kenjutsu reaches grade C');
     expect(lastEntry(noted)?.text).not.toMatch(/\d/);
   });
 

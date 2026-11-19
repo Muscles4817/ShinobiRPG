@@ -44,7 +44,7 @@ export function ScrollRow({
           {scroll.unstable && !locked && (
             <span
               className="badge unstable"
-              title="A rank above you: slow, and it arrives unstable"
+              title="Above your grade: slower the further above, and it arrives unstable"
             >
               Unstable
             </span>

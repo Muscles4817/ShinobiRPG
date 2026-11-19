@@ -29,7 +29,7 @@ export function studyBlocker(state: GameState, def: TechniqueDef, ctx: GameConte
   const energy = hardWorkEnergy(state.character, ctx, STUDY_ENERGY_COST);
   return firstBlocker(
     noTalentReason(state.character, def.discipline, ctx),
-    blocker && learnBlockerText(blocker, def),
+    blocker && learnBlockerText(blocker),
     state.character.vitals.energy < energy && `Needs ${energy} energy.`,
   );
 }
