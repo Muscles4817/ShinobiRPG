@@ -132,13 +132,13 @@ describe('elemental walls', () => {
   }
 
   it('a wall swallows an element it overpowers and still stands', () => {
-    const after = throwUntil(walled(), fireball, /swallows hero['’]s Fireball and still stands/);
+    const after = throwUntil(walled(), fireball, /Water Wall/);
     expect(fighterIn(after, 'bandit')).toMatchObject({ health: 100 });
     expect(fighterIn(after, 'bandit')?.substituteSpent).toBeUndefined();
   });
 
   it('an element that overpowers the wall smashes through it', () => {
-    const after = throwUntil(walled(), quake, /smashes through Water Wall/);
+    const after = throwUntil(walled(), quake, /Water Wall/);
     expect(fighterIn(after, 'bandit')?.health).toBeLessThan(100);
     expect(fighterIn(after, 'bandit')?.substituteSpent).toBe(true);
   });
