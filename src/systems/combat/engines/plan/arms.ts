@@ -7,6 +7,7 @@ import { canDaze, dazeIn } from './daze';
 import { blowWord } from './scene';
 import { RUSH_SCALE } from './rushing';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { plainApproach } from '../../rules/tags';
 
 /**
  * The strike and kunai cards, as the fighter's weapons make them (`rules/weapons.ts`): a blade's
@@ -27,6 +28,7 @@ function blowsOf(attack: Attack, thrown: boolean, striker: PlanFighter): Blow[] 
     dodgeable: true,
     physical: !thrown,
     kind: attack.kind,
+    came: plainApproach(attack.kind, thrown),
     ...(attack.pierce > 0 ? { pierce: attack.pierce } : {}),
     ...(attack.hit ? { hit: attack.hit } : {}),
   };

@@ -16,6 +16,7 @@ import { isDazed } from './daze';
 import { swarmPower, swarmStruck } from './swarm';
 import { dustLanded, dustPower, dustStruck } from './dust';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
+import { approachOf } from '../../rules/tags';
 
 /**
  * A technique's wounding effects in a planned fight: one blow, or a flurry's several, each
@@ -57,6 +58,7 @@ function blowsFor(aimed: Aimed, use: Wounding, { scale, kills }: Force): Blow[] 
     physical: physical(t),
     kind: attackKindOf(t),
     discipline: t.discipline,
+    came: approachOf(t),
     ...(t.element ? { element: t.element } : {}),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     // A killing blow goes through a guard as a break does: only a swap gets out of its way.

@@ -37,6 +37,7 @@ import { shieldUp } from './shield';
 import { foundBlindSpot, throughBlindSpot } from './blindSpot';
 import { distanceBetween } from './distance';
 import { slipCause, slipCauseBeside, withCause } from './causes';
+import type { Approach } from '../../rules/tags';
 
 /** Foresight finds a Counter's moment more often. */
 const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
@@ -70,6 +71,8 @@ export interface Blow {
   readonly discipline?: Discipline;
   /** The technique's element, which an elemental wall meets (`footwork.ts`). */
   readonly element?: Element;
+  /** How it came, for the story of a defence against it (`rules/tags/approach.ts`). */
+  readonly came?: Approach;
   /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
   readonly area?: boolean;
   /** How much ground an area hit covers: wider is harder to slip and beats a plain Guard. */
@@ -227,7 +230,7 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const tried = able && (has('dodge') || committedTo(target, 'evade'));
   const avoid = able && !blow.reached ? avoidOdds(round, blowIncoming(hit)) : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
-  const slip = { target, attacker, what: blow.what };
+  const slip = { target, attacker, what: blow.what, ...(blow.came ? { came: blow.came } : {}) };
   const line = missLine(momentOf(round, target.id), missWhy(hit, tried), slip);
   const cause = slipCauseBeside(slipCause(round, blowIncoming(hit)), tried);
   // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
@@ -277,6 +280,7 @@ function swapOf({ attacker, target, blow }: Hit): Swap {
     what: blow.what,
     discipline: blow.discipline,
     ...(blow.element ? { element: blow.element } : {}),
+    ...(blow.came ? { came: blow.came } : {}),
   };
 }
 

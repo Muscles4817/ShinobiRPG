@@ -52,6 +52,7 @@ import { weightOf } from './weight';
 import { stillFree, sunkIn } from './oneNightmare';
 import { slipCause, slipCauseBeside, withCause } from './causes';
 import type { NarrationCause } from '../../rules/causes';
+import { approachOf } from '../../rules/tags';
 
 /**
  * Using a technique in a planned fight: pay its chakra, see whether each target slips it (the
@@ -309,7 +310,7 @@ function slips(round: Round, turn: Turn, foe: PlanFighter, t: CombatTechnique): 
 /** Tells a foe slipping a technique: read and ready for it, or (a ready Dodge) clear of it. */
 function toldSlip(round: Round, { actor, foe, t, rng }: Slipped & { readonly rng: Rng }): Round {
   const moment = momentOf(round, foe.id);
-  const slip = { target: foe, attacker: actor, what: t.name };
+  const slip = { target: foe, attacker: actor, what: t.name, came: approachOf(t) };
   const cause = slipCauseOf(round, { actor, foe, t });
   if (!dodgesHere(round, foe)) {
     const seen = reactionLine(seenLine(moment, slip, t.discipline === 'genjutsu'), 'missed');

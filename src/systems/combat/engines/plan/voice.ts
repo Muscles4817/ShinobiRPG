@@ -2,6 +2,8 @@ import type { Discipline, Element } from '@/systems/techniques';
 
 import type { CombatTechnique, RangeBand } from '../../contract';
 import type { Told } from '../../rules/telling';
+import type { Approach } from '../../rules/tags';
+import { DODGES, SLIPS } from './defenceLines';
 import { told, type Bank, type Moment, type SceneLines } from './fresh';
 import {
   castScenes,
@@ -92,22 +94,14 @@ export interface SlipTold {
   readonly target: Told;
   readonly attacker: Told;
   readonly what: string;
+  /** How it came (`rules/tags/approach.ts`); a blow when unsaid. */
+  readonly came?: Approach;
 }
 
 /** Why an attack missed: a ready Dodge, a wild attack, eyes that saw it coming, or plain luck. */
 export type MissWhy = 'dodged' | 'wide' | 'foreseen' | 'slipped';
 
-const MISSES: Readonly<Record<MissWhy, Bank>> = {
-  dodged: bank(
-    'dodge',
-    [
-      '{t} twist{t.s} clear of {a.poss} {what}.',
-      '{a.poss} {what} cuts only air as {t} sway{t.s} aside.',
-      '{t} duck{t.s} under {a.poss} {what}.',
-    ],
-    undefined,
-    MISSING,
-  ),
+const MISSES: Readonly<Record<'wide' | 'foreseen', Bank>> = {
   wide: bank('wide', [
     '{a.poss} {what} goes wide of {t}.',
     '{a} overreach{a.es}, and the {what} sails past {t}.',
@@ -117,21 +111,22 @@ const MISSES: Readonly<Record<MissWhy, Bank>> = {
     "{t.poss} eyes see the {what} coming, and {t.they}{t.'s} already elsewhere.",
     '{t} move{t.s} before {a} {a.does}, and the {what} slips past.',
   ]),
-  slipped: bank(
-    'slip',
-    [
-      '{t} slip{t.s} past {a.poss} {what}.',
-      '{t} {t.is} already elsewhere when {a.poss} {what} arrives.',
-      '{a.poss} {what} finds only the space where {t} stood.',
-    ],
-    undefined,
-    MISSING,
-  ),
 };
 
 /** An attack that missed, told by why. */
 export function missLine(moment: Moment, why: MissWhy, slip: SlipTold): string {
-  return told(moment, MISSES[why], { t: slip.target, a: slip.attacker, what: slip.what });
+  return told(moment, missBank(why, slip.came ?? 'blow'), {
+    t: slip.target,
+    a: slip.attacker,
+    what: slip.what,
+  });
+}
+
+/** A Dodge or a slip is told by how the attack came (`defenceLines.ts`). */
+function missBank(why: MissWhy, came: Approach): Bank {
+  if (why === 'dodged') return bank(`dodge-${came}`, DODGES[came], undefined, MISSING);
+  if (why === 'slipped') return bank(`slip-${came}`, SLIPS[came], undefined, MISSING);
+  return MISSES[why];
 }
 
 /** A slip with no Dodge ready: read in time, and the technique misses (it says so). */

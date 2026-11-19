@@ -1,4 +1,6 @@
+import type { Approach } from '../../rules/tags';
 import type { Told } from '../../rules/telling';
+import { SWAPS } from './defenceLines';
 import type { HoldOffReason } from '../../rules/zoning';
 import { told, within, type Bank, type Moment } from './fresh';
 import { RUNNING_IN, THROWN_BACK, VANISHING } from './voiceScenes';
@@ -131,20 +133,20 @@ export interface SwapTold {
   readonly what: string;
   /** The substitution's name. */
   readonly jutsu: string;
+  /** How the attack came (`rules/tags/approach.ts`); a blow when unsaid. */
+  readonly came?: Approach;
 }
 
-const SWAPPED: Bank = {
-  id: 'swap',
-  lines: [
-    '{t} swap{t.s} out of {a.poss} {what} with {jutsu}.',
-    '{a.poss} {what} splinters the log {t} left behind with {jutsu}.',
-    '{t} {t.is} somewhere else by the time {a.poss} {what} lands.',
-  ],
-};
-
 /** A substitution takes a hit in its owner's place. */
-export function swapLine(moment: Moment, { target, attacker, what, jutsu }: SwapTold): string {
-  return told(moment, SWAPPED, { t: target, a: attacker, what, jutsu });
+export function swapLine(moment: Moment, swap: SwapTold): string {
+  const came = swap.came ?? 'blow';
+  const lines = { id: `swap-${came}`, lines: SWAPS[came] };
+  return told(moment, lines, {
+    t: swap.target,
+    a: swap.attacker,
+    what: swap.what,
+    jutsu: swap.jutsu,
+  });
 }
 
 const THROUGH: Bank = {

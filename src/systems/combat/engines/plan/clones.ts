@@ -62,6 +62,7 @@ export function cloneFollowUp(round: Round, { actor, target, rng }: Turn, card: 
     dodgeable: true,
     physical: false,
     kind: attackKindOf(null, thrown),
+    came: thrown ? 'thrown' : 'blow',
   };
   return react(round, { attacker: self, target: foe, blow, rng });
 }

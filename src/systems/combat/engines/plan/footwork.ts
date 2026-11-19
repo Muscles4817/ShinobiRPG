@@ -12,6 +12,8 @@ import { pairsMoved } from './groundPlay';
 import { movesFor } from './pairMoves';
 import { readyDefences } from './readiness';
 import { swapLine } from './sceneVoice';
+import { wallLine } from './wallVoice';
+import type { Approach } from '../../rules/tags';
 import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
 import { tell } from '../../rules/telling';
@@ -100,6 +102,8 @@ export interface Swap {
   readonly discipline: Discipline | undefined;
   /** The attack's element, which an elemental wall meets. */
   readonly element?: Element;
+  /** How it came (`rules/tags/approach.ts`), for the story. */
+  readonly came?: Approach;
 }
 
 /** What a substitution made of a hit: escaped it, or (a broken wall) let it through. */
@@ -137,16 +141,21 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): S
   });
   const paid = { ...round, fighters };
   const name = card.technique.name;
-  const swapped = { a: attacker, what: swap.what };
-  if (wall === 'weak') {
-    return {
-      round: say(paid, tell('{a.poss} {what} smashes through {wall}.', { ...swapped, wall: name })),
-      escaped: false,
-    };
-  }
-  const line =
-    wall === 'strong'
-      ? tell('{wall} swallows {a.poss} {what} and still stands.', { ...swapped, wall: name })
-      : swapLine(momentOf(paid, target.id), { target, attacker, what: swap.what, jutsu: name });
+  const moment = momentOf(paid, target.id);
+  const walled = {
+    target,
+    attacker,
+    what: swap.what,
+    jutsu: name,
+    ...(swap.came ? { came: swap.came } : {}),
+  };
+  const told = wallLine(moment, {
+    ...walled,
+    wall,
+    walls: card.technique.element,
+    hits: swap.element,
+  });
+  const line = told ?? swapLine(moment, walled);
+  if (wall === 'weak') return { round: say(paid, line), escaped: false };
   return { round: say(paid, reactionLine(line, 'swapped')), escaped: true };
 }
