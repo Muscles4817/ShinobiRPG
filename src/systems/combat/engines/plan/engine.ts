@@ -26,6 +26,7 @@ import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { presentAtStart } from './present';
+import { trimmedLog } from './cast';
 import { withCloseQuarters } from './closeQuarters';
 import { withTeleports } from './blink';
 import { withinGround } from '../../rules/ground';
@@ -252,7 +253,7 @@ export function createPlanEngine(): CombatEngine {
     },
 
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {
-      const plan = read(state);
+      const plan = trimmedLog(read(state));
       if (plan.result) return err('The fight is already over.');
       const next = act(plan, choice.optionId, rng);
       return next.ok ? ok(encode(next.value)) : next;
@@ -267,6 +268,7 @@ export function createPlanEngine(): CombatEngine {
         combatants: plan.fighters.map((f) => combatantView(plan, f, insight)),
         log: plan.log,
         ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),
+        ...(plan.cast ? { cast: plan.cast } : {}),
         options: options(plan),
         range: bandOf(plan, playerOf(plan)),
         prompt: prompt(plan),

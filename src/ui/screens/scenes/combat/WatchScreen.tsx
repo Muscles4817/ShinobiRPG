@@ -42,6 +42,15 @@ function exchangeAround(beats: readonly FightBeat[], at: number): readonly Fight
   return beats.slice(start + 1, end < 0 ? undefined : end);
 }
 
+/**
+ * Everyone who has stood on the field this fight: those standing now, and those gone (a clone
+ * that popped within these lines) from the fight's cast, so each is named and sided.
+ */
+function everyoneSeen(view: CombatView): Pick<CombatantView, 'id' | 'name' | 'side'>[] {
+  const gone = (view.cast ?? []).filter((c) => !view.combatants.some((v) => v.id === c.id));
+  return [...view.combatants, ...gone];
+}
+
 /** Who has acted in this exchange so far, in order, faded once done; the one acting is ringed. */
 function ActingOrder({
   beats,
@@ -50,7 +59,7 @@ function ActingOrder({
 }: {
   readonly beats: readonly FightBeat[];
   readonly at: number;
-  readonly fighters: readonly CombatantView[];
+  readonly fighters: readonly Pick<CombatantView, 'id' | 'name' | 'side'>[];
 }) {
   const exchange = exchangeAround(beats, at);
   const actors = [...new Set(exchange.flatMap((b) => (b.actorId ? [b.actorId] : [])))];
@@ -310,7 +319,7 @@ export function WatchScreen(props: WatchScreenProps) {
       </header>
       <main className="page watch-screen">
         <Pane name="stage">
-          <ActingOrder beats={beats} at={play.at} fighters={view.combatants} />
+          <ActingOrder beats={beats} at={play.at} fighters={everyoneSeen(view)} />
           <Stage
             view={view}
             beat={beat}

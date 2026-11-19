@@ -457,6 +457,19 @@ view:
 >>> combatAct (Watch the round)
 
 --- combat (day 2, slot 1) ---
+  —— First exchange ——
+  You shake off the illusion.
+  You send Gale Heel howling out.
+  You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
+  The storehouse wraith barely seems to feel it.
+  The storehouse wraith is gone again, and the air where it stood is empty.
+  The storehouse wraith’s touch comes slower than it did at the start and only chills you. [Guarded] [−1]
+  You blink, and the field is no longer where it was.
+  —— Second exchange ——
+  You scan the field and see nothing. [Off plan: no one in sight]
+  The storehouse wraith’s touch only just grazes you. [Guarded] [−1]
+  Your senses swim in the storehouse wraith’s illusion.
+  You trace the illusion back to the storehouse wraith.
   —— Third exchange ——
   Tired now, you still go to Shadow Feint.
   The storehouse wraith shakes the illusion off. [Resisted]
@@ -474,18 +487,33 @@ view:
 >>> combatAct (Begin round 4)
 
 --- combat (day 2, slot 1) ---
-  —— The next round begins ——
   prompt: Close range, round 4, exchange 1 of 4
 
 >>> combatAct (Watch the round)
 
 --- combat (day 2, slot 1) ---
+  You shake off the illusion. [Off plan: no one in sight]
+  You search the corners of the room and find them empty.
+  The storehouse wraith lets the fight go by for a moment, pulling its strength together.
+  —— Second exchange ——
+  You look again, with no more luck. [Off plan: no one in sight]
+  The storehouse wraith catches the eye and lets Whispering Dread unfold.
+  You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed] [Read it coming]
+  You catch the thread of the illusion and find the storehouse wraith.
+  —— Third exchange ——
+  You go in with Temple-Bell Palm. [Off plan: nothing slotted fit]
+  You land your Temple-Bell Palm on the storehouse wraith, battering the guard aside. [Guard broken] [−9]
+  Some of it glances off the storehouse wraith.
+  The storehouse wraith melts back into the illusion.
+  The storehouse wraith’s touch comes slower than it did at the start and only brushes you. [Guarded] [−1]
+  —— Last exchange ——
+  You spot the storehouse wraith. [Off plan: no one in sight]
+  You roll under the storehouse wraith’s touch, and it splinters the wall instead. [Missed] [Too quick for it]
   prompt: The round is over. Round 5: pick up to 3 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 5)
 
 --- combat (day 2, slot 1) ---
-  —— The next round begins ——
   prompt: Close range, round 5, exchange 1 of 4
 
 >>> combatAct (Watch the round)
@@ -500,6 +528,24 @@ view:
   taught[1]: Genjutsu, a little
 
 --- combat (day 2, slot 1) ---
+  Tired now, you still go to Gale Heel.
+  Your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
+  The storehouse wraith barely seems to feel it.
+  The storehouse wraith’s touch brushes you. [Guarded] [−1]
+  —— Second exchange ——
+  Tired now, you still go to Temple-Bell Palm. [Off plan: nothing slotted fit]
+  You catch the storehouse wraith with your Temple-Bell Palm, smashing through the guard. [Guard broken] [−9]
+  The storehouse wraith’s cover takes the edge off it.
+  The storehouse wraith melts back into the illusion.
+  The storehouse wraith lashes out with the last of its strength, and the touch only grazes you. [Guarded] [−1]
+  You blink, and the field is no longer where it was.
+  You catch the thread of the illusion and find the storehouse wraith.
+  —— Third exchange ——
+  You go in with Temple-Bell Palm. [Off plan: nothing slotted fit]
+  You land your Temple-Bell Palm on the storehouse wraith, battering the guard aside. [Guard broken] [−8]
+  Some of it glances off the storehouse wraith.
+  The storehouse wraith thins to nothing and is gone.
+  The last of them is down, and it is over.
 
 >>> leaveFight
 

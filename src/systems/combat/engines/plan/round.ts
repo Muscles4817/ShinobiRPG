@@ -25,6 +25,7 @@ import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField } from './field';
 import { byIntent, intendedCard, keepsTo } from './intent';
 import { aimFitting } from './fitting';
+import { castAfter } from './cast';
 import { momentIn } from './moment';
 import { recovered } from './tiring';
 import { tracedTurn } from './slotTrace';
@@ -55,7 +56,6 @@ import { dustAfter } from './dust';
 import { wearOffDaze } from './daze';
 import {
   fighterIn,
-  LOG_LIMIT,
   patch,
   playerOf,
   say,
@@ -356,7 +356,6 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const { field: _old, ...rest } = state;
   const closing = result ? [closingLine(end, result)] : fading;
   const story = [...state.log, ...end.lines, ...closing];
-  const dropped = (state.logDropped ?? 0) + Math.max(0, story.length - LOG_LIMIT);
   return {
     ...rest,
     round: result ? state.round : state.round + 1,
@@ -366,8 +365,9 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...spacingOf(end),
     seen: end.seen,
     ...(end.reads ? { reads: end.reads } : {}),
-    log: story.slice(-LOG_LIMIT),
-    ...(dropped > 0 ? { logDropped: dropped } : {}),
+    // Trimmed only as an act begins, so a stretch watched is never cut short (`cast.ts`).
+    log: story,
+    cast: castAfter(state.cast, [...start.fighters, ...played.fighters]),
     result,
     ...(field ? { field } : {}),
     ...(end.slotTrace ? { slotTrace: end.slotTrace } : {}),
