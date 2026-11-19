@@ -136,7 +136,7 @@ export function heldBackTechniques(
 function heldBackWhy(def: TechniqueDef, stats: Stats, clanId: string): HeldBack {
   const blocker = learnBlocker(EMPTY_BOOK, def, { stats, clanId, nature: null });
   if (blocker?.kind === 'nature') return 'nature';
-  if (blocker === null || blocker.kind === 'rank') return 'grade';
+  if (blocker === null) return 'grade';
   return 'body';
 }
 

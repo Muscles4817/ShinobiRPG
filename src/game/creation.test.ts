@@ -196,6 +196,6 @@ describe('identity shapes play', () => {
     expect(offered && naruto.content.techniques.require(offered).clan).toBeFalsy();
     const fireball = naruto.content.techniques.require('great-fireball');
     const blocker = learnBlockerFor(strong(plain), fireball, naruto);
-    expect(blocker && learnBlockerText(blocker, fireball)).toBe('Only taught within its clan.');
+    expect(blocker && learnBlockerText(blocker)).toBe('Only taught within its clan.');
   });
 });

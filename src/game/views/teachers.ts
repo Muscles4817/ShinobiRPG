@@ -139,7 +139,7 @@ function signatureOf(state: GameState, ctx: GameContext, teaching: Teaching) {
   return {
     name: def.name,
     progress: Math.min(1, (state.techniques.progress[def.id] ?? 0) / def.difficulty),
-    locked: blocker ? learnBlockerText(blocker, def) : bondLock,
+    locked: blocker ? learnBlockerText(blocker) : bondLock,
   };
 }
 

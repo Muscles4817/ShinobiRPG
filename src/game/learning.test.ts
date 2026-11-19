@@ -140,13 +140,13 @@ describe('a teacher’s signature techniques', () => {
     return { state: ready, teaching: teachingOf(ready, sensei)!, def };
   }
 
-  it('obey the same gate: two ranks above you waits, even with a teacher', () => {
+  it('obey the same gate, where rank is no lock: far above you is taught, slowly', () => {
     const low = withRankCSensei(5);
-    expect(nextSignature(low.state, low.teaching, ctx)).toBeNull();
+    expect(nextSignature(low.state, low.teaching, ctx)).toBe(low.def.id);
     const offer = trainingView(low.state, ctx)?.teachers.find(
       (t) => t.signature?.name === low.def.name,
     );
-    expect(offer?.signature?.locked).toMatch(/^Needs D /);
+    expect(offer?.signature?.locked ?? null).toBeNull();
     const ready = withRankCSensei(10);
     expect(nextSignature(ready.state, ready.teaching, ctx)).toBe(ready.def.id);
   });

@@ -1097,9 +1097,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
-- **Add a technique:** give it a `rank` (E–S, the letters of ability grades): one rank above the
-  learner's grade in its discipline is slow and arrives unstable, two is impossible from any
-  source. Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
+- **Add a technique:** give it a `rank` (E–S, the letters of ability grades): anyone may learn
+  it, and rank sets the time: above the learner's grade in its discipline it is studied at half
+  pace for each rank of the gap (`studyPace`) and arrives unstable until their grade catches up;
+  only real prerequisites lock it (`learnBlocker`). Physical needs (nature, reserves, control grade) go in `needs`. Starters must be rank E.
   Its shape in a fight: `reach` (bands, when not its art's usual reach; ask `reachOf`),
   `accuracy` (sure, steady, wild: a multiplier on slipping it, and wild hits harder; `slipChance`
   in `rules/defence.ts`), `needsTarget: 'open'` for a finisher that waits for a dazed or held

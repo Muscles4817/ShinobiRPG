@@ -2,8 +2,9 @@ import { createStats } from '@/systems/stats';
 
 import {
   controlStudyFactor,
-  gradeToAttempt,
   learnability,
+  rankGap,
+  studyPace,
   UNSTABLE_STUDY,
   type StudySource,
 } from './learning';
@@ -40,27 +41,22 @@ function learner(value: number, more: Partial<Learner> = {}): Learner {
 const lookup = (id: string) => (id === fireball.id ? fireball : undefined);
 
 describe('technique ranks', () => {
-  it('compares a rank with a grade: normal, unstable a rank above, impossible two above', () => {
+  it('compares a rank with a grade: normal at or below it, unstable anywhere above', () => {
     expect(learnability('D', 'D')).toBe('normal');
     expect(learnability('E', 'C')).toBe('normal');
     expect(learnability('C', 'D')).toBe('unstable');
-    expect(learnability('B', 'D')).toBe('impossible');
-    expect(learnability('S', 'E')).toBe('impossible');
+    expect(learnability('B', 'D')).toBe('unstable');
+    expect(learnability('S', 'E')).toBe('unstable');
   });
 
-  it('names the grade that opens a rank', () => {
-    expect(gradeToAttempt('B')).toBe('C');
-    expect(gradeToAttempt('E')).toBe('E');
+  it('measures how far a rank sits above a grade', () => {
+    expect(rankGap('B', 'D')).toBe(2);
+    expect(rankGap('E', 'C')).toBe(0);
   });
 
-  it('blocks a technique two ranks above your grade, and allows one a rank above', () => {
-    const cRank = { ...fireball, rank: 'C' as const };
-    expect(learnBlocker(EMPTY_BOOK, cRank, learner(5))).toEqual({
-      kind: 'rank',
-      rank: 'C',
-      grade: 'E',
-    });
-    expect(learnBlocker(EMPTY_BOOK, cRank, learner(10))).toBeNull();
+  it('never blocks a technique for its rank, however far above your grade', () => {
+    const sRank = { ...fireball, rank: 'S' as const };
+    expect(learnBlocker(EMPTY_BOOK, sRank, learner(5))).toBeNull();
     expect(learnBlocker(EMPTY_BOOK, fireball, learner(5))).toBeNull();
   });
 
@@ -161,11 +157,15 @@ describe('study speed', () => {
     expect(at('teacher')).toBeGreaterThan(at('library'));
   });
 
-  it('is slower a rank above your grade', () => {
+  it('is slower a rank above your grade, and slower again for each rank further', () => {
     const stats = createStats(5);
     const stable = { ...fireball, rank: 'E' as const };
+    const far = { ...fireball, rank: 'B' as const };
     expect(sessionStudyPoints(stats, fireball, base)).toBeCloseTo(
       sessionStudyPoints(stats, stable, base) * UNSTABLE_STUDY,
+    );
+    expect(sessionStudyPoints(stats, far, base)).toBeCloseTo(
+      sessionStudyPoints(stats, stable, base) * studyPace(3),
     );
   });
 
