@@ -5,7 +5,8 @@ import { type EffectOf, type TechniqueEffect } from '@/systems/techniques';
 import type { BodySize, CombatAttributes, CombatantSetup, CombatTechnique } from '../contract';
 import { elementMultiplier } from './elements';
 import { driveOf, toughnessKept, type EffectUse } from './verbs';
-import { sizeToughness } from './size';
+import { sizeOf, sizeToughness } from './size';
+import { catchScale, tagsOf } from './tags';
 
 /**
  * How hard hits land and how much heals restore, shared by the engines built on `rules/`.
@@ -205,7 +206,10 @@ export function techniqueDamage(
   const weight = techniqueWeight(use);
   const elements = elementMultiplier(technique, attacker.nature);
   const wild = technique.accuracy === 'wild' ? WILD_DAMAGE : 1;
-  return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * wild * variance(roll)));
+  // A point strike is a pinprick on a giant; a whole-body blow has more of it to work on.
+  const caught = catchScale(tagsOf(technique).catches, sizeOf(defender));
+  const roll2 = variance(roll);
+  return Math.max(1, Math.round(BLOW_DAMAGE * weight * scale * elements * wild * caught * roll2));
 }
 
 /** A heal restores its power, more in skilled hands (ninjutsu and chakra control by default). */

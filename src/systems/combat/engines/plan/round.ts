@@ -24,13 +24,13 @@ import { cloneFollowUp } from './clones';
 import { afterEmpowers } from './empower';
 import { fieldAfter, lostInField } from './field';
 import { byIntent, intendedCard, keepsTo } from './intent';
+import { aimFitting } from './fitting';
 import { momentIn } from './moment';
 import { recovered } from './tiring';
 import { tracedTurn } from './slotTrace';
 import { exchangeDivider, staged } from './staging';
 import { lingerAfter } from './lingering';
 import { secondWinds } from './provisions';
-import { canHit, hittable } from './rows';
 import { plannedPlay } from './priority';
 import { decided, PULLED_FREE } from './decisionLog';
 import { beliefsAfter, objectivesAfter } from './mind';
@@ -106,10 +106,8 @@ function instinct(round: Round, actor: PlanFighter, rng: Rng): Chosen {
   // A finisher that needs an opening goes for an open foe (`finishers.ts`).
   const open = finisherTargets(card, seen);
   const aim = !needsOpenTarget(card) || (foe && open.includes(foe)) ? foe : open[0];
-  if (!aim || !isOffence(card) || canHit(card, aim, round.fighters)) {
-    return { card, target: aim, ...told };
-  }
-  return { card, target: targetFor(hittable(card, open, round.fighters), rng), ...told };
+  // Only at a target the card reaches and can work on (`fitting.ts`).
+  return { card, target: aimFitting(round, { actor, card, aim, open, rng }), ...told };
 }
 
 /**

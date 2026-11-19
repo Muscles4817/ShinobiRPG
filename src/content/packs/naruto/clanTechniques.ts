@@ -57,7 +57,8 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     name: 'Shadow Possession Jutsu',
     description: 'Stretch your shadow to theirs. Where you move, they move.',
     discipline: 'ninjutsu',
-    effects: [{ verb: 'daze', power: 12 }],
+    // A bind held for as long as the user keeps their shadow on it.
+    effects: [{ verb: 'pin', power: 12, channelled: true }],
     chakraCost: 10,
     rank: 'E',
     difficulty: 40,

@@ -1,3 +1,4 @@
+import { fitsTarget } from './fitting';
 import type { NarrationOffPlan } from '../../rules/narration';
 import { alive } from '../../rules/body';
 import { hasVerb, isHindering, isPinned, isWounding } from '../../rules/verbs';
@@ -149,7 +150,9 @@ export function slotVerdict(self: PlanFighter, round: Round, slot: Slot): SlotVe
   // A finisher that needs an opening waits for an open foe (`finishers.ts`).
   const foes = finisherTargets(card, fresh);
   if (needsOpenTarget(card) && foes.length === 0) return { passed: 'no-target' };
-  const inReach = needsAim(card) ? hittable(card, foes, round.fighters) : foes;
+  const inReach = needsAim(card)
+    ? hittable(card, foes, round.fighters).filter((f) => fitsTarget(round, self, card, f))
+    : foes;
   const target = aimAt(inReach, slot.target, self, round);
   return needsAim(card) && !target ? { passed: 'no-target' } : { plays: { card, target } };
 }

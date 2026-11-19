@@ -72,10 +72,9 @@ export const CANON_SASUKE_TECHNIQUES: readonly TechniqueDef[] = [
     description: 'One look from the Sharingan and the victim lives through a crushing nightmare.',
     discipline: 'genjutsu',
     clan: 'uchiha',
-    effects: [
-      { verb: 'daze', power: 14 },
-      { verb: 'damage', power: 10 },
-    ],
+    // Eyes met up close freeze the target for a moment; it does no harm to the body.
+    reach: ['close'],
+    effects: [{ verb: 'daze', power: 14 }],
     chakraCost: 15,
     rank: 'B',
     difficulty: 110,

@@ -30,6 +30,7 @@ import { castField } from './field';
 import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { holdIllusion } from './illusions';
+import { fittingTargets } from './fitting';
 import { damage, type Aimed } from './wounding';
 import { conditionOf, landsOnFoe, shakenOff } from './takingHold';
 import { opponentsOf, type Turn } from './senses';
@@ -325,8 +326,10 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
     const line = '{what} comes apart in {a.poss} hands before it is steady.';
     return say(paid, tell(line, { a: actor, what: t.name }));
   }
-  // One mind's illusion holds once on a target this exchange (`oneNightmare.ts`).
-  const free = stillFree(paid, actor, { t, targets: targetsOf(paid, turn, t) });
+  // A technique works only on targets it fits (`fitting.ts`), and one mind's illusion holds once
+  // on a target this exchange (`oneNightmare.ts`).
+  const fitting = fittingTargets(paid, { actor, t, targets: targetsOf(paid, turn, t) });
+  const free = stillFree(fitting.round, actor, { t, targets: fitting.targets });
   const targets = free.targets;
   if (isHarmful(t) && targets.length === 0) return free.round;
   const seen = targets.filter((foe) => slips(free.round, turn, foe, t));

@@ -1,5 +1,8 @@
 import type { Rng } from '@/core';
-import type { AfflictionKind } from '@/systems/techniques';
+import type { AfflictionKind, Delivery } from '@/systems/techniques';
+
+import type { CombatTechnique } from '../../contract';
+import { tagsOf } from '../../rules/tags';
 
 import { alive, holdTurns } from '../../rules/body';
 import { techniqueDamage } from '../../rules/damage';
@@ -33,6 +36,7 @@ import { dustGrip } from './dust';
 import { momentOf } from './voice';
 import { tell } from '../../rules/telling';
 import { distanceBetween } from './distance';
+import { recoveredAfter } from './recovery';
 
 /**
  * The verbs that leave something behind in a planned fight (`rules/verbs/lingering.ts`): a
@@ -55,6 +59,23 @@ export function knock(round: Round, { actor, target }: Aim, use: EffectUse<'knoc
   return pairsMoved(round, [{ a: actor.id, b: target.id, to }], line);
 }
 
+/** How a hold lands, in the words of how it reaches and what it does (`rules/tags`). */
+function holdLine(t: CombatTechnique): string {
+  const tags = tagsOf(t);
+  if (tags.lands.includes('mirrored')) {
+    return "{a.poss} shadow joins {t.poss}, and {t} can't move but as {a} move{a.s}.";
+  }
+  if (tags.lands.includes('crushed')) return 'It closes round {t} and starts to crush.';
+  if (tags.lands.includes('dreaming')) return '{t} {t.is} held fast in the illusion.';
+  return HOLD_BY[tags.delivery[0] ?? 'strike'] ?? '{t} {t.is} pinned to the spot.';
+}
+
+const HOLD_BY: Readonly<Partial<Record<Delivery, string>>> = {
+  'from-ground': 'It wraps {t} from the feet up.',
+  threads: 'The threads draw tight round {t}.',
+  grapple: '{a} lock{a.s} {t} in a hold.',
+};
+
 export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>): Round {
   // The target counts an exchange down as it ends, the one it was pinned in too: hold one more.
   const pinned = Math.max(target.pinned ?? 0, holdTurns(use.effect) + 1);
@@ -66,7 +87,7 @@ export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>)
   };
   const caught = say(
     relinger(round, target.id, { pinned, grip }),
-    tell('{t} {t.is} pinned to the spot.', { t: target }),
+    tell(holdLine(use.technique), { t: target, a: actor }),
   );
   // A channelled pin keeps its caster's hands on it (`holding.ts`).
   return use.effect.channelled ? startHolding(caught, actor.id, target.id) : caught;
@@ -228,10 +249,12 @@ function lingerOn(round: Round, f: PlanFighter, exchange: number): Round {
 
 /** At the end of an exchange: harms linger and wear down, pins loosen, ripostes lapse. */
 export function lingerAfter(round: Round, exchange: number): Round {
-  return round.fighters.reduce((now, f) => {
+  const lingered = round.fighters.reduce((now, f) => {
     const current = fighterIn(now, f.id);
     return current ? lingerOn(now, current, exchange) : now;
   }, round);
+  // Techniques resting from a use are an exchange nearer ready (`recovery.ts`).
+  return recoveredAfter(lingered);
 }
 
 /** What the fight screen calls each lingering harm (`game/views/fightGlossary` explains them). */
