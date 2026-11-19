@@ -1,9 +1,7 @@
 import { shapeOf } from '@/systems/combat';
 import { round1 } from '@/core';
 import { studyMultiplier } from '@/systems/modifiers';
-import { STAT_INFO } from '@/systems/stats';
 import {
-  gradeToAttempt,
   learnabilityFor,
   learnBlocker,
   sessionStudyPoints,
@@ -26,9 +24,9 @@ import type { Character, GameState } from './state';
 import { comforts } from './home/home';
 
 /**
- * Learning techniques, whatever the source (an academy scroll, a sensei): one gate (rank
- * against your grade, clan, hard needs), one study formula, and techniques that arrive
- * unstable when they were a rank above you and steady once your grade catches up.
+ * Learning techniques, whatever the source (an academy scroll, a sensei): one gate (clan and
+ * hard needs; never rank), one study formula slowed by how far the rank sits above your grade,
+ * and techniques that arrive unstable when they were above you and steady once you catch up.
  */
 
 /** The character as a learner, with the weapon in their hand (`needs.weapon`). */
@@ -53,16 +51,12 @@ export function learnBlockerFor(
 }
 
 /** What the player is told, and what fixes it ("Needs C ninjutsu; you're E."). */
-export function learnBlockerText(blocker: LearnBlocker, def: TechniqueDef): string {
+export function learnBlockerText(blocker: LearnBlocker): string {
   switch (blocker.kind) {
     case 'already-known':
       return 'You already know this technique.';
     case 'clan':
       return 'Only taught within its clan.';
-    case 'rank': {
-      const art = STAT_INFO[def.discipline].label.toLowerCase();
-      return `Needs ${gradeToAttempt(blocker.rank)} ${art}; you're ${blocker.grade}.`;
-    }
     case 'nature':
       return `Needs a ${blocker.nature} chakra nature.`;
     case 'reserves':
@@ -74,14 +68,14 @@ export function learnBlockerText(blocker: LearnBlocker, def: TechniqueDef): stri
   }
 }
 
-/** Whether a technique would arrive unstable for this character (a rank above them). */
+/** Whether a technique would arrive unstable for this character (above their grade). */
 export function wouldBeUnstable(character: Character, def: TechniqueDef): boolean {
   return learnabilityFor(def, character.stats) === 'unstable';
 }
 
 /**
  * Study points one session earns: the base × aptitude in the art × chakra control × the
- * source, halved a rank above you, times identity (nature, traits, grades, meals).
+ * source, halved for each rank above you, times identity (nature, traits, grades, meals).
  * `aptitude` is passed in so previews can use what the character has sensed of it.
  */
 export function studyPointsFor(
@@ -98,7 +92,7 @@ export function studyPointsFor(
 export interface Studied {
   readonly book: TechniqueBook;
   readonly mastered: boolean;
-  /** Mastered, but a rank above the learner: it arrives unstable. */
+  /** Mastered, but above the learner's grade: it arrives unstable. */
   readonly unstable: boolean;
   readonly percent: number;
 }

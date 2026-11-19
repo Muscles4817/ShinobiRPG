@@ -1,10 +1,5 @@
 import { STAT_TIERS, type StatGrade } from '@/systems/stats';
-import {
-  gradeToAttempt,
-  type LearnBlocker,
-  type StudySource,
-  type TechniqueDef,
-} from '@/systems/techniques';
+import { type LearnBlocker, type StudySource, type TechniqueDef } from '@/systems/techniques';
 
 import { STUDY_ENERGY_COST } from '../actions/study';
 import type { GameAction } from '../actions/types';
@@ -37,7 +32,7 @@ export interface Scroll extends Choice {
   readonly fromClan: boolean;
   /** Why it can't be studied yet and what opens it ("Needs C ninjutsu; you're E."), or null. */
   readonly locked: string | null;
-  /** A rank above your grade: studied at half pace and arrives unstable. */
+  /** Above your grade: studied at half pace for each rank above, and arrives unstable. */
   readonly unstable: boolean;
   /** How far you are from being able to start it; Coming up lists the closest first. */
   readonly shortfall: number;
@@ -64,11 +59,11 @@ function shortfallOf(blocker: LearnBlocker | null, def: TechniqueDef, state: Gam
   const { stats } = state.character;
   switch (blocker?.kind) {
     case undefined:
+      // Nothing locks it: nearer ranks first, the furthest slowest to learn.
+      return Math.max(0, gradeLine(def.rank) - stats[def.discipline]);
     case 'already-known':
     case 'weapon':
       return 0;
-    case 'rank':
-      return gradeLine(gradeToAttempt(def.rank)) - stats[def.discipline];
     case 'reserves':
       return blocker.min - blocker.have;
     case 'control':
@@ -117,7 +112,7 @@ export function scrollOf(
     difficulty: def.difficulty,
     sessionsLeft: points > 0 ? Math.ceil((def.difficulty - progress) / points) : null,
     fromClan: def.clan !== undefined,
-    locked: blocker && learnBlockerText(blocker, def),
+    locked: blocker && learnBlockerText(blocker),
     unstable: wouldBeUnstable(character, def),
     shortfall: shortfallOf(blocker, def, state),
     sheet: techniqueSheet(state, ctx, def, you),

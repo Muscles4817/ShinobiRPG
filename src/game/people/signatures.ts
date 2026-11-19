@@ -10,8 +10,8 @@ import type { Teaching } from './teachers';
 /**
  * A teacher's signature techniques (`TeacherProfile.teaches`): taught in order, a little each
  * session, once you are close enough. Personal teaching beats reading a scroll (the `teacher`
- * study source), by the same gate as any scroll: two ranks above your grade, or one your body
- * can't do, waits however willing they are.
+ * study source), by the same gate as any scroll: one your body can't do (a nature, control,
+ * reserves) waits however willing they are; one far above your grade is just slow.
  */
 
 /** Friendship stage at which a teacher starts teaching signature techniques. */
