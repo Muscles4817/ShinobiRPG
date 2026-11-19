@@ -45,6 +45,8 @@ export interface SummonDef {
   readonly perch?: true;
   /** Of its caller's mind, with none of its own (the Reanimation's bodies; `mindContract.ts`). */
   readonly shared?: true;
+  /** No chakra of its own: it draws on its caller's (Pain's Paths). */
+  readonly pooled?: true;
   /** Already standing beside its caller as a fight begins (Pain's Paths), never called mid-fight. */
   readonly present?: true;
 }

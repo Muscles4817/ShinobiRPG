@@ -21,6 +21,8 @@
  * reserves grow, the medic and the gate opener trade differently, and plain body moves gain.
  * Illusions are a contest of chakra control (`rules/verbs/use.ts`, `plan/braced.ts`): the cloner's
  * control fights the illusionist's illusions off, and a braced mind shakes them loose.
+ * Techniques catch a point or a whole body (`rules/tags/catches.ts`): a point strike does less to
+ * a big body, so the puppeteer's blades do less to the summoner's toads.
  */
 const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   rusher:
@@ -54,7 +56,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   summoner:
     'powerhouse illusionist stalker trapper counterer puppeteer hive dust assassin gates areaCaster mimic',
   puppeteer:
-    'rusher versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded dust gates assassin foresight mimic powerhouse',
+    'rusher versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded dust gates assassin foresight mimic powerhouse summoner',
   hive: 'rusher powerhouse versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded summoner puppeteer dust gates foresight mimic assassin',
   dust: 'rusher powerhouse versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded summoner puppeteer hive gates assassin foresight mimic',
   gates:

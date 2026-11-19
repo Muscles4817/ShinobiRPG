@@ -20,6 +20,7 @@ export const ITACHI_ARTS: readonly TechniqueDef[] = [
       'One look into the Mangekyō and the victim spends three days on a cross in a red world. Outside, a moment passes.',
     discipline: 'genjutsu',
     clan: 'uchiha',
+    reach: ['close'],
     effects: [
       { verb: 'daze', power: 22 },
       { verb: 'damage', power: 20 },

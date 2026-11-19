@@ -11,6 +11,8 @@ import type { CombatAttributes, CombatCost, CombatTechnique } from '../contract'
 /** What a fighter remembers of the trumps they have played. Absent in older saved fights. */
 export interface TrumpMemory {
   readonly trumpsUsed?: readonly string[];
+  /** Exchanges each technique (by id) still needs before it can be used again (`recovery.ts`). */
+  readonly recovering?: Readonly<Record<string, number>>;
 }
 
 type Trump = Pick<CombatTechnique, 'id' | 'oncePerFight'>;

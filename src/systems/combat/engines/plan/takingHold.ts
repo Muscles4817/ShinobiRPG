@@ -1,10 +1,17 @@
-import type { EffectOf, TechniqueEffect, Verb } from '@/systems/techniques';
+import type {
+  AfflictionKind,
+  Delivery,
+  EffectOf,
+  TechniqueEffect,
+  Verb,
+} from '@/systems/techniques';
 
 import { conditionResist } from '../../rules/avoidance';
 import { bracedResist, isBracedAgainst } from '../../rules/commitment';
 import { pointsSeenScale } from '../../rules/eyes';
 import { HIDDEN_HOLD_RESIST } from '../../rules/lethal';
 import { causeLine } from '../../rules/causes';
+import { tagsOf } from '../../rules/tags';
 import { tell } from '../../rules/telling';
 import { holdCause } from './causes';
 import type { EffectUse } from '../../rules/verbs';
@@ -52,6 +59,36 @@ const SHAKEN_OFF: Readonly<Record<ConditionVerb, string>> = {
   afflict: '{t} shrug{t.s} it off.',
 };
 
+/**
+ * Where how a technique reaches decides what was shaken off (`rules/tags`): a shadow pulled free
+ * of, trunks got clear of, an illusion seen through, flames beaten out. Else the verb's line.
+ */
+function shakenLine(use: EffectUse, verb: ConditionVerb): string {
+  const delivery = tagsOf(use.technique).delivery[0];
+  const illusion = use.technique.discipline === 'genjutsu';
+  if (verb === 'daze') {
+    return illusion ? '{t} shake{t.s} the illusion off.' : '{t} keep{t.s} {t.their} head.';
+  }
+  if (verb === 'pin') return HOLD_SHAKEN[delivery ?? 'strike'] ?? SHAKEN_OFF.pin;
+  if (verb === 'afflict' && use.effect.verb === 'afflict') return AFFLICT_SHAKEN[use.effect.harm];
+  return SHAKEN_OFF[verb];
+}
+
+const HOLD_SHAKEN: Readonly<Partial<Record<Delivery, string>>> = {
+  'along-ground': '{t} pull{t.s} free of the shadow before it holds.',
+  'from-ground': '{t} get{t.s} clear before it closes.',
+  threads: '{t} slip{t.s} the threads.',
+  senses: "{t} won't be held by it.",
+  'eye-contact': "{t} won't be held by it.",
+  grapple: '{t} twist{t.s} out of the grip.',
+};
+
+const AFFLICT_SHAKEN: Readonly<Record<AfflictionKind, string>> = {
+  burn: '{t} beat{t.s} the flames out.',
+  bleed: '{t} press{t.es} the wound shut.',
+  poison: '{t} fight{t.s} the poison off.',
+};
+
 /** The condition an effect brings, if it lands on a foe without wounding them. */
 export function conditionOf(effect: TechniqueEffect): ConditionVerb | null {
   if (!landsOnFoe(effect)) return null;
@@ -75,5 +112,5 @@ export function shakenOff(
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
   if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
-  return say(round, causeLine(tell(SHAKEN_OFF[verb], { t: target }), holdCause(braced)));
+  return say(round, causeLine(tell(shakenLine(use, verb), { t: target }), holdCause(braced)));
 }

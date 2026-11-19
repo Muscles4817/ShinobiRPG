@@ -248,6 +248,8 @@ export interface CombatCall {
   readonly perch?: true;
   /** Of its caller's mind, not its own: it thinks and aims as they do (`mindContract.ts`). */
   readonly shared?: true;
+  /** With no chakra of its own: it draws on its caller's (`plan/pooled.ts`; Pain's Paths). */
+  readonly pooled?: true;
   /**
    * Already on the field as the fight begins, beside its caller (Pain's Paths): no turn spent
    * calling it, its upkeep paid as any summons' (`plan/present.ts`).

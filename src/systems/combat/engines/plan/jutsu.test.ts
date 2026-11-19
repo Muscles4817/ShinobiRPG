@@ -228,8 +228,11 @@ describe('plan & watch techniques', () => {
         const round = roundWith({ attributes: { ...attributes, stamina } });
         const [hero, bandit] = round.fighters;
         return useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, crush);
-      }).filter((r) => r.lines.some((l) => l.includes('shakes it off'))).length;
-    const hardy = crushUntil(roundWith({ attributes: { ...attributes, stamina: 60 } }), /shakes/);
+      }).filter((r) => r.lines.some((l) => /keeps \w+ head/.test(l))).length;
+    const hardy = crushUntil(
+      roundWith({ attributes: { ...attributes, stamina: 60 } }),
+      /keeps \w+ head/,
+    );
     // It landed (the blow hurt) but the daze didn't take.
     expect(fighterIn(hardy, 'bandit')).toMatchObject({ stunned: 0 });
     expect(fighterIn(hardy, 'bandit')!.health).toBeLessThan(80);

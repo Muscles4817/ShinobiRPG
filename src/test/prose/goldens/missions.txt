@@ -459,7 +459,7 @@ view:
 --- combat (day 2, slot 1) ---
   —— Third exchange ——
   Tired now, you still go to Shadow Feint.
-  The storehouse wraith shakes it off. [Resisted]
+  The storehouse wraith shakes the illusion off. [Resisted]
   Whispering Dread rises off the storehouse wraith like the cold off a well.
   You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed] [Read it coming]
   —— Last exchange ——

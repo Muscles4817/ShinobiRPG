@@ -1,4 +1,5 @@
 import { afterUsing } from '../../rules/trumps';
+import { restingAfter } from './recovery';
 import { strike } from './arms';
 import { isReadyDefence, spendsOnSelf, type Card, type SelfCard } from './cards';
 import { commit } from './commitment';
@@ -42,7 +43,12 @@ export function play(round: Round, turn: Turn, card: Card): Round {
       const broken = sealsBroken(round, turn, card.technique);
       if (broken) return broken;
       const trumpsUsed = afterUsing(turn.actor, card.technique);
-      const marked = { ...round, fighters: patch(round.fighters, turn.actor.id, { trumpsUsed }) };
+      const resting = restingAfter(turn.actor, card.technique);
+      const used = { trumpsUsed, ...(resting ? { recovering: resting } : {}) };
+      const marked = {
+        ...round,
+        fighters: round.fighters.map((f) => (f.id === turn.actor.id ? { ...f, ...used } : f)),
+      };
       return useJutsu(marked, turn, card.technique);
     }
     case 'item':

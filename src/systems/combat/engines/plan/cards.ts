@@ -12,6 +12,7 @@ import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { inReach, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
+import { recovering } from './recovery';
 import { strikeReach } from '../../rules/weaponClasses';
 import { weaponMissing } from '../../rules/weapons';
 import { hasVerb, isHarmful, isOpenFor } from '../../rules/verbs';
@@ -269,6 +270,11 @@ export function cardBlocked(fighter: Pick<PlanFighter, 'gear'>, card: Card): str
 }
 
 /** Footwork, attacks and tools the fighter can actually use this exchange. */
+/** Spent for the fight, resting from its last use, or waiting on a step not yet open. */
+function unready(fighter: PlanFighter, t: CombatTechnique): boolean {
+  return trumpSpent(fighter, t) || recovering(fighter, t) || !isOpenFor(fighter, t);
+}
+
 export function playable(fighter: PlanFighter, card: Card): boolean {
   if (cardBlocked(fighter, card)) return false;
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
@@ -276,7 +282,7 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (card.kind === 'gather') return canGather(fighter);
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);
-  if (trumpSpent(fighter, card.technique) || !isOpenFor(fighter, card.technique)) return false;
+  if (unready(fighter, card.technique)) return false;
   if (!canCall(fighter, card.technique) || threadsForbid(fighter, card.technique)) return false;
   if (!hasInsectsFor(fighter, card.technique)) return false;
   if (!hasDustFor(fighter, card.technique)) return false;

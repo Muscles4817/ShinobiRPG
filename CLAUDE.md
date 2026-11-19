@@ -1113,7 +1113,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `docs/design/technique-tags.md`: delivery, shape, needs of the target, lands as, catches,
   answered by, execution) are read from what it has by `tagsOf` (`systems/combat/rules/tags/`);
   write `tags` on the `TechniqueDef` only where the reading is wrong, each axis given replacing
-  it. Ask `tagsOf`, never read `tags` directly. Guesses are listed by
+  it. Ask `tagsOf`, never read `tags` directly. The engine reads them: a target that doesn't fit
+  a move's needs is never aimed at and is told why (`rules/tags/fits.ts`, `plan/fitting.ts`), a
+  point strike does less to a big body and a whole-body move more (`catchScale`), a `recovery`
+  rests a technique (`plan/recovery.ts`), `follows` asks the target held by its user, and holds
+  are told in the words of how they reach (`plan/lingering.ts`, `plan/takingHold.ts`). A summon
+  that is `pooled` (Pain's Paths) spends its caller's chakra (`plan/pooled.ts`). Guesses are listed by
   `prototypes/technique-tags/` for a person to settle; `validateTags.ts` checks every technique.
 - **Add a technique:** give it a `rank` (E–S, the letters of ability grades): anyone may learn
   it, and rank sets the time: above the learner's grade in its discipline it is studied at half

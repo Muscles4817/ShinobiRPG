@@ -203,7 +203,8 @@ export const NINJUTSU: readonly TechniqueDef[] = [
         power: 28,
         scaling: { drive: ['ninjutsu', 'chakraControl'] },
       },
-      { verb: 'daze', power: 8 },
+      // It grinds, then throws them back.
+      { verb: 'knock', power: 8, to: 'mid' },
     ],
     chakraCost: 20,
     rank: 'A',
