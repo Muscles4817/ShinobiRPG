@@ -79,6 +79,12 @@ export const CANON_SASUKE_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 15,
     rank: 'B',
     difficulty: 110,
+    tags: {
+      delivery: ['eye-contact'],
+      needs: ['mind', 'meets-eyes'],
+      lands: ['frozen'],
+      catches: 'none',
+    },
   },
   {
     id: 'mirage-crow',

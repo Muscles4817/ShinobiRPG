@@ -1109,6 +1109,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a place kind:** add a variant to `PlaceDef`, its references to `validateWorld`, a view
   model in `game/views/`, a page in `ui/screens/places/` and a case in `PlacePage` (the
   compiler lists every switch you missed).
+- **Say how a technique works:** its **tags** (`systems/techniques/tags.ts`,
+  `docs/design/technique-tags.md`: delivery, shape, needs of the target, lands as, catches,
+  answered by, execution) are read from what it has by `tagsOf` (`systems/combat/rules/tags/`);
+  write `tags` on the `TechniqueDef` only where the reading is wrong, each axis given replacing
+  it. Ask `tagsOf`, never read `tags` directly. Guesses are listed by
+  `prototypes/technique-tags/` for a person to settle; `validateTags.ts` checks every technique.
 - **Add a technique:** give it a `rank` (E–S, the letters of ability grades): anyone may learn
   it, and rank sets the time: above the learner's grade in its discipline it is studied at half
   pace for each rank of the gap (`studyPace`) and arrives unstable until their grade catches up;

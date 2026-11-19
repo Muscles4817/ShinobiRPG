@@ -12,6 +12,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 13,
     rank: 'C',
     difficulty: 75,
+    tags: { delivery: ['breath'], shape: 'zone', lands: ['harmed', 'burning'] },
     clan: 'uchiha',
   },
   {
@@ -43,6 +44,12 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 10,
     rank: 'C',
     difficulty: 80,
+    tags: {
+      delivery: ['strike'],
+      needs: ['chakra-points'],
+      lands: ['sealed', 'harmed'],
+      answeredBy: ['slip', 'swap'],
+    },
     clan: 'hyuga',
   },
   {
@@ -54,6 +61,13 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 10,
     rank: 'E',
     difficulty: 40,
+    tags: {
+      delivery: ['along-ground'],
+      needs: ['on-ground', 'casts-shadow'],
+      lands: ['mirrored'],
+      catches: 'none',
+      execution: { held: true },
+    },
     clan: 'nara',
   },
   {
@@ -237,6 +251,7 @@ export const CLAN_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 12,
     rank: 'C',
     difficulty: 90,
+    tags: { delivery: ['burst'], shape: 'burst', lands: ['thrown-back'], catches: 'whole' },
   },
   {
     id: 'hundred-twenty-eight-palms',

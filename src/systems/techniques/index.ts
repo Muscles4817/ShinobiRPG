@@ -66,6 +66,25 @@ export {
   type TrapEffect,
 } from './effects';
 export { costIsSane, type CostTemplate } from './costs';
+export {
+  ANSWERS,
+  CATCHES,
+  DELIVERIES,
+  LANDINGS,
+  SHAPES,
+  TARGET_NEEDS,
+  TELLS,
+  type Answer,
+  type Catches,
+  type Delivery,
+  type Execution,
+  type Landing,
+  type Shape,
+  type TargetNeed,
+  type TechniqueTags,
+  type Tell,
+  type WrittenTags,
+} from './tags';
 export { renameInBook, type TechniqueRenames } from './renames';
 export {
   LADDERS,

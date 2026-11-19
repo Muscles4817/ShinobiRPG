@@ -74,6 +74,13 @@ export const OROCHIMARU_TECHNIQUES: readonly TechniqueDef[] = [
     chakraCost: 30,
     rank: 'S',
     difficulty: 180,
+    tags: {
+      delivery: ['from-ground'],
+      shape: 'burst',
+      lands: ['crushed', 'thrown-back'],
+      catches: 'whole',
+      answeredBy: ['distance', 'slip', 'burn', 'cut-free', 'swap', 'break-free'],
+    },
   },
   {
     id: 'water-formation-wall',

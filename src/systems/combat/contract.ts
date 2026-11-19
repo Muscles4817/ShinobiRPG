@@ -61,6 +61,7 @@ export type CombatTechnique = Pick<
   | 'lethal'
   | 'moulded'
   | 'guarded'
+  | 'tags'
   | 'clan'
 > & {
   /** Learned a rank above its user's grade: costlier and may misfire (`rules/unstable.ts`). */

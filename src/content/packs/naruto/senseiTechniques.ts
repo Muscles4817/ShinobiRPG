@@ -31,6 +31,13 @@ export const SENSEI_TECHNIQUES: readonly TechniqueDef[] = [
     rank: 'A',
     needs: { nature: 'lightning' },
     difficulty: 100,
+    tags: {
+      delivery: ['charge'],
+      needs: ['straight-line'],
+      lands: ['harmed'],
+      answeredBy: ['slip', 'swap', 'wind', 'wall'],
+      execution: { opensUser: true },
+    },
   },
   {
     id: 'leaf-hurricane',
