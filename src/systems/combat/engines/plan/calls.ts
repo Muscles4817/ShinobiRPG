@@ -63,6 +63,11 @@ export interface Summoned {
   readonly threadsCut?: number;
   /** Its maker cast fresh threads to it this exchange: it moves again from the next. */
   readonly rethreading?: boolean;
+  /**
+   * A body with no chakra of its own: what it spends is its caller's, and it holds what they
+   * hold (`pooled.ts`). The chakra it held when last squared with its caller.
+   */
+  readonly pooledAt?: number;
   /** Big enough to carry its caller (`riding.ts`). */
   readonly mount?: true;
 }

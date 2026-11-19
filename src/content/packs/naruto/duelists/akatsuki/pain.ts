@@ -170,6 +170,8 @@ function path(id: string, name: string, kit: { desc: string; arts: readonly stri
     techniqueIds: [...kit.arts, 'chakra-receiver'],
     upkeep: PATH_UPKEEP,
     shared: true,
+    // Bodies of the dead with no chakra of their own: they draw on Nagato's, through Pain.
+    pooled: true,
     // The paths stand with the Deva Path before a fight starts; nobody waits for them to be called.
     present: true,
   };

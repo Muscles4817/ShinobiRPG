@@ -36,10 +36,24 @@ everything that hurts or hinders lands as something, and that `follows` names a 
   Planetary Devastation is two stages. Rasengan throws back. Gentle Fist blocks access to
   chakra and passes through armour.
 
+## What the engine reads
+
+- **Needs** (`rules/tags/fits.ts`, `plan/fitting.ts`): a target that doesn't fit is never aimed
+  at, and one a technique reaches anyway is told why it did nothing (too big to lift, no mind,
+  eyes not met, no chakra points, nothing held to close on).
+- **Catches** (`rules/tags/catches.ts`): a point strike does less to a big body, a whole-body
+  move more, on top of the toughness size already gives.
+- **Recovery** (`plan/recovery.ts`): Almighty Push rests an exchange after use.
+- **Follows**: Sand Burial closes only on someone its user holds in the Coffin.
+- **Narration**: a hold lands and is shaken off in the words of how it reached (a shadow, trunks,
+  threads, a grip, an illusion), flames are beaten out and poison fought off.
+- **Pooled bodies** (`plan/pooled.ts`): Pain's Paths hold and spend Pain's chakra.
+- **Moves fixed**: Coercion Sharingan freezes up close with no harm, Tsukuyomi is cast up close,
+  Shadow Possession is a channelled bind, the Rasengan throws back.
+
 ## Still to build, in order
 
-1. The engine reads the tags: needs (lifting, eye contact range), point against whole body,
-   the narration, the move fixes above, Pain's Paths drawing on Pain's chakra, levels.
+1. Levels picked when slotted (Almighty Push), the will pool (Tsukuyomi), two-stage moves.
 2. Breath as the clock: dodging costs breath, and low breath slows you.
 3. What you can see: a hidden fighter's casting doesn't show until its effect does.
 4. The counter system: moves meeting moves, a counter taking a slot.

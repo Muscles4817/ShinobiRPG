@@ -9,6 +9,7 @@ import type { CombatCall, SummonFate } from '../../contract';
 import { mindOf } from '../../rules/minds';
 import { answers } from './calls';
 import { withOneMind } from './oneMind';
+import { pooledAfter, pooledFrom } from './pooled';
 import { perchesKept, perchOn, perchUpkeep } from './perching';
 import {
   calledFighter,
@@ -66,6 +67,8 @@ function summoned(round: Round, caller: Fighter, call: CombatCall): Fighter {
     ...(call.mount ? { mount: true as const } : {}),
     // A body of its caller's mind thinks and aims as they do (`sharedMind.ts`).
     ...(call.shared ? { mind: { id: mindOf(caller) } } : {}),
+    // A body with no chakra of its own holds what its caller holds (`pooled.ts`).
+    ...(call.pooled ? pooledFrom(caller) : {}),
   };
   // Its plan is made as the exchange ends, before its first turn (`summonPlans.ts`).
   return fighter;
@@ -242,7 +245,7 @@ export function summonsAfter(round: Round): Round {
   }, round);
   const callers = [...new Set(out.map((s: Fighter) => s.summoner ?? ''))];
   // Puppets given fresh threads this exchange are worked again from the next (`puppets.ts`).
-  return threadsTaken(perchesKept(callers.reduce(spared, kept)));
+  return pooledAfter(threadsTaken(perchesKept(callers.reduce(spared, kept))));
 }
 
 /** The share of its health a body has left, 0 when beaten. */
