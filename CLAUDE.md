@@ -1458,6 +1458,23 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - Put logic in the lowest layer that owns it: formulas in systems, orchestration in `game`,
   presentation in `ui`. If the UI is computing game rules, move it into a view model.
 
+### Structural rules (design these in from the start)
+
+- **One source of truth, one writer.** Every value the player sees comes from one place and is
+  changed by one function. Never rebuild state backwards from text, logs or end results.
+- **Order is a contract.** Anything replayed or shown step by step (a fight, a day, a journey) is
+  an ordered list of events, each carrying the changes it causes; the screen folds them in order
+  and never reads ahead. A new mechanic that changes a value emits its change at the moment it
+  happens. (The fight screen broke this and drifted for months: `docs/design/event-stream-plan.md`.)
+- **Behaviour comes from declared data, not names or words.** If code checks an id, a name or a
+  description's wording to decide behaviour, the data is missing a field or a tag: add it (as the
+  technique tags did, `systems/techniques/tags.ts`).
+- **State the invariant, then test it.** For every pipeline, write down what must always hold
+  (shown equals told; a cost is paid once; the fold of events equals the end state) and test it
+  across everything the benches already play.
+- **The second time a kind of bug appears, stop patching.** Find the structural cause, write it
+  up and fix that, rather than adding another hint or special case.
+
 ### TypeScript
 
 - `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` are on. Don't weaken them.

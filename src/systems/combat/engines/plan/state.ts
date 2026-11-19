@@ -1,5 +1,6 @@
 import type { RoundOpened } from './roundOpened';
 import type {
+  CombatCastMember,
   CombatGround,
   CombatOccasion,
   CombatResult,
@@ -230,6 +231,8 @@ export interface PlanState extends RoundOpened {
   readonly log: readonly string[];
   /** Lines let go from the front of `log` to keep it to `LOG_LIMIT` (absent: none). */
   readonly logDropped?: number;
+  /** Everyone who has stood on the field this fight (`cast.ts`). */
+  readonly cast?: readonly CombatCastMember[];
   readonly result: CombatResult | null;
   /** How the player's slots fared over the round just played (`slotTrace.ts`). */
   readonly slotTrace?: SlotTrace;

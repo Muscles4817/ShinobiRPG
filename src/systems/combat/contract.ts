@@ -338,6 +338,13 @@ export interface CombatExperiments {
   readonly farGap?: boolean;
 }
 
+/** Someone who has stood on the field this fight: who, what they're called, and their side. */
+export interface CombatCastMember {
+  readonly id: string;
+  readonly name: string;
+  readonly side: CombatSide;
+}
+
 /**
  * Engine-owned state. Must be JSON-serialisable (it is saved mid-fight).
  * Only the engine that created it may look inside `data`.
@@ -467,6 +474,11 @@ export interface CombatView {
    * in the whole story is `logOffset` plus its index. Absent: none dropped.
    */
   readonly logOffset?: number;
+  /**
+   * Everyone who has stood on the field this fight, gone or not: a clone that popped within the
+   * lines being shown is named and sided from here (`plan/cast.ts`).
+   */
+  readonly cast?: readonly CombatCastMember[];
   readonly options: readonly CombatOption[];
   /** Current distance, for engines that track range. */
   readonly range?: RangeBand;
