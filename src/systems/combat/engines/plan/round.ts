@@ -42,10 +42,11 @@ import { finisherTargets, needsOpenTarget } from './finishers';
 import { inSight, misfires, opponentsOf, search, startOfTurn, type Turn } from './senses';
 import { intercept } from './team';
 import { springTraps } from './traps';
-import { aid, struggleFree } from './struggle';
+import { aid } from './struggle';
 import { clonesAfter } from './cloneUpkeep';
 import { shroudsAfter } from './shrouds';
 import { summonsAfter } from './summons';
+import { heldOn } from './illusions';
 import { misled, shadowsAfter } from './shadows';
 import { uncoverWhenWorth, veilsAfter } from './veil';
 import { plannedSummons } from './summonPlans';
@@ -344,7 +345,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   // What everyone saw this exchange is taken in as it ends; shown only (`mind/`).
   const end = objectivesAfter(
     beliefsAfter(
-      secondWinds(lingerAfter(dustAfter(swarmsAfter(struggleFree(kept, rng), rng)), state.round)),
+      secondWinds(lingerAfter(dustAfter(swarmsAfter(heldOn(kept, rng), rng)), state.round)),
     ),
   );
   const result = decide(end.fighters, state.toTheLast);

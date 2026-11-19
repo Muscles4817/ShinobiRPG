@@ -1,3 +1,4 @@
+import { bracedAvoid } from './braced';
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
@@ -98,7 +99,12 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
   const illusion = incoming.discipline === 'genjutsu';
   // has no mind to fool (`rules/puppets.ts`).
   const unfooled = seesThroughIllusions(incoming.target) || incoming.target.puppet === true;
-  return illusion && unfooled ? 1 : avoidRoll(round, incoming);
+  if (illusion && unfooled) return 1;
+  const odds = avoidRoll(round, incoming);
+  // A mind braced for an illusion fights it off with its own control (`braced.ts`).
+  return illusion
+    ? bracedAvoid(round, { target: incoming.target, caster: incoming.attacker, odds })
+    : odds;
 }
 
 function avoidRoll(round: Round, incoming: Incoming): number {

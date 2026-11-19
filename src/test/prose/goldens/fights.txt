@@ -26,35 +26,25 @@
   You keep low and come in under Asuka’s guard, inside Asuka’s reach.
   —— Second exchange ——
   Asuka uses Shadow Feint once more.
-  You are dazed, and the ground tilts under you.
-  You stand blinking while the exchange goes by without you.
+  You see through Asuka’s Shadow Feint, and it never takes hold. [Missed] [Seen it before]
+  You launch into Gale Heel.
+  Asuka reads the first sign of your Gale Heel and is clear of it. [Missed] [Too quick for it]
   —— Third exchange ——
   Steel flashes as Asuka looses Lantern Cut.
-  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−25]
-  You go in with Gale Heel.
+  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−20]
+  You reach for Gale Heel again.
   You find the strength from somewhere, and your Gale Heel slices across Asuka. [Guarded] [−8]
   —— Last exchange ——
-  Asuka goes in with Palm Strike.
-  Asuka’s Palm Strike grazes you, close enough to count. [Guarded] [−7]
-  You go back to Gale Heel.
-  Your Gale Heel rips into Asuka. [Guarded] [−8]
-  That round went badly for you.
-  —— The next round begins ——
-  —— First exchange ——
   Asuka fixes their eyes on the field and casts Shadow Feint.
-  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
-  You scrape together what chakra you can for Gale Heel.
-  Your Gale Heel slices across Asuka cleanly. [Guarded] [−9]
-  —— Second exchange ——
-  Asuka goes back to Shadow Feint.
   You sway on your feet, close to done.
   You stand blinking while the exchange goes by without you.
-  —— Third exchange ——
-  Steel flashes as Asuka looses Lantern Cut.
-  Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [Guarded] [−7]
+  —— The next round begins ——
+  —— First exchange ——
+  Asuka draws into Lantern Cut.
+  Asuka’s Lantern Cut carves into you. [Guarded] [−19]
   You go down in a heap, laughing at yourself for walking into it.
-  Asuka stands back, breathing hard, and tells you what they saw you do wrong.
-  summary: You lasted three rounds before going down. Asuka dazed you in the third round, and you never found your feet again.
+  Asuka is already talking about the next one before you are back on your feet.
+  summary: You lasted three rounds before going down. Asuka dazed you in the second round, and you never found your feet again.
 
 ########## a rival’s spar ##########
   Jin squares up.
@@ -186,18 +176,18 @@
   —— First exchange ——
   You set off a flash that lights every corner of the field.
   Whispering Dread rises off the storehouse wraith like the cold off a well.
-  The storehouse wraith’s Whispering Dread grips you before you are properly set. [Guarded] [−9]
+  You are a shade too slow, and the storehouse wraith’s Whispering Dread unsettles you. [Guarded] [−7]
   —— Second exchange ——
   You dart in close.
   The storehouse wraith reaches for Whispering Dread again.
-  The storehouse wraith’s Whispering Dread sinks deep into you. [−24]
+  The storehouse wraith’s Whispering Dread takes hold of you. [−19]
   —— Third exchange ——
   You explode forward with Gale Heel.
   Your Gale Heel rips into the storehouse wraith cleanly. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith is gone again, and the air where it stood is empty.
   The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−11]
+  The storehouse wraith’s Whispering Dread takes hold of you. [Guarded] [−9]
   —— Last exchange ——
   You search the corners of the room and find them empty. [Off plan: no one in sight]
   You are a shade too slow, and the storehouse wraith’s touch grazes you. [Guarded] [−1]
@@ -216,7 +206,7 @@
   Much of it glances off the storehouse wraith.
   The storehouse wraith fades out of sight again.
   The storehouse wraith fixes its eyes on the field and casts Whispering Dread.
-  The storehouse wraith catches you with its Whispering Dread. [Guarded] [−11]
+  The storehouse wraith catches you with its Whispering Dread. [Guarded] [−9]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——
   You explode forward with Gale Heel.

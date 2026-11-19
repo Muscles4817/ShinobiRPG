@@ -68,9 +68,14 @@ interface Rated {
   readonly attributes: CombatAttributes;
 }
 
-/** How a defender slips an attack of this art: speed for most, noticing it for genjutsu. */
+/**
+ * How a defender slips an attack of this art: speed for most, noticing it for genjutsu, with
+ * their own chakra control fighting it off beside their will (Part 13c).
+ */
 export function avoidRating({ attributes: a }: Rated, discipline?: Discipline): number {
-  if (discipline === 'genjutsu') return a.willpower * 0.7 + a.perception * 0.3;
+  if (discipline === 'genjutsu') {
+    return a.willpower * 0.45 + a.chakraControl * 0.25 + a.perception * 0.3;
+  }
   return a.speed * 0.7 + a.perception * 0.3;
 }
 

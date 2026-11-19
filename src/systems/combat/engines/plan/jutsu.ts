@@ -29,6 +29,7 @@ import { empowering } from './meditation';
 import { castField } from './field';
 import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
+import { holdIllusion } from './illusions';
 import { damage, type Aimed } from './wounding';
 import { conditionOf, landsOnFoe, shakenOff } from './takingHold';
 import { opponentsOf, type Turn } from './senses';
@@ -156,16 +157,21 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
     case 'seal':
       return seal(round, aimed.target, { technique, effect });
     case 'confuse':
-      return confuse(round, aimed, { technique, effect });
+      return kept(confuse(round, aimed, { technique, effect }), aimed, technique);
     case 'knock':
       return knock(round, aimed, { technique, effect });
     case 'pin':
-      return pin(round, aimed, { technique, effect });
+      return kept(pin(round, aimed, { technique, effect }), aimed, technique);
     case 'drain':
       return drain(round, aimed, { technique, effect });
     case 'afflict':
       return afflict(round, aimed, { technique, effect });
   }
+}
+
+/** A lasting illusion is kept up by its caster, paid each exchange (`illusions.ts`). */
+function kept(round: Round, { actor, target }: Aimed, technique: CombatTechnique): Round {
+  return holdIllusion(round, { caster: actor, targetId: target.id, technique });
 }
 
 /** One effect on one foe, as the fighters stand now. Nothing happens to a foe who is down. */

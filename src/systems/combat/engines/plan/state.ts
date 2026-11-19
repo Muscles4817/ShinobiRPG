@@ -38,6 +38,7 @@ import type { Minded, Witness } from './mind/shape';
 import type { OnTrial } from './trialShape';
 import type { PlayerPlanning } from './planningShape';
 import type { ExchangeMarks } from './exchangeShape';
+import type { UnderIllusion } from './illusionShape';
 export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -120,6 +121,7 @@ export interface PlanFighter
     Minded,
     OnTrial,
     PlayerPlanning,
+    UnderIllusion,
     Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */
   readonly stunned: number;

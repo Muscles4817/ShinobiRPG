@@ -4,6 +4,7 @@ export {
   driveOf,
   effectsOf,
   hasVerb,
+  ILLUSION_CONTROL_SHARE,
   isHarmful,
   isHindering,
   isWounding,

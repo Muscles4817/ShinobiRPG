@@ -7,6 +7,7 @@ import {
   driveOf,
   effectsOf,
   hasVerb,
+  ILLUSION_CONTROL_SHARE,
   isHarmful,
   landingUse,
   primaryEffect,
@@ -98,9 +99,15 @@ describe('verbs', () => {
   });
 
   it('a technique is driven by its art; a daze takes hold against poise, a blow meets the guard', () => {
+    // An illusion is a contest of control on both sides (Part 13c).
+    const share = ILLUSION_CONTROL_SHARE;
     const daze = { technique: mirage, effect: primaryEffect(mirage) };
-    expect(driveOf(fighter, daze)).toBe(attributes.genjutsu);
-    expect(resistOf(fighter, daze)).toBe(attributes.willpower);
+    expect(driveOf(fighter, daze)).toBeCloseTo(
+      attributes.genjutsu * (1 - share) + attributes.chakraControl * share,
+    );
+    expect(resistOf(fighter, daze)).toBeCloseTo(
+      attributes.willpower * (1 - share) + attributes.chakraControl * share,
+    );
     const knockout = {
       technique: { ...mirage, discipline: 'taijutsu' as const },
       effect: daze.effect,
@@ -116,7 +123,10 @@ describe('verbs', () => {
       const effect = { verb: 'pin' as const, power: 10 };
       return resistOf(fighter, { technique: { ...crush, discipline, effects: [effect] }, effect });
     };
-    expect(bind('genjutsu')).toBe(attributes.willpower);
+    const share = ILLUSION_CONTROL_SHARE;
+    expect(bind('genjutsu')).toBeCloseTo(
+      attributes.willpower * (1 - share) + attributes.chakraControl * share,
+    );
     expect(bind('ninjutsu')).toBe(attributes.chakraControl);
     expect(bind('fuuinjutsu')).toBe(attributes.chakraControl);
     expect(bind('taijutsu')).toBe(attributes.strength);
