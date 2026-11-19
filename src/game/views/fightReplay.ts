@@ -1,6 +1,5 @@
 import {
   splitNarration,
-  type CombatantView,
   type CombatView,
   type Narration,
   type NarrationForce,
