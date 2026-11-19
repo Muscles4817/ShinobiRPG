@@ -12,6 +12,7 @@ import type {
 } from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
 import { numberedNames, type NarrationOffPlan } from '../../rules/narration';
+import type { Pools } from './toldPools';
 import { openingChakra, openingSteadiness } from '../../rules/provisions';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
@@ -303,6 +304,8 @@ export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'>, Excha
   readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */
   readonly recent?: readonly string[];
+  /** Where everyone's health and pools stood as of the last line told (`say`); unset: none told. */
+  readonly toldPools?: Pools;
 }
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
@@ -412,9 +415,8 @@ export function patch(
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
 }
 
-export function say(round: Round, ...lines: string[]): Round {
-  return { ...round, lines: [...round.lines, ...lines] };
-}
+// The one writer of the story (`toldPools.ts`).
+export { say } from './toldPools';
 
 export function fighterIn(round: Round, id: string): PlanFighter | undefined {
   return round.fighters.find((f) => f.id === id);

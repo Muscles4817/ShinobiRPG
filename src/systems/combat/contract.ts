@@ -345,6 +345,10 @@ export interface CombatCastMember {
   readonly id: string;
   readonly name: string;
   readonly side: CombatSide;
+  /** Health at full, so the stage can draw them while the story has them on the field. */
+  readonly maxHealth?: number;
+  /** Whose body they wear or answer to (a shadow clone's maker, a summons' caller). */
+  readonly like?: string;
 }
 
 /**

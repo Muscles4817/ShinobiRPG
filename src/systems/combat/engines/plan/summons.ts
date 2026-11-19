@@ -104,11 +104,16 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   // A sage toad lands on its caller's shoulder, never on the field (`perching.ts`).
   if (call.perch) return perchOn(round, caller, summoned(round, caller, call));
   const blood = Math.min(call.bloodPrice ?? 0, Math.max(0, caller.health - BLOOD_FLOOR));
-  const answered = placed(round, caller, call, blood);
-  const body = answered.fighters[answered.fighters.length - 1] ?? caller;
-  const told = say(answered, tell(call.puppet ? PUPPET_CALL : SUMMON_CALL, { a: actor, b: body }));
+  // The blood is paid, then the body comes: each told as it happens.
   const paid = harmLine(tell('{a} pay{a.s} in blood.', { a: actor }), blood);
-  return blood > 0 ? say(told, paid) : told;
+  const bled = {
+    ...round,
+    fighters: patch(round.fighters, caller.id, { health: caller.health - blood }),
+  };
+  const after = blood > 0 ? say(bled, paid) : round;
+  const answered = placed(after, fighterIn(after, caller.id) ?? caller, call);
+  const body = answered.fighters[answered.fighters.length - 1] ?? caller;
+  return say(answered, tell(call.puppet ? PUPPET_CALL : SUMMON_CALL, { a: actor, b: body }));
 }
 
 const SUMMON_CALL = '{a} slam{a.s} a palm down, and {b} answers the call in a burst of smoke.';
@@ -231,7 +236,7 @@ function spared(round: Round, callerId: string): Round {
   if (!smallest || out.length < 2) return round;
   if (caller.chakra >= upkeepOut(round, caller) * UPKEEP_HORIZON) return round;
   const gone = leaves(round, smallest, { fate: 'sent-home', lost: false });
-  return { ...gone, lines: [...round.lines, tell(SPARED_LINE, { a: caller, s: smallest })] };
+  return say({ ...gone, lines: round.lines }, tell(SPARED_LINE, { a: caller, s: smallest }));
 }
 
 /** At the end of an exchange: each summon out goes home, or its caller pays to keep it. */

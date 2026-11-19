@@ -119,5 +119,5 @@ function struckClone(round: Round, { hit, maker, clones }: Struck): Round {
   const damage = taken(hit.attacker, Math.max(1, Math.round(raw)));
   const leaps = tell('The clone’s lightning leaps into {t}.', { t: hit.attacker });
   const line = harmLine(leaps, damage);
-  return wound(say(burst, line), hit.attacker.id, damage);
+  return wound(burst, hit.attacker.id, damage, line);
 }

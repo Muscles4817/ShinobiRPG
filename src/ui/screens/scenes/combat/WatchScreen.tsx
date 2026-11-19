@@ -1,3 +1,4 @@
+import { goneSince } from './stageCast';
 import type { CombatantView, CombatOption, CombatView, FightBeat, ScoutingRead } from '@/game';
 
 import { Chips } from '../../../components/Chips';
@@ -250,7 +251,7 @@ function fightersAt(
   // line that brought them; where the lines say no one, everyone is shown.
   const present = new Set([...(beat?.present ?? []), ...(before ?? []).map((b) => b.id)]);
   const onStage = (c: CombatantView) => !beat || beat.present.length === 0 || present.has(c.id);
-  return view.combatants.filter(onStage).map((c) => {
+  return [...view.combatants, ...goneSince(view, beat)].filter(onStage).map((c) => {
     const was = before?.find((b) => b.id === c.id);
     const start = was
       ? {

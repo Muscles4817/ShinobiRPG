@@ -64,6 +64,7 @@ import {
   type Round,
 } from './state';
 import { tracedLine } from './sceneVoice';
+import { poolsNow, toldInFull } from './toldPools';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';
@@ -332,7 +333,11 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     ...carriedIn(state),
   };
   const name = EXCHANGE_NAMES[state.exchange] ?? 'Another';
-  const opened: Round = { ...start, lines: [exchangeDivider(name, start, state.exchange === 0)] };
+  const opened: Round = {
+    ...start,
+    lines: [exchangeDivider(name, start, state.exchange === 0)],
+    toldPools: poolsNow(start.fighters),
+  };
   // Fallen bodies of a mind are raised before summons are reckoned (`sharedMind.ts`).
   const played = mindsAfter(order.reduce((round, { id }) => stagedTurn(round, id, rng), opened));
   const kept = plannedSummons(
@@ -355,7 +360,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   }));
   const { field: _old, ...rest } = state;
   const closing = result ? [closingLine(end, result)] : fading;
-  const story = [...state.log, ...end.lines, ...closing];
+  const story = [...state.log, ...toldInFull(end).lines, ...closing];
   return {
     ...rest,
     round: result ? state.round : state.round + 1,

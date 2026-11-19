@@ -9,13 +9,12 @@ import {
   statusLine,
   turnLine,
   type NarrationForce,
-  type NarrationPools,
   type NarrationStatuses,
 } from '../../rules/narration';
 import { findCard, type Card } from './cards';
 import type { CardId, PlanFighter, Round } from './state';
+import { poolsNow } from './toldPools';
 import { statusesShown } from './statusView';
-import { poolAmounts } from './swarmView';
 import { bandOf, distanceBetween } from './distance';
 
 /**
@@ -55,16 +54,6 @@ export function turnForce(fighter: PlanFighter, id: CardId | undefined): Narrati
   };
 }
 
-/**
- * Everyone's pools, by id, for a line that says where they stand (`poolsLine`), with their health
- * as the screen shows it: the watch screen reads both forward, line by line, so a hit shows when
- * its line plays, and a fighter who joins mid-round (a shadow clone, a summons) first appears in
- * the line that brought them.
- */
-function poolsOf(fighters: readonly PlanFighter[]): Record<string, Record<string, number>> {
-  return Object.fromEntries(fighters.map((f) => [f.id, { ...poolAmounts(f), health: f.health }]));
-}
-
 /** Everyone's statuses, by id, as the screen shows them (`statusLine`). */
 function statusesOf(round: Round): Record<string, string[]> {
   return Object.fromEntries(round.fighters.map((f) => [f.id, statusesShown(round, f)]));
@@ -77,7 +66,7 @@ function statusesOf(round: Round): Record<string, string[]> {
 export function exchangeDivider(name: string, round: Round, first: boolean): string {
   const divider = `— ${name} exchange —`;
   const opening = first ? roundStartLine(divider) : divider;
-  return statusLine(poolsLine(opening, poolsOf(round.fighters)), statusesOf(round));
+  return statusLine(poolsLine(opening, poolsNow(round.fighters)), statusesOf(round));
 }
 
 /** The statuses of those whose statuses the turn changed (an empty list where all ended). */
@@ -87,17 +76,6 @@ function statusesMoved(before: Round, after: Round): NarrationStatuses {
     Object.entries(statusesOf(after)).filter(
       ([id, now]) => now.join(';') !== (was[id] ?? []).join(';'),
     ),
-  );
-}
-
-/** The pools the turn moved, for each fighter it moved any of. */
-function poolsMoved(before: Round, after: Round): NarrationPools {
-  const was = poolsOf(before.fighters);
-  return Object.fromEntries(
-    Object.entries(poolsOf(after.fighters)).flatMap(([id, now]) => {
-      const moved = Object.entries(now).filter(([pool, n]) => was[id]?.[pool] !== n);
-      return moved.length > 0 ? [[id, Object.fromEntries(moved)]] : [];
-    }),
   );
 }
 
@@ -130,13 +108,12 @@ export function staged(before: Round, after: Round, id: string): Round {
     if (i === last && endedAt !== startedAt) return endedAt;
     return i === 0 ? startedAt : undefined;
   };
-  const moved = poolsMoved(before, turn);
   const changed = statusesMoved(before, turn);
   const tagged = added.map((line, i) => {
     const theirs = turnLine(line, id, rangeAt(i));
     const forced = force ? forceLine(theirs, force) : theirs;
     const sized = i === 0 && offPlan ? offPlanLine(forced, offPlan) : forced;
-    return i === last ? statusLine(poolsLine(sized, moved), changed) : sized;
+    return i === last ? statusLine(sized, changed) : sized;
   });
   return { ...turn, lines: [...before.lines, ...tagged] };
 }

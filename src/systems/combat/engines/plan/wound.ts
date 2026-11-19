@@ -17,32 +17,41 @@ import { tell } from '../../rules/telling';
  * What a hit of this much takes from a fighter: never more than they have left. No hit is
  * capped (`docs/design/defence-plan.md`), so a blow far beyond a body is told as what it took.
  */
-export function taken(f: { readonly health: number }, damage: number): number {
+export function taken(
+  f: { readonly health: number; readonly shadowOf?: string },
+  damage: number,
+): number {
+  // A shadow clone is gone at any hit: it takes all it had.
+  if (f.shadowOf !== undefined && f.health > 0) return f.health;
   return Math.min(damage, Math.max(1, Math.ceil(f.health)));
 }
 
-export function wound(round: Round, id: string, damage: number): Round {
+/**
+ * The hit applied, then told: lines that tell it are said once the health has moved, so the
+ * screen shows the hurt with the line that tells it (`state.ts`, `say`), before any fall.
+ */
+export function wound(round: Round, id: string, damage: number, ...told: string[]): Round {
   const struck = fighterIn(round, id);
-  if (!struck) return round;
+  if (!struck) return say(round, ...told);
   // A shadow clone pops at the first hit that lands (`shadows.ts`).
   if (struck.shadowOf !== undefined && damage > 0 && struck.health > 0) {
-    return say({ ...round, fighters: patch(round.fighters, id, { health: 0 }) }, popLine(struck));
+    const popped = { ...round, fighters: patch(round.fighters, id, { health: 0 }) };
+    return say(popped, ...told, popLine(struck));
   }
   const hurt = { ...struck, health: Math.max(0, struck.health - damage) };
-  // Hurting someone holding a channelled pin breaks it (`holding.ts`).
-  const held = damage > 0 && struck.holding ? breakHold(round, id) : round;
   // A hard hit makes a puppeteer's threads slip (`puppets.ts`).
   const slipped = puppetsUp(struck) > 0 && threadsSlip(damage, struck.maxHealth);
-  const fighters = patch(held.fighters, id, {
+  const fighters = patch(round.fighters, id, {
     health: hurt.health,
     ...(slipped ? { threadsSlipped: true } : {}),
   });
+  const hit = say({ ...round, fighters }, ...told);
+  // Hurting someone holding a channelled pin breaks it (`holding.ts`).
+  const held = damage > 0 && struck.holding ? breakHold(hit, id) : hit;
   if (!shouldFlee(hurt)) {
-    const after = { ...held, fighters };
-    return hurt.health <= 0 && struck.health > 0
-      ? shadowsGone(felled(after, struck), struck)
-      : after;
+    return hurt.health <= 0 && struck.health > 0 ? shadowsGone(felled(held, struck), struck) : held;
   }
   const fled = tell('{t} turn{t.s} and run{t.s}.', { t: struck });
-  return shadowsGone(say({ ...held, fighters: patch(fighters, id, { health: 0 }) }, fled), struck);
+  const gone = { ...held, fighters: patch(held.fighters, id, { health: 0 }) };
+  return shadowsGone(say(gone, fled), struck);
 }

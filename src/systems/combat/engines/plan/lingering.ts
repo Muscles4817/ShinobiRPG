@@ -220,7 +220,7 @@ export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopp
     damage,
   );
   const spent = relinger(round, target.id, { riposte: null });
-  const after = wound(say(spent, line), attacker.id, damage);
+  const after = wound(spent, attacker.id, damage, line);
   const standing = fighterIn(after, attacker.id);
   return { round: after, stopped: !standing || !alive(standing) };
 }
@@ -246,7 +246,7 @@ function lingerOn(round: Round, f: PlanFighter, exchange: number): Round {
   const [worst] = f.afflictions ?? [];
   if (harm <= 0 || !worst || !alive(f)) return kept;
   const line = harmLine(tell(LINGERS[worst.harm], { t: f }), harm);
-  return wound(say(kept, line), f.id, harm);
+  return wound(kept, f.id, harm, line);
 }
 
 /** At the end of an exchange: harms linger and wear down, pins loosen, ripostes lapse. */

@@ -39,11 +39,13 @@ describe('the cast', () => {
     const clone = { ...fighters[1]!, id: 'itachi~shadow~1', name: "Itachi's shadow clone" };
     const first = castAfter(undefined, [...fighters, clone]);
     const later = castAfter(first, fighters);
-    expect(later).toContainEqual({
-      id: 'itachi~shadow~1',
-      name: "Itachi's shadow clone",
-      side: 'enemy',
-    });
+    expect(later).toContainEqual(
+      expect.objectContaining({
+        id: 'itachi~shadow~1',
+        name: "Itachi's shadow clone",
+        side: 'enemy',
+      }),
+    );
     expect(later).toHaveLength(3);
   });
 
