@@ -58,14 +58,13 @@ import {
   fighterIn,
   patch,
   playerOf,
-  poolsNow,
-  toldInFull,
   say,
   type PlanFighter,
   type PlanState,
   type Round,
 } from './state';
 import { tracedLine } from './sceneVoice';
+import { poolsNow, toldInFull } from './toldPools';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';

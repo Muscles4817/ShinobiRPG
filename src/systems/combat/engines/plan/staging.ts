@@ -12,7 +12,8 @@ import {
   type NarrationStatuses,
 } from '../../rules/narration';
 import { findCard, type Card } from './cards';
-import { poolsNow, type CardId, type PlanFighter, type Round } from './state';
+import type { CardId, PlanFighter, Round } from './state';
+import { poolsNow } from './toldPools';
 import { statusesShown } from './statusView';
 import { bandOf, distanceBetween } from './distance';
 
