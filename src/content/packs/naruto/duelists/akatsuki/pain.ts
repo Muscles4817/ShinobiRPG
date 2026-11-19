@@ -33,7 +33,8 @@ export const PAIN_ARTS: readonly TechniqueDef[] = [
       { verb: 'damage', power: 20 },
       { verb: 'knock', power: 10, to: 'far' },
     ],
-    chakraCost: 20,
+    // Written dearer than its effects read: it throws everything in front of him away.
+    chakraCost: 120,
     rank: 'S',
     difficulty: 170,
   },

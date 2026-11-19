@@ -16,7 +16,7 @@ import type {
 import type { CombatGear } from '../gearContract';
 import type { CombatMind } from '../mindContract';
 import { armouredAttributes } from './armour';
-import { areaCostScale, rankedCost } from './chakra';
+import { chakraWorth } from './worth';
 import { startsHidden } from './conditions';
 import { unstableCostScale } from './unstable';
 import type { EffectUse } from './verbs';
@@ -146,11 +146,6 @@ export function holdTurns(effect: Pick<EffectUse['effect'], 'power'>): number {
 }
 
 /**
- * Chakra a technique costs, after the user's chakra control (up to a third off), more for an
- * unstable one, and more for one that covers more ground (`chakra.ts`); never less than its
- * rank's floor (`RANK_COST_FLOOR`).
- */
-/**
  * Chakra control at which a spin (Palm Rotation) costs half its technique each time it turns
  * something aside: finer control, a lighter flick of chakra from every point at once.
  */
@@ -166,13 +161,18 @@ export function spinCost(
   return Math.max(1, Math.round(chakraCost(user, technique) * share));
 }
 
+/**
+ * Chakra a technique costs: what it does (`worth.ts`), or more where it was written dearer,
+ * never its rank; more for an unstable one; and up to a third off for the user's chakra control.
+ */
 export function chakraCost(
   user: Pick<Body, 'attributes'>,
   technique: Pick<CombatTechnique, 'chakraCost' | 'unstable' | 'rank'> & {
     readonly effects?: CombatTechnique['effects'];
-  },
+  } & Partial<Pick<CombatTechnique, 'accuracy' | 'lethal'>>,
 ): number {
   const discount = clamp(user.attributes.chakraControl / 60, 0, 1 / 3);
-  const base = rankedCost(technique) * unstableCostScale(technique) * areaCostScale(technique);
+  const worth = technique.effects ? chakraWorth({ ...technique, effects: technique.effects }) : 0;
+  const base = Math.max(technique.chakraCost, worth) * unstableCostScale(technique);
   return Math.max(1, Math.round(base * (1 - discount)));
 }

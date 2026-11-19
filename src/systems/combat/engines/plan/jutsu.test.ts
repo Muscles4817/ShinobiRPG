@@ -3,6 +3,7 @@ import { createRng } from '@/core';
 import { GUARDED, SEES_IT_COMING, SLIPS, dazes, hitsOn } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
+import { chakraCost } from '../../rules/body';
 import { splitNarration } from '../../rules/narration';
 import { UNSTABLE_MISFIRE } from '../../rules/unstable';
 import { chooseCard } from './choose';
@@ -77,6 +78,16 @@ function roundWith(target: Partial<CombatantSetup> = {}, loadout?: PlanFighter['
     intents: {},
   };
   return round;
+}
+
+/** The round with the hero's tank this deep, so a dear technique can be cast and cast again. */
+function withChakra(round: Round, chakra: number): Round {
+  return {
+    ...round,
+    fighters: round.fighters.map((f) =>
+      f.id === 'hero' ? { ...f, chakra, maxChakra: chakra } : f,
+    ),
+  };
 }
 
 /** The bandit keeps one defence ready at every distance. */
@@ -193,11 +204,15 @@ describe('plan & watch techniques', () => {
   });
 
   it('add what they cost to the chakra spent in the fight, hit or miss', () => {
-    const once = crushUntil(roundWith(), hitsOn('bandit'), chakraCrush);
-    expect(fighterIn(once, 'hero')).toMatchObject({ chakra: 24, chakraSpent: 6 });
+    const once = crushUntil(withChakra(roundWith(), 100), hitsOn('bandit'), chakraCrush);
     const [hero, bandit] = once.fighters;
+    const cost = chakraCost(hero!, chakraCrush);
+    expect(fighterIn(once, 'hero')).toMatchObject({ chakra: 100 - cost, chakraSpent: cost });
     const twice = useJutsu(once, { actor: hero!, target: bandit, rng: createRng(3) }, chakraCrush);
-    expect(fighterIn(twice, 'hero')).toMatchObject({ chakra: 18, chakraSpent: 12 });
+    expect(fighterIn(twice, 'hero')).toMatchObject({
+      chakra: 100 - 2 * cost,
+      chakraSpent: 2 * cost,
+    });
     expect(fighterIn(twice, 'bandit')?.chakraSpent).toBeUndefined();
   });
 
@@ -231,13 +246,14 @@ describe('plan & watch techniques', () => {
 
   it('an unstable technique costs more and sometimes comes apart, chakra spent', () => {
     const shaky: CombatTechnique = { ...chakraCrush, unstable: true };
-    const round = roundWith();
+    const round = withChakra(roundWith(), 100);
     const [hero, bandit] = round.fighters;
+    expect(chakraCost(hero!, shaky)).toBeGreaterThan(chakraCost(hero!, chakraCrush));
     const SEEDS = 400;
     let misfires = 0;
     for (let seed = 1; seed <= SEEDS; seed++) {
       const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, shaky);
-      expect(fighterIn(after, 'hero')?.chakra).toBe(30 - 8);
+      expect(fighterIn(after, 'hero')?.chakra).toBe(100 - chakraCost(hero!, shaky));
       if (after.lines.some((l) => l.includes('comes apart'))) {
         misfires++;
         expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });

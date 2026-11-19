@@ -37,7 +37,9 @@ interface Baseline {
  * adopted for every fight (`docs/design/combat-ai-plan.md` Part 13b), made fights a shade shorter:
  * a closer's step now lands a light blow, so equals and the mirror see a few fewer plan screens,
  * and a fresh genin against a D-rank foe repeats a move a little more in a fight already over in
- * one plan.
+ * one plan. Chakra costs read from what a technique does (Part 13c): a fresh genin's moulded moves
+ * cost more, so against a D-rank foe they lean on the same plain strike more often, and the mirror
+ * runs a shade shorter but repeats far less and loses fewer turns.
  */
 export const BASELINES: Readonly<Record<string, Baseline>> = {
   'equals (C)': { planScreens: 3.4, repeatShare: 0.8, lostShare: 0.063, oneScreenShare: 0 },
@@ -61,15 +63,15 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
   },
   'fresh genin v a D-rank foe': {
     planScreens: 1,
-    repeatShare: 0.189,
+    repeatShare: 0.286,
     lostShare: 0.069,
     oneScreenShare: 1,
   },
   'fresh genin v their mirror': {
     // 7.95, 0.875 and 0.228 before three slots, the academy swap and pouch (P2.4).
-    planScreens: 8.033,
-    repeatShare: 0.867,
-    lostShare: 0.225,
+    planScreens: 7.867,
+    repeatShare: 0.625,
+    lostShare: 0.105,
     oneScreenShare: 0,
   },
 };

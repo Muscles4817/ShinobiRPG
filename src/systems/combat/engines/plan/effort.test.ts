@@ -1,4 +1,5 @@
 import type { CombatantSetup, CombatTechnique } from '../../contract';
+import { chakraCost } from '../../rules/body';
 import { maxBreath } from '../../rules/breath';
 import { playable } from './cards';
 import { affords, breathOf, payFor, rested } from './effort';
@@ -54,7 +55,8 @@ describe('effort', () => {
   it('spends breath on a body move and chakra on anything else', () => {
     const f = { ...fighter(), chakra: 30 };
     expect(payFor(f, sweep)).toEqual({ breath: maxBreath(attributes) - 5 });
-    expect(payFor(f, galeKick)).toMatchObject({ chakra: 24 });
+    // A kick wrapped in wind is moulded: it pays what it does in chakra.
+    expect(payFor(f, galeKick)).toMatchObject({ chakra: 30 - chakraCost(f, galeKick) });
   });
 
   it('runs out, and a winded fighter can only rest', () => {

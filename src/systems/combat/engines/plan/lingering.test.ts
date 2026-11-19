@@ -1,5 +1,6 @@
 import { distanceBetween } from './distance';
 import { createRng } from '@/core';
+import { chakraCost } from '../../rules/body';
 import type { TechniqueEffect } from '@/systems/techniques';
 
 import { SLIPS } from '@/test/fightLines';
@@ -134,7 +135,7 @@ describe('verbs that leave something behind, in plan & watch', () => {
     };
     const after = landed(spent, leech, (r) => bandit(r).chakra < 50);
     expect(bandit(after).chakra).toBeLessThan(50);
-    expect(fighterIn(after, hero.id)!.chakra).toBeGreaterThan(20 - leech.chakraCost);
+    expect(fighterIn(after, hero.id)!.chakra).toBeGreaterThan(20 - chakraCost(hero, leech));
   });
 
   it('a burn lingers for a few exchanges and then goes out', () => {

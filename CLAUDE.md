@@ -361,10 +361,14 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     its thrower) and only if it reaches where the last left the fight (a knock to mid needs a move
     that reaches or rushes in); the setups are what the fight already does (a daze leaves them
     open, a pin hard to slip). The player builds theirs on the Jutsu tab (`techniques.chains`,
-    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. A full tank doubles every 10 points of reserves (`maxChakra`, `systems/vitals`), so deep wells dwarf ordinary ones. Chakra ebbs and flows (`rules/chakra.ts`): a technique costs at least its rank's floor
-    (`RANK_COST_FLOOR`: C 10 up to S 45, before control), so a jōnin's best takes a real share of
-    a full tank; an area costs more for the ground it covers (wide ×1.5, vast ×2.2), and each
-    exchange gives back a little, a little more for each doubling of the tank (never a share of it,
+    checked by `chainProblem` before they are kept); otherwise they are built from the moves known. A full tank doubles every 10 points of reserves (`maxChakra`, `systems/vitals`), so deep wells dwarf ordinary ones. A technique costs **what it does, never its rank** (`rules/worth.ts`,
+    `chakraWorth`, `docs/design/combat-ai-plan.md` Part 13c): each effect's power by what its verb
+    does to a fight (a turn taken from the target worth more than harm), more for a sure or lethal
+    one, and steeply more for the ground it covers (`AREA_REACH`: small ×2, wide ×4, vast ×12), so
+    a vast blast costs more than most people hold; an authored `chakraCost` may ask more, never
+    less, and control takes up to a third off (`chakraCost` in `rules/body.ts`). A plain body move
+    still pays breath, a moulded one (a kick wrapped in wind) chakra. Chakra ebbs and flows
+    (`rules/chakra.ts`): each exchange gives back a little, a little more for each doubling of the tank (never a share of it,
     `REGEN_PER_DOUBLING`). **Gather** (`rules/gather.ts`,
     `plan/gather.ts`) is an action that spends the turn drawing back a fifth of the fighter's
     chakra and a share of their breath, and leaves them open until their next turn (they slip

@@ -70,7 +70,8 @@ function atMid(holds: boolean): Round {
   const fighters = initialFighters({
     player: setup('brawler', { techniques: [entry, gate], traits: ['brawler'] }),
     allies: [],
-    enemies: [setup('caster', { techniques: [storm] })],
+    // A wide storm costs what it does: its caster carries a deep well.
+    enemies: [setup('caster', { techniques: [storm], chakra: 200, maxChakra: 200 })],
     canFlee: true,
   }).map((f): PlanFighter => {
     if (f.id === 'caster')

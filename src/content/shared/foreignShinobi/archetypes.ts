@@ -102,7 +102,8 @@ export const FOREIGN_ARCHETYPES: Readonly<Record<ForeignArchetypeId, ForeignArch
     carries: { tools: { 'wound-salve': 1 } },
     roles: {
       genin: ['heal', 'palm'],
-      chunin: ['heal', 'natureShot', 'substitute'],
+      // Heals and nature shots cost what they do: a plain strike fills the turns between.
+      chunin: ['heal', 'natureShot', 'palm', 'substitute'],
       jonin: ['heal', 'natureHeavy', 'lock', 'substitute'],
     },
   },

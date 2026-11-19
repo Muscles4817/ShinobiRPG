@@ -28,13 +28,18 @@ function technique(size?: 'small' | 'wide' | 'vast'): CombatTechnique {
 }
 
 describe('chakra', () => {
-  it('costs more for a technique that covers more ground', () => {
+  it('costs what it does, steeply more for the ground it covers, never its rank', () => {
+    expect(chakraCost({ attributes }, technique())).toBe(12);
+    expect(chakraCost({ attributes }, technique('wide'))).toBe(48);
+    expect(chakraCost({ attributes }, technique('vast'))).toBe(144);
+    expect(chakraCost({ attributes }, { ...technique(), rank: 'S' })).toBe(12);
+    // Written dearer than it does, it costs what it was written with.
+    expect(chakraCost({ attributes }, { ...technique(), chakraCost: 30 })).toBe(30);
+  });
+
+  it('prices breath for a body move by the ground it covers', () => {
     expect(areaCostScale(technique())).toBe(1);
     expect(areaCostScale(technique('small'))).toBe(AREA_COST.small);
-    expect(chakraCost({ attributes }, technique('wide'))).toBe(15);
-    expect(chakraCost({ attributes }, technique('vast'))).toBeGreaterThan(
-      chakraCost({ attributes }, technique('wide')),
-    );
   });
 
   it('gathers a little back each exchange, more from deep reserves, never past the most', () => {
