@@ -6,6 +6,7 @@ import { duplicateIds } from './catalog';
 import { validateArsenals } from './validateArsenals';
 import { validateFoesCarried } from './validateCarried';
 import { validateChakraBeasts } from './validateChakraBeasts';
+import { validateTags } from './validateTags';
 import { validateDuelists } from './validateDuelists';
 import { validateLadders } from './validateLadders';
 import { validateGear } from './validateGear';
@@ -60,6 +61,7 @@ export function validateContent(pack: ContentPack): string[] {
     ...validateRetinues(pack),
     ...validateFoesCarried(pack),
     ...validateChakraBeasts(pack),
+    ...validateTags(pack),
     ...validateCompanions(pack),
     ...validateCompanionArts(pack),
     ...validateContracts(pack),

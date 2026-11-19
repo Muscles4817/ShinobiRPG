@@ -51,6 +51,7 @@ export const CLOUD_ARTS: readonly TechniqueDef[] = [
     chakraCost: 14,
     rank: 'A',
     difficulty: 135,
+    tags: { delivery: ['grapple'], lands: ['slammed', 'stunned'], needs: ['liftable'] },
   },
   {
     id: 'hell-stab',

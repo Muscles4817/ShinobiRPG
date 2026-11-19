@@ -209,6 +209,7 @@ export const NINJUTSU: readonly TechniqueDef[] = [
     rank: 'A',
     needs: { control: 'B' },
     difficulty: 140,
+    tags: { delivery: ['strike'], lands: ['harmed', 'thrown-back'] },
   },
   {
     id: 'water-dragon-bullet',

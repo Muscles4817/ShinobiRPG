@@ -4,6 +4,7 @@ import type { StatGrade, Stats } from '@/systems/stats';
 import type { CostTemplate } from './costs';
 import type { MoveDistance, TechniqueEffect } from './effects';
 import type { LadderStep } from './ladders';
+import type { WrittenTags } from './tags';
 import {
   controlStudyFactor,
   gradeIndex,
@@ -89,6 +90,8 @@ export interface TechniqueDef {
    * if they had committed to a Brace, and a hold-off's shot doesn't stop them (`plan/steps.ts`).
    */
   readonly guarded?: true;
+  /** How it works, where reading it from the rest would be wrong (`tags.ts`). */
+  readonly tags?: WrittenTags;
 }
 
 /**

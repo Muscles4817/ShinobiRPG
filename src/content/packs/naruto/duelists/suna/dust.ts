@@ -36,6 +36,7 @@ export const SUNA_DUST_TECHNIQUES: readonly TechniqueDef[] = [
     dustCost: 40,
     rank: 'A',
     difficulty: 140,
+    tags: { delivery: ['from-ground'], lands: ['bound'], catches: 'whole' },
   },
   {
     id: 'sand-burial',
@@ -47,6 +48,12 @@ export const SUNA_DUST_TECHNIQUES: readonly TechniqueDef[] = [
     dustCost: 40,
     rank: 'A',
     difficulty: 140,
+    tags: {
+      delivery: ['from-ground'],
+      lands: ['crushed'],
+      catches: 'whole',
+      execution: { follows: 'sand-coffin' },
+    },
   },
   {
     id: 'sand-wall',

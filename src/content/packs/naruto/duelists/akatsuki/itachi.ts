@@ -27,6 +27,13 @@ export const ITACHI_ARTS: readonly TechniqueDef[] = [
     chakraCost: 26,
     rank: 'S',
     difficulty: 180,
+    tags: {
+      delivery: ['eye-contact'],
+      needs: ['mind', 'meets-eyes'],
+      lands: ['dreaming'],
+      catches: 'none',
+      execution: { channelled: true },
+    },
     oncePerFight: true,
     afterCost: { kind: 'injury', stat: 'perception', amount: 3, days: 7 },
   },
