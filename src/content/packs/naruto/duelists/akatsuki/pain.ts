@@ -45,6 +45,39 @@ export const PAIN_ARTS: readonly TechniqueDef[] = [
       answeredBy: ['distance', 'dig-in'],
       execution: { recovery: 1 },
     },
+    // Cast at the size the fight needs, picked when it is slotted: about him, out to the middle
+    // distance, or over a whole village. Every size rests the exchange after.
+    levels: [
+      {
+        id: 'close',
+        label: 'close',
+        reach: ['close'],
+        effects: [
+          { verb: 'damage', power: 20 },
+          { verb: 'knock', power: 10, to: 'mid' },
+        ],
+        chakraCost: 60,
+      },
+      {
+        id: 'wide',
+        label: 'wide',
+        reach: ['close', 'mid'],
+        effects: [
+          { verb: 'area', power: 20, size: 'wide' },
+          { verb: 'knock', power: 10, to: 'far' },
+        ],
+        chakraCost: 120,
+      },
+      {
+        id: 'vast',
+        label: 'village-wide',
+        reach: ['close', 'mid', 'far'],
+        effects: [
+          { verb: 'area', power: 26, size: 'vast' },
+          { verb: 'knock', power: 12, to: 'far' },
+        ],
+      },
+    ],
   },
   {
     id: 'universal-pull',
@@ -67,9 +100,10 @@ export const PAIN_ARTS: readonly TechniqueDef[] = [
       'A black sphere thrown into the sky pulls the ground up after it, and whoever stands on it.',
     discipline: 'ninjutsu',
     effects: [
-      { verb: 'area', power: 26, size: 'vast' },
+      { verb: 'area', power: 6, size: 'vast' },
       { verb: 'pin', power: 20 },
     ],
+    then: [{ verb: 'damage', power: 30 }],
     chakraCost: 44,
     rank: 'S',
     difficulty: 195,

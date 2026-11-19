@@ -30,6 +30,8 @@ import { castField } from './field';
 import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { holdIllusion } from './illusions';
+import { closingOn } from './stages';
+import { isPinned } from '../../rules/verbs/lingering';
 import { fittingTargets } from './fitting';
 import { damage, type Aimed } from './wounding';
 import { conditionOf, landsOnFoe, shakenOff } from './takingHold';
@@ -162,12 +164,23 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
     case 'knock':
       return knock(round, aimed, { technique, effect });
     case 'pin':
-      return kept(pin(round, aimed, { technique, effect }), aimed, technique);
+      return staged(
+        kept(pin(round, aimed, { technique, effect }), aimed, technique),
+        aimed,
+        technique,
+      );
     case 'drain':
       return drain(round, aimed, { technique, effect });
     case 'afflict':
       return afflict(round, aimed, { technique, effect });
   }
+}
+
+/** A hold that lands with a second stage to come waits for it to close (`stages.ts`). */
+function staged(round: Round, { actor, target }: Aimed, technique: CombatTechnique): Round {
+  const held = fighterIn(round, target.id);
+  if (!held || !isPinned(held)) return round;
+  return closingOn(round, { by: actor.id, targetId: target.id, technique });
 }
 
 /** A lasting illusion is kept up by its caster, paid each exchange (`illusions.ts`). */

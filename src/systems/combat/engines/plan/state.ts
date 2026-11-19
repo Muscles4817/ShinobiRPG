@@ -129,6 +129,8 @@ export interface PlanFighter
   readonly sealed: number;
   /** Breath left for body moves (`rules/breath.ts`); absent: all of it. */
   readonly breath?: number;
+  /** Will left to hold out against the mind's ordeals (`rules/will.ts`); absent: all of it. */
+  readonly will?: number;
   /** Evade or Brace, held until their next turn (`commitment.ts`); absent or null: neither. */
   readonly committed?: Commitment | null;
   /** A shadow clone: the id of its maker (`shadows.ts`). */

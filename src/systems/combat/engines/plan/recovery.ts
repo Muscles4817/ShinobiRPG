@@ -9,9 +9,14 @@ import type { PlanFighter, Round } from './state';
  * exchanges it rests; each exchange's end counts them down.
  */
 
+/** A technique's own id, whatever level it was cast at (`levels.ts`): every level rests together. */
+function restKey(t: Pick<CombatTechnique, 'id'>): string {
+  return t.id.split('~')[0] ?? t.id;
+}
+
 /** Whether a technique is still resting from its last use. */
 export function recovering(f: TrumpMemory, t: Pick<CombatTechnique, 'id'>): boolean {
-  return (f.recovering?.[t.id] ?? 0) > 0;
+  return (f.recovering?.[restKey(t)] ?? 0) > 0;
 }
 
 /** What a fighter's resting techniques are after using this one. */
@@ -19,7 +24,7 @@ export function restingAfter(f: TrumpMemory, t: CombatTechnique): TrumpMemory['r
   const rest = tagsOf(t).execution.recovery;
   if (rest === undefined || rest <= 0) return f.recovering;
   // It counts down at the end of the exchange it was used in too.
-  return { ...f.recovering, [t.id]: rest + 1 };
+  return { ...f.recovering, [restKey(t)]: rest + 1 };
 }
 
 function countedDown(f: PlanFighter): PlanFighter {
