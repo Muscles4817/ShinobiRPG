@@ -52,7 +52,8 @@ const SURE_WORTH = 1.2;
 /** One that hits to kill a target who can't see or move is worth this much more. */
 const LETHAL_WORTH = 1.3;
 
-type Worthed = Pick<CombatTechnique, 'effects'> & Partial<Pick<CombatTechnique, 'accuracy' | 'lethal'>>;
+type Worthed = Pick<CombatTechnique, 'effects'> &
+  Partial<Pick<CombatTechnique, 'accuracy' | 'lethal'>>;
 
 function effectWorth(effect: TechniqueEffect): number {
   // A Gate's price is its toll (`rules/verbs/tolls.ts`), never chakra.

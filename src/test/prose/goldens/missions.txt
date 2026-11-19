@@ -410,8 +410,8 @@ view:
   The storehouse wraith’s Whispering Dread takes hold of you cleanly. [Guarded] [−12]
   —— Last exchange ——
   You search the corners of the room and find them empty. [Off plan: no one in sight]
-  The storehouse wraith goes back to Whispering Dread.
-  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed] [Read it coming]
+  The storehouse wraith’s touch grazes you. [Guarded] [−1]
+  The storehouse wraith’s illusion folds the world around you.
   You trace the illusion back to the storehouse wraith.
   That round went badly for you.
   prompt: The round is over. Round 2: pick up to 3 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
@@ -426,44 +426,26 @@ view:
 
 --- combat (day 2, slot 1) ---
   —— First exchange ——
-  You go in with Gale Heel.
-  You catch the storehouse wraith with your Gale Heel. [Guarded] [−7]
-  The storehouse wraith barely seems to feel it.
-  Whispering Dread rises off the storehouse wraith like the cold off a well.
-  The storehouse wraith’s Whispering Dread takes hold of you cleanly. [Guarded] [−9]
-  The storehouse wraith’s illusion folds the world around you.
-  —— Second exchange ——
+  You bite down and the world snaps back into place.
   You send Gale Heel howling out.
-  Your Gale Heel cuts into the storehouse wraith. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
-  The storehouse wraith is gone again, and the air where it stood is empty.
-  The storehouse wraith’s touch only just grazes you. [Guarded] [−1]
-  The storehouse wraith’s illusion folds the world around you.
-  You catch the thread of the illusion and find the storehouse wraith.
-  —— Third exchange ——
-  You explode forward with Gale Heel.
-  Your Gale Heel cuts into the storehouse wraith cleanly. [Guarded] [−7]
-  Much of it glances off the storehouse wraith.
-  The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  The storehouse wraith catches you with its Whispering Dread. [Guarded] [−8]
-  The storehouse wraith’s illusion folds the world around you.
-  prompt: You are badly hurt. Change your plan for the rest of the round, or play on.
-
->>> combatAct (Play on)
-
---- combat (day 2, slot 1) ---
-  prompt: Close range, round 2, exchange 4 of 4
-
->>> combatAct (Watch the round)
-
---- combat (day 2, slot 1) ---
-  —— Last exchange ——
-  You launch into Gale Heel.
   You land your Gale Heel on the storehouse wraith. [Guarded] [−7]
-  Little of it bites on the storehouse wraith.
-  The storehouse wraith’s touch chills you. [Guarded] [−1]
-  Your senses swim in the storehouse wraith’s illusion.
-  That looked like it hurt the storehouse wraith.
+  Much of it glances off the storehouse wraith.
+  The storehouse wraith’s touch only just brushes you. [Guarded] [−1]
+  —— Second exchange ——
+  You use Gale Heel once more.
+  Your Gale Heel slices across the storehouse wraith. [Guarded] [−7]
+  The storehouse wraith barely seems to feel it.
+  The storehouse wraith is gone again, and the air where it stood is empty.
+  The storehouse wraith’s touch grazes you. [Guarded] [−1]
+  The storehouse wraith’s illusion folds the world around you.
+  —— Third exchange ——
+  You search the field and find no one. [Off plan: no one in sight]
+  The storehouse wraith’s touch only just chills you. [Guarded] [−1]
+  You blink, and the field is no longer where it was.
+  You catch the thread of the illusion and find the storehouse wraith.
+  —— Last exchange ——
+  Your senses lie to you, and the attack goes wide.
+  The storehouse wraith’s touch brushes you. [Guarded] [−1]
   prompt: The round is over. Round 3: pick up to 3 actions for each distance, higher first, and the defence you keep ready there. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 3)
@@ -475,10 +457,18 @@ view:
 >>> combatAct (Watch the round)
 
 --- combat (day 2, slot 1) ---
+  You trace the illusion back to the storehouse wraith.
+  —— Third exchange ——
+  Tired now, you still go to Shadow Feint.
+  The storehouse wraith shakes it off. [Resisted]
+  Whispering Dread rises off the storehouse wraith like the cold off a well.
+  The storehouse wraith’s Whispering Dread takes hold of you cleanly. [Guarded] [−9]
+  —— Last exchange ——
+  Tired now, you still go to Temple-Bell Palm. [Off plan: nothing slotted fit]
+  You land your Temple-Bell Palm on the storehouse wraith, smashing through the guard. [Guard broken] [−9]
+  The storehouse wraith’s cover takes the edge off it.
   The storehouse wraith is gone again, and the air where it stood is empty.
-  Hurt and running short of time, the storehouse wraith reaches for Whispering Dread.
-  The storehouse wraith finds the strength from somewhere, and the storehouse wraith’s Whispering Dread sinks into you. [Guarded] [−13]
-  Your senses swim in the storehouse wraith’s illusion.
+  The storehouse wraith steadys its breathing and draws its chakra back in.
   prompt: The round is over. Round 4: pick up to 3 actions for each distance, higher first, and the defence you keep ready there. Someone is hidden: Search or Dispel finds them. Four walls: no room to back away, and a wide technique hits everyone.
 
 >>> combatAct (Begin round 4)
@@ -491,6 +481,16 @@ view:
 
 --- combat (day 2, slot 1) ---
   prompt: They have shown a technique you hadn’t seen. Change your plan for the rest of the round, or play on.
+
+>>> combatAct (Play on)
+
+--- combat (day 2, slot 1) ---
+  prompt: Close range, round 4, exchange 2 of 4
+
+>>> combatAct (Watch the round)
+
+--- combat (day 2, slot 1) ---
+  prompt: You are badly hurt. Change your plan for the rest of the round, or play on.
 
 >>> combatAct (Play on)
 
@@ -509,14 +509,15 @@ view:
   prompt: Close range, round 5, exchange 1 of 4
 
 >>> combatAct (Watch the round)
-  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a little]
+  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a little] [Genjutsu, a little]
 
 === report card ===
 view:
   result: victory
   enemies: the storehouse wraith
-  summary: You won in five rounds. The storehouse wraith went down in the fifth round.
+  summary: You won in five rounds. You smashed through the storehouse wraith’s guard in the fifth round, and it was over soon after.
   taught[0]: Chakra Reserves, a little
+  taught[1]: Genjutsu, a little
 
 --- combat (day 2, slot 1) ---
 
@@ -568,8 +569,9 @@ view:
 view:
   result: victory
   enemies: the storehouse wraith
-  summary: You won in five rounds. The storehouse wraith went down in the fifth round.
+  summary: You won in five rounds. You smashed through the storehouse wraith’s guard in the fifth round, and it was over soon after.
   taught[0]: Chakra Reserves, a little
+  taught[1]: Genjutsu, a little
 
 >>> dismissReport
 
@@ -1137,11 +1139,10 @@ view:
   lines[3]:
     text: Perception
   lines[4]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: A dog starts barking. The voices round the fire drop, and someone kicks dirt over the flames.
   facts[0]:
     fact: count
     label: How many
-    value: Two of them
     hint: Not yet known. Watch them from cover, read their tracks or feel for chakra to find out.
   facts[1]:
     fact: identity
@@ -1154,18 +1155,15 @@ view:
   facts[3]:
     fact: awareness
     label: Are they watching
-    value: They don’t know you’re here.
     hint: Not yet known. Watch them from cover or feel for chakra to find out.
   facts[4]:
     fact: terrain
     label: The ground
-    value: A cookfire in a hollow below the path, packs piled beside it, one way in and two ways out.
     hint: Not yet known. Watch them from cover to find out.
   recon[0]:
     label: Watch them from cover
     odds: Perception 62%
     cost: 5 energy
-    blocker: Nothing more to learn that way.
   recon[1]:
     label: Read their tracks
     odds: Perception 68%
@@ -1185,21 +1183,22 @@ view:
   approaches[1]:
     label: Ambush them
     detail: They reel, you strike first
+    blocker: You don’t know whether they’ve noticed you. Watch or sense them first.
   approaches[2]:
     label: Sneak past
-    detail: Speed 84%
+    detail: Speed 75%
   approaches[3]:
     label: Talk them down
-    detail: Willpower 36%
+    detail: Willpower 25%
   approaches[4]:
     label: Pay them off
     detail: 80 ryo
   approaches[5]:
     label: Frighten them off
-    detail: Willpower 59%
+    detail: Willpower 47%
   approaches[6]:
     label: Set the ground
-    detail: Intellect 44%
+    detail: Intellect 32%
   approaches[7]:
     label: Withdraw
     detail: The job fails, but you’re unhurt
@@ -1223,7 +1222,6 @@ view:
   prompt: Mid range, round 1, exchange 1 of 4
 
 >>> combatAct (Watch the round)
-  journal «What the fight taught you»: Going up against someone for real shows you what drills cannot. [Chakra Reserves, a touch]
 
 === report card ===
 view:
@@ -1235,30 +1233,23 @@ view:
 --- combat (day 4, slot 0) ---
   —— First exchange ——
   Asuka starts with Lantern Cut before anyone has settled.
-  Asuka’s Lantern Cut tears through the bandit archer with everything behind it, guard or no guard. [Guarded] [−49]
-  The bandit archer keeps Gōran off. [Held off]
-  The bandit archer waits for Gōran to commit, then fires.
-  The bandit archer’s kunai only just skims Gōran. [−1]
-  Goro closes in at once.
-  You close in.
-  The bandit thug’s strike catches Goro before Goro is properly set. [−14]
+  Asuka’s Lantern Cut tears through the bandit archer with everything behind it, guard or no guard. [Guarded] [−51]
+  Gōran weaves in under the bandit archer’s fire.
+  Gōran closes in at once.
+  Goro darts in close.
+  You keep low and come in under the bandit thug’s guard, inside the bandit thug’s reach.
+  The bandit thug catches Goro with his strike. [−14]
   —— Second exchange ——
   Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit archer, through the guard all the same, and she’s nearly knocked off her feet. [Guarded] [−51]
+  Asuka’s Lantern Cut tears through the bandit archer, through the guard all the same, and she’s nearly knocked off her feet. [Guarded] [−49]
   The bandit archer goes down and stays down.
-  Gōran keeps low and comes in under the bandit thug’s guard, inside the bandit thug’s reach.
-  Goro explodes forward with Palm Strike.
-  Goro’s Palm Strike crashes into the bandit thug, and it leaves him shaken. [Guarded] [−21]
-  You launch into Gale Heel.
-  Your Gale Heel batters the bandit thug. [Guarded] [−21]
-  Gōran is a shade too slow, and the bandit thug’s strike grazes him. [−2]
-  —— Third exchange ——
-  Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut tears through the bandit thug, guard or no guard, and he’s nearly knocked off his feet. [Guarded] [−38]
   Goro launches into Palm Strike.
-  Goro’s Palm Strike hammers the bandit thug, and it leaves him shaken. [Guarded] [−20]
-  The bandit thug goes down and stays down.
-  The last of them is down, and it is over.
+  Goro’s Palm Strike slams into the bandit thug, and it leaves him shaken. [Guarded] [−23]
+  Gōran explodes forward with Lantern Wind Flurry.
+  Gōran’s Lantern Wind Flurry drives through the bandit thug with everything behind it, guard or no guard. [Guarded] [−37]
+  The bandit thug can do little as Gōran’s Lantern Wind Flurry flattens him once more. [−40]
+  The bandit thug drops to his knees and topples over.
+  You are still on your feet, and no one is left to face you.
 
 >>> leaveFight
 
@@ -1308,7 +1299,7 @@ view:
   lines[17]:
     text: Perception
   lines[18]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: A dog starts barking. The voices round the fire drop, and someone kicks dirt over the flames.
   lines[19]:
     text: Go in head-on
   lines[20]:
@@ -1394,7 +1385,7 @@ view:
   lines[17]:
     text: Perception
   lines[18]:
-    text: From cover you take in the ground, and how they hold themselves.
+    text: A dog starts barking. The voices round the fire drop, and someone kicks dirt over the flames.
   lines[19]:
     text: Go in head-on
   lines[20]:
@@ -1455,8 +1446,7 @@ view:
 view:
   result: victory
   enemies: a bandit thug and a bandit archer
-  summary: You won in a single round. The bandit thug was the last of them to go down.
-  taught[0]: Chakra Reserves, a touch
+  summary: You won in a single round. The bandit archer was the last of them to go down.
 
 >>> dismissReport
 

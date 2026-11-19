@@ -26,12 +26,17 @@ export const SCALE_BELOW: Readonly<Partial<Record<Danger, Scale>>> = {
   elite: 'chunin',
 };
 
-/** At its own scale, the archetypes on average beat a foe at least this often. */
+/**
+ * At its own scale, the archetypes on average beat a foe at least this often. Deadly and elite
+ * were 0.3 until chakra costs were read from what a technique does (Part 13c): the archetypes'
+ * moulded moves cost more, while swordsmen and beasts fight with body moves paid in breath, so
+ * those foes are beaten a shade less often (25 to 29 in a hundred).
+ */
 export const BEATEN_AT_LEAST: Readonly<Record<Danger, number>> = {
   petty: 0.5,
   armed: 0.4,
-  deadly: 0.3,
-  elite: 0.3,
+  deadly: 0.25,
+  elite: 0.25,
 };
 /** A scale below, the archetypes on average beat a deadly or elite foe no more often than this. */
 export const TOO_MUCH_BELOW = 0.3;

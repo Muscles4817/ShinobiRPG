@@ -11,13 +11,16 @@ const GOLDENS: Readonly<Record<string, string>> = import.meta.glob(
 );
 const CAUSES = Object.values(CAUSE_LABEL).map((label) => `[${label}]`);
 
+const missesIn = (text: string) => text.split('\n').filter((l) => l.includes('[Missed]'));
+
 describe('causes in the golden transcripts', () => {
   for (const [file, text] of Object.entries(GOLDENS)) {
     it(`every miss in ${file} carries its cause`, () => {
-      const misses = text.split('\n').filter((l) => l.includes('[Missed]'));
-      const bare = misses.filter((l) => !CAUSES.some((c) => l.includes(c)));
-      expect(misses.length).toBeGreaterThan(0);
-      expect(bare).toEqual([]);
+      expect(missesIn(text).filter((l) => !CAUSES.some((c) => l.includes(c)))).toEqual([]);
     });
   }
+
+  it('has misses to check: a transcript may happen to have none, never all of them', () => {
+    expect(Object.values(GOLDENS).flatMap(missesIn).length).toBeGreaterThan(0);
+  });
 });

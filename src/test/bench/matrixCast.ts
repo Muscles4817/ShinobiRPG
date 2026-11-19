@@ -29,16 +29,18 @@ interface Build {
 const BUILDS = {
   areaCaster: {
     label: 'Area caster',
+    // Big areas cost what they do, so a fighter built around them carries a deep well and a
+    // cheap shot to fill the turns between big casts.
     profile: {
       ninjutsu: 'peak',
-      chakraControl: 'peak',
-      reserves: 'strong',
+      reserves: 'peak',
+      chakraControl: 'strong',
       perception: 'strong',
       intellect: 'strong',
       taijutsu: 'weak',
       strength: 'weak',
     },
-    techniqueIds: ['lantern-scatter', 'ember-rain', 'great-gale'],
+    techniqueIds: ['ember-breath', 'lantern-scatter', 'ember-rain', 'great-gale'],
   },
   sealer: {
     label: 'Sealer',

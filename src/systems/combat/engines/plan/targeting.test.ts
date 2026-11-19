@@ -1,3 +1,4 @@
+import { chakraCost } from '../../rules/body';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { spendsReserve } from './pacing';
 import { plannedPlay } from './priority';
@@ -105,12 +106,13 @@ describe('chakra pacing', () => {
   const both = { close: slots, mid: slots, far: slots };
   const planned = (f: PlanFighter): PlanFighter => ({ ...f, loadout: both });
 
-  // With this chakra control, the jab costs 5 and the finisher 8.
   it('keeps enough chakra for the finisher', () => {
-    const bandit = planned(find(against([], { techniques: [big, small], chakra: 12 }), 'bandit'));
+    const fighter = planned(find(against([], { techniques: [big, small], chakra: 200 }), 'bandit'));
+    const both = chakraCost(fighter, small) + chakraCost(fighter, big);
+    const bandit = { ...fighter, chakra: both - 1 };
     expect(spendsReserve(bandit, card(small))).toBe(true);
     expect(spendsReserve(bandit, card(big))).toBe(false);
-    expect(spendsReserve({ ...bandit, chakra: 13 }, card(small))).toBe(false);
+    expect(spendsReserve({ ...bandit, chakra: both }, card(small))).toBe(false);
     expect(spendsReserve(bandit, card(jab))).toBe(false);
   });
 
