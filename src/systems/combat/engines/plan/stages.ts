@@ -60,7 +60,7 @@ function crushed(
     if (effect.verb !== 'damage' && effect.verb !== 'area' && effect.verb !== 'break') return now;
     const damage = techniqueDamage(caster, struck, { technique, effect }, 0.5);
     const line = harmLine(tell('It closes on {t}, and crushes.', { t: struck }), damage);
-    return wound(say(now, line), struck.id, damage);
+    return wound(now, struck.id, damage, line);
   }, round);
 }
 

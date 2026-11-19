@@ -98,7 +98,7 @@ const ACTOR_MARKER = /\s*⟦by:([^⟧]+)⟧/;
 const RANGE_MARKER = /\s*⟦at:(close|mid|far)⟧/;
 const NAMED_MARKER = /\s*⟦n:([^⟧]+)⟧/g;
 const VOICE_MARKER = /\s*⟦v:([^⟧]+)⟧/g;
-const POOLS_MARKER = /\s*⟦pl:([^⟧]+)⟧/;
+const POOLS_MARKER = /\s*⟦pl:([^⟧]+)⟧/g;
 const STATUS_MARKER = /\s*⟦st:([^⟧]+)⟧/;
 /** The chakra-only form an earlier version wrote, read so a fight saved mid-way still plays. */
 const CHAKRA_MARKER = /\s*⟦ck:([^⟧]+)⟧/;
@@ -200,9 +200,15 @@ function amountsIn(said: string): Record<string, number> {
   );
 }
 
+/** Every pools marker on a line, in order, the later laid over the earlier. */
 function poolsIn(line: string): Record<string, Record<string, number>> | null {
-  const found = POOLS_MARKER.exec(line)?.[1];
-  if (found) return Object.fromEntries(byFighter(found).map(([id, said]) => [id, amountsIn(said)]));
+  const found = [...line.matchAll(POOLS_MARKER)].map((m) => m[1] ?? '');
+  if (found.length > 0) {
+    const pools: Record<string, Record<string, number>> = {};
+    for (const [id, said] of found.flatMap(byFighter))
+      pools[id] = { ...pools[id], ...amountsIn(said) };
+    return pools;
+  }
   const chakra = CHAKRA_MARKER.exec(line)?.[1];
   if (!chakra) return null;
   return Object.fromEntries(byFighter(chakra).map(([id, n]) => [id, { chakra: Number(n) }]));

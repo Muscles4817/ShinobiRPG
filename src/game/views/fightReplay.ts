@@ -14,14 +14,12 @@ import { combatLog, type CombatLogLine } from './combatLog';
 
 /**
  * The watch screen's beats: the fight log from a point on, one beat per line, each saying who
- * acted, on whom, where the fight stood and everyone's health once it had played. Engines tag
- * whose turn a line was written in (`turnLine`); who it was aimed at is the other fighter the
- * line names. Health is rebuilt backwards from the fight as it stands now, so the last beat
- * always matches the screen; in between, an amount goes to the fighter the line is about.
- * Pools (chakra, breath, a hive, dust) and statuses are read forwards from the lines that say where they
- * stand (each exchange's divider, and a turn that moved them), so they are only known from the
- * first such line on. Where those lines say health too, it is read forwards with them, never
- * ahead of the line that dealt it; the walk back only fills in where they don't.
+ * acted, on whom, where the fight stood and everyone's health and pools once it had played.
+ * Engines tag whose turn a line was written in (`turnLine`); who it was aimed at is the other
+ * fighter the line names. Health and pools are folded forwards from what the lines say
+ * (`poolsLine`): each exchange's divider tells everyone in full, every line tells what moved
+ * since the one before, and the last line of an exchange tells everyone again, so what is shown
+ * is exactly what has been told, in order, and the last beat is the fight as it stands.
  */
 
 /** "— Second exchange —": dividers between exchanges and rounds. */
@@ -78,38 +76,11 @@ export function amountOwner(said: Narration, targetId: string | null): string | 
   return targetId ?? actor;
 }
 
-function healthChange(said: Narration): number {
-  return said.amounts.reduce((sum, a) => sum + (a.kind === 'harm' ? -a.amount : a.amount), 0);
-}
-
 interface Parsed {
   readonly said: Narration;
   /** The line as the screen tells it (a divider, or a sentence with its chips). */
   readonly shown: CombatLogLine;
   readonly targetId: string | null;
-}
-
-type Health = Readonly<Record<string, number>>;
-
-/** Health before a line played, given health after it. */
-function undo(after: Health, { said, targetId }: Parsed, max: Health): Health {
-  const owner = amountOwner(said, targetId);
-  const change = healthChange(said);
-  const now = owner === null ? undefined : after[owner];
-  if (owner === null || now === undefined || change === 0) return after;
-  return { ...after, [owner]: Math.min(max[owner] ?? now, Math.max(0, now - change)) };
-}
-
-/** Health after each line, walking back from the fight as it stands now. */
-function healthAfterEach(parsed: readonly Parsed[], fighters: readonly CombatantView[]): Health[] {
-  const max = Object.fromEntries(fighters.map((f) => [f.id, f.maxHealth]));
-  const now: Health = Object.fromEntries(fighters.map((f) => [f.id, f.health]));
-  const after: Health[] = [];
-  parsed.reduceRight((current, line) => {
-    after.unshift(current);
-    return undo(current, line, max);
-  }, now);
-  return after;
 }
 
 /** Pools as they stood, with what a line says laid over them (a turn says only what it moved). */
@@ -147,15 +118,13 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
     const targetId = lineTarget(said, view.combatants);
     return combatLog([line]).map((shown) => ({ said, shown, targetId }));
   });
-  const health = healthAfterEach(parsed, view.combatants);
   let pools: NarrationPools = {};
   let statuses: NarrationStatuses = {};
   // Until a line says where the fight stands, it stands where the first such line says.
   let range = parsed.find((p) => p.said.range)?.said.range ?? view.range ?? null;
-  return parsed.map(({ said, shown, targetId }, i): FightBeat => {
+  return parsed.map(({ said, shown, targetId }): FightBeat => {
     range = said.range ?? range;
     pools = said.pools ? withPools(pools, said.pools) : pools;
-    const walkedBack = health[i] ?? {};
     statuses = said.statuses ? { ...statuses, ...said.statuses } : statuses;
     const divider = shown.kind === 'round' || said.text.startsWith(DIVIDER);
     return {
@@ -166,7 +135,7 @@ export function fightReplay(view: CombatView, from: number): FightBeat[] {
       targetId,
       range,
       force: said.force ?? null,
-      health: { ...walkedBack, ...saidHealth(pools) },
+      health: saidHealth(pools),
       pools,
       statuses,
       present: Object.keys(pools),

@@ -152,14 +152,8 @@ function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round
     kind: 'blow',
   };
   const damage = taken(attacker, Math.max(1, Math.round(kitted(round, struck, attacker, blow))));
-  return wound(
-    say(
-      round,
-      harmLine(reactionLine(counterLine(momentOf(round, target.id), target), 'countered'), damage),
-    ),
-    attacker.id,
-    damage,
-  );
+  const line = reactionLine(counterLine(momentOf(round, target.id), target), 'countered');
+  return wound(round, attacker.id, damage, harmLine(line, damage));
 }
 
 /**
@@ -334,8 +328,7 @@ export function react(start: Round, struck: Hit): Round {
   if (shield.force <= 0) return shield.round;
   const { round: shielded, force } = shield;
   const damage = taken(target, force);
-  const told = say(
-    shielded,
+  const lines = [
     harmLine(
       // Told by the blow's force; the chip says what it took.
       hitLine(momentOf(shielded, attacker.id), {
@@ -355,9 +348,9 @@ export function react(start: Round, struck: Hit): Round {
       hit: hitTypeOf(blow),
       breaks: blow.breaks === true,
     }),
-  );
-  const marked = smashed ? brokeGuard(told, target.id, attacker.id) : told;
-  const cut = threadsCutBy(wound(marked, target.id, damage), attacker, target);
+  ];
+  const marked = smashed ? brokeGuard(shielded, target.id, attacker.id) : shielded;
+  const cut = threadsCutBy(wound(marked, target.id, damage, ...lines), attacker, target);
   const worn = wearShroud(cut, target.id, hitTypeOf(blow), damage);
   const landed = confuse(worn, hit);
   return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;

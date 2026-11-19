@@ -11,7 +11,8 @@ import type {
   RangeBand,
 } from '../../contract';
 import { bodyFrom, type Body } from '../../rules/body';
-import { numberedNames, type NarrationOffPlan } from '../../rules/narration';
+import { numberedNames, poolsLine, type NarrationOffPlan } from '../../rules/narration';
+import { maxBreath } from '../../rules/breath';
 import { openingChakra, openingSteadiness } from '../../rules/provisions';
 import { formed, preferredRow } from '../../rules/rows';
 import type { TrumpMemory } from '../../rules/trumps';
@@ -303,7 +304,11 @@ export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'>, Excha
   readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */
   readonly recent?: readonly string[];
+  /** Where everyone's health and pools stood as of the last line told (`say`); unset: none told. */
+  readonly toldPools?: Pools;
 }
+
+type Pools = Readonly<Record<string, Readonly<Record<string, number>>>>;
 
 export const EMPTY_LOADOUT: Loadout = { close: [], mid: [], far: [] };
 
@@ -412,8 +417,57 @@ export function patch(
   return fighters.map((f) => (f.id === id ? { ...f, ...change } : f));
 }
 
+/**
+ * Tells lines, the one writer of the story. The first line carries where the health and pools of
+ * everyone they moved for stand now (`poolsLine`), since the line before: what is shown is folded
+ * from what is told, in order (`views/fightReplay.ts`), so a change shows with the first line
+ * after it. Tell a change after making it.
+ */
 export function say(round: Round, ...lines: string[]): Round {
-  return { ...round, lines: [...round.lines, ...lines] };
+  const [first, ...rest] = lines;
+  if (first === undefined) return round;
+  const now = poolsNow(round.fighters);
+  const moved = poolsMovedSince(round.toldPools, now);
+  return { ...round, lines: [...round.lines, poolsLine(first, moved), ...rest], toldPools: now };
+}
+
+/** A fighter's health and pools as the screen shows them. */
+export function poolsOf(f: PlanFighter): Record<string, number> {
+  return {
+    health: f.health,
+    chakra: f.chakra,
+    breath: f.breath ?? maxBreath(f.attributes),
+    ...(f.will !== undefined ? { will: f.will } : {}),
+    ...(f.swarm ? { hive: f.swarm.count } : {}),
+    ...(f.dust ? { dust: f.dust.count } : {}),
+  };
+}
+
+export function poolsNow(fighters: readonly PlanFighter[]): Pools {
+  return Object.fromEntries(fighters.map((f) => [f.id, poolsOf(f)]));
+}
+
+/** What moved between two tellings, by fighter; someone gone from the field is told at nothing. */
+export function poolsMovedSince(was: Pools | undefined, now: Pools): Pools {
+  const moved = Object.entries(now).flatMap(([id, theirs]) => {
+    const before = was?.[id];
+    const changed = Object.entries(theirs).filter(([pool, n]) => before?.[pool] !== n);
+    return changed.length > 0 ? [[id, Object.fromEntries(changed)]] : [];
+  });
+  const gone = Object.keys(was ?? {}).filter((id) => !(id in now) && (was?.[id]?.health ?? 0) > 0);
+  return Object.fromEntries([...moved, ...gone.map((id) => [id, { health: 0 }])]);
+}
+
+/**
+ * The story so far brought level with the fighters as an exchange ends: everyone's pools in full
+ * on its last line, so what is shown once it has played is the fight as it stands.
+ */
+export function toldInFull(round: Round): Round {
+  const last = round.lines.at(-1);
+  if (last === undefined) return round;
+  const now = poolsNow(round.fighters);
+  const said = poolsLine(last, { ...poolsMovedSince(round.toldPools, now), ...now });
+  return { ...round, lines: [...round.lines.slice(0, -1), said], toldPools: now };
 }
 
 export function fighterIn(round: Round, id: string): PlanFighter | undefined {

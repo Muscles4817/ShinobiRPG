@@ -238,6 +238,27 @@ function poolsAt(fighter: CombatantView, said: Readonly<Record<string, number>>)
 }
 
 /**
+ * Those the story has on the field at this beat who are gone by the end of it (a shadow clone
+ * made and popped within the stretch), drawn in the body they wore (`CombatCastMember.like`).
+ */
+function goneSince(view: CombatView, beat: FightBeat | undefined): CombatantView[] {
+  if (!beat) return [];
+  const standing = new Set(view.combatants.map((c) => c.id));
+  return (view.cast ?? []).flatMap((member) => {
+    // Once the story has them gone (a clone popped), they leave the stage.
+    if (standing.has(member.id) || !((beat.health[member.id] ?? 0) > 0)) return [];
+    const body =
+      view.combatants.find((c) => c.id === member.like) ??
+      view.combatants.find((c) => c.side === member.side);
+    if (!body) return [];
+    const { id, name, side } = member;
+    return [
+      { ...body, id, name, side, maxHealth: member.maxHealth ?? body.maxHealth, statuses: [] },
+    ];
+  });
+}
+
+/**
  * Fighters as the beat being shown leaves them: health, pools and statuses from the beat, over how they
  * stood before these beats (`before`) where the beats haven't said yet.
  */
@@ -250,7 +271,7 @@ function fightersAt(
   // line that brought them; where the lines say no one, everyone is shown.
   const present = new Set([...(beat?.present ?? []), ...(before ?? []).map((b) => b.id)]);
   const onStage = (c: CombatantView) => !beat || beat.present.length === 0 || present.has(c.id);
-  return view.combatants.filter(onStage).map((c) => {
+  return [...view.combatants, ...goneSince(view, beat)].filter(onStage).map((c) => {
     const was = before?.find((b) => b.id === c.id);
     const start = was
       ? {

@@ -27,30 +27,23 @@ describe('the watch screen’s beats', () => {
     expect(beats.at(-1)!.health).toEqual(now);
   });
 
-  it('puts a hit on the fighter it names, so health falls on that beat', () => {
+  it('puts a hit on the fighter it names, and moves health on the line that tells it', () => {
     const base = combatScene(begun(), ctx)!;
-    const hurt = base.combatants.map((c) => ({ ...c, health: 60 }));
     const view = {
       ...base,
-      combatants: hurt,
       log: [
-        '— First exchange — ⟦at:mid⟧',
-        "Kaen's Pebble Volley hits Kaito. ⟦-12⟧ ⟦by:person:kaen⟧ ⟦at:mid⟧",
-        'Kaito counters! ⟦r:countered⟧ ⟦-5⟧ ⟦by:person:kaen⟧',
+        '— First exchange — ⟦at:mid⟧ ⟦pl:player=health:100|person:kaen=health:100⟧',
+        "Kaen's Pebble Volley hits Kaito. ⟦-12⟧ ⟦pl:player=health:88⟧ ⟦by:person:kaen⟧ ⟦at:mid⟧",
+        'Kaito counters! ⟦r:countered⟧ ⟦-5⟧ ⟦pl:person:kaen=health:95⟧ ⟦by:person:kaen⟧',
       ],
     };
-    const [player, kaen] = view.combatants;
     const beats = fightReplay(view, 0);
     expect(beats[1]).toMatchObject({ actorId: 'person:kaen', targetId: 'player', range: 'mid' });
-    expect(beats[0]!.health).toMatchObject({
-      player: player!.health + 12,
-      'person:kaen': kaen!.health + 5,
-    });
-    expect(beats[1]!.health).toMatchObject({
-      player: player!.health,
-      'person:kaen': kaen!.health + 5,
-    });
-    expect(beats[2]!.health).toMatchObject({ 'person:kaen': kaen!.health });
+    expect(beats.map((b) => b.health)).toEqual([
+      { player: 100, 'person:kaen': 100 },
+      { player: 88, 'person:kaen': 100 },
+      { player: 88, 'person:kaen': 95 },
+    ]);
   });
 
   it('moves pools beat by beat from the lines that say where they stand', () => {
@@ -107,7 +100,7 @@ describe('the watch screen’s beats', () => {
     for (const b of beats) {
       expect(Object.keys(b.pools).sort()).toEqual(ids);
       for (const id of ids) {
-        expect(Object.keys(b.pools[id]!)).toEqual(['chakra', 'breath', 'health']);
+        expect(Object.keys(b.pools[id]!).sort()).toEqual(['breath', 'chakra', 'health']);
       }
       expect(Object.keys(b.statuses).sort()).toEqual(ids);
     }

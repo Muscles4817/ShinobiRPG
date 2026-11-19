@@ -1,6 +1,6 @@
 import type { CombatCall } from '../../contract';
 import { tell } from '../../rules/telling';
-import type { PlanFighter, Round } from './state';
+import { say, type PlanFighter, type Round } from './state';
 import { plannedSummons } from './summonPlans';
 import { placed } from './summons';
 
@@ -23,7 +23,7 @@ function standing(round: Round, callerId: string, call: CombatCall): Round {
   if (!caller || caller.summonsOut?.includes(call.id)) return round;
   const next = placed(round, caller, call);
   const body = next.fighters[next.fighters.length - 1];
-  return body ? { ...next, lines: [...next.lines, tell(PRESENT, { a: caller, b: body })] } : next;
+  return body ? say(next, tell(PRESENT, { a: caller, b: body })) : next;
 }
 
 /** The fight as it opens with every caller's present bodies already beside them. */

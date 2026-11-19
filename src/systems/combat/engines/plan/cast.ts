@@ -15,7 +15,11 @@ export function castAfter(
   fighters: readonly PlanFighter[],
 ): CombatCastMember[] {
   const known = new Map((cast ?? []).map((c) => [c.id, c]));
-  for (const f of fighters) known.set(f.id, { id: f.id, name: f.name, side: f.side });
+  for (const f of fighters) {
+    const like = f.shadowOf ?? f.summoner;
+    const member = { id: f.id, name: f.name, side: f.side, maxHealth: f.maxHealth };
+    known.set(f.id, like ? { ...member, like } : member);
+  }
   return [...known.values()];
 }
 
