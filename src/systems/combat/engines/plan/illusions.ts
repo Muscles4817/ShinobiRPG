@@ -36,9 +36,10 @@ export function holdIllusion(
   }: { caster: PlanFighter; targetId: string; technique: CombatTechnique },
 ): Round {
   if (technique.discipline !== 'genjutsu') return round;
+  const illusion = heldBy(caster, technique);
   return {
     ...round,
-    fighters: patch(round.fighters, targetId, { illusion: heldBy(caster, technique) }),
+    fighters: round.fighters.map((f) => (f.id === targetId ? { ...f, illusion } : f)),
   };
 }
 

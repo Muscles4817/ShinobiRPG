@@ -381,7 +381,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     caster's turns and hands on it, is far harder to break while they hold it (a teammate goes
     for the caster instead), and breaks when they are hurt or dazed, freeing its target of it and
     its seal (`plan/holding.ts`). Healing is ninjutsu with chakra control; chakra control
-    breaks illusions and shortens confusion (`rules/conditions.ts`). Perception at least a
+    breaks illusions and shortens confusion (`rules/conditions.ts`). **An illusion is a contest
+    of control** (Part 13c): its caster lands it with genjutsu and chakra control, and its
+    target fights it with will and their own control (`ILLUSION_CONTROL_SHARE` in
+    `rules/verbs/use.ts`, `avoidRating`); a target **braced** for one (they have seen this foe
+    cast one, they Brace, or they keep a Dispel to hand) shakes it off far more often, by their
+    control against the art (`plan/braced.ts`); a lasting illusion (a confusion, a binding) is
+    **kept up**, costing its caster `UPKEEP_SHARE` of the technique each exchange until they can't
+    pay or fall, and a body of a shared mind caught in one is shaken loose by another of the mind
+    as the exchange ends (`plan/illusions.ts`). Perception at least a
     foe's names the technique they telegraph. Beside the telegraph, in shadow until it takes its place, is
     your **read from cues** (`plan/mind/cues/`, `CombatantView.cueRead`): what a readied card gives
     off (body, hands, chakra, stillness, eyes, its form), what you see of it (your perception

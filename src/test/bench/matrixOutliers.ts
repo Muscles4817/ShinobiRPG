@@ -19,6 +19,8 @@
  * wide area costs four times a single target, and a kick moulded with chakra pays for it, so the
  * area caster (a deep well and a cheap shot now, as the owner chose) is weak at chūnin until its
  * reserves grow, the medic and the gate opener trade differently, and plain body moves gain.
+ * Illusions are a contest of chakra control (`rules/verbs/use.ts`, `plan/braced.ts`): the cloner's
+ * control fights the illusionist's illusions off, and a braced mind shakes them loose.
  */
 const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   rusher:
@@ -28,7 +30,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   versatile:
     'rusher powerhouse stalker areaCaster sealer trapper medic sensor cloner counterer summoner puppeteer hive dust assassin foresight mimic gates',
   illusionist:
-    'stalker mistBlade areaCaster sealer trapper sensor counterer shrouded summoner puppeteer hive dust gates assassin medic',
+    'stalker mistBlade areaCaster sealer trapper sensor counterer shrouded summoner puppeteer hive dust gates assassin medic cloner',
   stalker:
     'powerhouse illusionist sealer trapper medic counterer shrouded summoner puppeteer hive dust assassin foresight mimic cloner areaCaster sensor',
   mistBlade:
@@ -44,7 +46,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   sensor:
     'versatile illusionist mistBlade areaCaster sealer trapper cloner counterer summoner puppeteer hive assassin foresight mimic rusher medic',
   cloner:
-    'rusher powerhouse versatile stalker mistBlade areaCaster sealer trapper medic sensor shrouded puppeteer hive dust assassin foresight mimic gates',
+    'rusher powerhouse versatile stalker mistBlade areaCaster sealer trapper medic sensor shrouded puppeteer hive dust assassin foresight mimic gates illusionist',
   counterer:
     'versatile illusionist stalker areaCaster sealer trapper medic cloner shrouded summoner puppeteer hive dust assassin foresight mimic rusher',
   shrouded:

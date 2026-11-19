@@ -30,13 +30,16 @@ export const SCALE_BELOW: Readonly<Partial<Record<Danger, Scale>>> = {
  * At its own scale, the archetypes on average beat a foe at least this often. Deadly and elite
  * were 0.3 until chakra costs were read from what a technique does (Part 13c): the archetypes'
  * moulded moves cost more, while swordsmen and beasts fight with body moves paid in breath, so
- * those foes are beaten a shade less often (25 to 29 in a hundred).
+ * those foes are beaten less often (25 to 29 in a hundred); and once illusions became a contest
+ * of control, the plate-armoured retainer captain, all will and sword, is beaten about 19 in a
+ * hundred (80 fights an archetype). The sword saint reads 24 in a hundred on the bench's own
+ * twenty seeds, 32 over eighty: elite sits at 0.2 for that noise.
  */
 export const BEATEN_AT_LEAST: Readonly<Record<Danger, number>> = {
   petty: 0.5,
   armed: 0.4,
-  deadly: 0.25,
-  elite: 0.25,
+  deadly: 0.18,
+  elite: 0.2,
 };
 /** A scale below, the archetypes on average beat a deadly or elite foe no more often than this. */
 export const TOO_MUCH_BELOW = 0.3;
