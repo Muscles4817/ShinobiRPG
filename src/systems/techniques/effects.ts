@@ -166,8 +166,8 @@ interface VerbExtras {
   readonly pin: { readonly channelled?: true };
   /** Where a throw or a pull leaves the distance: away to mid or far, or dragged in close. */
   readonly knock: { readonly to: MoveDistance };
-  /** A leech: part of the chakra taken flows back to the user. */
-  readonly drain: { readonly absorb?: true };
+  /** A leech: part of the chakra taken flows back to the user. A `will` drain wears the mind instead. */
+  readonly drain: { readonly absorb?: true; readonly will?: true };
   /** Which lingering harm it leaves. */
   readonly afflict: { readonly harm: AfflictionKind };
   /**

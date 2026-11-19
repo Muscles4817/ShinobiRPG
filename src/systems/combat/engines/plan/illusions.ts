@@ -7,6 +7,8 @@ import { isPinned } from '../../rules/verbs/lingering';
 import type { HeldIllusion } from './illusionShape';
 import { mindmates } from './oneMind';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { stagesAfter } from './stages';
+import { willAfter } from './will';
 import { struggleFree } from './struggle';
 
 /**
@@ -90,5 +92,5 @@ export function illusionsAfter(round: Round): Round {
 
 /** Holds as the exchange ends: struggled against, then illusions kept up or let go. */
 export function heldOn(round: Round, rng: Rng): Round {
-  return illusionsAfter(struggleFree(round, rng));
+  return illusionsAfter(willAfter(stagesAfter(struggleFree(round, rng))));
 }

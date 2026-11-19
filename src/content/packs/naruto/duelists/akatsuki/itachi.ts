@@ -23,7 +23,7 @@ export const ITACHI_ARTS: readonly TechniqueDef[] = [
     reach: ['close'],
     effects: [
       { verb: 'daze', power: 22 },
-      { verb: 'damage', power: 20 },
+      { verb: 'drain', power: 40, will: true },
     ],
     chakraCost: 26,
     rank: 'S',

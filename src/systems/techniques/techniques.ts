@@ -4,6 +4,7 @@ import type { StatGrade, Stats } from '@/systems/stats';
 import type { CostTemplate } from './costs';
 import type { MoveDistance, TechniqueEffect } from './effects';
 import type { LadderStep } from './ladders';
+import type { TechniqueLevel } from './levels';
 import type { WrittenTags } from './tags';
 import {
   controlStudyFactor,
@@ -92,6 +93,13 @@ export interface TechniqueDef {
   readonly guarded?: true;
   /** How it works, where reading it from the rest would be wrong (`tags.ts`). */
   readonly tags?: WrittenTags;
+  /** Sizes it can be cast at, each a card of its own in a fight (`levels.ts`). */
+  readonly levels?: readonly TechniqueLevel[];
+  /**
+   * A second stage (Planetary Devastation's crush after its pull): effects that land at the end
+   * of the next exchange on everyone its hold still has (`plan/stages.ts`).
+   */
+  readonly then?: readonly TechniqueEffect[];
 }
 
 /**

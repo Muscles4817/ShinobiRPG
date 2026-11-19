@@ -68,6 +68,8 @@ export interface Summoned {
    * hold (`pooled.ts`). The chakra it held when last squared with its caller.
    */
   readonly pooledAt?: number;
+  /** A technique's second stage waiting to close on this fighter (`stages.ts`). */
+  readonly closing?: { readonly by: string; readonly techniqueId: string; readonly armed?: true };
   /** Big enough to carry its caller (`riding.ts`). */
   readonly mount?: true;
 }

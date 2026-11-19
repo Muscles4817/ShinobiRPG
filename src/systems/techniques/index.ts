@@ -66,6 +66,7 @@ export {
   type TrapEffect,
 } from './effects';
 export { costIsSane, type CostTemplate } from './costs';
+export { atEachLevel, levelId, type TechniqueLevel } from './levels';
 export {
   ANSWERS,
   CATCHES,

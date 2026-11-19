@@ -27,6 +27,7 @@ import {
 } from '../../rules/verbs';
 import { withAntidote } from '../../rules/provisions';
 import { pairsMoved } from './groundPlay';
+import { drainWill } from './will';
 import { canHit } from './rows';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { startHolding } from './holding';
@@ -94,6 +95,7 @@ export function pin(round: Round, { actor, target }: Aim, use: EffectUse<'pin'>)
 }
 
 export function drain(round: Round, { actor, target }: Aim, use: EffectUse<'drain'>): Round {
+  if (use.effect.will) return drainWill(round, { actor, target }, use);
   const taken = Math.min(target.chakra, drainAmount(actor, target, use));
   if (taken <= 0) return say(round, tell('{t} {t.has} no chakra left to draw.', { t: target }));
   const drained = patch(round.fighters, target.id, { chakra: target.chakra - taken });

@@ -61,5 +61,8 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.test.{ts,tsx}', 'electron/**/*.test.ts'],
     setupFiles: ['src/test/setup.ts'],
+    // Whole fights and UI rounds take seconds each, and a busy CI runner can double that: the
+    // default 5s failed tests that run in under 3s locally.
+    testTimeout: 20_000,
   },
 });

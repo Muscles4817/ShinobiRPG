@@ -5,6 +5,7 @@ import { dustMeter } from './dust';
 import type { Dusty } from './dustBody';
 import type { Hive } from './hive';
 import type { PlanFighter } from './state';
+import { willMeter } from './will';
 
 /** Fighters' pools on the fight screen and in the outcome: breath, a hive and dust. */
 
@@ -29,7 +30,7 @@ export function breathMeter(player: Breathing): CombatMeter | null {
   return player.techniques.some(isBodyMove) ? breath(player) : null;
 }
 
-type Breathing = Pick<PlanFighter, 'techniques' | 'attributes' | 'breath'>;
+type Breathing = Pick<PlanFighter, 'techniques' | 'attributes' | 'breath' | 'will'>;
 
 /** A fighter's pools as amounts by id (chakra, breath, and a hive or dust if they carry one). */
 export function poolAmounts(
@@ -46,7 +47,9 @@ export function onStage(
   fighter: Hive & Dusty & Breathing & Pick<PlanFighter, 'row'>,
 ): Pick<CombatantView, 'row' | 'meters'> {
   // Everyone breathes, so a watcher sees each fighter's stamina whether or not they spend it.
-  const pools = [hiveMeter(fighter), dustMeter(fighter)].flatMap((m) => (m ? [m] : []));
+  const pools = [willMeter(fighter), hiveMeter(fighter), dustMeter(fighter)].flatMap((m) =>
+    m ? [m] : [],
+  );
   return { row: fighter.row, meters: [breath(fighter), ...pools] };
 }
 
@@ -55,7 +58,13 @@ export function metersOf(
   field: CombatMeter | null,
   player: Hive & Dusty & Breathing,
 ): CombatMeter[] {
-  const meters = [field, breathMeter(player), hiveMeter(player), dustMeter(player)];
+  const meters = [
+    field,
+    breathMeter(player),
+    willMeter(player),
+    hiveMeter(player),
+    dustMeter(player),
+  ];
   return meters.flatMap((m) => (m ? [m] : []));
 }
 

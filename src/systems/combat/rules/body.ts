@@ -1,3 +1,4 @@
+import { atEachLevel } from '@/systems/techniques';
 import { clamp } from '@/core';
 
 import type {
@@ -80,6 +81,8 @@ export function bodyFrom(setup: CombatantSetup, side: CombatSide, isPlayer = fal
     ...setup,
     // Armour slows its wearer for the whole fight (`armour.ts`).
     attributes: armouredAttributes(setup.attributes, setup.gear),
+    // A technique cast at several sizes is a card for each (`systems/techniques/levels.ts`).
+    techniques: setup.techniques.flatMap(atEachLevel),
     side,
     isPlayer,
     perks: setup.perks ?? [],
