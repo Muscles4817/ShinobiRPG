@@ -111,7 +111,7 @@ export function VersusBout(props: VersusBoutProps) {
           }}
         />
       )}
-      {thinking && <ThinkingSlip />}
+      <ThinkingSlip thinking={thinking} />
       {fighting ? (
         <div className="wide-scene">
           <CombatScene ctx={ctx} state={state} perform={perform} seeAll />

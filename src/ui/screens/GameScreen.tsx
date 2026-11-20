@@ -241,7 +241,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   return (
     <div className={appClass(wide, scene)} data-motion={state.settings.animations ? 'on' : 'off'}>
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
-      {session.thinking && <ThinkingSlip />}
+      <ThinkingSlip thinking={session.thinking} />
       {scene ? (
         <div className="wide-scene">
           {wide && isStoryScene(scene) ? (
