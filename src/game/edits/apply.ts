@@ -3,13 +3,28 @@ import { STAT_IDS, type Stats } from '@/systems/stats';
 import { maxChakra } from '@/systems/vitals';
 
 import { enemyStatLine } from '../enemyStats';
-import { enemyKey, personKey, type ContentEdits, type FighterEdit } from './state';
+import { withTaught } from './made/shelving';
+import { enemyKey, madeTechniques, personKey, type ContentEdits, type FighterEdit } from './state';
 
 /**
- * A pack with its edits laid over it: each edited fighter's stats and techniques replace the
- * pack's, everything else stays as written. Edits naming someone the pack no longer has are
- * passed over.
+ * A pack with its edits laid over it: techniques made in the editor join the pack's (those
+ * taught on the home village's shelves), each edited
+ * fighter's stats and techniques replace the pack's, everything else stays as written. Edits
+ * naming someone the pack no longer has are passed over, as are techniques no one has any more
+ * (a fighter left with none of theirs keeps the pack's list).
  */
+
+/** A fighter's edit with only the techniques the edited world has. */
+function known(
+  edit: FighterEdit | undefined,
+  has: (id: string) => boolean,
+): FighterEdit | undefined {
+  if (!edit?.techniqueIds) return edit;
+  const techniqueIds = edit.techniqueIds.filter(has);
+  if (techniqueIds.length === edit.techniqueIds.length) return edit;
+  const { techniqueIds: _was, ...rest } = edit;
+  return techniqueIds.length > 0 ? { ...rest, techniqueIds } : rest;
+}
 
 function editedPerson(person: PersonDef, edit: FighterEdit | undefined): PersonDef {
   if (!edit) return person;
@@ -34,12 +49,19 @@ function editedEnemy(def: EnemyDef, edit: FighterEdit | undefined): EnemyDef {
 
 export function withEdits(pack: ContentPack, edits: ContentEdits): ContentPack {
   const { fighters } = edits;
-  if (Object.keys(fighters).length === 0) return pack;
-  const person = (p: PersonDef) => editedPerson(p, fighters[personKey(p.id)]);
+  const made = madeTechniques(edits).filter((t) => !pack.techniques.some((p) => p.id === t.id));
+  if (Object.keys(fighters).length === 0 && made.length === 0) return pack;
+  const taught = made.filter((t) => edits.taught?.includes(t.id));
+  const shelved = withTaught(pack, taught);
+  const techniques = [...pack.techniques, ...made];
+  const ids = new Set(techniques.map((t) => t.id));
+  const has = (id: string) => ids.has(id);
+  const person = (p: PersonDef) => editedPerson(p, known(fighters[personKey(p.id)], has));
   return {
-    ...pack,
+    ...shelved,
+    techniques,
     people: pack.people.map(person),
     ...(pack.duelists ? { duelists: pack.duelists.map(person) } : {}),
-    enemies: pack.enemies.map((e) => editedEnemy(e, fighters[enemyKey(e.id)])),
+    enemies: pack.enemies.map((e) => editedEnemy(e, known(fighters[enemyKey(e.id)], has))),
   };
 }

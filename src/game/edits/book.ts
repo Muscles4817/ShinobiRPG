@@ -1,5 +1,8 @@
 import { STAT_IDS, type StatId } from '@/systems/stats';
 
+import type { TechniqueDef } from '@/systems/techniques';
+
+import { madeFrom } from './made';
 import { NO_EDITS, type ContentEdits, type FighterEdit } from './state';
 
 /**
@@ -44,6 +47,16 @@ function fighterFrom(raw: unknown): FighterEdit | null {
   return { ...(stats ? { stats } : {}), ...(techniqueIds ? { techniqueIds } : {}) };
 }
 
+/** Techniques made in the editor, each held to the editor's own checker (`made/read.ts`). */
+function madeFromAll(raw: unknown): Record<string, TechniqueDef> {
+  if (!isRecord(raw)) return {};
+  const made = Object.entries(raw).flatMap(([id, value]) => {
+    const def = madeFrom(id, value);
+    return def ? [[id, def] as const] : [];
+  });
+  return Object.fromEntries(made);
+}
+
 /** A pack's edits read from untrusted data (a book, an old save); nothing usable is none. */
 export function editsFrom(raw: unknown): ContentEdits {
   if (!isRecord(raw) || !isRecord(raw.fighters)) return NO_EDITS;
@@ -51,7 +64,13 @@ export function editsFrom(raw: unknown): ContentEdits {
     const edit = fighterFrom(value);
     return edit ? [[key, edit] as const] : [];
   });
-  return { fighters: Object.fromEntries(fighters) };
+  const techniques = madeFromAll(raw.techniques);
+  const taught = (idsFrom(raw.taught) ?? []).filter((id) => id in techniques);
+  return {
+    fighters: Object.fromEntries(fighters),
+    ...(Object.keys(techniques).length > 0 ? { techniques } : {}),
+    ...(taught.length > 0 ? { taught } : {}),
+  };
 }
 
 /** The book kept in a store; missing or unreadable, an empty one. */

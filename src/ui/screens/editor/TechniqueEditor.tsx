@@ -36,6 +36,7 @@ export function TechniqueEditor({ techniques, choices, onChange }: TechniqueEdit
               discipline={t.discipline}
               rank={t.rank}
               ghost={!t.ready}
+              {...(t.made ? { stamp: 'Made' } : {})}
             />
             <button
               type="button"
@@ -64,6 +65,7 @@ export function TechniqueEditor({ techniques, choices, onChange }: TechniqueEdit
                   discipline={t.discipline}
                   rank={t.rank}
                   ghost={!t.ready}
+                  {...(t.made ? { stamp: 'Made' } : {})}
                 />
                 <button
                   type="button"

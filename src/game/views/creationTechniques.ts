@@ -80,7 +80,7 @@ function allowanceLine(picks: number, offered: number): string {
 }
 
 /** The student on the file as a fighter, to read each sheet for them. */
-function fileReader(stats: Stats): Reader {
+export function fileReader(stats: Stats): Reader {
   const chakra = maxChakra(stats);
   return {
     id: 'player',

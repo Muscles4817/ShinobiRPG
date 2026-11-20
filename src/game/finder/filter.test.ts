@@ -17,6 +17,7 @@ function technique(id: string, over: Partial<EditorTechnique> = {}): EditorTechn
     element: null,
     kinds: ['projectile'],
     ready: true,
+    made: false,
     ...over,
   };
 }
