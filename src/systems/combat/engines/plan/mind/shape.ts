@@ -82,7 +82,15 @@ export interface HeldPlan {
 export interface Minded {
   readonly minds?: Readonly<Record<string, Beliefs>>;
   readonly objective?: HeldObjective;
-  /** Thinks ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
+  /** Thinks ahead with the planner (`planner/think.ts`). */
   readonly thinks?: true;
   readonly planned?: HeldPlan;
+  /**
+   * The player sets this fighter's plan (the player's own fighter, unless the fight is only
+   * watched): the kit never plays itself for them (`kitPlay` in `priority.ts`), and neither do
+   * judgement's reflexes (playing for time, keeping clear of a crowder).
+   */
+  readonly ownPlan?: true;
+  /** The killers it faced as it settled on its move: a new one makes a sharp mind think again. */
+  readonly facedKillers?: readonly string[];
 }

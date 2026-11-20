@@ -40,7 +40,7 @@ export function fightSides(
       enemies: [...sides.foes],
       canFlee: false,
       watch: true,
-      ...(planner ? { experiments: { planner: true } } : {}),
+      ...(planner ? {} : { instinct: true }),
     },
     rng,
   );

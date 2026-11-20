@@ -12,6 +12,7 @@ import {
 } from './content';
 import { describeExperience, experience, replanner, type ExperienceReport } from './experience';
 import { toSetup, type FighterSpec } from './fighters';
+import { benchMinds } from './minds';
 
 /**
  * What fights are like to play (audit P0.4), held to baselines as the prose lint holds its
@@ -82,6 +83,7 @@ function duel(player: FighterSpec, opponent: FighterSpec): CombatSetup {
     allies: [],
     enemies: [toSetup(opponent, 'foe')],
     canFlee: false,
+    ...benchMinds(),
   };
 }
 

@@ -62,13 +62,18 @@ function setup(id: string, overrides: Partial<CombatantSetup> = {}): CombatantSe
   };
 }
 
+/** Only the player's own fighter is planned by the player (`ownPlan`). */
+function played({ ownPlan: _own, ...f }: PlanFighter): PlanFighter {
+  return f.isPlayer ? { ...f, ownPlan: true } : f;
+}
+
 function round(change: Partial<PlanFighter> = {}, foe: Partial<PlanFighter> = {}): Round {
   const fighters = initialFighters({
     player: setup('kakashi', { techniques: [mole, fang, blade] }),
     allies: [],
     enemies: [setup('guy')],
     canFlee: true,
-  }).map((f) => (f.id === 'kakashi' ? { ...f, ...change } : { ...f, ...foe }));
+  }).map((f) => (f.id === 'kakashi' ? played({ ...f, ...change }) : { ...f, ...foe }));
   return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
 }
 

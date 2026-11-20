@@ -59,6 +59,8 @@ function fighters(mine: readonly CombatTechnique[], theirs: readonly CombatTechn
     allies: [],
     enemies: [setup('foe', theirs)],
     canFlee: false,
+    // Measures a rule, so everyone plays by instinct (`CombatSetup.instinct`).
+    instinct: true,
   });
 }
 
@@ -121,6 +123,8 @@ describe('in a fight', () => {
           allies: [],
           enemies: [setup('foe', [])],
           canFlee: false,
+          // Measures a rule, so everyone plays by instinct (`CombatSetup.instinct`).
+          instinct: true,
           watch: true,
         },
         rng,

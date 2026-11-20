@@ -3,11 +3,11 @@ import { createRng } from '@/core';
 import { holdsOff } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique, RangeBand } from '../../contract';
 import { distanceBetween } from './distance';
-import { farGapScale, withFarGap } from './farGap';
+import { farGapScale } from './farGap';
 import { initialFighters, type Round } from './state';
 import { step } from './steps';
 
-/** The far gap, a rule on trial (`farGap.ts`). */
+/** The far gap (`farGap.ts`). */
 
 const attributes = {
   strength: 10,
@@ -47,7 +47,7 @@ function setup(id: string, overrides: Partial<CombatantSetup> = {}): CombatantSe
   };
 }
 
-function at(range: RangeBand, farGap: boolean, holds = false): Round {
+function at(range: RangeBand, holds = false): Round {
   const holdOff = { close: null, mid: 'jutsu:gust', far: 'jutsu:gust' };
   const fighters = initialFighters({
     player: setup('hero'),
@@ -55,15 +55,14 @@ function at(range: RangeBand, farGap: boolean, holds = false): Round {
     enemies: [setup('caster', { techniques: [gust] })],
     canFlee: true,
   }).map((f) => (f.id === 'caster' && holds ? { ...f, holdOff } : f));
-  const tried = withFarGap(fighters, { experiments: { farGap } });
-  return { number: 1, fighters: tried, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
 }
 
-function made(range: RangeBand, farGap: boolean, direction: 'in' | 'back'): number {
+function made(range: RangeBand, direction: 'in' | 'back'): number {
   const to: RangeBand = direction === 'in' ? (range === 'far' ? 'mid' : 'close') : 'far';
   let got = 0;
   for (let seed = 1; seed <= 200; seed++) {
-    const round = at(range, farGap);
+    const round = at(range);
     const [hero, caster] = round.fighters;
     const after = step(round, { actor: hero!, target: caster, rng: createRng(seed) }, direction);
     if (distanceBetween(after, 'hero', 'caster') === to) got += 1;
@@ -72,34 +71,24 @@ function made(range: RangeBand, farGap: boolean, direction: 'in' | 'back'): numb
 }
 
 describe('the far gap', () => {
-  it('only the crossing between mid and far is harder, and only with the rule on trial', () => {
-    const on = { longGap: true as const };
-    expect(farGapScale(on, 'far', 'in')).toBeLessThan(1);
-    expect(farGapScale(on, 'mid', 'back')).toBeLessThan(1);
-    expect(farGapScale(on, 'mid', 'in')).toBe(1);
-    expect(farGapScale(on, 'close', 'back')).toBe(1);
-    expect(farGapScale({}, 'far', 'in')).toBe(1);
+  it('only the crossing between mid and far is harder', () => {
+    expect(farGapScale('far', 'in')).toBeLessThan(1);
+    expect(farGapScale('mid', 'back')).toBeLessThan(1);
+    expect(farGapScale('mid', 'in')).toBe(1);
+    expect(farGapScale('close', 'back')).toBe(1);
   });
 
-  it('closing from far and getting back out to far are made less often', () => {
-    expect(made('far', true, 'in')).toBeLessThan(made('far', false, 'in'));
-    expect(made('mid', true, 'back')).toBeLessThan(made('mid', false, 'back'));
-    expect(made('mid', true, 'in')).toBe(made('mid', false, 'in'));
+  it('closing from far is made less often than closing from mid', () => {
+    expect(made('far', 'in')).toBeLessThan(made('mid', 'in'));
   });
 
-  it('a holder at far range has time for a second shot', () => {
-    const stopped = (farGap: boolean) =>
-      Array.from({ length: 100 }, (_, i) => {
-        const round = at('far', farGap, true);
-        const [hero, caster] = round.fighters;
-        return step(round, { actor: hero!, target: caster, rng: createRng(i + 1) }, 'in');
-      }).filter((r) => r.lines.some((l) => holdsOff('caster', 'hero').test(l))).length;
-    expect(stopped(true)).toBeGreaterThan(stopped(false));
-    const again = Array.from({ length: 100 }, (_, i) => {
-      const round = at('far', true, true);
+  it('a holder at far range gets one shot, as anywhere', () => {
+    const lines = Array.from({ length: 100 }, (_, i) => {
+      const round = at('far', true);
       const [hero, caster] = round.fighters;
-      return step(round, { actor: hero!, target: caster, rng: createRng(i + 1) }, 'in');
-    }).filter((r) => r.lines.some((l) => l.includes('time for another')));
-    expect(again.length).toBeGreaterThan(0);
+      return step(round, { actor: hero!, target: caster, rng: createRng(i + 1) }, 'in').lines;
+    }).flat();
+    expect(lines.some((l) => holdsOff('caster', 'hero').test(l))).toBe(true);
+    expect(lines.some((l) => l.includes('time for another'))).toBe(false);
   });
 });

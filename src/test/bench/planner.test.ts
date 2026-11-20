@@ -2,8 +2,9 @@ import { CAST_IDS, type CastId } from './matrixCast';
 import { bout } from './planner';
 
 /**
- * Foes who think ahead (`engines/plan/mind/planner/`, a rule on trial): a planning foe plays the
- * same fight the same way every time, and over the cast does at least as well as today's foe.
+ * Foes who think ahead (`engines/plan/mind/planner/`): a planning foe plays the same fight the
+ * same way every time (two fights, cheap enough for the pipeline), and over the cast does at least
+ * as well as today's foe (run locally).
  * Set `VITE_BENCH_REPORT=true` for the whole cast, foe by foe.
  */
 

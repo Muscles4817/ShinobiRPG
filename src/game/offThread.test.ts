@@ -12,7 +12,6 @@ describe('playing a step from the state alone', () => {
       side: ['person:kakashi'],
       foes: ['person:asuma'],
       seed: 3,
-      foesThink: true,
     });
     if (!made.ok) throw new Error(made.error);
     const action = { type: 'combatAct' as const, optionId: 'begin' };

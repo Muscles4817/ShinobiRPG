@@ -30,7 +30,12 @@ interface Cell {
 
 function cell(a: CastId, b: CastId): Cell {
   const report = benchSkirmish(
-    { player: castMember(a, 'chunin'), allies: [], foes: [castMember(b, 'chunin')], watch: true },
+    {
+      player: castMember(a, 'chunin'),
+      allies: [],
+      foes: [castMember(b, 'chunin')],
+      watch: true,
+    },
     SEEDS,
   );
   return { a, b, report };

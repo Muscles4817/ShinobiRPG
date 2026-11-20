@@ -7,7 +7,8 @@ import { appClass } from '../../layout/sceneLayout';
 import { useWideScreen } from '../../layout/useWideScreen';
 import { ReportCard } from '../../components/ReportCard';
 import { randomSeed } from '../../randomSeed';
-import { useOffThread } from '../../fight/useOffThread';
+import { ThinkingSlip } from '../../fight/ThinkingSlip';
+import { isFightStep, useThinking } from '../../fight/useThinking';
 import { CombatScene } from '../scenes/CombatScene';
 import type { VersusChoice } from './VersusSetup';
 
@@ -71,9 +72,7 @@ export function VersusBout(props: VersusBoutProps) {
   const [notice, setNotice] = useState(initial.notice);
   const wide = useWideScreen();
 
-  const offThread = useOffThread();
-  const [thinking, setThinking] = useState(false);
-  const thinks = props.choice.foesThink;
+  const { thinking, step } = useThinking();
 
   const perform = useCallback(
     (action: GameAction) => {
@@ -82,18 +81,11 @@ export function VersusBout(props: VersusBoutProps) {
         if (result.ok) setState(result.value);
         else setNotice(result.error);
       };
-      // Foes who think ahead plan off the page's thread, so the screen keeps breathing.
-      if (!thinks || action.type !== 'combatAct') {
-        settle(dispatch(state, action, ctx));
-        return;
-      }
-      setThinking(true);
-      void offThread(state, action).then((result) => {
-        setThinking(false);
-        settle(result);
-      });
+      // Foes think ahead off the page's thread, so the screen keeps breathing.
+      if (isFightStep(action)) step(state, action, settle);
+      else settle(dispatch(state, action, ctx));
     },
-    [state, ctx, thinks, thinking, offThread],
+    [state, ctx, thinking, step],
   );
 
   if (!state) {
@@ -119,11 +111,7 @@ export function VersusBout(props: VersusBoutProps) {
           }}
         />
       )}
-      {thinking && (
-        <p className="versus-thinking" role="status">
-          They are thinking ahead.
-        </p>
-      )}
+      <ThinkingSlip thinking={thinking} />
       {fighting ? (
         <div className="wide-scene">
           <CombatScene ctx={ctx} state={state} perform={perform} seeAll />

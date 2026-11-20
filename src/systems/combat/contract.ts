@@ -323,6 +323,12 @@ export interface CombatSetup {
    * decision log, `decisionsOf`). Changes nothing anyone does.
    */
   readonly trace?: boolean;
+  /**
+   * Benches only: nobody thinks ahead, and everyone plays by instinct alone (the minds before
+   * foes planned, `engines/plan/mind/planner/`), for a bench that measures a rule rather than
+   * the minds. Unset, foes think ahead (and, in a bout only watched, your side too).
+   */
+  readonly instinct?: boolean;
 }
 
 /**
@@ -330,14 +336,10 @@ export interface CombatSetup {
  * don't know one ignore it.
  */
 export interface CombatExperiments {
-  /** Foes think ahead with the planner (and, in a bout only watched, your side too) (`engines/plan/mind/planner/`). */
-  readonly planner?: boolean;
   /** Up close, a technique that needs hand signs may come apart before it's cast (`plan/closeQuarters.ts`). */
   readonly handSigns?: boolean;
   /** A fighter with the `teleport` perk changes distance without spending the turn, once a round (`plan/blink.ts`). */
   readonly teleport?: boolean;
-  /** Crossing between mid and far is a harder step both ways, and a far holder shoots twice (`plan/farGap.ts`). */
-  readonly farGap?: boolean;
 }
 
 /** Someone who has stood on the field this fight: who, what they're called, and their side. */

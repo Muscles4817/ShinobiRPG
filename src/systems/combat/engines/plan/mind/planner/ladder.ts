@@ -35,7 +35,7 @@ export const TIERS: Readonly<Record<StatGrade, Tier>> = {
 /** Exchanges each candidate is played over: two (longer horizons kite, and cost). */
 export const HORIZON = 2;
 
-/** Simulated exchanges a round, fight-wide, by how many are fighting. */
+/** Simulated exchanges each look (before every exchange) may spend, fight-wide, by how many are fighting. */
 export function roundBudget(fighting: number): number {
   if (fighting <= 2) return 900;
   return fighting <= 4 ? 600 : 400;

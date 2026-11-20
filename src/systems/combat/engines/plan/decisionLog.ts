@@ -4,6 +4,7 @@ import type { CombatState } from '../../contract';
 import { decode, type CardId, type PlanFighter, type PlanState, type Round } from './state';
 import { sourceOf, type Decision, type Odds, type Why } from './whyShape';
 import type { HeldPlan } from './mind/shape';
+import { killersFacing } from './survival';
 
 /**
  * The decision log, kept as a fight is fought (`whyShape.ts`): only in a fight whose setup asks
@@ -23,12 +24,25 @@ export interface Announcement {
   readonly planned?: HeldPlan;
 }
 
-/** Fighters with the plans their announcements made. */
+/**
+ * Fighters with the plans their announcements made, and the killers each faced as it settled on
+ * its move (`newKiller` in `survival.ts`).
+ */
 function withPlans(state: PlanState, announcements: Readonly<Record<string, Announcement>>) {
-  if (!Object.values(announcements).some((a) => a.planned)) return state.fighters;
+  const moment = {
+    fighters: state.fighters,
+    range: state.range,
+    ...(state.distances ? { distances: state.distances } : {}),
+    intents: {},
+    number: state.round,
+  };
   return state.fighters.map((f) => {
-    const planned = announcements[f.id]?.planned;
-    return planned ? { ...f, planned } : f;
+    const told = announcements[f.id];
+    if (!told) return f;
+    const faced = killersFacing(f, moment);
+    const planned = told.planned ? { planned: told.planned } : {};
+    const { facedKillers: _was, ...rest } = f;
+    return { ...rest, ...planned, ...(faced.length > 0 ? { facedKillers: faced } : {}) };
   });
 }
 

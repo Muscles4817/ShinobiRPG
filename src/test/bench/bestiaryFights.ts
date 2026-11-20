@@ -8,6 +8,7 @@ import { ctx } from '@/test/gameFixtures';
 import { ARCHETYPE_IDS, archetype } from './archetypes';
 import { toSetup, type Scale } from './fighters';
 import { STALEMATE_EXCHANGES } from './runner';
+import { benchMinds } from './minds';
 
 /**
  * Bestiary fights: a foe and its retinue against every bench archetype at a scale, for the
@@ -57,6 +58,7 @@ export function beatenAt(def: EnemyDef, scale: Scale, seeds: number): number {
         allies: [],
         enemies: enemyParty(def, 0, ctx),
         canFlee: false,
+        ...benchMinds(),
         ...(spec.plan ? { plan: spec.plan } : {}),
       };
       let state = engine.start(setup, rng);

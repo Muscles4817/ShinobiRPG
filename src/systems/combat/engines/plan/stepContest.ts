@@ -50,5 +50,5 @@ export function stepChance(
     weight;
   // Off their footing (on water they can't stand on), every step is harder; so is the far gap.
   const at = distanceBetween(round, actor.id, foe.id);
-  return contest * footingOf(round.ground, actor) * farGapScale(actor, at, direction);
+  return contest * footingOf(round.ground, actor) * farGapScale(at, direction);
 }

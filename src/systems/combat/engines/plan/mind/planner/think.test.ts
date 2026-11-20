@@ -69,7 +69,7 @@ function announced(planner: boolean, seed = 1) {
     canFlee: false,
     watch: true,
     trace: true,
-    ...(planner ? { experiments: { planner: true } } : {}),
+    ...(planner ? {} : { instinct: true }),
   };
   let state = engine.start(setup, rng);
   for (let n = 0; n < 8 && !engine.outcome(state); n++) {
@@ -108,7 +108,7 @@ describe('foes who think ahead', () => {
     );
     const state = { ...decode(start), range: 'close' as const };
     const foe = state.fighters.find((f) => f.id === 'foe')!;
-    const { candidates } = candidatesFor(state, foe, TIERS.C);
+    const { candidates } = candidatesFor(state, foe, { tier: TIERS.C });
     expect(candidates.map((c) => c.sequence.join(' '))).toContain('jutsu:stun jutsu:finisher');
   });
 });

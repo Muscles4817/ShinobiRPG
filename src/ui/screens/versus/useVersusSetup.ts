@@ -29,14 +29,10 @@ export interface VersusChoice {
   readonly ground: VersusGround['id'];
   /** Only watch: your side fights on its own too. */
   readonly watch: boolean;
-  /** Fighters think ahead (foes; both sides when only watched), a rule on trial. */
-  readonly foesThink: boolean;
   /** Hand signs can be broken up close, a rule on trial. */
   readonly handSigns: boolean;
   /** Teleporters change distance without spending the turn, a rule on trial. */
   readonly teleport: boolean;
-  /** The far gap is a harder crossing, a rule on trial. */
-  readonly farGap: boolean;
   /** Where the bout starts. */
   readonly start: VersusStart['id'];
 }
@@ -63,20 +59,14 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
  * the last bout.
  */
 function useTrialRules(initial: VersusChoice | null) {
-  const [foesThink, setFoesThink] = useState(initial?.foesThink ?? false);
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
   const [teleport, setTeleport] = useState(initial?.teleport ?? false);
-  const [farGap, setFarGap] = useState(initial?.farGap ?? false);
   const [start, setStart] = useState<VersusStart['id']>(initial?.start ?? 'mid');
   return {
-    foesThink,
-    setFoesThink,
     handSigns,
     setHandSigns,
     teleport,
     setTeleport,
-    farGap,
-    setFarGap,
     start,
     setStart,
   };

@@ -245,8 +245,10 @@ function lingerOn(round: Round, f: PlanFighter, exchange: number): Round {
   });
   const [worst] = f.afflictions ?? [];
   if (harm <= 0 || !worst || !alive(f)) return kept;
-  const line = harmLine(tell(LINGERS[worst.harm], { t: f }), harm);
-  return wound(kept, f.id, harm, line);
+  // What the burn or poison takes, never more than is left to take (`taken`).
+  const hurt = taken(f, harm);
+  const line = harmLine(tell(LINGERS[worst.harm], { t: f }), hurt);
+  return wound(kept, f.id, hurt, line);
 }
 
 /** At the end of an exchange: harms linger and wear down, pins loosen, ripostes lapse. */

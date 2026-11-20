@@ -10,6 +10,7 @@ import {
 } from '@/systems/combat';
 
 import { toSetup, type FighterSpec } from './fighters';
+import { benchMinds } from './minds';
 
 /**
  * Runs bench fights headless through the Plan & Watch engine, only via the `CombatEngine`
@@ -104,6 +105,7 @@ function played(
       ...(player.plan ? { plan: player.plan } : {}),
       ...(watch ? { watch: true } : {}),
       ...(trace ? { trace: true } : {}),
+      ...benchMinds(),
       ...context,
     },
     rng,

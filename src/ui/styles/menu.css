@@ -339,22 +339,6 @@ a.menu-option {
   accent-color: var(--lantern);
 }
 
-/* While foes who think ahead plan off the page's thread: a slip under the fight's heading. */
-.versus-thinking {
-  position: fixed;
-  left: 50%;
-  top: 64px;
-  transform: translateX(-50%);
-  z-index: 5;
-  white-space: nowrap;
-  margin: 0;
-  padding: 8px 16px;
-  background: var(--paper);
-  color: var(--paper-ink);
-  font-family: var(--font-story);
-  border-radius: var(--radius);
-}
-
 /* Which build this is, so an update can be told from what the offline cache still holds. */
 .build-line {
   margin: 12px 0 0;
