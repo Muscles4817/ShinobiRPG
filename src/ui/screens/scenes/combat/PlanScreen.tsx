@@ -26,6 +26,7 @@ import { fightMeters, Gauges, type SightOf } from './Gauges';
 import { PlanPreviewContext, type PreviewFor } from './planPreview';
 import { PlansByOwner, TeamOrders } from './TeamOrders';
 import { useHealthPulses } from './useHealthPulses';
+import { RoundPreview } from './RoundPreview';
 import { WhoPlans } from './WhoPlans';
 
 type Pick = (option: CombatOption) => void;
@@ -244,6 +245,7 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
         </details>
       ) : (
         <>
+          <RoundPreview view={view} />
           <h3 className="plan-heading">Your cards</h3>
           {table}
         </>

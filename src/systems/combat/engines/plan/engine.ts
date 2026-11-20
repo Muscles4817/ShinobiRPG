@@ -1,3 +1,4 @@
+import { roundPreview } from './roundPreview';
 import { clamp, err, ok, type Result, type Rng } from '@/core';
 
 import type {
@@ -185,6 +186,13 @@ function howItIsFought(setup: CombatSetup): Pick<PlanState, 'watching' | 'toTheL
   };
 }
 
+/** While you plan (never while only watching): how the round should go. */
+function previewOf(plan: PlanState): Pick<CombatView, 'preview'> {
+  if (plan.phase !== 'loadout' || plan.watching || plan.result) return {};
+  const preview = roundPreview(plan);
+  return preview.length > 0 ? { preview } : {};
+}
+
 export function createPlanEngine(): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
@@ -269,6 +277,7 @@ export function createPlanEngine(): CombatEngine {
         log: plan.log,
         ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),
         ...(plan.cast ? { cast: plan.cast } : {}),
+        ...previewOf(plan),
         options: options(plan),
         range: bandOf(plan, playerOf(plan)),
         prompt: prompt(plan),

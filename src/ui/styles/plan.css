@@ -392,3 +392,41 @@
   min-height: 40px;
   cursor: pointer;
 }
+
+/* How the round should go: four slips, one per exchange, read as the plan's priority plays out. */
+.round-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.round-preview-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+.round-preview-slip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--paper) var(--grain-ink);
+  color: var(--paper-ink);
+}
+.round-preview-n,
+.round-preview-from,
+.round-preview-passed,
+.round-preview-note {
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+}
+.round-preview-play {
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+}
+.round-preview-from {
+  color: var(--seal);
+}

@@ -14,7 +14,7 @@ import type { PassReason } from './traceShape';
  * much on a phone at every edit.
  */
 
-const WAITS: Readonly<Record<PassReason, string>> = {
+export const WAITS: Readonly<Record<PassReason, string>> = {
   missing: 'None left in your pouch.',
   'out-of-reach': 'Can’t reach from this distance.',
   'cannot-use': 'Can’t be used now: chakra, breath or a seal.',

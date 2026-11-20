@@ -33,6 +33,7 @@ export type {
   CombatGround,
   CombatForm,
   CombatOccasion,
+  CombatPreviewExchange,
 } from './contract';
 export {
   COMBAT_TRAITS,
