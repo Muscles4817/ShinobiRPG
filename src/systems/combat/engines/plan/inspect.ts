@@ -1,4 +1,4 @@
-import type { CombatInspection } from '../../contract';
+import type { CombatInspection } from '../../inspectionContract';
 import type { PlanState } from './state';
 
 /**

@@ -15,8 +15,6 @@ export type {
   CombatView,
   CombatResult,
   CombatOutcome,
-  CombatInspection,
-  InspectedFighter,
   CombatCost,
   CombatOpening,
   CombatExperiments,
@@ -37,6 +35,7 @@ export type {
   CombatOccasion,
   CombatPreviewExchange,
 } from './contract';
+export type { CombatInspection, InspectedFighter } from './inspectionContract';
 export {
   COMBAT_TRAITS,
   COMBAT_ITEM_EFFECTS,
