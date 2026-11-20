@@ -82,7 +82,7 @@ export interface HeldPlan {
 export interface Minded {
   readonly minds?: Readonly<Record<string, Beliefs>>;
   readonly objective?: HeldObjective;
-  /** Thinks ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
+  /** Thinks ahead with the planner (`planner/think.ts`). */
   readonly thinks?: true;
   readonly planned?: HeldPlan;
 }

@@ -202,7 +202,7 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const thinking = withThinking(initialFighters(setup), {
-        on: setup.experiments?.planner === true,
+        on: setup.instinct !== true,
         watched: setup.watch === true,
       });
       const opened = openFight(

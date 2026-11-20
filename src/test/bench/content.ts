@@ -9,6 +9,7 @@ import type { Discipline } from '@/systems/techniques';
 import { ctx, draft, formTeam } from '@/test/gameFixtures';
 
 import { STALEMATE_EXCHANGES } from './runner';
+import { benchMinds } from './minds';
 
 /**
  * The bench with the pack's own people: a character fresh out of creation, fighting the
@@ -58,13 +59,15 @@ export function foe(enemyId: string): CombatantSetup {
 
 /** The character against one opponent, on their remembered (here: default) plan. */
 export function against(state: GameState, opponent: CombatantSetup): CombatSetup {
-  return { player: playerCombatant(state, ctx), allies: [], enemies: [opponent], canFlee: false };
+  const player = playerCombatant(state, ctx);
+  return { player, allies: [], enemies: [opponent], canFlee: false, ...benchMinds() };
 }
 
 /** The character against an AI copy of themselves: the plan against the foes' instincts. */
 export function mirror(state: GameState): CombatSetup {
   const player = playerCombatant(state, ctx);
-  return { player, allies: [], enemies: [{ ...player, id: 'mirror' }], canFlee: false };
+  const enemies = [{ ...player, id: 'mirror' }];
+  return { player, allies: [], enemies, canFlee: false, ...benchMinds() };
 }
 
 export interface ContentReport {

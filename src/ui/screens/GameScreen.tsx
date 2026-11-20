@@ -23,6 +23,7 @@ import { appClass, isStoryScene } from '../layout/sceneLayout';
 import { WideFrame } from '../layout/WideFrame';
 import { useWideScreen } from '../layout/useWideScreen';
 import type { GameSession } from '../useGameSession';
+import { ThinkingSlip } from '../fight/ThinkingSlip';
 import { BondsScreen } from './BondsScreen';
 import { HubScreen } from './HubScreen';
 import { PlacePage } from './places/PlacePage';
@@ -240,6 +241,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   return (
     <div className={appClass(wide, scene)} data-motion={state.settings.animations ? 'on' : 'off'}>
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
+      {session.thinking && <ThinkingSlip />}
       {scene ? (
         <div className="wide-scene">
           {wide && isStoryScene(scene) ? (

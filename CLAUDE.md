@@ -423,11 +423,16 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `fightingPower` rates a whole stat line; `game/scouting.ts` reads an opponent against you
     (threat, fighting style, and with sharp eyes their standout stats) for fights, sparring
     partners and mission notices, from the same stats the fight uses.
+    **Foes think ahead** in every fight (`mind/planner/`, `withThinking`; in a bout only watched,
+    your side too, and anyone thinking plays what they announce, `byIntent`): once a round they
+    play their options out in the engine and keep the move they'd make anyway unless a plan
+    clearly beats it (`docs/design/research/planner-foes.md`). A fight's steps are played in a Web
+    Worker off the page's thread (`ui/fight/useThinking.ts`, `dispatchAlone` rebuilding the
+    context from the state). Benches that measure a rule play everyone by instinct
+    (`CombatSetup.instinct`, `src/test/bench/minds.ts`); the benches of the minds (planner,
+    matrix, teams, bestiary) think, and a weekly run thinks everywhere.
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
-    them on, and only versus does (its setup's "Rules on trial"): foes think ahead with the
-    planner (`mind/planner/`, `planner`; in a bout only watched, your side too, `withThinking`,
-    and anyone thinking plays what they announce, `byIntent`), a bout's steps then played in a Web Worker off the page's
-    thread (`ui/fight/`, `dispatchAlone` rebuilding the context from the state); up close a technique that needs hand signs (read from its
+    them on, and only versus does (its setup's "Rules on trial"): up close a technique that needs hand signs (read from its
     art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart
     (`handSigns`, `plan/closeQuarters.ts`, flags on the fighter from `plan/trialShape.ts`; a mind
     that reads the fight weighs a cast against a crowder: a caster strongest further off steps back

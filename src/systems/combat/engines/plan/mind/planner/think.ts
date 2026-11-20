@@ -12,7 +12,7 @@ import { roundBudget, TIERS } from './ladder';
 import { planFor } from './search';
 
 /**
- * Foes who think ahead (`CombatExperiments.planner`, a rule on trial), and when they do it
+ * Foes who think ahead, and when they do it
  * (`docs/design/combat-ai-plan.md` Part 8, rule 1): a mind plans once a round, as it begins, and
  * announces its plan's steps one exchange at a time; three cheap checks make it plan again
  * mid-round (its next step can't be played, a fact the step relied on didn't come true, or it
@@ -91,7 +91,7 @@ export function foresee(state: PlanState, rng: Rng): Readonly<Record<string, Ann
 }
 
 /**
- * Every foe thinks ahead, in a fight that tries it (`CombatExperiments.planner`); in a bout only
+ * Every foe thinks ahead, unless a bench keeps everyone to instinct (`CombatSetup.instinct`); in a bout only
  * watched, so does everyone on your side, or the two sides would not be fighting with the same
  * minds. A fight you plan yourself keeps your side to the plans you set.
  */

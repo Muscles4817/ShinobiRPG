@@ -15,6 +15,7 @@ import {
 
 import { useSound } from './audio/SoundProvider';
 import { useEdits } from './edits/EditsProvider';
+import { isFightStep, useThinking } from './fight/useThinking';
 import { fromOlderVersion, keepCopy, readSave, type Loaded } from './saveKeeping';
 import { saveSafely, STORAGE_FULL } from './saveSafely';
 
@@ -29,6 +30,8 @@ export interface GameSession {
   /** The most recent refusal or load problem, for a dismissible notice. */
   readonly notice: string | null;
   readonly perform: (action: GameAction) => void;
+  /** A fight's step is being played off the page's thread while foes think ahead. */
+  readonly thinking: boolean;
   /** The animation for the action just done, until it has played. */
   readonly cue: ShownCue | null;
   readonly clearCue: () => void;
@@ -83,22 +86,28 @@ export function useGameSession(store: SaveStore, rescue: SaveStore = NOWHERE): G
     [store],
   );
 
+  const { thinking, step } = useThinking();
+
   const perform = useCallback(
     (action: GameAction) => {
-      if (!game) return;
-      const result = dispatch(game.game, action, game.ctx);
-      if (result.ok) {
-        keep({ ...game, game: result.value });
-        const kind = cueAfter(action, game.game, result.value);
-        setCue((shown) => (kind ? { kind, id: (shown?.id ?? 0) + 1 } : shown));
-        const sound = soundAfter(action, game.game, result.value);
-        if (sound) play(sound);
-      } else {
-        setNotice(result.error);
-        play('refused');
-      }
+      if (!game || thinking) return;
+      const settle = (result: ReturnType<typeof dispatch>) => {
+        if (result.ok) {
+          keep({ ...game, game: result.value });
+          const kind = cueAfter(action, game.game, result.value);
+          setCue((shown) => (kind ? { kind, id: (shown?.id ?? 0) + 1 } : shown));
+          const sound = soundAfter(action, game.game, result.value);
+          if (sound) play(sound);
+        } else {
+          setNotice(result.error);
+          play('refused');
+        }
+      };
+      // Foes think ahead off the page's thread, so the screen keeps breathing.
+      if (isFightStep(action)) step(game.game, action, settle);
+      else settle(dispatch(game.game, action, game.ctx));
     },
-    [game, keep, play],
+    [game, keep, play, thinking, step],
   );
 
   // Whatever save is about to be replaced is kept as the device's copy first.
@@ -152,6 +161,7 @@ export function useGameSession(store: SaveStore, rescue: SaveStore = NOWHERE): G
     game,
     notice,
     perform,
+    thinking,
     cue,
     clearCue,
     start,

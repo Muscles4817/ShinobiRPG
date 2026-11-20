@@ -27,8 +27,6 @@ export interface VersusPick {
   readonly ground?: CombatGround;
   /** Only watch: both sides fight on their own, round after round. */
   readonly watch?: boolean;
-  /** Foes think ahead with the planner (a rule on trial, `CombatExperiments.planner`). */
-  readonly foesThink?: boolean;
   /** Hand signs can be broken up close (a rule on trial, `CombatExperiments.handSigns`). */
   readonly handSigns?: boolean;
   /** Teleporters change distance without spending the turn (a rule on trial, `CombatExperiments.teleport`). */
@@ -42,7 +40,6 @@ export interface VersusPick {
 /** The rules on trial a pick turns on, if any. */
 function experimentsOf(pick: VersusPick) {
   const experiments = {
-    ...(pick.foesThink ? { planner: true } : {}),
     ...(pick.handSigns ? { handSigns: true } : {}),
     ...(pick.teleport ? { teleport: true } : {}),
     ...(pick.farGap ? { farGap: true } : {}),

@@ -24,7 +24,7 @@ afterEach(() => {
   Reflect.deleteProperty(window, 'matchMedia');
 });
 
-function choice(watch: boolean, foesThink = false): VersusChoice {
+function choice(watch: boolean): VersusChoice {
   const ctx = contextForPack('naruto')!;
   const [first, second] = versusRoster(ctx);
   return {
@@ -33,7 +33,6 @@ function choice(watch: boolean, foesThink = false): VersusChoice {
     foes: [second!.id],
     ground: 'arena',
     watch,
-    foesThink,
     handSigns: false,
     teleport: false,
     farGap: false,
@@ -41,8 +40,8 @@ function choice(watch: boolean, foesThink = false): VersusChoice {
   };
 }
 
-function renderBout(watch: boolean, foesThink = false) {
-  const bout = choice(watch, foesThink);
+function renderBout(watch: boolean) {
+  const bout = choice(watch);
   return render(
     <VersusBout
       choice={bout}
@@ -76,7 +75,7 @@ describe('a versus bout', () => {
 
   it('plays a round with foes who think ahead, off the page where it can', async () => {
     asDesk(false);
-    renderBout(false, true);
+    renderBout(false);
     fireEvent.click(screen.getByRole('button', { name: /Begin the fight/ }));
     await waitFor(() => {
       expect(screen.queryByRole('button', { name: /Begin the fight/ })).toBeNull();

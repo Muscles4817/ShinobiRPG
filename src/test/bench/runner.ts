@@ -10,6 +10,7 @@ import {
 } from '@/systems/combat';
 
 import { toSetup, type FighterSpec } from './fighters';
+import { benchMinds } from './minds';
 
 /**
  * Runs bench fights headless through the Plan & Watch engine, only via the `CombatEngine`
@@ -65,6 +66,8 @@ export interface Skirmish {
   readonly watch?: boolean;
   /** What the fight is fought under: rules on trial, how it opens, the ground. */
   readonly context?: Pick<CombatSetup, 'experiments' | 'opening' | 'ground'>;
+  /** Foes think ahead, as in the game (a bench of the minds); else everyone plays by instinct. */
+  readonly thinking?: boolean;
 }
 
 /** One seeded fight of `player` against `opponent`. */
@@ -89,7 +92,7 @@ export interface TracedFight {
 }
 
 function played(
-  { player, allies, foes, watch, context }: Skirmish,
+  { player, allies, foes, watch, context, thinking }: Skirmish,
   seed: number,
   trace: boolean,
 ): { record: FightRecord; state: CombatState } {
@@ -104,6 +107,7 @@ function played(
       ...(player.plan ? { plan: player.plan } : {}),
       ...(watch ? { watch: true } : {}),
       ...(trace ? { trace: true } : {}),
+      ...benchMinds(thinking),
       ...context,
     },
     rng,

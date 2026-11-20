@@ -69,7 +69,7 @@ function announced(planner: boolean, seed = 1) {
     canFlee: false,
     watch: true,
     trace: true,
-    ...(planner ? { experiments: { planner: true } } : {}),
+    ...(planner ? {} : { instinct: true }),
   };
   let state = engine.start(setup, rng);
   for (let n = 0; n < 8 && !engine.outcome(state); n++) {

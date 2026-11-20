@@ -1,0 +1,33 @@
+name: Benches with thinking foes
+
+# CI plays the benches that measure a rule by instinct, to keep it near ten minutes
+# (`src/test/bench/minds.ts`). Once a week every bench is played as the game plays it, with foes
+# thinking ahead, so the places the two disagree show up as failures here.
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benches:
+    name: Every bench, foes thinking
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Benches
+        run: npx vitest run src/test/bench --testTimeout=3600000
+        env:
+          VITE_BENCH_THINKING: 'true'

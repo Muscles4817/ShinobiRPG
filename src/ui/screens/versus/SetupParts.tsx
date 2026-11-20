@@ -54,8 +54,8 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
 
 /** The rules on trial a bout carries, as the setup has them ticked, and where it starts. */
 export function trialsOf(setup: VersusSetupState) {
-  const { foesThink, handSigns, teleport, farGap, start } = setup;
-  return { foesThink, handSigns, teleport, farGap, start };
+  const { handSigns, teleport, farGap, start } = setup;
+  return { handSigns, teleport, farGap, start };
 }
 
 /** Where the bout starts, with what starting there means. */
@@ -88,22 +88,6 @@ export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
   return (
     <section className="versus-slot versus-trial">
       <span className="versus-trial-head">Rules on trial</span>
-      <label className="versus-trial-rule" htmlFor="versus-foes-think">
-        <input
-          id="versus-foes-think"
-          type="checkbox"
-          checked={setup.foesThink}
-          onChange={(e) => {
-            setup.setFoesThink(e.target.checked);
-          }}
-        />
-        Fighters think ahead
-      </label>
-      <p className="muted">
-        The other side plans each round by playing out its options before it moves, as far ahead as
-        its wits allow, and keeps to the plan unless it breaks. When you only watch, your side
-        thinks ahead too. Rounds take a moment longer to start.
-      </p>
       <label className="versus-trial-rule" htmlFor="versus-hand-signs">
         <input
           id="versus-hand-signs"

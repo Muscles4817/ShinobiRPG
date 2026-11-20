@@ -9,6 +9,7 @@ import { hasVerb, isHindering, isWounding } from '@/systems/combat/rules/verbs';
 import { toSetup } from './fighters';
 import { castMember, type CastId } from './matrixCast';
 import { STALEMATE_EXCHANGES } from './runner';
+import { benchMinds } from './minds';
 
 /**
  * The objective layer in shadow (`engines/plan/mind/objectives.ts`), read against today's AI:
@@ -67,6 +68,7 @@ export function shadowFight(a: CastId, b: CastId, seed: number) {
       canFlee: false,
       watch: true,
       trace: true,
+      ...benchMinds(),
     },
     rng,
   );

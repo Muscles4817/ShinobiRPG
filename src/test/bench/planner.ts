@@ -35,7 +35,7 @@ export function bout(
       enemies: [toSetup(castMember(b, 'chunin'), 'foe')],
       canFlee: false,
       watch: true,
-      ...(planner ? { experiments: { planner: true } } : {}),
+      ...(planner ? {} : { instinct: true }),
     },
     rng,
   );
