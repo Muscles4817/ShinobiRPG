@@ -75,7 +75,9 @@ export const ANSWER_SCALE: Readonly<Record<CounterWaits, number>> = {
   eyes: 0,
 };
 
-type Minds = { readonly attributes: CombatAttributes };
+interface Minds {
+  readonly attributes: CombatAttributes;
+}
 
 /** What a counter reads with (eyes and wits) and what it reads against (speed and skill). */
 export interface CounterRead {
@@ -102,10 +104,7 @@ export function counterOdds(r: CounterRead): { readonly clean: number; readonly 
 export type CounterOutcome = 'clean' | 'late' | 'missed';
 
 /** How a counter went, from its odds and a roll in [0, 1). */
-export function counterOutcome(
-  odds: ReturnType<typeof counterOdds>,
-  roll: number,
-): CounterOutcome {
+export function counterOutcome(odds: ReturnType<typeof counterOdds>, roll: number): CounterOutcome {
   if (roll < odds.clean) return 'clean';
   return roll < odds.clean + odds.late ? 'late' : 'missed';
 }

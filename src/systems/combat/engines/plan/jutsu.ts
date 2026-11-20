@@ -30,8 +30,7 @@ import { castField } from './field';
 import { move, spunAway } from './footwork';
 import { afflict, drain, knock, pin, readyRiposte } from './lingering';
 import { holdIllusion } from './illusions';
-import { closingOn } from './stages';
-import { isPinned } from '../../rules/verbs/lingering';
+import { staged } from './stages';
 import { fittingTargets } from './fitting';
 import { metByCounters } from './techniqueCounters';
 import { damage, type Aimed } from './wounding';
@@ -176,13 +175,6 @@ function landOn(round: Round, aimed: Aimed, { technique, effect }: EffectUse): R
     case 'afflict':
       return afflict(round, aimed, { technique, effect });
   }
-}
-
-/** A hold that lands with a second stage to come waits for it to close (`stages.ts`). */
-function staged(round: Round, { actor, target }: Aimed, technique: CombatTechnique): Round {
-  const held = fighterIn(round, target.id);
-  if (!held || !isPinned(held)) return round;
-  return closingOn(round, { by: actor.id, targetId: target.id, technique });
 }
 
 /** A lasting illusion is kept up by its caster, paid each exchange (`illusions.ts`). */
@@ -345,8 +337,7 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   // on a target this exchange (`oneNightmare.ts`).
   const fitting = fittingTargets(paid, { actor, t, targets: targetsOf(paid, turn, t) });
   const free = stillFree(fitting.round, actor, { t, targets: fitting.targets });
-  // A counter waiting for this kind of attack meets it first (`counter.ts`).
-  const met = metByCounters(free.round, turn, { t, targets: free.targets });
+  const met = metByCounters(free.round, turn, { t, targets: free.targets }); // `counter.ts`
   const targets = met.targets;
   if (isHarmful(t) && targets.length === 0) return met.round;
   const seen = targets.filter((foe) => slips(met.round, turn, foe, t));

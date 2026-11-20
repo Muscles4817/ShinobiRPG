@@ -83,3 +83,14 @@ export function stagesAfter(round: Round): Round {
     .filter((f) => f.closing !== undefined)
     .reduce((r, f) => closedOn(r, f.id), round);
 }
+
+/** A hold that lands with a second stage to come waits for it to close. */
+export function staged(
+  round: Round,
+  { actor, target }: { readonly actor: PlanFighter; readonly target: PlanFighter },
+  technique: CombatTechnique,
+): Round {
+  const held = fighterIn(round, target.id);
+  if (!held || !isPinned(held)) return round;
+  return closingOn(round, { by: actor.id, targetId: target.id, technique });
+}
