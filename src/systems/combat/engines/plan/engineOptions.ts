@@ -1,3 +1,4 @@
+import { withCounterRisk } from './counterRisk';
 import type { CombatOption } from '../../contract';
 import { RANGE_LABEL } from '../../rules/range';
 import { isPinned } from '../../rules/verbs';
@@ -63,13 +64,16 @@ export function options(state: PlanState): readonly CombatOption[] {
     return [
       ...planningOptions(state),
       ...withOwnership(
-        withForecasts(
-          withTraceNotes(
-            tableOptions(
-              player,
-              state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+        withCounterRisk(
+          withForecasts(
+            withTraceNotes(
+              tableOptions(
+                player,
+                state.fighters.some((f) => f.side === 'player' && !f.isPlayer),
+              ),
+              state.slotTrace,
             ),
-            state.slotTrace,
+            state,
           ),
           state,
         ),

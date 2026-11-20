@@ -1,3 +1,5 @@
+import { COUNTER_BREATH, type CounterId } from './counters';
+
 /**
  * Committed defence (`docs/design/defence-plan.md`): a fighter who gives their turn to not being
  * hit is much harder to hit than one meeting the foe halfway. Two commitments, each played from
@@ -13,12 +15,26 @@
  * wins on its own.
  */
 
-/** A defensive commitment, played as an action. */
-export const COMMITMENTS = ['evade', 'brace'] as const;
+/** A defensive commitment, played as an action: Evade, Brace, or waiting to counter (`counters.ts`). */
+export const COMMITMENTS = [
+  'evade',
+  'brace',
+  'counter',
+  'counter-blade',
+  'counter-thrown',
+  'look-away',
+] as const satisfies readonly (CounterId | 'evade' | 'brace')[];
 export type Commitment = (typeof COMMITMENTS)[number];
 
 /** Breath a commitment costs: staying clear of everything is harder work than standing firm. */
-export const COMMIT_BREATH: Readonly<Record<Commitment, number>> = { evade: 8, brace: 5 };
+export const COMMIT_BREATH: Readonly<Record<Commitment, number>> = {
+  evade: 8,
+  brace: 5,
+  counter: COUNTER_BREATH.blow,
+  'counter-blade': COUNTER_BREATH.blade,
+  'counter-thrown': COUNTER_BREATH.thrown,
+  'look-away': COUNTER_BREATH.eyes,
+};
 
 /**
  * How much a committed evasion adds to the avoid roll's stance (`rules/avoidance.ts`), on top of

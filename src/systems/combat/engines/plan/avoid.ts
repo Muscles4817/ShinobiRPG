@@ -96,6 +96,8 @@ function foresightScale({ form, discipline }: Incoming): number {
 /** The chance this attack doesn't reach its target. */
 export function avoidOdds(round: Round, incoming: Incoming): number {
   // Eyes that see everything see an illusion for what it is (`rules/eyes.ts`), and a puppet
+  // Caught waiting on a counter read wrong, they are as open as the dazed (`counter.ts`).
+  if (incoming.target.exposed === true) return 0;
   const illusion = incoming.discipline === 'genjutsu';
   // has no mind to fool (`rules/puppets.ts`).
   const unfooled = seesThroughIllusions(incoming.target) || incoming.target.puppet === true;
@@ -152,7 +154,7 @@ function bodyScale(target: PlanFighter, incoming: Incoming): number {
 }
 
 /** Share of the target's health a technique's wounding effects would take, mid-roll. */
-function threatOf(attacker: PlanFighter, target: PlanFighter, t: CombatTechnique): number {
+export function threatOf(attacker: PlanFighter, target: PlanFighter, t: CombatTechnique): number {
   const wounding = t.effects.filter(
     (e) => e.verb === 'damage' || e.verb === 'area' || e.verb === 'break',
   );

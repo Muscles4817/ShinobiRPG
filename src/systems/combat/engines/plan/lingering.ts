@@ -193,7 +193,7 @@ function answers(round: Round, { attacker, target, blow }: Incoming): boolean {
     !blow.followUp &&
     // Only a blow thrown up close can be answered: a throw from across the field is out of reach.
     distanceBetween(round, attacker.id, target.id) === 'close' &&
-    canHit({ kind: 'counter' }, attacker, round.fighters)
+    canHit({ kind: 'counter', waits: 'blow' }, attacker, round.fighters)
   );
 }
 

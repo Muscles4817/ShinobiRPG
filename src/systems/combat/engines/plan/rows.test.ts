@@ -175,7 +175,8 @@ describe('plan & watch rows: reach', () => {
     const [me, front, back] = initialFighters(
       setup({ enemies: [fighter('wall'), fighter('lancer', { traits: ['archer'] })] }),
     );
-    const countering = withSlots(me!, 'close', plainSlots(['counter']));
+    // Waiting on a counter: it answers what comes, if it can reach whoever threw it.
+    const countering: PlanFighter = { ...me!, committed: 'counter' };
     const counters = (attacker: PlanFighter, field: PlanFighter[]) =>
       Array.from({ length: 40 }, (_, seed) => {
         const hit = { attacker, target: countering, blow: STRIKE, rng: createRng(seed + 1) };

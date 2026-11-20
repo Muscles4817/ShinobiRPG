@@ -12,6 +12,8 @@ import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { carried } from '../../rules/items';
 import { inReach, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
+import { COUNTER_IDS, type CounterWaits } from '../../rules/counters';
+import { shapeOf } from '../../gearContract';
 import { recovering } from './recovery';
 import { strikeReach } from '../../rules/weaponClasses';
 import { weaponMissing } from '../../rules/weapons';
@@ -55,7 +57,8 @@ export type Card =
   | { readonly kind: 'guard' }
   /** A ready Dodge; `clear`, one that springs back a distance as it slips (`leap.ts`). */
   | { readonly kind: 'dodge'; readonly clear?: true }
-  | { readonly kind: 'counter' }
+  /** Waiting for one kind of attack to counter, played as an action (`rules/counters.ts`). */
+  | { readonly kind: 'counter'; readonly waits: CounterWaits }
   /** Committed defence, played as an action (`commitment.ts`). */
   | { readonly kind: 'evade' }
   | { readonly kind: 'brace' }
@@ -77,7 +80,10 @@ const BASIC_CARDS: readonly { readonly id: CardId; readonly card: Card }[] = [
   { id: 'guard', card: { kind: 'guard' } },
   { id: 'dodge', card: { kind: 'dodge' } },
   { id: 'dodge-clear', card: { kind: 'dodge', clear: true } },
-  { id: 'counter', card: { kind: 'counter' } },
+  { id: 'counter', card: { kind: 'counter', waits: 'blow' } },
+  { id: 'counter-blade', card: { kind: 'counter', waits: 'blade' } },
+  { id: 'counter-thrown', card: { kind: 'counter', waits: 'thrown' } },
+  { id: 'look-away', card: { kind: 'counter', waits: 'eyes' } },
   { id: 'evade', card: { kind: 'evade' } },
   { id: 'brace', card: { kind: 'brace' } },
   { id: 'gather', card: { kind: 'gather' } },
@@ -93,6 +99,7 @@ export function cardId(card: Card): CardId {
   if (card.kind === 'jutsu') return `${JUTSU_PREFIX}${card.technique.id}`;
   if (card.kind === 'item') return `${ITEM_PREFIX}${card.item.id}`;
   if (card.kind === 'dodge' && card.clear) return 'dodge-clear';
+  if (card.kind === 'counter') return COUNTER_IDS[card.waits];
   return card.kind === 'step' ? `step-${card.direction}` : card.kind;
 }
 
@@ -115,8 +122,8 @@ const ANYWHERE_KINDS: readonly Card['kind'][] = [
 ];
 
 /** Cards that spend the turn on the fighter themself: committing to a defence, gathering. */
-export type SelfCard = Extract<Card, { kind: 'evade' | 'brace' | 'gather' }>;
-const SELF_KINDS: readonly Card['kind'][] = ['evade', 'brace', 'gather'];
+export type SelfCard = Extract<Card, { kind: 'evade' | 'brace' | 'counter' | 'gather' }>;
+const SELF_KINDS: readonly Card['kind'][] = ['evade', 'brace', 'counter', 'gather'];
 
 /** Whether a card spends the turn on the fighter themself. */
 export function spendsOnSelf(card: Card): card is SelfCard {
@@ -124,8 +131,8 @@ export function spendsOnSelf(card: Card): card is SelfCard {
 }
 
 /** Defences kept ready, which react on their own and never take a turn. */
-export type ReadyCard = Extract<Card, { kind: 'guard' | 'dodge' | 'counter' }>;
-const READY_KINDS: readonly Card['kind'][] = ['guard', 'dodge', 'counter'];
+export type ReadyCard = Extract<Card, { kind: 'guard' | 'dodge' }>;
+const READY_KINDS: readonly Card['kind'][] = ['guard', 'dodge'];
 
 /** Whether a card is a defence kept ready. */
 export function isReadyDefence(card: Card): card is ReadyCard {
@@ -149,7 +156,7 @@ export function fitsBand(card: Card, band: RangeBand): boolean {
     case 'step':
       return card.direction === 'in' ? band !== 'close' : band !== 'far';
     case 'counter':
-      return band === 'close';
+      return counterFits(card.waits, band);
     case 'jutsu':
       return inReach(reachOf(card.technique), band);
   }
@@ -168,10 +175,28 @@ function basicFor(fighter: Kit, card: Card): Card {
 
 /** Every card this fighter's kit holds at a distance, of any kind: basics, jutsu, tools. */
 export function kitCards(fighter: Kit, band: RangeBand): Card[] {
-  const basics = BASIC_CARDS.map((b) => basicFor(fighter, b.card));
+  const basics = BASIC_CARDS.map((b) => basicFor(fighter, b.card)).filter((c) =>
+    hasMeans(fighter, c),
+  );
   const jutsu = fighter.techniques.map((technique): Card => ({ kind: 'jutsu', technique }));
   const tools = fighter.items.map((item): Card => ({ kind: 'item', item }));
   return [...basics, ...jutsu, ...tools].filter((c) => fitsBand(c, band));
+}
+
+/**
+ * Where a counter can wait: a blow or a blade only up close, eyes only where they can be met;
+ * thrown steel comes from anywhere.
+ */
+function counterFits(waits: CounterWaits, band: RangeBand): boolean {
+  return waits === 'thrown' || band === 'close';
+}
+
+/** Whether the fighter has what a card needs: a blade counter needs a blade in hand. */
+function hasMeans(fighter: Pick<Kit, 'gear' | 'techniques'>, card: Card): boolean {
+  if (card.kind !== 'counter' || card.waits !== 'blade') return true;
+  const held = fighter.gear?.held;
+  if (fighter.gear !== undefined) return held !== undefined && shapeOf(held) === 'blade';
+  return fighter.techniques.some((t) => t.needs?.weapon === 'blade');
 }
 
 /** Footwork: a step, or a technique that does nothing but move its user. */
@@ -202,7 +227,7 @@ export function reactionsFor(fighter: Kit, band: RangeBand): Card[] {
 
 export function findCard(fighter: Kit, id: CardId): Card | null {
   const basic = BASIC_CARDS.find((b) => b.id === id);
-  if (basic) return basicFor(fighter, basic.card);
+  if (basic) return hasMeans(fighter, basic.card) ? basicFor(fighter, basic.card) : null;
   if (id.startsWith(ITEM_PREFIX)) {
     const item = carried(fighter, id.slice(ITEM_PREFIX.length));
     return item ? { kind: 'item', item } : null;
@@ -235,7 +260,7 @@ export function slotted(fighter: PlanFighter, band: RangeBand): Card[] {
  */
 export function isReaction(card: Card): boolean {
   if (card.kind === 'jutsu') return hasVerb(card.technique, 'substitute');
-  return card.kind === 'guard' || card.kind === 'dodge' || card.kind === 'counter';
+  return card.kind === 'guard' || card.kind === 'dodge';
 }
 
 /** A defence of any kind: one kept ready (Guard, Dodge, Counter) or committed to (Evade, Brace). */
@@ -279,6 +304,7 @@ export function playable(fighter: PlanFighter, card: Card): boolean {
   if (cardBlocked(fighter, card)) return false;
   if (card.kind === 'dispel') return fighter.chakra >= DISPEL_CHAKRA;
   if (card.kind === 'evade' || card.kind === 'brace') return canCommit(fighter, card.kind);
+  if (card.kind === 'counter') return canCommit(fighter, COUNTER_IDS[card.waits]);
   if (card.kind === 'gather') return canGather(fighter);
   if (card.kind === 'item') return card.item.count > 0;
   if (card.kind !== 'jutsu' || isReaction(card)) return !isReaction(card);

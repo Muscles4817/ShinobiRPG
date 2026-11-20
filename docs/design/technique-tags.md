@@ -53,8 +53,26 @@ everything that hurts or hinders lands as something, and that `follows` names a 
 
 ## Still to build, in order
 
-1. Levels picked when slotted (Almighty Push), the will pool (Tsukuyomi), two-stage moves.
-2. Breath as the clock: dodging costs breath, and low breath slows you.
-3. What you can see: a hidden fighter's casting doesn't show until its effect does.
-4. The counter system: moves meeting moves, a counter taking a slot.
-5. Travel time, entries, durations.
+Done: levels picked when slotted (Almighty Push), the will pool (Tsukuyomi), two-stage moves
+(Planetary Devastation), defence lines keyed by how an attack came, and the counter system.
+
+1. Breath as the clock: dodging costs breath, and low breath slows you.
+2. What you can see: a hidden fighter's casting doesn't show until its effect does.
+3. Travel time, entries, durations.
+
+### The counter system (agreed with the owner)
+
+- A counter is an **action you slot**, never a free defence. It spends the turn waiting and holds
+  until your next turn, answering the first attack it waits for. Nothing it waits for comes: the
+  turn is gone, and nothing else.
+- It **waits for one kind of attack**, read from the tags: a blow or grab up close (bare
+  hands), a blade (a blade in hand), thrown steel (any distance), eyes (look away from an
+  illusion through eye contact). Anyone with the means may try; skill sets how well.
+- **Whether it lands is a read**: eyes and wits against the attacker's speed and the skill
+  behind it, more decisive than a dodge's read. An attack that commits its user (a charge, a
+  Chidori) is read more easily and answered harder.
+- **Three outcomes**: clean (stopped and answered), late (turned aside, nothing back), wrong
+  (it lands, and the fighter is open, every ready defence down, until their next turn).
+- **Foes play it honestly**: only from what their read of your cues is sure of, only against
+  something worth a turn (a committed attack, a hold, a daze, a quarter of their health), and
+  not again straight after a counter that waited for nothing.

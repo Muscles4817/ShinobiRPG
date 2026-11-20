@@ -18,7 +18,7 @@ export function attackOf(card: Card): RowAttack {
     case 'strike':
       return { reach: card.reach ?? STRIKE_REACH };
     case 'counter':
-      return { reach: STRIKE_REACH };
+      return { reach: card.waits === 'thrown' ? THROW_REACH : STRIKE_REACH };
     case 'throw':
       return { reach: THROW_REACH };
     case 'jutsu':

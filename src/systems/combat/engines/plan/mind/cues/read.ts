@@ -4,7 +4,7 @@ import { inSight } from '../../senses';
 import { playerOf, type PlanFighter, type PlanState } from '../../state';
 import { describe, describedLine, saysAnything } from './describe';
 import { inferFrom, type Prediction, type Reading } from './infer';
-import { observe } from './observe';
+import { observe, type Sighting } from './observe';
 import { CLASS_WORDS, cueProfile } from './profile';
 
 /**
@@ -38,18 +38,25 @@ function words(p: Prediction, actor: PlanFighter, described: string | null): str
   return `${capitalised(`${hedge}${CLASS_WORDS[p.predicted]}`)}: ${p.confidence}.`;
 }
 
-/** Your read of what a foe is readying, or nothing when they can't be read at all. */
-export function cueReadLine(state: PlanState, actor: PlanFighter): string | undefined {
-  const observer = playerOf(state);
-  const id = state.intents[actor.id];
-  const card = id === undefined ? null : findCard(actor, id);
-  if (!card || actor.stunned > 0 || !inSight(observer, actor)) return undefined;
+/** Where and when a card is read, and by whom. */
+export interface CardRead {
+  readonly state: Pick<PlanState, 'range' | 'distances' | 'field' | 'round'>;
+  readonly seen: PlanState['seen'];
+  readonly at: readonly [number, number, number];
+  readonly observer: PlanFighter;
+  readonly actor: PlanFighter;
+  readonly card: Card;
+}
+
+/** What one fighter makes of a card another is readying, from its cues alone. */
+export function readCard(r: CardRead): { prediction: Prediction; sighting: Sighting } {
+  const { observer, actor, state } = r;
   const reading: Reading = {
     observer,
     actor,
-    seenCards: state.seen[actor.id] ?? [],
+    seenCards: r.seen[actor.id] ?? [],
     habits: habitsOf(actor),
-    moment: [state.bout, state.round, state.exchange],
+    moment: [...r.at],
     situation: {
       band: distanceBetween(state, observer.id, actor.id),
       exchange: state.round - 1,
@@ -57,8 +64,18 @@ export function cueReadLine(state: PlanState, actor: PlanFighter): string | unde
       illusionAbout: actor.confused > 0 || state.field !== undefined,
     },
   };
-  const sighting = observe(reading, cueProfile(card, actor));
-  const prediction = inferFrom(reading, sighting);
+  const sighting = observe(reading, cueProfile(r.card, actor));
+  return { prediction: inferFrom(reading, sighting), sighting };
+}
+
+/** Your read of what a foe is readying, or nothing when they can't be read at all. */
+export function cueReadLine(state: PlanState, actor: PlanFighter): string | undefined {
+  const observer = playerOf(state);
+  const id = state.intents[actor.id];
+  const card = id === undefined ? null : findCard(actor, id);
+  if (!card || actor.stunned > 0 || !inSight(observer, actor)) return undefined;
+  const moment = { seen: state.seen, at: [state.bout, state.round, state.exchange] as const };
+  const { prediction, sighting } = readCard({ ...moment, state, observer, actor, card });
   const unfamiliar = prediction.predicted === 'technique' && sighting.form?.value === 'unfamiliar';
   const seen = describe(sighting);
   const described =

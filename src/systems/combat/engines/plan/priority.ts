@@ -7,6 +7,7 @@ import { kitCall } from './calling';
 import { nextOpening } from './climbing';
 import { setupPlay } from './setups';
 import { survivalPlay } from './survival';
+import { counterPlay } from './counterRead';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { hittable } from './rows';
@@ -134,6 +135,9 @@ function kitPlay(self: PlanFighter, round: Round): Chosen | null {
   // Otherwise a summoner fights their own way first: from the kit, Sage Mode and all.
   const called = kitFor(self, round);
   if (called) return { card: called, target: undefined, why: 'call' };
+  // Something coming it reads, and would read cleanly: wait to counter it (`counterRead.ts`).
+  const counter = counterPlay(self, round);
+  if (counter) return { ...counter, why: 'counter-read' };
   return setup;
 }
 
