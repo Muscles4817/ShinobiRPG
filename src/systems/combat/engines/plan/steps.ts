@@ -14,7 +14,6 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
-import { walksThrough } from '../../rules/size';
 import { bandOf, distanceBetween, sameSpacing, withMoves } from './distance';
 import { movesFor } from './pairMoves';
 import { causeLine } from '../../rules/causes';
@@ -94,19 +93,6 @@ function stride(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   return arrive(round, turn, to, direction === 'back' ? keepingPace(round, turn, to) : []);
 }
 
-/**
- * A big body held off takes the shot and keeps coming, unless it hurt too much (`size.ts`):
- * the step lands after all. Null when it stops them.
- */
-function walkedThrough(before: Round, after: Round, turn: Turn): Round | null {
-  const was = fighterIn(before, turn.actor.id);
-  const now = fighterIn(after, turn.actor.id);
-  if (!was || !now || !alive(now)) return null;
-  if (!walksThrough(now, was.health - now.health, now.maxHealth)) return null;
-  const told = say(after, tell('{a} take{a.s} it and keep{a.s} coming.', { a: now }));
-  return arrive(told, { ...turn, actor: now }, stepIn(from(before, turn)));
-}
-
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const { actor } = turn;
   if (isPinned(actor)) {
@@ -127,9 +113,12 @@ function steppedIn(round: Round, moving: Round, turn: Turn): Round {
   const met = holdOff(moving, turn);
   switch (met.outcome) {
     case 'stopped':
-      return walkedThrough(round, met.round, turn) ?? met.round;
-    case 'through':
-      return arrive(met.round, turn, stepIn(from(round, turn)));
+      return met.round;
+    case 'through': {
+      // A closer who took a light hit on the way comes in as they now stand.
+      const actor = fighterIn(met.round, turn.actor.id) ?? turn.actor;
+      return arrive(met.round, { ...turn, actor }, stepIn(from(round, turn)));
+    }
     case 'unopposed':
       return stride(met.round, turn, 'in');
   }

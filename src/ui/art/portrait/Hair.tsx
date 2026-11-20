@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import type { HairStyle } from '@/game';
 
-import { Brush } from './Brush';
+import { Brush } from './BrushLine';
 import { points, type Point } from './brush';
 import { INK, lit } from './ink';
 

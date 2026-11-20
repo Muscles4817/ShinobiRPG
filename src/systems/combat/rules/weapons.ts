@@ -214,6 +214,18 @@ export function throwWith(attacker: Armed, defender: Armed, roll: number): Attac
   return { ...hit, raw: hit.raw * PLAIN_THROW_SCALE, what, kind: 'weapon' };
 }
 
+/** A volley of shuriken lands as this many light blows, each slipped alone. */
+export const VOLLEY_BLOWS = 3;
+/** The whole volley against one kunai: light, so it seldom stops anyone on its own. */
+export const VOLLEY_SCALE = 0.75;
+
+/** A volley of shuriken: thrown steel by the weapon art, spread over several light blows. */
+export function volleyWith(attacker: Armed, defender: Armed, roll: number): Attack {
+  const kunai = throwWith(attacker, defender, roll);
+  const raw = kunai.raw * VOLLEY_SCALE;
+  return { ...kunai, raw, blows: VOLLEY_BLOWS, daze: 0, drain: 0, what: 'shuriken' };
+}
+
 /**
  * Why a technique can't be used with what the fighter holds: its `needs.weapon` (every blade
  * art needs a blade, validated). Only fighters whose gear is known are held to it (foes and

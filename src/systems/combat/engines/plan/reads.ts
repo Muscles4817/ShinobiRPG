@@ -37,7 +37,9 @@ export function styleOf(card: Card): AttackStyle | null {
     case 'jutsu':
       return isWounding(card.technique) ? jutsuStyle(card) : null;
     case 'item':
-      return card.item.effect === 'blast' ? 'jutsu' : null;
+      // An explosive tag reads as a jutsu's blast; shuriken as thrown steel, like a kunai.
+      if (card.item.effect === 'blast') return 'jutsu';
+      return card.item.effect === 'volley' ? 'blow' : null;
     case 'step':
     case 'gather':
     case 'search':

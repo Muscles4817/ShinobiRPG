@@ -20,6 +20,7 @@ const TOOL_COUNTERS: Readonly<Record<CombatItemEffect, string>> = {
   chakra: 'A pill to refill their chakra: a long fight favours them.',
   heal: 'A salve to close their wounds once.',
   clarity: 'A charm that clears an illusion from their head.',
+  volley: 'Shuriken to throw by the handful: light, but hard to slip, and they may run out.',
 };
 
 function gearNotes(def: EnemyDef, ctx: GameContext): PoolNote[] {

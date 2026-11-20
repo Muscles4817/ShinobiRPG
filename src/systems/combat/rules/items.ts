@@ -9,7 +9,8 @@ import { tell } from './telling';
 /**
  * Fight tools, the same in every engine. A smoke bomb hides you until you next attack (that
  * attack lands harder, as any hidden attacker's does); a flash tag lights up every hidden foe;
- * an explosive tag is a seal blast at one foe, which armour can't blunt and spirits fear; pills
+ * an explosive tag is a seal blast at one foe, which armour can't blunt and spirits fear; a
+ * handful of shuriken is a volley at one (thrown steel in Plan & Watch, `plan/volley.ts`); pills
  * and salves restore chakra and health; a clarity charm clears confusion. Engines offer each
  * carried tool, ask `itemBlocker` why not, and call `useItem`.
  */
@@ -21,6 +22,8 @@ import { tell } from './telling';
 export const BLAST_POWER = 40;
 export const CHAKRA_RESTORE = 25;
 export const HEAL_RESTORE = 30;
+/** A volley where an engine doesn't throw it as steel: a light hit, whatever the gap. */
+export const VOLLEY_POWER = 12;
 
 export interface ItemUse<B extends Body> {
   readonly user: B;
@@ -29,9 +32,14 @@ export interface ItemUse<B extends Body> {
   readonly log: readonly string[];
 }
 
+/** Tools that are attacks: an explosive tag, a volley of shuriken. */
+export function itemAttacks(effect: CombatItemEffect): boolean {
+  return effect === 'blast' || effect === 'volley';
+}
+
 /** Tools aimed at one foe: the UI asks for a target. */
 export function itemTargeted(effect: CombatItemEffect): boolean {
-  return effect === 'blast';
+  return itemAttacks(effect);
 }
 
 /** One tool in the pouch, by id; null when none was carried. */
@@ -46,6 +54,7 @@ function pointless(user: Body, effect: CombatItemEffect, foes: readonly Body[]):
     case 'flash':
       return foes.some((f) => f.health > 0 && f.hidden) ? null : 'No one is hiding.';
     case 'blast':
+    case 'volley':
       return null;
     case 'chakra':
       return user.chakra >= user.maxChakra ? 'Your chakra is full.' : null;
@@ -83,7 +92,10 @@ interface Use<B extends Body> {
 function blast<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
   const target = use.foes.find((f) => f.id === use.targetId && f.health > 0 && !f.hidden);
   if (!target) return { user: use.user, foes: use.foes, log: ['The tag flies wide.'] };
-  const damage = blastDamage(target, rng.next());
+  const damage =
+    use.item.effect === 'volley'
+      ? Math.max(1, Math.round(VOLLEY_POWER * variance(rng.next())))
+      : blastDamage(target, rng.next());
   const foes = use.foes.map((f) =>
     f.id === target.id ? { ...f, health: Math.max(0, f.health - damage) } : f,
   );
@@ -103,11 +115,12 @@ function selfEffect<B extends Body>(user: B, effect: CombatItemEffect): B {
       return { ...user, confused: 0 };
     case 'flash':
     case 'blast':
+    case 'volley':
       return user;
   }
 }
 
-const USE_LINE: Readonly<Record<Exclude<CombatItemEffect, 'blast'>, string>> = {
+const USE_LINE: Readonly<Record<Exclude<CombatItemEffect, 'blast' | 'volley'>, string>> = {
   smoke: '{a} vanish{a.es} in a burst of smoke.',
   flash: '{a} set{a.s} off a flash that lights every corner of the field.',
   chakra: '{a} swallow{a.s} a pill, and {a.their} chakra comes flooding back.',
@@ -119,7 +132,7 @@ const USE_LINE: Readonly<Record<Exclude<CombatItemEffect, 'blast'>, string>> = {
 export function useItem<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
   const user = spend(use.user, use.item.id);
   const { effect } = use.item;
-  if (effect === 'blast') return blast({ ...use, user }, rng);
+  if (effect === 'blast' || effect === 'volley') return blast({ ...use, user }, rng);
   const foes = effect === 'flash' ? use.foes.map((f) => ({ ...f, hidden: false })) : use.foes;
   return { user: selfEffect(user, effect), foes, log: [tell(USE_LINE[effect], { a: user })] };
 }

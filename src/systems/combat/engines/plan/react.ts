@@ -85,7 +85,10 @@ export interface Blow {
   readonly followUp?: true;
   /** Its technique already made the avoid roll and reached the target (`jutsu.ts`). */
   readonly reached?: true;
-  /** A rush's light blow as its thrower lands: a ready substitution isn't spent on it (`rushing.ts`). */
+  /**
+   * A light blow: a rush's as its thrower lands (`rushing.ts`), a volley's shuriken (`arms.ts`).
+   * A ready substitution isn't spent on it.
+   */
   readonly light?: true;
 }
 

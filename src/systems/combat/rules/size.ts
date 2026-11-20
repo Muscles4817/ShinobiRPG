@@ -38,10 +38,11 @@ const SIZE_RULES: Readonly<Record<BodySize, SizeRule>> = {
   huge: { health: 1.7, toughness: 1.45, slips: 0.65 },
 };
 
-/** A body this big or bigger walks through a hold-off… */
-const WALKS_THROUGH_FROM: BodySize = 'large';
-/** …unless the shot took more than this share of its health. */
-export const WALK_THROUGH_SHARE = 0.2;
+/**
+ * A hit stops someone closing in only if it took at least this share of a human body's health;
+ * a bigger body shrugs off more, by its toughness (a large one a fifth, a huge one a quarter).
+ */
+export const STOP_SHARE = 1 / 6;
 /** A step in is this much likelier for each size step bigger than the foe. */
 export const STEP_PER_SIZE = 0.08;
 
@@ -79,9 +80,9 @@ export function sizeSlips(f: Sized): number {
   return SIZE_RULES[sizeOf(f)].slips;
 }
 
-/** Whether a body this size keeps coming through a shot that took `taken` of `maxHealth`. */
-export function walksThrough(f: Sized, taken: number, maxHealth: number): boolean {
-  return stepOf(sizeOf(f)) >= stepOf(WALKS_THROUGH_FROM) && taken <= maxHealth * WALK_THROUGH_SHARE;
+/** Whether a shot that took `taken` of `maxHealth` stops a body this size coming in. */
+export function stopsCloser(f: Sized, taken: number, maxHealth: number): boolean {
+  return taken >= maxHealth * STOP_SHARE * sizeToughness(f);
 }
 
 /** Whether a body is big enough for its fists to reach past arm's length. */

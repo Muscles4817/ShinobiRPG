@@ -1,6 +1,6 @@
 import type { Age, FacialHair, Mark } from '@/game';
 
-import { Brush } from './Brush';
+import { Brush } from './BrushLine';
 import { points, type Point } from './brush';
 import { SHADE } from './ink';
 

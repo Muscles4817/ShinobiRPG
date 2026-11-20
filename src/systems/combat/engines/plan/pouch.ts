@@ -1,5 +1,6 @@
 import type { CombatItem } from '../../contract';
 import { itemBlocker, useItem } from '../../rules/items';
+import { volley } from './arms';
 import { felled } from './falls';
 import { shouldFlee } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
@@ -41,11 +42,12 @@ function worthIt(self: PlanFighter, item: CombatItem, moment: ToolMoment): boole
     case 'chakra':
       return self.chakra < self.maxChakra * RESTORE_BELOW;
     case 'blast':
+    case 'volley':
       return false;
   }
 }
 
-/** A slotted tool this moment calls for (explosive tags are picked as attacks instead). */
+/** A slotted tool this moment calls for (explosive tags and shuriken are picked as attacks). */
 export function toolInstinct(
   self: PlanFighter,
   ready: readonly Card[],
@@ -65,9 +67,11 @@ function fleeIfBroken(round: Round, id: string): Round {
 }
 
 /** Uses one of a tool from the pouch, writing the user and their foes back into the round. */
-export function useTool(round: Round, { actor, target, rng }: Turn, item: CombatItem): Round {
+export function useTool(round: Round, turn: Turn, item: CombatItem): Round {
+  const { actor, target, rng } = turn;
   const foes = opponentsOf(round.fighters, actor);
   if (itemBlocker(actor, item, foes)) return round;
+  if (item.effect === 'volley') return thrown(round, turn, item);
   const used = useItem(
     { user: actor, item, foes, ...(target ? { targetId: target.id } : {}) },
     rng,
@@ -83,4 +87,13 @@ export function useTool(round: Round, { actor, target, rng }: Turn, item: Combat
   if (!struck || damage <= 0) return told;
   const hit = say(told, harmLine(tell('{t} take{t.s} the hit.', { t: struck }), damage));
   return struck.health <= 0 ? felled(hit, struck) : fleeIfBroken(hit, struck.id);
+}
+
+/** A volley of shuriken: one handful spent, then thrown as steel (`arms.ts`). */
+function thrown(round: Round, turn: Turn, item: CombatItem): Round {
+  const items = turn.actor.items.map((i) => (i.id === item.id ? { ...i, count: i.count - 1 } : i));
+  const fighters = round.fighters.map((f) => (f.id === turn.actor.id ? { ...f, items } : f));
+  const spent = { ...round, fighters };
+  const actor = fighterIn(spent, turn.actor.id) ?? turn.actor;
+  return volley(spent, { ...turn, actor });
 }

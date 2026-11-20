@@ -1,6 +1,6 @@
 import type { Dress, HeadbandPlace } from '@/game';
 
-import { Brush } from './Brush';
+import { Brush } from './BrushLine';
 import { points } from './brush';
 import { INK, SHADE } from './ink';
 
