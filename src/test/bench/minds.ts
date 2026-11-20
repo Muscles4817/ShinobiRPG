@@ -1,18 +1,16 @@
 /**
  * Which minds a bench's fights are played with. Foes think ahead in the game
- * (`engines/plan/mind/planner/`). In CI only two benches play them so: the planner bench, which
- * sets thinking against instinct, and the invariant that what is shown is what is told
- * (`toldBench`), which must hold for the fights the game plays. Every other bench plays everyone
- * by instinct (`CombatSetup.instinct`): thinking costs about eight times as much a fight, and the
- * matrix, team and bestiary benches, played thinking, leave findings still being worked through
- * (`docs/design/research/thinking-foes-findings.md`). The weekly run
- * (`VITE_BENCH_THINKING=true`, `bench-thinking.yml`) plays every bench thinking, to show where
- * the two disagree.
+ * (`engines/plan/mind/planner/`), but the pipeline plays every fight by instinct
+ * (`CombatSetup.instinct`; the game's own fights through `defaultEngines` in `game/context.ts`):
+ * thinking costs about eight times as much a fight. Thinking is run locally, on a machine with the
+ * compute, with `npm run test:thinking` (`VITE_BENCH_THINKING=true`); what it showed is kept in
+ * `docs/design/research/thinking-foes-findings.md`.
  */
 
-const THINKING_EVERYWHERE = import.meta.env.VITE_BENCH_THINKING === 'true';
+/** Whether this run plays foes thinking, as the game does (`npm run test:thinking`). */
+export const THINKING = import.meta.env.VITE_BENCH_THINKING === 'true';
 
-/** The setup's minds: instinct, unless the weekly run asks for thinking everywhere. */
+/** The setup's minds: instinct, unless this run thinks. */
 export function benchMinds(): { readonly instinct?: true } {
-  return THINKING_EVERYWHERE ? {} : { instinct: true };
+  return THINKING ? {} : { instinct: true };
 }

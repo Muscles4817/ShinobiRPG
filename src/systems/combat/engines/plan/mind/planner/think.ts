@@ -12,46 +12,31 @@ import { roundBudget, TIERS } from './ladder';
 import { planFor } from './search';
 
 /**
- * Foes who think ahead, and when they do it
- * (`docs/design/combat-ai-plan.md` Part 8, rule 1): a mind plans once a round, as it begins, and
- * announces its plan's steps one exchange at a time; three cheap checks make it plan again
- * mid-round (its next step can't be played, a fact the step relied on didn't come true, or it
- * has no plan). Past its plan's steps it plays as it would have (`intentOf`), which is what the
- * plan was scored with. Foes who don't think announce as they always have.
+ * Foes who think ahead, and when they do it (`docs/design/combat-ai-plan.md` Part 8): a mind
+ * thinks before every exchange, playing its options out in the engine. A plan it already holds
+ * (a combination: hide, then strike) is not thrown away for a near tie: its next step is what it
+ * would do anyway, kept unless a fresh look beats it clearly (`search.ts`). A step that can no
+ * longer be played, or that relied on something that didn't come true, is let go. Foes who
+ * don't think announce as they always have (`intentOf`).
  */
 
-/** The seeds a mind plans with, from the fight's round and who it is, never the fight's Rng. */
-function seedBase(round: number, id: string): number {
-  let h = round * 2654435761;
+/** The seeds a mind plans with, from the fight's exchange and who it is, never the fight's Rng. */
+function seedBase(state: PlanState, id: string): number {
+  let h = (state.round * 8 + state.exchange) * 2654435761;
   for (const ch of id) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
   return (h >>> 0) % 1_000_000;
 }
 
 const tierOf = (f: PlanFighter) => TIERS[statTier(f.attributes.intellect).grade];
 
-/** A held plan's next step, or why there is none: it is spent, or it must be made again. */
-type Next = { readonly step: string } | { readonly spent: true } | { readonly replan: true };
-
-/**
- * The cheap checks: a new round, no plan, a next step that can't be played, or a fact it relied
- * on that didn't come true, each mean planning again.
- */
-function stepNow(state: PlanState, f: PlanFighter, plan: HeldPlan | undefined): Next {
-  if (!plan || state.exchange === 0) return { replan: true };
-  const step = plan.steps[plan.next];
-  if (step === undefined) return { spent: true };
-  if (!intendedCard(f, { [f.id]: step }, bandOf(state, f))) return { replan: true };
+/** A held plan's next step, while it can still be played and what it relied on came true. */
+function heldStep(state: PlanState, f: PlanFighter, plan: HeldPlan | undefined): string | null {
+  const step = plan?.steps[plan.next];
+  if (!plan || step === undefined) return null;
+  if (!intendedCard(f, { [f.id]: step }, bandOf(state, f))) return null;
   const facts = holdsNow(state, f);
   const relied = plan.relies[plan.next] ?? [];
-  return relied.every((fact) => facts.has(fact)) ? { step } : { replan: true };
-}
-
-function planned(state: PlanState, f: PlanFighter, budget: number): Announcement | undefined {
-  const plan = planFor({ state, selfId: f.id, budget, seedBase: seedBase(state.round, f.id) });
-  const first = plan?.sequence[0];
-  if (!plan || first === undefined) return undefined;
-  const held: HeldPlan = { steps: plan.sequence, next: 1, round: state.round, relies: plan.relies };
-  return { card: first, why: 'planned', planned: held };
+  return relied.every((fact) => facts.has(fact)) ? step : null;
 }
 
 function thought(
@@ -59,16 +44,17 @@ function thought(
   f: PlanFighter,
   { rng, budget }: { rng: Rng; budget: number },
 ): Announcement {
-  const now = stepNow(state, f, f.planned);
-  if ('spent' in now) return intentOf(state, f, rng);
-  if ('step' in now && f.planned) {
-    return {
-      card: now.step,
-      why: 'plan-step',
-      planned: { ...f.planned, next: f.planned.next + 1 },
-    };
+  const step = heldStep(state, f, f.planned);
+  const request = { state, selfId: f.id, budget, seedBase: seedBase(state, f.id) };
+  const plan = planFor(step === null ? request : { ...request, keep: step });
+  const first = plan?.sequence[0];
+  if (!plan || first === undefined) return intentOf(state, f, rng);
+  // The fresh look kept the step it held: the plan goes on.
+  if (f.planned && step !== null && plan.sequence.length === 1 && first === step) {
+    return { card: step, why: 'plan-step', planned: { ...f.planned, next: f.planned.next + 1 } };
   }
-  return planned(state, f, budget) ?? intentOf(state, f, rng);
+  const held: HeldPlan = { steps: plan.sequence, next: 1, round: state.round, relies: plan.relies };
+  return { card: first, why: 'planned', planned: held };
 }
 
 /**

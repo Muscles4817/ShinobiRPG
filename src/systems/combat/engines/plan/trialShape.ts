@@ -12,6 +12,4 @@ export interface OnTrial {
   readonly teleports?: true;
   /** Has blinked this round (`blink.ts`). */
   readonly blinked?: true;
-  /** Fights under the far gap: crossing between mid and far is harder (`farGap.ts`). */
-  readonly longGap?: true;
 }

@@ -15,34 +15,50 @@ of what it found, kept until each is settled. Nothing here has been tuned away.
   when 2 was left. Lingering harm now goes through `taken`, as every hit does
   (`lingering.test.ts`).
 
-## Open questions (the owner decides)
+## Settled with the owner
 
-1. **After its short plan, a thinking fighter falls back on old judgement.** It plans once a round
-   (one or two moves), then for the rest of the round decides as today's AI does: at the end of
-   the exchange before, and sometimes on instinct instead of its plan. A sharp jōnin against the
-   seventh gate braces as planned, then on instinct throws a bolt and is cut down: it outlasts the
-   gate a quarter of the time, where re-deciding each turn by its plan outlasted it at least half
-   the time (`gateSurvival.test.ts`, which now measures today's minds). Should a thinking mind keep
-   thinking each exchange of the round?
-2. **An announced move stands when a killer appears before the fighter's turn.** Everyone shows
-   their next move at the end of an exchange and keeps to it unless it has become pointless. If
-   Guy opens a gate earlier in the exchange, a fighter who announced a bolt still throws it rather
-   than brace. Should a fighter who reads the fight be let off their announcement then? The
-   announcement is a promise to the player, so letting foes break it costs trust in the telegraph.
-3. **Default plans walk into a hold-off again and again.** A thinking archer keeps kunai ready and
-   shoots anyone who steps in. The plan the game fills in for a fighter who wants to fight up close
-   tries to step in every exchange, is stopped every time ("You make another try, and Asuka shuts
-   it down again"), and a puppeteer never unseals the puppet it could have sent in from where it
-   stood (`puppetry.test.ts`). Should default plans notice they are being held off and do
-   something from where they stand?
-4. **Thinking casters seldom cast when crowded,** so seals broken up close (a rule on trial) come
-   up far less often in versus.
+1. **A thinking fighter now thinks before every exchange,** not once a round. It used to plan one
+   or two moves at a round's start and then decide the old way, sometimes on instinct. A plan of
+   moves it already holds is kept unless a fresh look beats it clearly (`planner/think.ts`).
+   Measured on the bench cast, one look costs about 48 ms on the bench machine (median 38, the
+   slowest in twenty about 120), so four a round is affordable off the page's thread. A sharp
+   jōnin against the seventh gate now outlasts it every time (`gateSurvival.test.ts`).
+2. **A killer since a fighter settled on its move lets a sharp mind think again**
+   (`newKiller` in `survival.ts`). What the player sees of a foe's next move is a read, never a
+   promise, so a foe changing its mind looks like a misread, which reads can already be.
+3. **Whose plan a fighter fights by is kept on the fighter** (`ownPlan`, `plan/ownPlan.ts`), set
+   as the fight starts. It was worked out from the round each time, and two readings of the round
+   (`asRound`, the instinct moment) had lost it, so a watched fighter of yours never played for
+   time. The second time a kind of bug appeared, its cause was fixed.
+4. **The far gap is in every fight** (`plan/farGap.ts`): crossing between mid and far is the harder
+   step both ways. The far holder's second shot is gone: at that distance a single thrown blade
+   is less likely to stop anyone, not more (below).
+
+## Being designed
+
+- **Holding off: hit is not stopped.** The owner's picture: a single kunai at far range almost
+  never stops anyone short of a very skilled thrower; a volley of shuriken hits more often but
+  lightly, and a closer it hits still gets through, taking the harm (poisoned tips make that
+  dearer); a technique that fires many blades is better at far; something heavy, like a giant
+  shuriken, stops all but the toughest. Shuriken run out, so coming unprepared is punished. A
+  holder with no way to keep someone off and nowhere to hide is in trouble.
+- **Default plans walked into a hold-off again and again.** The owner reads this as the game
+  needing more ways to close, not a plan to patch: a cheap clone technique to draw the shot while
+  you come in (clones already screen a charge, `plan/screening.ts`, but no default plan uses them),
+  and the far gap and the hold-off rules above.
+- **Thinking casters seldom cast when crowded,** so seals broken up close (a rule on trial) come up
+  far less often in versus.
+
+## For the ready sense (`docs/design/ready-sense-plan.md`)
+
+- Hiding is easier the further away you are, even without a technique: in a forest at far range it
+  is very easy, and finding someone there by your own senses is hard.
+- Most sensing techniques don't reach well at far range (as Neji against the Sound's spider user).
 
 ## The benches, played thinking
 
-CI plays these by instinct until the findings are worked through; the weekly run
-(`bench-thinking.yml`) plays them thinking. Run the same by hand with
-`VITE_BENCH_THINKING=true npx vitest run src/test/bench`.
+The pipeline plays every fight by instinct; thinking runs locally, with
+`npm run test:thinking -- src/test/bench` for the benches.
 
 **The matrix** (every cast member against every other at chūnin, both sides thinking, 8 seeds a
 pair): 22 pairs fall outside the 15–85% band that were inside it by instinct.
@@ -67,4 +83,4 @@ didn't finish inside 30 seconds.
 
 **Cost:** the whole bench suite took about 34 minutes thinking against about 9 by instinct, most
 of it the bestiary and foreign shinobi benches. Their per-test time limits are set for instinct,
-so the weekly run will show some as timeouts until those limits read the run.
+so a thinking run shows some as timeouts until those limits read the run.

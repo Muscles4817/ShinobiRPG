@@ -55,7 +55,7 @@ export function withTurn(
 export function tracedTurn(before: Round, after: Round, actorId: string): Round {
   const self = before.fighters.find((f) => f.id === actorId);
   const took = !before.acted?.includes(actorId) && after.acted?.includes(actorId) === true;
-  if (!self?.isPlayer || before.watching === true || !took || after.played === undefined) {
+  if (!self?.ownPlan || !took || after.played === undefined) {
     return after;
   }
   const turn = traceTurn(self, before, after.played);

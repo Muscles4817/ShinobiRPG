@@ -41,6 +41,7 @@ import type { OnTrial } from './trialShape';
 import type { PlayerPlanning } from './planningShape';
 import type { ExchangeMarks } from './exchangeShape';
 import type { UnderIllusion } from './illusionShape';
+import { ownPlanned } from './ownPlan';
 export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -204,14 +205,7 @@ export interface Swing {
   readonly by: string;
 }
 
-/** The change to a fighter who pays chakra: less left, more spent (never below empty). */
-export function paying(
-  f: Pick<PlanFighter, 'chakra' | 'chakraSpent'>,
-  cost: number,
-): Pick<PlanFighter, 'chakra' | 'chakraSpent'> {
-  const paid = Math.min(f.chakra, cost);
-  return { chakra: f.chakra - paid, chakraSpent: (f.chakraSpent ?? 0) + paid };
-}
+export { paying } from './paying';
 
 export interface PlanState extends RoundOpened {
   /** Setting up cards between rounds, then watching the round play out. */
@@ -338,7 +332,7 @@ export function initialFighters(setup: CombatSetup): PlanFighter[] {
   return withOneMind(
     formed(
       numberedNames([
-        fighterFrom(setup.player, 'player', true),
+        ownPlanned(fighterFrom(setup.player, 'player', true), setup.watch === true),
         ...setup.allies.map((a) => fighterFrom(a, 'player')),
         ...setup.enemies.map((e) => fighterFrom(e, 'enemy')),
       ]),
@@ -355,7 +349,10 @@ export function decode(state: CombatState): PlanState {
   if (state.engineId !== PLAN_ENGINE_ID) {
     throw new Error(`Plan engine cannot read combat state from engine "${state.engineId}"`);
   }
-  return state.data as PlanState;
+  const plan = state.data as PlanState; // the engine's own state, written by `encode`
+  // A fight saved before `ownPlan` was kept on the fighter: the player's, unless only watched.
+  if (plan.watching || plan.fighters.some((f) => f.ownPlan)) return plan;
+  return { ...plan, fighters: plan.fighters.map((f) => ownPlanned(f, false)) };
 }
 
 export function playerOf(state: Pick<PlanState, 'fighters'>): PlanFighter {

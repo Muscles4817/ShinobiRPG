@@ -108,7 +108,7 @@ describe('foes who think ahead', () => {
     );
     const state = { ...decode(start), range: 'close' as const };
     const foe = state.fighters.find((f) => f.id === 'foe')!;
-    const { candidates } = candidatesFor(state, foe, TIERS.C);
+    const { candidates } = candidatesFor(state, foe, { tier: TIERS.C });
     expect(candidates.map((c) => c.sequence.join(' '))).toContain('jutsu:stun jutsu:finisher');
   });
 });

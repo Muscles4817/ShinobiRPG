@@ -28,8 +28,16 @@ export interface GameContext {
  * Classic and Deck are shelved: their engines are kept and tested in `systems/combat`, but
  * not offered.
  */
+/**
+ * Under the test runner, fights play by instinct: thinking foes cost about eight times as much a
+ * fight, and the pipeline doesn't run them (the owner's call). They are run locally, every test
+ * thinking, with `npm run test:thinking` (`scripts/test-thinking.mjs`).
+ */
+const INSTINCT_UNDER_TEST =
+  import.meta.env.MODE === 'test' && import.meta.env.VITE_BENCH_THINKING !== 'true';
+
 export function defaultEngines(): readonly CombatEngine[] {
-  return [createPlanEngine()];
+  return [createPlanEngine({ instinct: INSTINCT_UNDER_TEST })];
 }
 
 /**

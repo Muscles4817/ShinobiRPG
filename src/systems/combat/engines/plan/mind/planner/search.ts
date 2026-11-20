@@ -25,6 +25,8 @@ export interface PlanRequest {
   readonly budget: number;
   /** Where its own seeds start (from the fight, never its Rng). */
   readonly seedBase: number;
+  /** The next step of a plan it already holds: what it would do anyway, unless beaten clearly. */
+  readonly keep?: CardId;
 }
 
 export interface Planned {
@@ -102,7 +104,7 @@ export function planFor(request: PlanRequest): Planned | undefined {
   const view = silent(believed(request.state, request.selfId, tier.blur));
   const self = view.fighters.find((f) => f.id === request.selfId);
   if (!self) return undefined;
-  const { candidates, all, usual } = candidatesFor(view, self, tier);
+  const { candidates, all, usual } = candidatesFor(view, self, { tier, keep: request.keep });
   if (candidates.length === 0) return undefined;
   // As many candidates as one seed each affords, then as many seeds as the budget allows.
   const affordable = candidates.slice(0, Math.max(1, Math.floor(request.budget / HORIZON)));

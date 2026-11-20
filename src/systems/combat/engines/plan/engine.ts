@@ -15,7 +15,6 @@ import { itemsLeft } from '../../rules/items';
 import { costsOwed } from '../../rules/trumps';
 import { empowerCostsOwed } from '../../rules/verbs';
 import { openingReads } from './fighterReads';
-import { withFarGap } from './farGap';
 import { healthNow } from './roundOpened';
 import { fieldMeter } from './field';
 import { endOfRound } from './roundEnd';
@@ -193,7 +192,11 @@ function previewOf(plan: PlanState): Pick<CombatView, 'preview'> {
   return preview.length > 0 ? { preview } : {};
 }
 
-export function createPlanEngine(): CombatEngine {
+/**
+ * Plan & Watch. `instinct` keeps every fight it starts to the minds before foes thought ahead,
+ * as a setup's `instinct` does one fight (the test runner's, `game/context.ts`).
+ */
+export function createPlanEngine({ instinct = false }: { instinct?: boolean } = {}): CombatEngine {
   return {
     id: PLAN_ENGINE_ID,
     label: 'Plan & Watch',
@@ -202,11 +205,11 @@ export function createPlanEngine(): CombatEngine {
 
     start(setup, rng) {
       const thinking = withThinking(initialFighters(setup), {
-        on: setup.instinct !== true,
+        on: setup.instinct !== true && !instinct,
         watched: setup.watch === true,
       });
       const opened = openFight(
-        withFarGap(withTeleports(withCloseQuarters(thinking, setup), setup), setup),
+        withTeleports(withCloseQuarters(thinking, setup), setup),
         setup.opening,
       );
       const { fighters, lines, field } = opened;

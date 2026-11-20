@@ -91,7 +91,7 @@ function pairs(
 export function candidatesFor(
   state: PlanState,
   self: PlanFighter,
-  tier: Tier,
+  { tier, keep }: { readonly tier: Tier; readonly keep?: CardId | undefined },
 ): {
   readonly candidates: Candidate[];
   readonly all: readonly CardId[];
@@ -104,7 +104,8 @@ export function candidatesFor(
   const singles = priorOrder(state, self, first)
     .slice(0, tier.firstK)
     .map((id): Candidate => ({ sequence: [id], relies: [[]] }));
-  const anyway = cardId(plannedPlay(self, now).card);
+  // The next step of a plan already held is what it would do anyway; else its plan of cards.
+  const anyway = keep ?? cardId(plannedPlay(self, now).card);
   const usual = first.includes(anyway) ? anyway : undefined;
   if (
     usual !== undefined &&

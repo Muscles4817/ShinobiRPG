@@ -79,7 +79,7 @@ function changeUp(self: PlanFighter, round: Round, play: Play): Play {
   // Only worth it against a foe who'd pick up on the pattern (`rules/familiarity.ts`).
   const read = play.target !== undefined && readsInTheMoment(play.target);
   // The player's own plan is theirs to vary, unless the fight is only watched.
-  const planned = self.isPlayer && round.watching !== true;
+  const planned = self.ownPlan === true;
   if (
     !leaning ||
     !read ||
@@ -124,7 +124,7 @@ function kitFor(self: PlanFighter, round: Round): Card | undefined {
  * for time is never the player's either (`survival.ts`).
  */
 function kitPlay(self: PlanFighter, round: Round): Chosen | null {
-  if (self.isPlayer && round.watching !== true) return null;
+  if (self.ownPlan) return null;
   const climb = climbing(self, round);
   if (climb) return { ...climb, why: 'climb' };
   // A set-up from the kit, against a match (`setups.ts`): hide, hold, finish.

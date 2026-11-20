@@ -33,8 +33,6 @@ export interface VersusChoice {
   readonly handSigns: boolean;
   /** Teleporters change distance without spending the turn, a rule on trial. */
   readonly teleport: boolean;
-  /** The far gap is a harder crossing, a rule on trial. */
-  readonly farGap: boolean;
   /** Where the bout starts. */
   readonly start: VersusStart['id'];
 }
@@ -63,15 +61,12 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
 function useTrialRules(initial: VersusChoice | null) {
   const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
   const [teleport, setTeleport] = useState(initial?.teleport ?? false);
-  const [farGap, setFarGap] = useState(initial?.farGap ?? false);
   const [start, setStart] = useState<VersusStart['id']>(initial?.start ?? 'mid');
   return {
     handSigns,
     setHandSigns,
     teleport,
     setTeleport,
-    farGap,
-    setFarGap,
     start,
     setStart,
   };

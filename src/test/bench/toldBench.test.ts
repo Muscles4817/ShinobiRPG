@@ -3,6 +3,7 @@ import { createPlanEngine, splitNarration, type CombatView } from '@/systems/com
 
 import { toSetup } from './fighters';
 import { CAST_IDS, castMember } from './matrixCast';
+import { benchMinds } from './minds';
 
 /**
  * Shown equals told (`docs/design/event-stream-plan.md`): the watch screen folds the health each
@@ -80,6 +81,7 @@ function views(a: (typeof CAST_IDS)[number], b: (typeof CAST_IDS)[number], seed:
       enemies: [toSetup(castMember(b, 'chunin'), 'foe')],
       canFlee: false,
       watch: true,
+      ...benchMinds(),
     },
     rng,
   );

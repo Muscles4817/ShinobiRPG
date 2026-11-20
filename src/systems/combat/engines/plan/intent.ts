@@ -28,6 +28,7 @@ import { attacksFrom } from './stepping';
 import { cardLabel } from './wording';
 import { playerOf, type CardId, type PlanFighter, type PlanState, type Round } from './state';
 import { bandOf } from './distance';
+import { newKiller } from './survival';
 
 /**
  * Telegraphs, as Deck fights had them: when an exchange ends, each foe settles on the card it
@@ -42,15 +43,7 @@ export type Intents = Readonly<Record<string, CardId>>;
 
 export type Table = Pick<
   PlanState,
-  | 'fighters'
-  | 'range'
-  | 'distances'
-  | 'exchange'
-  | 'field'
-  | 'round'
-  | 'reads'
-  | 'foeMark'
-  | 'watching'
+  'fighters' | 'range' | 'distances' | 'exchange' | 'field' | 'round' | 'reads' | 'foeMark'
 >;
 
 /** The table as a round about to be played, for a foe weighing its plan. */
@@ -67,8 +60,6 @@ export function asRound(table: Table): Round {
     ...(table.reads ? { reads: table.reads } : {}),
     ...(table.foeMark ? { foeMark: table.foeMark } : {}),
     ...(table.field ? { field: table.field } : {}),
-    // A bout only watched lets the player's fighter play their kit as anyone's (`priority.ts`).
-    ...(table.watching ? { watching: true as const } : {}),
   };
 }
 
@@ -136,6 +127,8 @@ export function intendedCard(
  */
 export function keepsTo(actor: PlanFighter, card: Card, round: Round): boolean {
   if (!needed(actor, card, round)) return false;
+  // A killer since it settled on its move: a mind that reads the fight thinks again (`survival.ts`).
+  if (newKiller(actor, round)) return false;
   if (!round.field || ownField(round.field, actor) || !readsInTheMoment(actor)) return true;
   const raises = slotted(actor, bandOf(round, actor)).some(
     (c) => c.kind === 'jutsu' && hasVerb(c.technique, 'field') && playable(actor, c),

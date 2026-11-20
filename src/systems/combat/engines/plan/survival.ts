@@ -41,10 +41,7 @@ export type Threat =
   | { readonly kind: 'lethal'; readonly foe: PlanFighter; readonly technique: CombatTechnique };
 
 /** What a fighter sees of the exchange when judging whether to fight for time. */
-export interface SurvivalMoment extends Pick<
-  Round,
-  'range' | 'distances' | 'intents' | 'number' | 'watching'
-> {
+export interface SurvivalMoment extends Pick<Round, 'range' | 'distances' | 'intents' | 'number'> {
   readonly fighters: readonly PlanFighter[];
 }
 
@@ -121,6 +118,23 @@ export function killerOf(self: PlanFighter, moment: SurvivalMoment): Threat | un
   return worst?.threat;
 }
 
+/** Every foe who is a killer to this fighter now, by id. */
+export function killersFacing(self: PlanFighter, moment: SurvivalMoment): string[] {
+  return opponentsOf(moment.fighters, self)
+    .filter((foe) => threatFrom(self, foe, moment.intents) !== undefined)
+    .map((foe) => foe.id);
+}
+
+/**
+ * A killer this fighter didn't face when it settled on its move: a gate opened, or a killing
+ * blow readied, since. A mind that reads the fight thinks again (`keepsTo` in `intent.ts`).
+ */
+export function newKiller(self: PlanFighter, moment: SurvivalMoment): boolean {
+  if (!readsInTheMoment(self)) return false;
+  const faced = self.facedKillers ?? [];
+  return killersFacing(self, moment).some((id) => !faced.includes(id));
+}
+
 /**
  * Whether a fighter would win the race against a killer: felling them in no more blows than the
  * killer needs to fell the fighter. Then there is nothing to wait out, and they fight on.
@@ -167,7 +181,7 @@ function getClear(self: PlanFighter, threat: Threat, band: RangeBand): Card | un
 /** How a fighter plays for time against a killer this turn, if their judgement sees one. */
 export function survivalPlay(self: PlanFighter, moment: SurvivalMoment): SurvivalPlay | undefined {
   // The player's own plan is theirs, unless the fight is only watched.
-  if ((self.isPlayer && moment.watching !== true) || !readsInTheMoment(self)) return undefined;
+  if (self.ownPlan || !readsInTheMoment(self)) return undefined;
   const threat = killerOf(self, moment);
   if (!threat) return undefined;
   const band = distanceBetween(moment, self.id, threat.foe.id);

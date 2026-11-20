@@ -428,10 +428,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     play their options out in the engine and keep the move they'd make anyway unless a plan
     clearly beats it (`docs/design/research/planner-foes.md`). A fight's steps are played in a Web
     Worker off the page's thread (`ui/fight/useThinking.ts`, `dispatchAlone` rebuilding the
-    context from the state). In CI the benches play everyone by instinct
-    (`CombatSetup.instinct`, `src/test/bench/minds.ts`) but the planner bench and the told
-    bench; a weekly run thinks everywhere, and what thinking foes show is kept in
-    `docs/design/research/thinking-foes-findings.md`.
+    context from the state). Tests and the pipeline play every fight by instinct (the test
+    runner's engines, `defaultEngines`; a bench's own setups, `CombatSetup.instinct` through
+    `src/test/bench/minds.ts`): thinking is run locally with `npm run test:thinking`, never in the
+    pipeline, and what it shows is kept in `docs/design/research/thinking-foes-findings.md`.
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
     them on, and only versus does (its setup's "Rules on trial"): up close a technique that needs hand signs (read from its
     art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart
@@ -441,9 +441,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     risk, never in place of a heal or armour, and anything else is cast unless losing it is likelier
     than not, `plan/crowding.ts`); and a fighter with the `teleport` perk (the Flying Thunder God)
     blinks once a round in place of the footwork their turn chose (a step, a move, an entry's way
-    in), sure and spending no turn (`teleport`, `plan/blink.ts`); and the far gap is a long way
-    (`farGap`, `plan/farGap.ts`): a step between mid and far is a harder contest both ways, and a
-    holder at far has time for a second shot at a closer who slipped the first. Versus also sets
+    in), sure and spending no turn (`teleport`, `plan/blink.ts`). Versus also sets
     where a bout starts (`VERSUS_STARTS`, `CombatOpening.range`). A rule is play-tested there before
     it is adopted or dropped; adopting one moves it out of `experiments`. Adopted so far (Phase B,
     `docs/design/combat-ai-plan.md` Part 13b): a taijutsu fighter's step that reaches close carries
@@ -451,7 +449,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     substitution isn't spent on it: `plan/closeQuarters.ts`, `plan/steps.ts`), and a body caught in
     a wide blast may keep its feet, on the maker's art and strength against its own strength, more
     surely braced or bigger (`plan/standing.ts`). A small area (no `size`) moves no one; only wide
-    and vast blasts throw the fight apart (`plan/blast.ts`).
+    and vast blasts throw the fight apart (`plan/blast.ts`). And the far gap is a long way
+    (`plan/farGap.ts`): a step between mid and far is a harder contest both ways.
     A fight is lost when the player falls, as on a job; a versus bout is fought **to the last**
     (`CombatSetup.toTheLast`): lost only once no one on the player's side still fights.
     Fighters also have a **kit**: `CombatTrait`s (archer, brawler, illusionist, armoured,

@@ -25,8 +25,6 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
 import { distanceBetween } from './distance';
 import { causeLine } from '../../rules/causes';
-import { tell } from '../../rules/telling';
-import { secondShot } from './farGap';
 
 /**
  * Holding a foe off in a planned fight (`rules/zoning.ts`). At mid and far range a fighter may
@@ -136,27 +134,19 @@ export interface HeldOff {
   readonly outcome: 'unopposed' | 'stopped' | 'through';
 }
 
-/** A shot at the closer: fired, it stops them; slipped, they are through, or it fires again. */
+/** A shot at the closer: fired, it stops them; slipped, they are through. */
 interface Aimed {
   readonly start: number;
   readonly marked: Round;
   readonly shot: Shot;
-  /** The closer is crossing the far gap: a slipped first shot is followed by a second. */
-  readonly again: boolean;
 }
 
-function aimed(round: Round, { start, marked, shot, again }: Aimed, turn: Turn): HeldOff {
+function aimed(round: Round, { start, marked, shot }: Aimed, turn: Turn): HeldOff {
   const { holder, closer, card } = shot;
   const aim = aimWith(holder, card);
   const chance = holdOffChance(aim, closer.attributes.speed, areaOf(card));
   if (!turn.rng.chance(chance)) {
     const paid = spent(round, holder, card);
-    const now = fighterIn(paid, holder.id) ?? holder;
-    // Across the far gap there is time for a second shot, if the holder can still pay for it.
-    if (again && playable(now, card)) {
-      const told = say(paid, causeLine(tell(AGAIN, { a: closer, b: now }), 'far-gap'));
-      return aimed(told, { start, marked, shot: { ...shot, holder: now }, again: false }, turn);
-    }
     return {
       round: say(paid, throughLine(momentOf(marked, closer.id), closer, holder)),
       outcome: 'through',
@@ -171,9 +161,6 @@ function aimed(round: Round, { start, marked, shot, again }: Aimed, turn: Turn):
   const fired = fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn);
   return { round: holdersLines(fired, start, holder.id), outcome: 'stopped' };
 }
-
-/** A closer who slipped the first shot across the far gap meets a second. */
-const AGAIN = '{a} slip{a.s} the first, but it is a long way in, and {b} {b.has} time for another.';
 
 /** A step in on someone who may hold the closer off. */
 export function holdOff(round: Round, turn: Turn): HeldOff {
@@ -190,7 +177,6 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
     rng: turn.rng,
   });
   if (screened) return { round: screened, outcome: 'through' };
-  const again = secondShot(closer, distanceBetween(round, holder.id, closer.id));
   const shot = { holder, closer, card };
-  return aimed(marked, { start: round.lines.length, marked, shot, again }, turn);
+  return aimed(marked, { start: round.lines.length, marked, shot }, turn);
 }

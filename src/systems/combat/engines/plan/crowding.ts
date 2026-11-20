@@ -67,7 +67,7 @@ function insteadOf(weighing: Weighing, cast: Card): Chosen | null {
 
 /** What a wary caster plays in place of signs a crowder would break, or null to cast anyway. */
 export function crowdWary(round: Round, self: PlanFighter, chosen: Chosen): Chosen | null {
-  if (!self.crowdable || (self.isPlayer && round.watching !== true)) return null;
+  if (!self.crowdable || self.ownPlan) return null;
   if (!readsInTheMoment(self) || chosen.card.kind !== 'jutsu') return null;
   const signs = signsOf(chosen.card.technique);
   const foe = signs > 0 ? crowder(round, self) : undefined;
