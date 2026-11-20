@@ -1,0 +1,279 @@
+/*
+ * The editor's forge, where techniques are made: the shelf of those kept, the form on paper and,
+ * beside it, the technique as the game will read it. On a desk the three stand side by side,
+ * each scrolling on its own; on a phone the form comes first and the reading under it.
+ */
+
+.editor-pages {
+  display: flex;
+  gap: 6px;
+}
+
+.forge-shelf {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.forge-shelf ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.forge-shelf-item {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.forge-shelf-item[aria-pressed='true'] .tcard {
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--seal);
+}
+
+.forge-desk {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.forge-form,
+.forge-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  color: var(--paper-ink);
+  background: var(--paper) var(--grain-ink);
+  border-radius: var(--radius);
+}
+
+.forge-form .muted,
+.forge-preview .muted,
+.forge-preview .tsheet dt {
+  color: var(--paper-muted);
+}
+
+.forge-field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.forge-field legend,
+.forge-text > span,
+.forge-preview h3,
+.forge-preview h4 {
+  font-family: var(--font-story);
+  font-weight: 700;
+  margin: 0 0 4px;
+  padding: 0;
+}
+
+.forge-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.forge-text input,
+.forge-text textarea,
+.forge-form select,
+.forge-number input {
+  min-height: 40px;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  font: inherit;
+  color: var(--paper-ink);
+  background: transparent;
+  border: 1px solid var(--paper-muted);
+  border-radius: var(--radius);
+}
+
+.forge-text textarea {
+  resize: vertical;
+}
+
+.forge-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+}
+
+.forge-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--seal);
+  flex: none;
+}
+
+.forge-check input:disabled + span {
+  color: var(--paper-muted);
+}
+
+.forge-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.forge-number input {
+  width: 4.5em;
+  text-align: center;
+}
+
+.forge-effects ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.forge-effect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px dotted var(--paper-muted);
+}
+
+.forge-effect-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.forge-effect-head select {
+  flex: 1 1 160px;
+}
+
+.forge-effect-n {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  font-family: var(--font-story);
+  font-weight: 800;
+  color: var(--seal);
+  border: 1px solid var(--seal);
+  border-radius: 50%;
+}
+
+.forge-problems ul,
+.forge-notes ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.forge-problems h4 {
+  color: var(--seal);
+}
+
+.forge-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* On paper a closed button fades into it rather than going dark. */
+.forge-preview .btn:disabled {
+  background: transparent;
+  color: var(--paper-muted);
+  border: 1px dashed var(--paper-muted);
+}
+
+.forge-preview .tsheet-reach span {
+  color: var(--paper-muted);
+}
+
+.forge-preview .tsheet-reach span.on {
+  color: var(--paper-ink);
+  border-color: var(--seal);
+}
+
+/* On a desk: the shelf, the form and the reading, each column scrolling on its own. */
+.editor-desk.forge-layout {
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+}
+
+.forge-layout .forge-shelf {
+  overflow-y: auto;
+}
+
+.forge-layout .forge-shelf ul {
+  grid-template-columns: 1fr;
+}
+
+.forge-layout .forge-shelf .tcard {
+  aspect-ratio: auto;
+  min-height: 72px;
+}
+
+.forge-layout .forge-desk {
+  overflow-y: auto;
+}
+
+@media (min-width: 1300px) {
+  .forge-layout .forge-desk {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    align-items: start;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .forge-layout .forge-form,
+  .forge-layout .forge-preview {
+    max-height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+}
+
+/* On paper the ghost buttons take the paper's ink, not the night's. */
+.forge-form .btn.ghost,
+.forge-preview .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+
+/* Choices are sentences ("Sure: hard to slip"), so they keep their own capitals. */
+.forge-form .seg {
+  text-transform: none;
+}
+
+/* The reading's card is short, as on a profile: a glance, so the sheet stays in view. */
+.forge-preview .tcard,
+.forge-shelf .tcard {
+  aspect-ratio: auto;
+  min-height: 84px;
+  gap: 6px;
+}
+
+.forge-preview .tglyph,
+.forge-shelf .tglyph {
+  font-size: 1.5rem;
+  place-items: end end;
+  padding: 0 6px 2px 0;
+}

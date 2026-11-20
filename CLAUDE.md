@@ -1026,6 +1026,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     the whole pack goes back as written by dropping its entry (`resetFighter`, `NO_EDITS`). The
     editor only keeps out what would break a fight: it refuses an empty technique list and
     doesn't offer another clan's techniques or a summons without a contract.
+    **Techniques made in it** (`game/edits/made/`) are new content beside the overrides
+    (`ContentEdits.techniques`, ids `made-…`): a draft whose verbs' fields are declared once
+    (`VERB_FIELDS`) for the form, the checker and the reader of untrusted data alike; never a
+    written chakra cost (a fight charges what it does); read in the forge as a fight will read
+    it (`forgeView`), and given to fighters on the Fighters page. No place teaches them.
     Its technique finder (`browseTechniques`, `game/finder/`) filters by art, rank, element and
     **kind** (`techniqueKinds`: blade arts, nin-taijutsu, projectiles, power-ups and gates,
     clones…, read from what a technique does, never tagged, so a new one needs no code), each

@@ -1,4 +1,5 @@
 import type { StatId } from '@/systems/stats';
+import type { TechniqueDef } from '@/systems/techniques';
 
 /**
  * What a player has changed in a pack's content with the editor: a sparse set of overrides
@@ -18,6 +19,11 @@ export interface FighterEdit {
 /** One pack's edits. Fighters are keyed by roster id (`person:<id>`, `enemy:<id>`). */
 export interface ContentEdits {
   readonly fighters: Readonly<Record<string, FighterEdit>>;
+  /**
+   * Techniques made in the editor, by id (`made/ids.ts`): new content beside the pack's, not
+   * overrides. Absent in books and saves from before there were any.
+   */
+  readonly techniques?: Readonly<Record<string, TechniqueDef>>;
 }
 
 export const NO_EDITS: ContentEdits = { fighters: {} };
@@ -45,5 +51,10 @@ export function fighterRef(key: string): FighterRef | null {
 }
 
 export function hasEdits(edits: ContentEdits): boolean {
-  return Object.keys(edits.fighters).length > 0;
+  return Object.keys(edits.fighters).length > 0 || madeTechniques(edits).length > 0;
+}
+
+/** The techniques made in the editor, in the order they were first kept. */
+export function madeTechniques(edits: ContentEdits): readonly TechniqueDef[] {
+  return Object.values(edits.techniques ?? {});
 }

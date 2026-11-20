@@ -14,6 +14,7 @@ import { canPerform, type Element, type TechniqueDef } from '@/systems/technique
 import type { GameContext } from '../context';
 import type { Discipline } from '../views/common';
 import { versusRoster, type VersusFighter } from '../versus/roster';
+import { MADE_PREFIX } from './made/ids';
 import { originalFighter, type FighterOriginal } from './originals';
 import { techniqueKinds, type TechniqueKind } from '../finder';
 
@@ -43,6 +44,8 @@ export interface EditorTechnique {
   readonly kinds: readonly TechniqueKind[];
   /** False when their grades don't carry it yet: they won't use it until they do. */
   readonly ready: boolean;
+  /** Made in the editor, not written by the pack. */
+  readonly made: boolean;
 }
 
 export interface FighterEditor {
@@ -52,7 +55,7 @@ export interface FighterEditor {
   readonly stats: readonly EditorStat[];
   readonly techniques: readonly EditorTechnique[];
   readonly techniquesEdited: boolean;
-  /** Techniques they could be given, by art then rank. */
+  /** Techniques they could be given: those made in the editor, then by art and rank. */
   readonly choices: readonly EditorTechnique[];
   readonly edited: boolean;
 }
@@ -73,11 +76,14 @@ function techniqueOf(def: TechniqueDef, original: FighterOriginal, stats: Stats)
   const ready = original.ref.kind === 'enemy' || canPerform(def, performer);
   const { id, name, discipline, rank } = def;
   const element = def.element ?? null;
-  return { id, name, discipline, rank, element, kinds: techniqueKinds(def), ready };
+  const made = id.startsWith(MADE_PREFIX);
+  return { id, name, discipline, rank, element, kinds: techniqueKinds(def), ready, made };
 }
 
+/** Techniques made in the editor first, then by art, rank and name. */
 function byArtAndRank(a: EditorTechnique, b: EditorTechnique): number {
   return (
+    Number(b.made) - Number(a.made) ||
     a.discipline.localeCompare(b.discipline) ||
     STAT_GRADES.indexOf(a.rank) - STAT_GRADES.indexOf(b.rank) ||
     a.name.localeCompare(b.name)

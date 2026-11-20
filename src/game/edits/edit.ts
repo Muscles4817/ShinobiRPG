@@ -18,7 +18,7 @@ export const EDIT_STAT_MAX = 60;
 function withFighter(edits: ContentEdits, key: string, edit: FighterEdit): ContentEdits {
   const { [key]: _old, ...rest } = edits.fighters;
   const empty = !edit.stats && !edit.techniqueIds;
-  return { fighters: empty ? rest : { ...rest, [key]: edit } };
+  return { ...edits, fighters: empty ? rest : { ...rest, [key]: edit } };
 }
 
 function sameList(a: readonly string[], b: readonly string[]): boolean {

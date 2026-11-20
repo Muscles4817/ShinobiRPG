@@ -102,4 +102,45 @@ describe('the editor', () => {
       Reflect.deleteProperty(window, 'matchMedia');
     }
   });
+
+  it('makes a technique, gives it to a fighter, and drops it from them too', async () => {
+    const user = userEvent.setup();
+    const edits = memoryStore();
+    render(<App store={memoryStore()} edits={edits} />);
+    await user.click(screen.getByRole('button', { name: /^Editor/ }));
+    await user.click(screen.getByRole('button', { name: 'Techniques' }));
+    await user.click(screen.getByRole('button', { name: 'New technique' }));
+
+    const form = screen.getByRole('form', { name: 'Make a technique' });
+    const keep = () => screen.getByRole('button', { name: 'Keep technique' });
+    expect(keep()).toBeDisabled();
+    expect(screen.getByText('Give it a name.', { selector: 'li' })).toBeInTheDocument();
+    await user.type(within(form).getByLabelText('Name'), 'Lantern Comet');
+    await user.click(within(form).getByRole('radio', { name: 'Fire' }));
+    await user.click(within(form).getByRole('button', { name: 'Add an effect' }));
+    await user.selectOptions(within(form).getByLabelText('Effect 2'), 'knock');
+    expect(keep()).toBeDisabled();
+    await user.selectOptions(within(form).getByLabelText('Effect 2: Leaves them'), 'mid');
+    const preview = screen.getByRole('region', { name: 'How the game reads it' });
+    expect(within(preview).getByText('Lantern Comet')).toBeInTheDocument();
+    await user.click(keep());
+    expect(edits.data).toContain('made-lantern-comet');
+
+    await user.click(screen.getByRole('button', { name: 'Fighters' }));
+    await user.click(screen.getByLabelText('Search by name'));
+    await user.paste('Kakashi Hatake');
+    await user.click(screen.getByRole('button', { name: /^Kakashi Hatake,/ }));
+    const sheet = screen.getByRole('article', { name: 'Editing Kakashi Hatake' });
+    await user.click(within(sheet).getByRole('button', { name: 'Add Lantern Comet' }));
+    expect(within(sheet).getByRole('button', { name: 'Remove Lantern Comet' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Techniques' }));
+    await user.click(
+      screen.getByRole('button', { name: /^Lantern Comet, Given to Kakashi Hatake/ }),
+    );
+    await user.click(screen.getByRole('button', { name: 'Drop this technique' }));
+    await user.click(screen.getByRole('button', { name: 'Drop Lantern Comet' }));
+    expect(edits.data).not.toContain('made-lantern-comet');
+    expect(screen.getByText(/Nothing made yet/)).toBeInTheDocument();
+  });
 });
