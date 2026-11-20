@@ -142,6 +142,7 @@ export const COMBAT_ITEM_EFFECTS = [
   'chakra',
   'heal',
   'clarity',
+  'volley',
 ] as const;
 export type CombatItemEffect = (typeof COMBAT_ITEM_EFFECTS)[number];
 

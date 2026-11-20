@@ -164,6 +164,21 @@ export function throughLine(moment: Moment, closer: Told, holder: Told): string 
   return told(moment, THROUGH, { c: closer, h: holder });
 }
 
+const PUSHED_THROUGH: Bank = {
+  id: 'pushed-through',
+  lines: [
+    '{c} take{c.s} it and keep{c.s} coming.',
+    '{c} shrug{c.s} it off and close{c.s} the gap.',
+    'It stings, but it doesn’t stop {c}.',
+  ],
+  scene: RUNNING_IN,
+};
+
+/** Someone stepping in takes a hold-off's light hit and comes on regardless. */
+export function pushedThroughLine(moment: Moment, closer: Told, holder: Told): string {
+  return told(moment, PUSHED_THROUGH, { c: closer, h: holder });
+}
+
 const HELD_OFF: Bank = {
   id: 'held-off',
   lines: [

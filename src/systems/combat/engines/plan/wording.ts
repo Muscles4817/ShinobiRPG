@@ -21,6 +21,7 @@ const TOOL_DOES: Readonly<Record<CombatItemEffect, string>> = {
   chakra: 'Restore chakra',
   heal: 'Restore health',
   clarity: 'Clear confusion',
+  volley: 'A volley of shuriken, light but hard to slip',
 };
 
 /** A tool card's detail: how many are left and what it does. */

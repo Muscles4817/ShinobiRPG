@@ -1,13 +1,6 @@
 import type { CombatAttributes } from '../contract';
 import { toughness } from './damage';
-import {
-  reachesWithFists,
-  sizeGap,
-  sizeHealthScale,
-  sizeOf,
-  sizeSlips,
-  walksThrough,
-} from './size';
+import { reachesWithFists, sizeGap, sizeHealthScale, sizeOf, sizeSlips, stopsCloser } from './size';
 import { strikeReach } from './weaponClasses';
 
 const attributes: CombatAttributes = {
@@ -40,10 +33,11 @@ describe('size', () => {
     expect(sizeGap({ size: 'huge' }, {})).toBe(2);
   });
 
-  it('walks through a shot that would stop a human, unless it hurt too much', () => {
-    expect(walksThrough({ size: 'large' }, 10, 130)).toBe(true);
-    expect(walksThrough({ size: 'large' }, 60, 130)).toBe(false);
-    expect(walksThrough({}, 5, 100)).toBe(false);
+  it('a light hit stops no one coming in; a heavy one stops them, a bigger body taking more', () => {
+    expect(stopsCloser({}, 5, 100)).toBe(false);
+    expect(stopsCloser({}, 20, 100)).toBe(true);
+    expect(stopsCloser({ size: 'large' }, 25, 130)).toBe(false);
+    expect(stopsCloser({ size: 'large' }, 60, 130)).toBe(true);
   });
 
   it('a body grown huge reaches past arm’s length with its fists', () => {

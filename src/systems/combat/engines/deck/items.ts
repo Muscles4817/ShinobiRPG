@@ -22,6 +22,7 @@ const WHAT_IT_DOES: Readonly<Record<CombatItemEffect, string>> = {
   chakra: 'Restore chakra',
   heal: 'Restore health',
   clarity: 'Clear confusion',
+  volley: 'A volley of shuriken, light but hard to slip',
 };
 
 function enemiesOf(fighters: readonly DeckFighter[]): DeckFighter[] {

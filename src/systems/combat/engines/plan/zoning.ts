@@ -3,22 +3,16 @@ import { payFor } from './effort';
 import { alive } from '../../rules/body';
 import { homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
-import {
-  areaSize,
-  driveOf,
-  effectsOf,
-  isWounding,
-  primaryEffect,
-  techniquePower,
-} from '../../rules/verbs';
+import { effectsOf, isWounding, techniquePower } from '../../rules/verbs';
 import { turnLine } from '../../rules/narration';
-import { holdOffChance, holdOffReason, throwingAim } from '../../rules/zoning';
-import { strike } from './arms';
+import { holdOffReason } from '../../rules/zoning';
+import { strike, volley } from './arms';
 import { cardId, findCard, fitsBand, kitCards, playable, type Card } from './cards';
 import { isDazed } from './daze';
 import type { HoldOff } from './footing';
 import { useJutsu } from './jutsu';
-import { heldOffLine, heldOffWhy, throughLine } from './sceneVoice';
+import { heldOffLine, heldOffWhy, pushedThroughLine, throughLine } from './sceneVoice';
+import { aimWith, areaOf, isVolley, shotChance, stopped } from './holdOffShot';
 import { drawnByClones } from './screening';
 import { inSight, opponentsOf, type Turn } from './senses';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
@@ -28,22 +22,27 @@ import { causeLine } from '../../rules/causes';
 
 /**
  * Holding a foe off in a planned fight (`rules/zoning.ts`). At mid and far range a fighter may
- * keep a kunai or a wounding technique ready; when someone steps in on them, the first who
- * hasn't acted yet this exchange fires it, spending their turn, and that contest takes the place of the step's own. If it stops
- * them, the step fails and the attack meets them as any attack would; if they slip through,
- * they close in. Either way the holder paid for it. Clones running ahead of the one closing in may
- * draw the shot first (`screening.ts`). A move technique (a body flicker) is never held off.
+ * keep a kunai, a volley of shuriken or a wounding technique ready; when someone steps in on
+ * them, the first who hasn't acted yet this exchange fires it, spending their turn, and that
+ * contest takes the place of the step's own. If it meets them, the attack lands as any attack
+ * would, and stops them only if it hurt enough, held or dazed them (`holdOffShot.ts`); a light
+ * hit they take and keep coming. If they slip it, they close in. Either way the holder paid for
+ * it. Clones running ahead of the one closing in may draw the shot first (`screening.ts`). A move
+ * technique (a body flicker) is never held off.
  */
 
 export const NO_HOLD_OFF: HoldOff = { close: null, mid: null, far: null };
 
 type JutsuCard = Extract<Card, { kind: 'jutsu' }>;
 
-/** What can hold someone off at a distance: kunai, or a wounding technique that reaches. */
+/** What can hold someone off at a distance: kunai, shuriken, or a wounding technique that reaches. */
 export function holdOffChoices(fighter: PlanFighter, band: RangeBand): Card[] {
   if (band === 'close') return [];
   return kitCards(fighter, band).filter(
-    (c) => c.kind === 'throw' || (c.kind === 'jutsu' && isWounding(c.technique)),
+    (c) =>
+      c.kind === 'throw' ||
+      (isVolley(c) && c.item.count > 0) ||
+      (c.kind === 'jutsu' && isWounding(c.technique)),
   );
 }
 
@@ -62,7 +61,8 @@ function strongest(cards: readonly Card[]): JutsuCard | undefined {
 
 /**
  * A plan's default: someone who fights from range holds off with their strongest area, else
- * their strongest wounding technique there, else kunai; a close fighter holds off with nothing.
+ * their strongest wounding technique there, else shuriken if they carry any, else kunai; a close
+ * fighter holds off with nothing.
  */
 export function defaultHoldOff(fighter: PlanFighter): HoldOff {
   if (homeBand(fighter) === 'close') return NO_HOLD_OFF;
@@ -71,26 +71,16 @@ export function defaultHoldOff(fighter: PlanFighter): HoldOff {
     const areas = choices.filter(
       (c) => c.kind === 'jutsu' && effectsOf(c.technique, 'area').length > 0,
     );
-    const best = strongest(areas) ?? strongest(choices) ?? choices[0];
+    const best = strongest(areas) ?? strongest(choices) ?? choices.find(isVolley) ?? choices[0];
     return best ? cardId(best) : null;
   };
   const [close = null, mid = null, far = null] = RANGE_BANDS.map(pick);
   return { close, mid, far };
 }
 
-/** The holder's aim with a card: their throwing, or their skill with the technique. */
-function aimWith(holder: PlanFighter, card: Card): number {
-  if (card.kind !== 'jutsu') return throwingAim(holder.attributes);
-  return driveOf(holder, { technique: card.technique, effect: primaryEffect(card.technique) });
-}
-
 function nameOf(card: Card): string {
-  return card.kind === 'jutsu' ? card.technique.name : 'kunai';
-}
-
-function areaOf(card: Card) {
-  const [area] = card.kind === 'jutsu' ? effectsOf(card.technique, 'area') : [];
-  return area ? areaSize(area) : undefined;
+  if (card.kind === 'jutsu') return card.technique.name;
+  return isVolley(card) ? 'shuriken' : 'kunai';
 }
 
 /** Someone on the other side ready to hold the closer off, and what with. */
@@ -116,15 +106,26 @@ function holdersLines(round: Round, from: number, holderId: string): Round {
   return { ...round, lines: [...round.lines.slice(0, from), ...theirs] };
 }
 
-/** The holder's attack meeting the closer, as any attack would. */
+/** The holder's attack meeting the closer, as any attack would (a volley already paid for). */
 function fire(round: Round, { holder, closer, card }: Shot, turn: Turn): Round {
   const shot = { actor: holder, target: closer, rng: turn.rng };
-  return card.kind === 'jutsu' ? useJutsu(round, shot, card.technique) : strike(round, shot, true);
+  if (card.kind === 'jutsu') return useJutsu(round, shot, card.technique);
+  return isVolley(card) ? volley(round, shot) : strike(round, shot, true);
 }
 
-/** Paying for a shot the closer slipped through: chakra for a technique. */
+/** A handful of shuriken thrown, whether or not it finds anyone. */
+function handfulSpent(round: Round, holder: PlanFighter, card: Card): Round {
+  if (!isVolley(card)) return round;
+  const items = holder.items.map((i) => (i.id === card.item.id ? { ...i, count: i.count - 1 } : i));
+  return {
+    ...round,
+    fighters: round.fighters.map((f) => (f.id === holder.id ? { ...f, items } : f)),
+  };
+}
+
+/** Paying for a shot the closer slipped through: chakra for a technique, a handful of shuriken. */
 function spent(round: Round, holder: PlanFighter, card: Card): Round {
-  if (card.kind !== 'jutsu') return round;
+  if (card.kind !== 'jutsu') return handfulSpent(round, holder, card);
   return { ...round, fighters: patch(round.fighters, holder.id, payFor(holder, card.technique)) };
 }
 
@@ -143,9 +144,8 @@ interface Aimed {
 
 function aimed(round: Round, { start, marked, shot }: Aimed, turn: Turn): HeldOff {
   const { holder, closer, card } = shot;
-  const aim = aimWith(holder, card);
-  const chance = holdOffChance(aim, closer.attributes.speed, areaOf(card));
-  if (!turn.rng.chance(chance)) {
+  const between = distanceBetween(round, holder.id, closer.id);
+  if (!turn.rng.chance(shotChance(holder, closer, { card, between }))) {
     const paid = spent(round, holder, card);
     return {
       round: say(paid, throughLine(momentOf(marked, closer.id), closer, holder)),
@@ -153,13 +153,19 @@ function aimed(round: Round, { start, marked, shot }: Aimed, turn: Turn): HeldOf
     };
   }
   const moment = momentOf(marked, holder.id);
-  const why = holdOffReason(aim, closer.attributes.speed, areaOf(card));
-  const told = say(
-    say(round, causeLine(heldOffLine(moment, holder, closer), 'held-off')),
-    heldOffWhy(moment, { holder, closer, what: nameOf(card), why }),
+  const why = holdOffReason(aimWith(holder, card), closer.attributes.speed, areaOf(card));
+  const told = handfulSpent(
+    say(round, heldOffWhy(moment, { holder, closer, what: nameOf(card), why })),
+    holder,
+    card,
   );
   const fired = fire(told, { holder: fighterIn(told, holder.id) ?? holder, closer, card }, turn);
-  return { round: holdersLines(fired, start, holder.id), outcome: 'stopped' };
+  const kept = stopped(told, fired, { holderId: holder.id, closerId: closer.id });
+  const now = fighterIn(fired, closer.id) ?? closer;
+  const end = kept
+    ? say(fired, causeLine(heldOffLine(moment, holder, now), 'held-off'))
+    : say(fired, pushedThroughLine(momentOf(fired, closer.id), now, holder));
+  return { round: holdersLines(end, start, holder.id), outcome: kept ? 'stopped' : 'through' };
 }
 
 /** A step in on someone who may hold the closer off. */

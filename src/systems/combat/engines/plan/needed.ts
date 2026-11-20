@@ -10,6 +10,7 @@ import { toolInstinct } from './pouch';
 import { prepNeeded } from './prep';
 import { inSight, opponentsOf } from './senses';
 import type { PlanFighter, Round } from './state';
+import { itemAttacks } from '../../rules/items';
 
 /**
  * Whether a card is needed now (`needed`), for a plan's slot (`slots.ts`) and a foe's
@@ -69,7 +70,7 @@ export function needed(self: PlanFighter, card: Card, round: Round): boolean {
       return hiddenFoe || self.confused > 0;
     case 'item':
       return (
-        card.item.effect === 'blast' ||
+        itemAttacks(card.item.effect) ||
         toolInstinct(self, [card], { hiddenFoe, opening: round.opening ?? false }) !== undefined
       );
     case 'jutsu':

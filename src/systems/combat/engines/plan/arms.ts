@@ -1,6 +1,6 @@
 import { alive } from '../../rules/body';
 import { tell } from '../../rules/telling';
-import { strikeWith, throwWith, type Attack } from '../../rules/weapons';
+import { strikeWith, throwWith, volleyWith, type Attack } from '../../rules/weapons';
 import { react, type Blow } from './react';
 import type { Turn } from './senses';
 import { canDaze, dazeIn } from './daze';
@@ -73,8 +73,29 @@ export function strike(round: Round, turn: Turn, thrown: boolean, rush = false):
   if (!target) return round;
   const swung = (thrown ? throwWith : strikeWith)(actor, target, rng.next());
   const attack = rush ? { ...swung, raw: swung.raw * RUSH_SCALE } : swung;
+  return attackLands(round, turn, { attack, thrown, light: rush });
+}
+
+/** A volley of shuriken at the turn's target: thrown steel in several light blows. */
+export function volley(round: Round, turn: Turn): Round {
+  const { actor, target, rng } = turn;
+  if (!target) return round;
+  const attack = volleyWith(actor, target, rng.next());
+  return attackLands(round, turn, { attack, thrown: true, light: true });
+}
+
+interface Landing {
+  readonly attack: Attack;
+  readonly thrown: boolean;
+  /** Each blow is light: a rusher's as they land, a volley's shuriken. */
+  readonly light: boolean;
+}
+
+function attackLands(round: Round, turn: Turn, { attack, thrown, light }: Landing): Round {
+  const { actor, target, rng } = turn;
+  if (!target) return round;
   const blows = blowsOf(attack, thrown, actor).map((b) =>
-    rush ? { ...b, light: true as const } : b,
+    light ? { ...b, light: true as const } : b,
   );
   const after = blows.reduce((now, blow) => {
     const struck = fighterIn(now, target.id);

@@ -1,6 +1,6 @@
 import type { BrowShape, Expression, EyeShape } from '@/game';
 
-import { Brush } from './Brush';
+import { Brush } from './BrushLine';
 import type { Point } from './brush';
 import { INK, WHITE } from './ink';
 

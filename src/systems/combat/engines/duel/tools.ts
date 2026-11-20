@@ -23,6 +23,7 @@ const TOOL_DETAIL: Readonly<Record<CombatItemEffect, string>> = {
   chakra: 'Restore chakra',
   heal: 'Restore health',
   clarity: 'Clear confusion',
+  volley: 'A volley of shuriken, light but hard to slip',
 };
 
 function toolBlocker(state: DuelState, item: CombatItem): string | null {

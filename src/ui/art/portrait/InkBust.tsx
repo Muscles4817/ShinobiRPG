@@ -1,6 +1,6 @@
 import type { Look } from '@/game';
 
-import { Brush } from './Brush';
+import { Brush } from './BrushLine';
 import { splinePath } from './brush';
 import { Clothes, Headband } from './Dress';
 import { Brow, Eye } from './Eyes';

@@ -1,4 +1,4 @@
-import { HOLD_OFF_BASE, holdOffChance, holdOffReason } from './zoning';
+import { HOLD_OFF_BASE, holdOffChance, holdOffReason, thrownHoldOffChance } from './zoning';
 
 describe('holding a foe off', () => {
   it('between equals, a single attack holds them off a little under half the time', () => {
@@ -25,5 +25,20 @@ describe('holding a foe off', () => {
     expect(holdOffReason(10, 30, 'vast')).toBe('vast');
     expect(holdOffReason(30, 10)).toBe('aim');
     expect(holdOffReason(10, 30, 'small')).toBe('timing');
+  });
+});
+
+describe('thrown steel held ready', () => {
+  const far = { shot: 'blade' as const, far: true };
+  it('a single blade across the far gap almost never meets an equal, short of real skill', () => {
+    expect(thrownHoldOffChance(15, 15, far)).toBeLessThan(0.05);
+    expect(thrownHoldOffChance(35, 15, far)).toBeGreaterThan(0.3);
+    expect(thrownHoldOffChance(15, 15, { shot: 'blade', far: false })).toBeCloseTo(HOLD_OFF_BASE);
+  });
+
+  it('a volley meets someone more surely than one blade, near or far', () => {
+    const volley = thrownHoldOffChance(15, 15, { shot: 'volley', far: true });
+    expect(volley).toBeGreaterThan(thrownHoldOffChance(15, 15, { shot: 'blade', far: false }));
+    expect(volley).toBeGreaterThan(thrownHoldOffChance(15, 15, far) * 10);
   });
 });

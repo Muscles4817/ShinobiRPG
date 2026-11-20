@@ -245,8 +245,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `EnemyDef.healthScale`. A body may be bred bigger (**size**, `rules/size.ts`:
     `ClanDef.size`, `EnemyDef.size` → `CombatantSetup.size`; small, human, large, huge): more
     health (scaled by the engine and reported back on the human scale, `plan/sizing.ts`) and
-    toughness, slipping less, and a weight that helps a step in and walks through a hold-off that
-    didn't hurt it much. An empower may `grow` its user for as long as it holds (Expansion), and a
+    toughness, slipping less, and a weight that helps a step in and shrugs off more of a hold-off's
+    hit. An empower may `grow` its user for as long as it holds (Expansion), and a
     huge body's fists reach mid. Damage comes from the **gap** between attacker power and defender
     defence (`rules/damage.ts`: a ratio of ratings, narrow variance), so equals trade the same
     blows at every grade and each grade of difference is decisive. **Whether an attack
@@ -310,11 +310,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     tank get past it: `plan/footwork.ts`), and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
     (`plan/stepping.ts`) and leaves them unable to set a Guard that exchange
-    (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai or a wounding
-    technique (`plan/zoning.ts`, `rules/zoning.ts`): whoever steps in on a holder who hasn't
-    acted yet meets that shot instead of the step's own contest (aim against speed, areas far
-    harder to get through, a vast one impossible, and short of vast never certain), spending the holder's turn, and the
-    fire is told as the holder's (with why it worked). A fighter making for a distance readies the
+    (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai, a volley of shuriken or
+    a wounding technique (`plan/zoning.ts`, `rules/zoning.ts`): whoever steps in on a holder who
+    hasn't acted yet meets that shot instead of the step's own contest (aim against speed, areas
+    far harder to get through, a vast one impossible, and short of vast never certain), spending
+    the holder's turn, and the fire is told as the holder's (with why it worked). **A hit isn't a
+    stop** (`plan/holdOffShot.ts`): the closer takes a light one and keeps coming, and only a hit
+    that took a sixth of a human body's health (more for a bigger one, `stopsCloser` in
+    `rules/size.ts`), held, dazed or threw them back keeps them off. Thrown steel is aimed by the
+    weapon art (`throwPower`): a single blade across the far gap almost never meets someone short
+    of a far better thrower (`FAR_BLADE_PENALTY`); shuriken (a `volley` tool, `plan/arms.ts`: light
+    blows each slipped alone, and they run out) meet them far more often (`VOLLEY_AIM`), and a
+    graduate starts with two handfuls. A fighter making for a distance readies the
     charge first (an empower, clones) and goes in with an **entry** where they have one (a technique
     that moves them in to strike, `isEntry` in `plan/stepping.ts`), which meets a hold-off as a step
     does (`charge` in `plan/steps.ts`), unless it is `guarded` (a body rolled into a ball): its user

@@ -9,7 +9,7 @@ import { statTier, type StatGrade } from '@/systems/stats';
 
 import type { CombatItem, CombatTechnique, RangeBand } from '../../contract';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
-import { carried } from '../../rules/items';
+import { carried, itemAttacks } from '../../rules/items';
 import { inReach, reachOf, STRIKE_REACH, THROW_REACH } from '../../rules/range';
 import { trumpSpent } from '../../rules/trumps';
 import { COUNTER_IDS, type CounterWaits } from '../../rules/counters';
@@ -279,7 +279,7 @@ export function isDefenceCard(card: Card): card is DefenceCard {
 /** Cards that hurt or hinder a foe: what reach and confusion rule out. */
 export function isOffence(card: Card): boolean {
   if (card.kind === 'jutsu') return isHarmful(card.technique);
-  if (card.kind === 'item') return card.item.effect === 'blast';
+  if (card.kind === 'item') return itemAttacks(card.item.effect);
   return card.kind === 'strike' || card.kind === 'throw';
 }
 

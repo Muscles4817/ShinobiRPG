@@ -136,7 +136,7 @@ describe('the hold-off setting', () => {
 });
 
 describe('a big body closing in', () => {
-  it('takes the shot and keeps coming, where a human-sized one is held off', () => {
+  it('takes a shot that would stop a human and keeps coming', () => {
     const seeds = Array.from({ length: 60 }, (_, i) => i + 1);
     const closed = (hero: Partial<CombatantSetup>) =>
       seeds.filter(
@@ -145,7 +145,7 @@ describe('a big body closing in', () => {
     expect(closed({ size: 'large' })).toBeGreaterThan(closed({}));
     const walked = seeds
       .map((seed) => stepIn(atMid([], { size: 'large' }), seed))
-      .filter((r) => r.lines.some((l) => l.includes('coming')));
+      .filter((r) => r.lines.some((l) => l.includes('⟦v:pushed-through')));
     expect(walked.length).toBeGreaterThan(0);
     for (const r of walked) expect(distanceBetween(r, 'hero', 'caster')).toBe('close');
   });
