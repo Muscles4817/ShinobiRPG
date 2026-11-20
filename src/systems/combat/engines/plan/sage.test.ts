@@ -34,6 +34,9 @@ const attributes = {
   fuuinjutsu: 10,
 };
 
+/** A fighter no one plans for: a bout only watched (`ownPlan`). */
+const planless = ({ ownPlan: _own, ...f }: PlanFighter): PlanFighter => f;
+
 function setup(id: string, over: Partial<CombatantSetup> = {}): CombatantSetup {
   return {
     id,
@@ -342,7 +345,9 @@ describe('a summoner calling from the kit', () => {
       ...start,
       range: 'close',
       watching: true,
-      fighters: start.fighters.map((f) => (f.id === 'foe' ? { ...f, empowered: gateOpen } : f)),
+      fighters: start.fighters.map((f) =>
+        f.id === 'foe' ? { ...f, empowered: gateOpen } : { ...planless(f) },
+      ),
     };
     const play = plannedPlay(sage(facing), facing);
     expect(play.card.kind === 'jutsu' && play.card.technique.id).toBe('snare');

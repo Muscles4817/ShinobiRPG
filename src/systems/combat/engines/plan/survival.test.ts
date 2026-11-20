@@ -91,8 +91,11 @@ function seventh(r: Round): Round {
   );
 }
 
+/** A fighter no one plans for: a bout only watched (`ownPlan`). */
+const planless = ({ ownPlan: _own, ...f }: PlanFighter): PlanFighter => f;
+
 /** Seen from a teammate's seat: the player's own plan is theirs to keep. */
-const watched = (r: Round): Round => ({ ...r, watching: true });
+const watched = (r: Round): Round => ({ ...r, watching: true, fighters: r.fighters.map(planless) });
 
 describe('seeing a killer', () => {
   it('a gate open whose heaviest blow could end you makes a killer; shut, it does not', () => {
@@ -143,7 +146,8 @@ describe('playing for time', () => {
     expect(survivalPlay(fighter(dull, 'me'), watched(dull))).toBeUndefined();
     const own = seventh(fight());
     expect(survivalPlay(fighter(own, 'me'), own)).toBeUndefined();
-    expect(survivalPlay(fighter(own, 'me'), watched(own))).toBeDefined();
+    const shown = watched(own);
+    expect(survivalPlay(fighter(shown, 'me'), shown)).toBeDefined();
   });
 
   it('holds the killer first, when the kit has a hold', () => {

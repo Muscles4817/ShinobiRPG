@@ -23,6 +23,10 @@
  * control fights the illusionist's illusions off, and a braced mind shakes them loose.
  * Techniques catch a point or a whole body (`rules/tags/catches.ts`): a point strike does less to
  * a big body, so the puppeteer's blades do less to the summoner's toads.
+ * The far gap was adopted for every fight (`plan/farGap.ts`): crossing between mid and far is the
+ * harder step both ways, so the trapper, who must come in, beats the sensor 11 in a hundred where
+ * it beat it 27 (100 fights each way). The mimic beats the sensor 68 in a hundred, up from 46,
+ * inside the band over a hundred fights but past it on the matrix's eight.
  */
 const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   rusher:
@@ -42,7 +46,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   sealer:
     'rusher powerhouse versatile illusionist stalker mistBlade medic sensor cloner counterer shrouded summoner puppeteer hive dust gates assassin foresight mimic areaCaster',
   trapper:
-    'versatile illusionist stalker mistBlade areaCaster sealer medic cloner counterer shrouded summoner puppeteer hive dust gates assassin foresight mimic rusher powerhouse',
+    'versatile illusionist stalker mistBlade areaCaster sealer medic cloner counterer shrouded summoner puppeteer hive dust gates assassin foresight mimic rusher powerhouse sensor',
   medic:
     'rusher powerhouse versatile stalker mistBlade sealer trapper summoner puppeteer hive dust assassin foresight mimic areaCaster sensor illusionist cloner counterer shrouded gates',
   sensor:
@@ -66,7 +70,7 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   foresight:
     'rusher powerhouse versatile illusionist mistBlade sealer trapper medic cloner puppeteer hive dust assassin areaCaster shrouded sensor gates',
   mimic:
-    'rusher powerhouse versatile illusionist mistBlade sealer trapper medic cloner puppeteer hive dust assassin areaCaster shrouded gates',
+    'rusher powerhouse versatile illusionist mistBlade sealer trapper medic cloner puppeteer hive dust assassin areaCaster shrouded gates sensor',
 };
 
 /** The same list as `attacker>defender` pairs. */
