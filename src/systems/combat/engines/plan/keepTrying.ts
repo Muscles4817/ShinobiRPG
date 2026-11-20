@@ -1,6 +1,6 @@
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
-import { attacksFrom } from './stepping';
+import { attacksFrom, bestAttack } from './stepping';
 import { findCard, isOffence } from './cards';
 import { isOpen } from './finishers';
 import type { KeepTrying } from './keepTryingShape';
@@ -16,15 +16,23 @@ import type { PlanFighter } from './state';
 
 type Planned = PlanFighter;
 
-/** A distance other than where they fight from which some slot of theirs attacks. */
+/** A fallback is worth fighting from when its best attack is at least this share of home's. */
+const FALLBACK_SHARE = 0.6;
+
+/** A distance other than where they fight from which some slot of theirs attacks nearly as well. */
 function fallbackBand(fighter: Planned): RangeBand | null {
-  const others = RANGE_BANDS.filter((b) => b !== fighter.keepAt);
+  const home = fighter.keepAt;
+  if (home === undefined) return null;
+  const others = RANGE_BANDS.filter((b) => b !== home);
+  const worth = bestAttack(fighter, home) * FALLBACK_SHARE;
   return (
-    others.find((band) =>
-      fighter.loadout[band].some((slot) => {
-        const card = findCard(fighter, slot.card);
-        return card !== null && isOffence(card) && attacksFrom(fighter, card, band);
-      }),
+    others.find(
+      (band) =>
+        bestAttack(fighter, band) >= worth &&
+        fighter.loadout[band].some((slot) => {
+          const card = findCard(fighter, slot.card);
+          return card !== null && isOffence(card) && attacksFrom(fighter, card, band);
+        }),
     ) ?? null
   );
 }
@@ -34,10 +42,14 @@ export function suggestedKeepTrying(fighter: Planned): {
   readonly way: KeepTrying;
   readonly why: string;
 } {
-  if (fallbackBand(fighter)) {
-    return { way: 'odds', why: 'Your plan still attacks from where you are' };
+  // Bodies called to fight (summons, puppets) fight best with their caller further back.
+  if ((fighter.calls?.length ?? 0) > 0) {
+    return { way: 'always', why: 'What you call fights best with you further back' };
   }
-  return { way: 'always', why: 'Nothing in your plan attacks from anywhere else' };
+  if (fallbackBand(fighter)) {
+    return { way: 'odds', why: 'Your plan attacks nearly as well from where you are' };
+  }
+  return { way: 'always', why: 'Nothing in your plan attacks as well from anywhere else' };
 }
 
 /** The way this fighter keeps trying: their own choice, else the suggestion. */

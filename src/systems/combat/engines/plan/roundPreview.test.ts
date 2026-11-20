@@ -44,7 +44,7 @@ const setup = (id: string, over: Partial<CombatantSetup> = {}): CombatantSetup =
   ...over,
 });
 
-function planning(foe: CombatantSetup, keepAt?: 'far'): PlanState {
+function planning(foe: CombatantSetup, keepAt?: 'far', keepTrying?: 'always'): PlanState {
   const engine = createPlanEngine();
   const state = decode(
     engine.start(
@@ -63,6 +63,7 @@ function planning(foe: CombatantSetup, keepAt?: 'far'): PlanState {
     ...you!,
     loadout: { close: [], mid: plainSlots(['jutsu:fireball', 'throw']), far: [] },
     ...(keepAt ? { keepAt } : {}),
+    ...(keepTrying ? { keepTrying } : {}),
   };
   return decode(encode({ ...state, range: 'mid', fighters: [planned, ...rest] }));
 }
@@ -79,8 +80,14 @@ describe('the round preview', () => {
 
   it('says a step towards where you fight is hard against a much faster foe', () => {
     const fast = setup('foe', { attributes: stats({ speed: 40 }) });
-    const preview = roundPreview(planning(fast, 'far'));
+    const preview = roundPreview(planning(fast, 'far', 'always'));
     expect(preview[0]?.from).toBe('Fight at: before your slots');
     expect(preview[0]?.note).toMatch(/likely fails/);
+  });
+
+  it('fights where it stands while the odds of getting there are poor, as suggested', () => {
+    const fast = setup('foe', { attributes: stats({ speed: 40 }) });
+    const preview = roundPreview(planning(fast, 'far'));
+    expect(preview[0]).toMatchObject({ play: 'Fireball', from: 'First choice' });
   });
 });
