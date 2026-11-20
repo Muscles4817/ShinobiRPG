@@ -13,9 +13,9 @@ import { opponentsOf } from './senses';
 import { slotVerdict, type Chosen } from './slots';
 import type { Why } from './whyShape';
 import { fighterIn, type PlanFighter, type PlanState, type Round } from './state';
-import { stepChance } from './steps';
+import { stepChance } from './stepContest';
 import { recovered } from './tiring';
-import { ROUND_EXCHANGES } from './roundEnd';
+import { ROUND_EXCHANGES } from './keepTryingShape';
 import { cardLabel } from './wording';
 
 /**

@@ -1,3 +1,4 @@
+import type { KeepTrying } from './keepTryingShape';
 import type { RangeBand } from '../../contract';
 
 /**
@@ -14,6 +15,8 @@ export const PLAYER_ORDERS = ['free', 'press', 'distance', 'safe', 'setup'] as c
 export type PlayerOrder = (typeof PLAYER_ORDERS)[number];
 
 export interface PlayerPlanning {
+  /** How hard they keep trying to get where they fight (`keepTrying.ts`); unset, the suggestion. */
+  readonly keepTrying?: KeepTrying;
   /** Who plans: absent, your list. */
   readonly planning?: Exclude<PlanningLevel, 'list'>;
   /** At orders, what you asked for: absent, fight as the mind sees fit. */

@@ -17,7 +17,8 @@ import { draftedForRound } from './whoPlans';
  */
 
 /** Exchanges per round; the cards can be changed between rounds. */
-export const ROUND_EXCHANGES = 4;
+export { ROUND_EXCHANGES } from './keepTryingShape';
+import { ROUND_EXCHANGES } from './keepTryingShape';
 
 const nextRound = (watching: boolean) => (watching ? ['— The next round begins —'] : []);
 

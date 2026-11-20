@@ -38,6 +38,7 @@ export function planOf(player: PlanFighter): PlanMemory {
     reactions: player.reactions ?? defaultReactions(player),
     holdOff: player.holdOff ?? NO_HOLD_OFF,
     ...(player.keepAt === undefined ? {} : { keepAt: player.keepAt }),
+    ...(player.keepTrying === undefined ? {} : { keepTrying: player.keepTrying }),
     ...planningKept(player),
   };
 }

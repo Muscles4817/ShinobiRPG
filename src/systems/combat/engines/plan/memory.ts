@@ -1,3 +1,4 @@
+import { KEEP_TRYING, type KeepTrying } from './keepTryingShape';
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, keepsInLoadout, slotLimit } from './cards';
@@ -31,6 +32,11 @@ export interface PlanMemory extends KeptPlanning {
   readonly reactions: Reactions;
   readonly holdOff?: HoldOff;
   readonly keepAt?: RangeBand;
+  readonly keepTrying?: KeepTrying;
+}
+
+function isWay(value: unknown): value is KeepTrying {
+  return KEEP_TRYING.some((w) => w === value);
 }
 
 function isCondition(value: unknown): value is SlotCondition {
@@ -137,6 +143,7 @@ export function rememberedPlan(plan: unknown, fighter: PlanFighter): PlanMemory 
     reactions: cleanReactions(fighter, reactions),
     holdOff: holdOffFrom(record.holdOff, fighter),
     ...(isBand(record.keepAt) ? { keepAt: record.keepAt } : {}),
+    ...(isWay(record.keepTrying) ? { keepTrying: record.keepTrying } : {}),
     ...planningFrom(record),
   };
 }
