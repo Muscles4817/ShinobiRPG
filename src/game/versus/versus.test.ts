@@ -207,7 +207,7 @@ describe('versus bouts', () => {
     // Some bouts end before Sage Mode opens: the first few seeds show the whole style.
     const story = [1, 2, 3, 4, 5, 6]
       .map((seed) => watchedStory('person:jiraiya', 'person:kisame', seed))
-      .find((told) => /Natural energy floods into Jiraiya/.test(told));
+      .find((told) => told.includes('Natural energy floods into Jiraiya'));
     expect(story).toBeDefined();
     expect(story).toMatch(/Gamabunta answers the call/);
     expect(story).toMatch(/Fukasaku perches on Jiraiya’s shoulder/);
