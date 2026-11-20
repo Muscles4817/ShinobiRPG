@@ -4,6 +4,7 @@ import { cardId } from './cards';
 import { defaultReactions, reactionAt, reactionChoices } from './readiness';
 import type { PlanFighter, PlanState } from './state';
 import { cardDetail, cardLabel } from './wording';
+import { keepTryingOptions, withKeepTrying } from './keepTryingTable';
 import { holdOffAt, holdOffChoices, NO_HOLD_OFF } from './zoning';
 
 /**
@@ -97,6 +98,7 @@ export function readinessOptions(fighter: PlanFighter, band: RangeBand): CombatO
     ...reactionOptions(fighter, band),
     ...holdOptions(fighter, band),
     ...keepOptions(fighter, band),
+    ...keepTryingOptions(fighter, band),
   ];
 }
 
@@ -125,6 +127,9 @@ export function editReadiness<S extends Pick<PlanState, 'fighters'>>(
   fighter: PlanFighter,
   optionId: string,
 ): S | null {
+  const tried = withKeepTrying(fighter, optionId);
+  if (tried)
+    return { ...state, fighters: state.fighters.map((f) => (f.id === fighter.id ? tried : f)) };
   const prefix = [READY_PREFIX, KEEP_PREFIX, HOLD_PREFIX].find((p) => optionId.startsWith(p));
   if (!prefix) return null;
   const rest = optionId.slice(prefix.length);

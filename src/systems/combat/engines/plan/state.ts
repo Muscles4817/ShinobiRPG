@@ -41,6 +41,7 @@ import type { OnTrial } from './trialShape';
 import type { PlayerPlanning } from './planningShape';
 import type { ExchangeMarks } from './exchangeShape';
 import type { UnderIllusion } from './illusionShape';
+import type { Persisting } from './keepTryingShape';
 export type { AttackStyle, DefenceKind, Read, Reads } from './readShape';
 
 export const PLAN_ENGINE_ID = 'plan-v1';
@@ -123,6 +124,7 @@ export interface PlanFighter
     Minded,
     OnTrial,
     PlayerPlanning,
+    Persisting,
     UnderIllusion,
     Dusty {
   /** Turns a daze will still cost: a dazed fighter loses its next turn. */

@@ -8,6 +8,8 @@ import { nextOpening } from './climbing';
 import { setupPlay } from './setups';
 import { survivalPlay } from './survival';
 import { counterPlay } from './counterRead';
+import { triesNow } from './keepTrying';
+import { stepOdds } from './stepOdds';
 import { readsInTheMoment } from './judgement';
 import { styleOf } from './reads';
 import { hittable } from './rows';
@@ -165,7 +167,12 @@ export function plannedPlay(self: PlanFighter, round: Round): Chosen {
   if (emergency) return { ...emergency, why: 'emergency' };
   const kit = kitPlay(self, round);
   if (kit) return kit;
-  const footwork = isPinned(self) ? null : makingFor(self, bandOf(round, self));
+  // How hard they keep trying to get there decides whether they try now (`keepTrying.ts`).
+  const facing = opponentsOf(round.fighters, self).filter((f) => inSight(self, f));
+  const odds = stepOdds(round, self);
+  const at = { exchange: round.number, foes: facing, ...(odds === null ? {} : { odds }) };
+  const trying = !isPinned(self) && triesNow(self, at);
+  const footwork = trying ? makingFor(self, bandOf(round, self)) : null;
   if (footwork) {
     // Ready the charge first: power up or make clones, or go in with an entry.
     const charging = slots.filter((s) => {
