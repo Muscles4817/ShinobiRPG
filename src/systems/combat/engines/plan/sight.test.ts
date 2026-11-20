@@ -34,7 +34,7 @@ const sand: CombatTechnique = {
   id: 'sand',
   name: 'Sand Coffin',
   discipline: 'ninjutsu',
-  description: 'Sand rises out of the ground and closes round them.',
+  tags: { delivery: ['from-ground'] },
   reach: ['close', 'mid', 'far'],
   effects: [{ verb: 'damage', power: 16 }],
   chakraCost: 0,
