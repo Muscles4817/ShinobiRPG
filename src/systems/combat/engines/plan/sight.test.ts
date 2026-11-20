@@ -1,61 +1,70 @@
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { sightInstinct } from './sight';
-import { initialFighters } from './state';
+import { avoidOdds, techniqueIncoming } from './avoid';
+import { initialFighters, type PlanFighter, type Round } from './state';
 
-/** What instinct reaches for to see, hide or blind: here, raising a field. */
+/** In the fight: a technique from someone unseen is slipped less; one from far off, more. */
 
 const attributes = {
-  strength: 5,
-  speed: 5,
-  stamina: 5,
-  chakraControl: 5,
-  intellect: 5,
-  perception: 5,
-  willpower: 5,
-  taijutsu: 5,
-  ninjutsu: 5,
-  genjutsu: 5,
-  kenjutsu: 5,
-  fuuinjutsu: 5,
+  strength: 20,
+  speed: 20,
+  stamina: 20,
+  chakraControl: 20,
+  intellect: 20,
+  perception: 20,
+  willpower: 20,
+  taijutsu: 20,
+  ninjutsu: 20,
+  genjutsu: 20,
+  kenjutsu: 20,
+  fuuinjutsu: 20,
 };
 
-const fog: CombatTechnique = {
-  id: 'fog',
-  name: 'Fog',
+const setup = (id: string): CombatantSetup => ({
+  id,
+  name: id,
+  attributes,
+  health: 100,
+  maxHealth: 100,
+  chakra: 100,
+  maxChakra: 100,
+  techniques: [],
+});
+
+const sand: CombatTechnique = {
+  id: 'sand',
+  name: 'Sand Coffin',
   discipline: 'ninjutsu',
-  effects: [{ verb: 'field', field: 'mist', power: 10 }],
-  chakraCost: 6,
+  description: 'Sand rises out of the ground and closes round them.',
+  reach: ['close', 'mid', 'far'],
+  effects: [{ verb: 'damage', power: 16 }],
+  chakraCost: 0,
 };
 
-function setup(id: string): CombatantSetup {
-  return {
-    id,
-    name: id,
-    attributes,
-    health: 50,
-    maxHealth: 50,
-    chakra: 30,
-    maxChakra: 30,
-    techniques: [fog],
-  };
-}
-
-const [hero] = initialFighters({
-  player: setup('hero'),
+const [caster, target] = initialFighters({
+  player: setup('caster'),
   allies: [],
-  enemies: [setup('foe')],
+  enemies: [setup('target')],
   canFlee: true,
 });
-const ready = [{ kind: 'jutsu', technique: fog } as const];
 
-describe('raising a field on instinct', () => {
-  it('raises one mid-round whenever none of its side is up, as a plan does', () => {
-    const moment = { hiddenFoe: false, opening: false, fieldUp: false };
-    expect(sightInstinct(hero!, ready, moment)).toEqual(ready[0]);
+function odds(attacker: PlanFighter, range: Round['range']): number {
+  const round: Round = {
+    number: 1,
+    fighters: [attacker, target!],
+    range,
+    lines: [],
+    seen: {},
+    intents: {},
+  };
+  return avoidOdds(round, techniqueIncoming(attacker, target!, sand, round)!);
+}
+
+describe('what you can see in a fight', () => {
+  it('slips a technique from someone hidden less often', () => {
+    expect(odds({ ...caster!, hidden: true }, 'mid')).toBeLessThan(odds(caster!, 'mid'));
   });
 
-  it('never while its own is up', () => {
-    const moment = { hiddenFoe: false, opening: true, fieldUp: true };
-    expect(sightInstinct(hero!, ready, moment)).toBeUndefined();
+  it('slips a technique that travels more often the further it comes', () => {
+    expect(odds(caster!, 'far')).toBeGreaterThan(odds(caster!, 'close'));
   });
 });

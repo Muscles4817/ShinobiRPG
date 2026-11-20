@@ -125,6 +125,20 @@ export function tracedLine(moment: Moment, victim: Told, actor: Told): string {
   return told(moment, TRACED, { v: victim, a: actor });
 }
 
+const UNSEEN_CAST: Bank = {
+  id: 'unseen-cast',
+  lines: [
+    'Something moves where no one can see it.',
+    'Chakra gathers somewhere out of sight.',
+    'From somewhere unseen, something takes shape.',
+  ],
+};
+
+/** A technique begun by someone no one can see: nothing of it shows but that something is coming. */
+export function unseenCastLine(moment: Moment): string {
+  return told(moment, UNSEEN_CAST, {});
+}
+
 /** A substitution taking a hit in its owner's place. */
 export interface SwapTold {
   readonly target: Told;

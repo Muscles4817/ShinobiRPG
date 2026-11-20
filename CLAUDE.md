@@ -255,7 +255,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     and wits against the attacker's speed and skill; hand signs give a technique away more than
     a fist), the defender's avoid rating against how fast it arrives (speed with perception;
     a genjutsu is noticed, willpower with perception), a stance (anyone slips some, a ready Dodge
-    many more), accuracy and an area's size (wide hard to get clear of, vast impossible).
+    many more), accuracy and an area's size (wide hard to get clear of, vast impossible). **What
+    can be seen** bends the read (`rules/sight.ts`): an attack from someone unseen (hidden, no one
+    of theirs watching) is read far worse, and one that travels (thrown, breathed, through or out
+    of the ground, from above) better the further it comes; a hidden caster's casting is told
+    without naming them.
     **Counters are slotted** (`rules/counters.ts`, `plan/counter.ts`): an action that spends the
     turn waiting for one kind of attack, read from its tags (`rules/tags/approach.ts`): a blow or
     grab up close bare-handed, a blade with a blade in hand, thrown steel, eyes to look away

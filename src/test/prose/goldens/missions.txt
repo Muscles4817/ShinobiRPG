@@ -406,7 +406,7 @@ view:
   Your Gale Heel rips into the storehouse wraith. [Guarded] [−7]
   Much of it glances off the storehouse wraith.
   The storehouse wraith is gone again, and the air where it stood is empty.
-  The storehouse wraith catches the eye and lets Whispering Dread unfold.
+  Chakra gathers somewhere out of sight.
   The storehouse wraith’s Whispering Dread takes hold of you cleanly. [Guarded] [−9]
   —— Last exchange ——
   You search the corners of the room and find them empty. [Off plan: no one in sight]
@@ -497,7 +497,7 @@ view:
   The storehouse wraith lets the fight go by for a moment, pulling its strength together.
   —— Second exchange ——
   You look again, with no more luck. [Off plan: no one in sight]
-  The storehouse wraith catches the eye and lets Whispering Dread unfold.
+  Chakra gathers somewhere out of sight.
   You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed] [Read it coming]
   You catch the thread of the illusion and find the storehouse wraith.
   —— Third exchange ——

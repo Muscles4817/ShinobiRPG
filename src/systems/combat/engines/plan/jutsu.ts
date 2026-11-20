@@ -44,6 +44,7 @@ import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
 import { setTrap } from './traps';
 import { linkLine } from './chainVoice';
+import { unseenCastLine } from './sceneVoice';
 import { castLine, dazeLine, missLine, momentOf, seenLine } from './voice';
 import { raiseShroud } from './shrouds';
 import { distanceBetween } from './distance';
@@ -80,7 +81,9 @@ function withChakraSpent(round: Round, turn: Turn, t: CombatTechnique): Round {
     { ...round, fighters: patch(round.fighters, actor.id, change) },
     turn.linked && target
       ? linkLine(momentOf(round, actor.id), { actor, target }, t)
-      : castLine(momentOf(round, actor.id), actor, t),
+      : actor.hidden
+        ? unseenCastLine(momentOf(round, actor.id))
+        : castLine(momentOf(round, actor.id), actor, t),
   );
 }
 

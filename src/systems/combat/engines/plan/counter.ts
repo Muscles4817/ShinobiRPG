@@ -21,6 +21,8 @@ import { distanceBetween } from './distance';
 import { told } from './fresh';
 import { noteDefence } from './reads';
 import { canHit } from './rows';
+import { watched } from './sharedMind';
+import { sightRead } from '../../rules/sight';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
 import { taken, wound } from './wound';
@@ -31,6 +33,9 @@ import { taken, wound } from './wound';
  * turned aside; wrong, it gets in and finds them open, every ready defence down until their next
  * turn (`exposed`). A counter answers the first attack it waits for and is spent.
  */
+
+/** Ways of coming that cross the gap, and so are seen coming further off. */
+const TRAVELLING: readonly Approach[] = ['thrown', 'breath', 'ground', 'above'];
 
 /** One attack on its way to someone who may be waiting for it. */
 export interface Coming {
@@ -86,8 +91,13 @@ function answered(round: Round, waits: CounterWaits, c: Coming, said: string): R
 export function counterOn(round: Round, c: Coming): Countered {
   const waits = waitingFor(c.target);
   if (!waits || !meets(round, waits, c)) return { round, stopped: false };
-  // Eyes that see it coming find the moment more often.
-  const familiar = hasPerk(c.target, 'foresight') ? FORESIGHT_COUNTER : 1;
+  // Eyes that see it coming find the moment more often; an attack from someone unseen is read
+  // far worse, and one that travels better the further it comes (`rules/sight.ts`).
+  const unseen = c.attacker.hidden && !watched(round.fighters, c.target);
+  const travels = TRAVELLING.includes(c.came);
+  const band = distanceBetween(round, c.attacker.id, c.target.id);
+  const familiar =
+    (hasPerk(c.target, 'foresight') ? FORESIGHT_COUNTER : 1) * sightRead({ unseen, travels, band });
   const reading = { defender: c.target, attacker: c.attacker, skill: c.skill, opens: c.opens };
   const odds = counterOdds({ ...reading, familiar });
   const read = counterOutcome(odds, c.rng.next());
@@ -99,7 +109,6 @@ export function counterOn(round: Round, c: Coming): Countered {
     committed: null,
     ...(outcome === 'missed' ? { exposed: true as const } : {}),
   });
-  const band = distanceBetween(round, c.attacker.id, c.target.id);
   const seen = noteDefence({ ...round, fighters: spent }, c.target.id, band, 'counter');
   const said = line(seen, outcome, waits, c);
   switch (outcome) {

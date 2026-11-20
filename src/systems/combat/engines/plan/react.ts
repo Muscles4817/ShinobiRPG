@@ -1,4 +1,6 @@
 import { counterOn, exposed, type Countered } from './counter';
+import { sightRead } from '../../rules/sight';
+import { watched } from './sharedMind';
 import { threadsCutBy } from './puppets';
 import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
@@ -164,9 +166,12 @@ interface Evasion {
   readonly tried: boolean;
 }
 
-/** A plain blow (or a flurry's later blow) on its way. */
-function blowIncoming({ attacker, target, blow }: Hit): Incoming {
+/** A plain blow (or a flurry's later blow) on its way: thrown steel travels, a hider is unseen. */
+function blowIncoming({ attacker, target, blow }: Hit, round: Round): Incoming {
+  const unseen = attacker.hidden && !watched(round.fighters, target);
+  const band = distanceBetween(round, attacker.id, target.id);
   return {
+    sight: sightRead({ unseen, travels: !blow.physical, band }),
     form: 'blow',
     attacker,
     target,
@@ -193,21 +198,20 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   // A Dodge (or an Evade) that tried for the technique this blow comes with is told trying for
   // the blow.
   const tried = able && (has('dodge') || committedTo(target, 'evade'));
-  const avoid = able && !blow.reached ? avoidOdds(round, blowIncoming(hit)) : 0;
+  const avoid = able && !blow.reached ? avoidOdds(round, blowIncoming(hit, round)) : 0;
   if (avoid <= 0 || !rng.chance(avoid)) return { slipped: null, tried };
   const slip = { target, attacker, what: blow.what, ...(blow.came ? { came: blow.came } : {}) };
   const line = missLine(momentOf(round, target.id), missWhy(hit, tried), slip);
-  const cause = slipCauseBeside(slipCause(round, blowIncoming(hit)), tried);
+  const cause = slipCauseBeside(slipCause(round, blowIncoming(hit, round)), tried);
   // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
   const told = withCause(reactionLine(line, tried ? 'dodged' : 'missed'), cause);
   // A ready Dodge may leap clear of the blow (`leap.ts`); an Evade or a plain slip stays put.
   const said = say(round, told);
-  const weight = weightOf(blowIncoming(hit));
+  const weight = weightOf(blowIncoming(hit, round));
   const leapt = tried && has('dodge') ? leapClear(said, target, { attacker, weight, rng }) : said;
   return { slipped: leapt, tried };
 }
 
-/** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */
 /** The defence a blow brings into play, as onlookers see it; none when it can't answer it. */
 function shown(ready: readonly Card[], blow: Blow, band: RangeBand): DefenceKind | null {
   const [kept] = ready;

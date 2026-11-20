@@ -1,7 +1,7 @@
 import { bracedAvoid } from './braced';
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
-import type { CombatTechnique } from '../../contract';
+import type { CombatTechnique, RangeBand } from '../../contract';
 import {
   avoidCeiling,
   avoidChance,
@@ -45,6 +45,8 @@ import { seesThroughIllusions } from '../../rules/eyes';
 import { watched } from './sharedMind';
 import { distanceBetween } from './distance';
 import { DODGE_BY_WEIGHT, weightOf } from './weight';
+import { sightRead, travelsBy } from '../../rules/sight';
+import { tagsOf } from '../../rules/tags';
 
 /**
  * The avoid roll in a planned fight (`rules/avoidance.ts`), from the fighters as they stand: a
@@ -69,6 +71,8 @@ export interface Incoming {
   readonly areaSize?: AreaSize;
   /** How much more easily it is read for having been leaned on (`familiarScale`). */
   readonly familiar?: number;
+  /** What can be seen of it as it comes: from someone unseen, or travelling (`rules/sight.ts`). */
+  readonly sight?: number;
   /** A swarm attack's slip scale (`swarm.ts`: its insects' speed and camouflage). */
   readonly swarm?: number;
   /** Share of the target's health it would take, which a good read saves Evade for. */
@@ -109,6 +113,11 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     : odds;
 }
 
+/** How much more or less clearly an attack is seen: leaned on before, unseen, travelling. */
+function seenOf(incoming: Incoming): number {
+  return (incoming.familiar ?? 1) * (incoming.sight ?? 1);
+}
+
 function avoidRoll(round: Round, incoming: Incoming): number {
   // A still rider is carried clear by their mount, or not at all (`riding.ts`).
   const mount = carrierOf(round, incoming.target);
@@ -126,7 +135,7 @@ function avoidRoll(round: Round, incoming: Incoming): number {
     form,
     rating: avoidRating(target, incoming.discipline),
     arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
-    read: read * (incoming.familiar ?? 1),
+    read: read * seenOf(incoming),
     dodging,
     ...(dodging ? { dodgeScale: DODGE_BY_WEIGHT[weightOf(incoming)] } : {}),
     evading,
@@ -165,6 +174,22 @@ export function threatOf(attacker: PlanFighter, target: PlanFighter, t: CombatTe
   return total / Math.max(1, target.maxHealth);
 }
 
+/** What can be seen of a technique on its way: its user unseen, or it travelling (`rules/sight.ts`). */
+function techniqueSight(
+  attacker: PlanFighter,
+  target: PlanFighter,
+  at: {
+    readonly t: CombatTechnique;
+    readonly band: RangeBand;
+    readonly fighters: readonly PlanFighter[];
+  },
+): number {
+  const tags = tagsOf(at.t);
+  const travels = tags.execution.travels === true || tags.delivery.some(travelsBy);
+  const unseen = attacker.hidden && !watched(at.fighters, target);
+  return sightRead({ unseen, travels, band: at.band });
+}
+
 /** A technique on its way to one foe; null when nothing in it is aimed at a foe. */
 export function techniqueIncoming(
   attacker: PlanFighter,
@@ -189,6 +214,7 @@ export function techniqueIncoming(
     skill: dustArrival(attacker, t) ?? driveOf(attacker, use) * (full ? HANDS_FULL_ARRIVAL : 1),
     discipline: t.discipline,
     familiar: familiar * (full ? HANDS_FULL_READ : 1),
+    sight: techniqueSight(attacker, target, { t, band, fighters: round.fighters }),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     ...(area ? { areaSize: areaSize(area) } : {}),
     ...(t.swarmCost ? { swarm: swarmSlips(attacker, t) } : {}),

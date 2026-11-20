@@ -57,8 +57,14 @@ Done: levels picked when slotted (Almighty Push), the will pool (Tsukuyomi), two
 (Planetary Devastation), defence lines keyed by how an attack came, and the counter system.
 
 1. Breath as the clock: dodging costs breath, and low breath slows you.
-2. What you can see: a hidden fighter's casting doesn't show until its effect does.
-3. Travel time, entries, durations.
+2. Entries and durations.
+
+**What you can see (done):** an attack from someone the defender can't see (hidden, and no one of
+theirs watching) is read far worse, in the avoid roll and a counter's (`rules/sight.ts`); and a
+hidden caster's casting is told without them or the technique ("Chakra gathers somewhere out of
+sight"). Their telegraph was already withheld. **Travel time (done):** an attack that travels
+(thrown, breathed, along or out of the ground, down from above) is read better the further it
+comes: a Sand Coffin from far gives time to see the sand rise.
 
 ### The counter system (agreed with the owner)
 
