@@ -11,7 +11,8 @@ import { recoveredAfter } from './recovery';
 import { play } from './play';
 import { opponentsOf } from './senses';
 import { slotVerdict, type Chosen } from './slots';
-import { fighterIn, playerOf, type PlanFighter, type PlanState, type Round } from './state';
+import type { Why } from './whyShape';
+import { fighterIn, type PlanFighter, type PlanState, type Round } from './state';
 import { stepChance } from './steps';
 import { recovered } from './tiring';
 import { ROUND_EXCHANGES } from './roundEnd';
@@ -61,20 +62,17 @@ function whyWords(
   return { from: rankWords(at), ...(passed.length > 0 ? { passed } : {}) };
 }
 
+/** Which part of the plan chose a play, where it wasn't a slot. */
+const FROM: Partial<Record<Why, string>> = {
+  emergency: 'An emergency slot',
+  'step-to': 'Fight at: before your slots',
+  charge: 'Readying to make for where you fight',
+  improvised: 'Nothing slotted could play',
+  looking: 'Nothing slotted could play',
+};
+
 function fromWords(chosen: Chosen): string {
-  switch (chosen.why) {
-    case 'emergency':
-      return 'An emergency slot';
-    case 'step-to':
-      return 'Fight at: before your slots';
-    case 'charge':
-      return 'Readying to make for where you fight';
-    case 'improvised':
-    case 'looking':
-      return 'Nothing slotted could play';
-    default:
-      return 'Your plan';
-  }
+  return FROM[chosen.why] ?? 'Your plan';
 }
 
 /** The preview's dice: fixed, so the same plan always previews the same. */
@@ -135,8 +133,9 @@ function previewed(
   round: Round,
   state: PlanState,
   n: number,
-): { round: Round; said: CombatPreviewExchange } {
-  const self = round.fighters.find((f) => f.isPlayer)!;
+): { round: Round; said: CombatPreviewExchange } | null {
+  const self = round.fighters.find((f) => f.isPlayer);
+  if (!self) return null;
   const chosen = plannedPlay(self, round);
   const played = afterPlaying(round, self, chosen);
   const step = chosen.card.kind === 'step' ? stepped(round, played, chosen.card) : null;
@@ -169,12 +168,12 @@ function onlyNew(
 
 /** What your plan should play in each exchange of the round, as the fight stands now. */
 export function roundPreview(state: PlanState): CombatPreviewExchange[] {
-  if (!playerOf(state)) return [];
   const told: CombatPreviewExchange[] = [];
   let round = asRound(state);
   let previous: CombatPreviewExchange | undefined;
   for (let n = 1; n <= ROUND_EXCHANGES; n++) {
     const next = previewed(round, state, n);
+    if (!next) break;
     told.push(onlyNew(next.said, previous));
     previous = next.said;
     round = next.round;
