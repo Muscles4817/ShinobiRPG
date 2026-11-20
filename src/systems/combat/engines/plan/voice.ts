@@ -200,7 +200,11 @@ const BLOCKED = bank(
     '{f} cut{f.s} {a} off before {a.they} can {goal}.',
     '{a} feint{a.s}, looking to {goal}, and {f} {f.does}n’t bite.',
   ],
-  ['{a} make{a.s} another try, and {f} shut{f.s} it down again.'],
+  [
+    '{a} make{a.s} another try, and {f} shut{f.s} it down again.',
+    'Once more {a} press{a.es} to {goal}, and once more {f} turn{f.s} {a.them} back.',
+    '{f} see{f.s} the next try coming too, and {a} get{a.s} nowhere.',
+  ],
 );
 
 /** A step the foe won't allow. */

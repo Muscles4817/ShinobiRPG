@@ -45,6 +45,8 @@ function wonFight() {
     allies: [],
     enemies: [thug('a'), thug('b')],
     canFlee: false,
+    // Measures a rule, so everyone plays by instinct (`CombatSetup.instinct`).
+    instinct: true,
     watch: true,
   };
   let state = engine.start(setup, createRng(4));

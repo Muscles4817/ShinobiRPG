@@ -42,7 +42,15 @@ export type Intents = Readonly<Record<string, CardId>>;
 
 export type Table = Pick<
   PlanState,
-  'fighters' | 'range' | 'distances' | 'exchange' | 'field' | 'round' | 'reads' | 'foeMark'
+  | 'fighters'
+  | 'range'
+  | 'distances'
+  | 'exchange'
+  | 'field'
+  | 'round'
+  | 'reads'
+  | 'foeMark'
+  | 'watching'
 >;
 
 /** The table as a round about to be played, for a foe weighing its plan. */
@@ -59,6 +67,8 @@ export function asRound(table: Table): Round {
     ...(table.reads ? { reads: table.reads } : {}),
     ...(table.foeMark ? { foeMark: table.foeMark } : {}),
     ...(table.field ? { field: table.field } : {}),
+    // A bout only watched lets the player's fighter play their kit as anyone's (`priority.ts`).
+    ...(table.watching ? { watching: true as const } : {}),
   };
 }
 

@@ -9,39 +9,38 @@
   —— Second exchange ——
   Asuka reaches for Lantern Cut again.
   Asuka’s Lantern Cut slashes you, through an opening they learned on the training ground with you. [Guarded] [−19]
-  You make another try, and Asuka shuts it down again. [Outpaced]
+  Asuka sees the next try coming too, and you get nowhere. [Outpaced]
   —— Third exchange ——
   Asuka catches the eye and lets Shadow Feint unfold.
   You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
-  You make another try, and Asuka shuts it down again. [Outpaced]
+  You feint, looking to close in, and Asuka doesn’t bite. [Outpaced]
   —— Last exchange ——
   Asuka’s blade flows into Lantern Cut.
   Asuka’s Lantern Cut carves into you, and it leaves you shaken. [Guarded] [−20]
-  You make another try, and Asuka shuts it down again. [Outpaced]
+  Asuka sees the next try coming too, and you get nowhere. [Outpaced]
   That round went badly for you.
   —— The next round begins ——
   —— First exchange ——
-  The air around Asuka wavers as Shadow Feint takes hold.
-  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
-  You keep low and come in under Asuka’s guard, inside Asuka’s reach.
+  Asuka uses Lantern Cut once more.
+  Asuka lands their Lantern Cut on you. [Guarded] [−19]
+  You feint, looking to close in, and Asuka doesn’t bite. [Outpaced]
   —— Second exchange ——
-  Asuka uses Shadow Feint once more.
-  You see through Asuka’s Shadow Feint, and it never takes hold. [Missed] [Seen it before]
-  You launch into Gale Heel.
-  Asuka reads the first sign of your Gale Heel and is clear of it. [Missed] [Too quick for it]
+  Asuka goes back to Lantern Cut.
+  You see Asuka’s Lantern Cut coming, and it misses. [Missed] [Too quick for it]
+  You make another try, and Asuka shuts it down again. [Outpaced]
   —— Third exchange ——
-  Steel flashes as Asuka looses Lantern Cut.
-  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−20]
-  You reach for Gale Heel again.
-  You find the strength from somewhere, and your Gale Heel slices across Asuka. [Guarded] [−8]
+  Asuka uses Lantern Cut once more.
+  Asuka’s Lantern Cut bites into you, through an opening they learned on the training ground with you. [Guarded] [−19]
+  Once more you press to close in, and once more Asuka turns you back. [Outpaced]
   —— Last exchange ——
   Asuka fixes their eyes on the field and casts Shadow Feint.
   You sway on your feet, close to done.
   You stand blinking while the exchange goes by without you.
+  That round went badly for you.
   —— The next round begins ——
   —— First exchange ——
   Asuka draws into Lantern Cut.
-  Asuka’s Lantern Cut carves into you. [Guarded] [−19]
+  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−1]
   You go down in a heap, laughing at yourself for walking into it.
   Asuka is already talking about the next one before you are back on your feet.
   summary: You lasted three rounds before going down. Asuka dazed you in the second round, and you never found your feet again.

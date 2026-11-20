@@ -62,6 +62,8 @@ function round(): Round {
     allies: [],
     enemies: [setup('foe')],
     canFlee: false,
+    // Measures a rule, so everyone plays by instinct (`CombatSetup.instinct`).
+    instinct: true,
   }).map((f): PlanFighter =>
     f.isPlayer ? { ...f, loadout: { close: plainSlots(PLAN), mid: [], far: [] } } : f,
   );
@@ -96,7 +98,7 @@ describe('the round’s trace on the plan screen', () => {
     const hero = setup('hero', { techniques: [finisher, blast] });
     const plan = { loadout: { close: plainSlots(PLAN), mid: [], far: [] } };
     let state = engine.start(
-      { player: hero, allies: [], enemies: [setup('foe')], canFlee: false, plan },
+      { player: hero, allies: [], enemies: [setup('foe')], canFlee: false, instinct: true, plan },
       rng,
     );
     const act = (id: string) => {

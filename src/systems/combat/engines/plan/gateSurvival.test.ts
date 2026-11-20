@@ -88,6 +88,8 @@ function outlasts(intellect: number, seed: number): boolean {
       allies: [],
       enemies: [fighter('guy', 15, [...GATES, kick])],
       canFlee: false,
+      // Measures a rule, so everyone plays by instinct (`CombatSetup.instinct`).
+      instinct: true,
       watch: true,
     },
     rng,

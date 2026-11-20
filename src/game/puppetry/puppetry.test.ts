@@ -1,5 +1,5 @@
 import { act, ctx, fightOut, intoFight, lastEntry, newGame, veteran } from '@/test/gameFixtures';
-import { blockerFor } from '@/game';
+import { blockerFor, combatScene } from '@/game';
 import type { CombatOutcome } from '@/systems/combat';
 import { MEND_BASE, NO_WORKSHOP, withPuppet } from '@/systems/puppets';
 
@@ -74,9 +74,12 @@ describe('your puppets in a fight', () => {
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
     const fighting = intoFight(state);
     expect(fighting.combat).not.toBeNull();
+    // The doll rides in, its unsealing in your hand; whether it is out before the fight is won
+    // is the fight's to say (a foe holding you off can keep you busy).
+    expect(JSON.stringify(combatScene(fighting, ctx))).toContain('Unsealing: Lantern Doll');
     const done = fightOut(fighting);
     expect(done.combat).toBeNull();
-    expect(done.combatFinale?.log.join(' ')).toMatch(/Lantern Doll unfolds/);
+    expect(done.puppetry.puppets.map((p) => p.id)).toContain(DOLL);
   });
 });
 
