@@ -45,11 +45,8 @@ export const BEATEN_AT_LEAST: Readonly<Record<Danger, number>> = {
 /** A scale below, the archetypes on average beat a deadly or elite foe no more often than this. */
 export const TOO_MUCH_BELOW = 0.3;
 
-/**
- * The archetypes' average win rate against a foe and its retinue, over `seeds` fights each; the
- * foe thinking ahead as in the game when `thinking` (a bench of the minds, `minds.ts`).
- */
-export function beatenAt(def: EnemyDef, scale: Scale, seeds: number, thinking = false): number {
+/** The archetypes' average win rate against a foe and its retinue, over `seeds` fights each. */
+export function beatenAt(def: EnemyDef, scale: Scale, seeds: number): number {
   const engine = createPlanEngine();
   const rates = ARCHETYPE_IDS.map((id) => {
     const spec = archetype(id, scale);
@@ -61,7 +58,7 @@ export function beatenAt(def: EnemyDef, scale: Scale, seeds: number, thinking = 
         allies: [],
         enemies: enemyParty(def, 0, ctx),
         canFlee: false,
-        ...benchMinds(thinking),
+        ...benchMinds(),
         ...(spec.plan ? { plan: spec.plan } : {}),
       };
       let state = engine.start(setup, rng);

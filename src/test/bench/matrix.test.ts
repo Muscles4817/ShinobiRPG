@@ -35,7 +35,6 @@ function cell(a: CastId, b: CastId): Cell {
       allies: [],
       foes: [castMember(b, 'chunin')],
       watch: true,
-      thinking: true,
     },
     SEEDS,
   );

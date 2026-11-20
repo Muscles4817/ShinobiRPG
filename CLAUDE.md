@@ -428,9 +428,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     play their options out in the engine and keep the move they'd make anyway unless a plan
     clearly beats it (`docs/design/research/planner-foes.md`). A fight's steps are played in a Web
     Worker off the page's thread (`ui/fight/useThinking.ts`, `dispatchAlone` rebuilding the
-    context from the state). Benches that measure a rule play everyone by instinct
-    (`CombatSetup.instinct`, `src/test/bench/minds.ts`); the benches of the minds (planner,
-    matrix, teams, bestiary) think, and a weekly run thinks everywhere.
+    context from the state). In CI the benches play everyone by instinct
+    (`CombatSetup.instinct`, `src/test/bench/minds.ts`) but the planner bench and the told
+    bench; a weekly run thinks everywhere, and what thinking foes show is kept in
+    `docs/design/research/thinking-foes-findings.md`.
     **Rules on trial** (`CombatSetup.experiments`, `CombatExperiments`) are off unless a fight turns
     them on, and only versus does (its setup's "Rules on trial"): up close a technique that needs hand signs (read from its
     art and rank, `signsOf`) is a contest against an able foe within reach, lost seals coming apart

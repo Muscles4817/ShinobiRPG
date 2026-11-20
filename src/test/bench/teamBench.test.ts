@@ -18,8 +18,7 @@ import { benchSkirmish, summarise, type BenchReport, type Skirmish } from './run
 const REPORT = import.meta.env.VITE_BENCH_REPORT === 'true';
 
 function skirmish(label: string, fight: Skirmish): BenchReport {
-  // Teams of thinking foes are what the game plays (`minds.ts`).
-  const report = benchSkirmish({ ...fight, thinking: true });
+  const report = benchSkirmish(fight);
   if (REPORT) console.warn(`${label}: ${summarise(fight.player, fight.foes[0]!, report)}`);
   return report;
 }
