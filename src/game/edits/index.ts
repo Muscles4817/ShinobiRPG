@@ -39,6 +39,7 @@ export {
   dropTechnique,
   forgeView,
   keepTechnique,
+  madeDraft,
   madeShelf,
   resetFighters,
   type DraftEffect,

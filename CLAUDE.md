@@ -1030,7 +1030,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`ContentEdits.techniques`, ids `made-…`): a draft whose verbs' fields are declared once
     (`VERB_FIELDS`) for the form, the checker and the reader of untrusted data alike; never a
     written chakra cost (a fight charges what it does); read in the forge as a fight will read
-    it (`forgeView`), and given to fighters on the Fighters page. No place teaches them.
+    it (`forgeView`), and given to fighters on the Fighters page. One marked taught
+    (`ContentEdits.taught`, `made/shelving.ts`) goes on the home village's shelf for its rank
+    (academy E–D, library C–A, never S), so a new game can learn it.
     Its technique finder (`browseTechniques`, `game/finder/`) filters by art, rank, element and
     **kind** (`techniqueKinds`: blade arts, nin-taijutsu, projectiles, power-ups and gates,
     clones…, read from what a technique does, never tagged, so a new one needs no code), each

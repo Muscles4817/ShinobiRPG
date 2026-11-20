@@ -123,8 +123,12 @@ describe('the editor', () => {
     await user.selectOptions(within(form).getByLabelText('Effect 2: Leaves them'), 'mid');
     const preview = screen.getByRole('region', { name: 'How the game reads it' });
     expect(within(preview).getByText('Lantern Comet')).toBeInTheDocument();
+    expect(within(preview).getByText(/^Nowhere/)).toBeInTheDocument();
+    await user.click(within(form).getByLabelText(/^Taught in the home village/));
+    expect(within(preview).getByText(/^On the academy’s rack/)).toBeInTheDocument();
     await user.click(keep());
     expect(edits.data).toContain('made-lantern-comet');
+    expect(edits.data).toContain('"taught"');
 
     await user.click(screen.getByRole('button', { name: 'Fighters' }));
     await user.click(screen.getByLabelText('Search by name'));

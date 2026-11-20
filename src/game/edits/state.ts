@@ -24,6 +24,8 @@ export interface ContentEdits {
    * overrides. Absent in books and saves from before there were any.
    */
   readonly techniques?: Readonly<Record<string, TechniqueDef>>;
+  /** Made techniques taught in the home village, on the shelf their rank belongs on. */
+  readonly taught?: readonly string[];
 }
 
 export const NO_EDITS: ContentEdits = { fighters: {} };

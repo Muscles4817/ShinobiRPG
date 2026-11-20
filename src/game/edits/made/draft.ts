@@ -9,6 +9,7 @@ import type {
   TechniqueNeeds,
 } from '@/systems/techniques';
 
+import { shelfForRank } from './shelving';
 import { BOOSTABLE, isMadeVerb, VERB_FIELDS, type MadeVerb, type VerbField } from './verbFields';
 
 /**
@@ -43,6 +44,8 @@ export interface TechniqueDraft {
   readonly needsNature: boolean;
   /** A body move that moulds chakra: it costs chakra, not breath. */
   readonly moulded: boolean;
+  /** Taught in the home village, on the shelf its rank belongs on (`shelving.ts`). */
+  readonly taught: boolean;
 }
 
 /** The most an effect's power may be (the strongest authored hit is in the thirties). */
@@ -75,6 +78,7 @@ export const BLANK_DRAFT: TechniqueDraft = {
   oncePerFight: false,
   needsNature: false,
   moulded: false,
+  taught: false,
 };
 
 /** A fresh effect of a verb: a middling power and nothing chosen yet. */
@@ -173,6 +177,8 @@ export function draftOf(def: TechniqueDef): TechniqueDraft {
     oncePerFight: def.oncePerFight === true,
     needsNature: def.needs?.nature !== undefined,
     moulded: def.moulded === true,
+    // Whether it is taught is kept beside it in the edits; `madeDraft` reads it from there.
+    taught: false,
   };
 }
 
@@ -226,5 +232,8 @@ export function draftProblems(draft: TechniqueDraft): string[] {
       ? ['Only a technique that wounds can kill in one strike.']
       : []),
     ...(draft.needsNature && !draft.element ? ['Give it an element to need a nature.'] : []),
+    ...(draft.taught && shelfForRank(draft.rank) === null
+      ? ['An S technique can’t be taught in the village.']
+      : []),
   ];
 }

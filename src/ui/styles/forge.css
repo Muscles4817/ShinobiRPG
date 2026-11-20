@@ -277,3 +277,12 @@
   place-items: end end;
   padding: 0 6px 2px 0;
 }
+
+.forge-taught {
+  margin: 0;
+}
+
+.forge-taught b {
+  margin-right: 6px;
+  font-family: var(--font-story);
+}

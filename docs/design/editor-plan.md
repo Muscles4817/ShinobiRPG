@@ -55,5 +55,9 @@ a technique that summons without a contract behind it. Stats stay between 0 and 
   Dropping one takes it from every fighter given it; a fighter left with none goes back to the
   pack's list. Resetting every fighter keeps the techniques made.
 - **Where they reach:** versus at once, and every new game (copied into `GameState.edits` with the
-  rest). They have no source in the game itself (no academy, library or teacher offers them), so
-  only fighters given one use it; letting the player learn one is part of Phase 4, with places.
+  rest).
+- **Taught in the village, when asked** (`made/shelving.ts`, `ContentEdits.taught`): a made
+  technique marked taught goes on the home village's shelf for its rank, as the pack's own do: the
+  academy's rack at E–D, the library at C–A, where the library's rules by rank (the sensei's
+  permit, the restricted stacks, the sealed archive) apply to it. An S technique is never shelved.
+  Unmarked, only fighters given it use it. Teachers and other villages' shelves wait for Phase 4.

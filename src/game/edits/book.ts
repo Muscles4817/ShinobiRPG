@@ -65,9 +65,11 @@ export function editsFrom(raw: unknown): ContentEdits {
     return edit ? [[key, edit] as const] : [];
   });
   const techniques = madeFromAll(raw.techniques);
+  const taught = (idsFrom(raw.taught) ?? []).filter((id) => id in techniques);
   return {
     fighters: Object.fromEntries(fighters),
     ...(Object.keys(techniques).length > 0 ? { techniques } : {}),
+    ...(taught.length > 0 ? { taught } : {}),
   };
 }
 

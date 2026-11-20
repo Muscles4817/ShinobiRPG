@@ -162,6 +162,17 @@ function Asks({ draft, onChange }: ForgeProps) {
           Moulds chakra: costs chakra, not breath
         </CheckLine>
       )}
+      <CheckLine
+        checked={draft.taught}
+        disabled={draft.rank === 'S'}
+        onChange={(taught) => {
+          onChange({ ...draft, taught });
+        }}
+      >
+        {draft.rank === 'S'
+          ? 'Taught in the home village (an S technique is taught by no one)'
+          : 'Taught in the home village, so you can learn it in a new game'}
+      </CheckLine>
       {draft.discipline === 'kenjutsu' && (
         <p className="muted">A blade art needs a blade in hand.</p>
       )}

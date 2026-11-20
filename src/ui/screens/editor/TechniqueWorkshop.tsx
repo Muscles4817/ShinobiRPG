@@ -2,12 +2,11 @@ import { useMemo, useState } from 'react';
 
 import {
   BLANK_DRAFT,
-  draftOf,
   dropTechnique,
   forgeView,
   keepTechnique,
   madeShelf,
-  madeTechniques,
+  madeDraft,
   type ContentEdits,
   type GameContext,
   type MadeShelfItem,
@@ -33,7 +32,9 @@ interface Open {
 const NEW: Open = { id: null, draft: BLANK_DRAFT };
 
 function givenLine(item: MadeShelfItem): string {
-  return item.givenTo.length > 0 ? `Given to ${item.givenTo.join(', ')}` : 'Given to no one yet';
+  const given =
+    item.givenTo.length > 0 ? `Given to ${item.givenTo.join(', ')}` : 'Given to no one yet';
+  return item.taughtAt ? `${given}, and taught in the village` : given;
 }
 
 function Shelf({
@@ -89,8 +90,7 @@ function Shelf({
 }
 
 function savedDraft(ctx: GameContext, id: string | null): TechniqueDraft {
-  const def = id ? madeTechniques(ctx.edits).find((t) => t.id === id) : undefined;
-  return def ? draftOf(def) : BLANK_DRAFT;
+  return (id ? madeDraft(ctx.edits, id) : null) ?? BLANK_DRAFT;
 }
 
 export function TechniqueWorkshop({
@@ -144,8 +144,8 @@ export function TechniqueWorkshop({
                   if (!kept) return;
                   onEdits(kept.edits);
                   // What was kept, read back: defaults the form held are dropped on keeping.
-                  const def = kept.edits.techniques?.[kept.id];
-                  setOpen({ id: kept.id, draft: def ? draftOf(def) : shown.draft });
+                  const back = madeDraft(kept.edits, kept.id) ?? shown.draft;
+                  setOpen({ id: kept.id, draft: back });
                 }
               : null,
           onDiscard: changed

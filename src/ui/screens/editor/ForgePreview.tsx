@@ -88,6 +88,9 @@ export function ForgePreview({
         stamp="Made"
       />
       <TechniqueSheet sheet={view.sheet} hands={view.hands} />
+      <p className="forge-taught">
+        <b>Taught</b> {view.taughtAt ?? 'Nowhere: only fighters given it use it'}
+      </p>
       {view.problems.length > 0 && (
         <div className="forge-problems" role="status">
           <h4>Before it can be kept</h4>

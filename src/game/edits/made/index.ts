@@ -14,7 +14,8 @@ export {
   type TechniqueDraft,
 } from './draft';
 export { FORGE_CHOICES, choiceLabel, type ForgeChoice, type ForgeChoices } from './choices';
-export { dropTechnique, keepTechnique, resetFighters, type KeptTechnique } from './edit';
+export { shelfForRank, shelfWords, type TaughtShelf } from './shelving';
+export { dropTechnique, keepTechnique, madeDraft, resetFighters, type KeptTechnique } from './edit';
 export { madeFrom } from './read';
 export {
   BOOSTABLE,

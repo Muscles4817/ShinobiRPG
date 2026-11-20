@@ -11,6 +11,7 @@ import { madeTechniques } from '../state';
 import { versusRoster } from '../../versus/roster';
 import { draftProblems, effectReady, madeTechnique, type TechniqueDraft } from './draft';
 import { MADE_PREFIX } from './ids';
+import { shelfForRank, shelfWords } from './shelving';
 
 /**
  * The editor's view of techniques made in it: the shelf of those kept, and the forge, where a
@@ -28,6 +29,8 @@ export interface MadeShelfItem {
   readonly kinds: readonly TechniqueKind[];
   /** The fighters given it, by name. */
   readonly givenTo: readonly string[];
+  /** Where in the home village it is taught, in words; null when it isn't. */
+  readonly taughtAt: string | null;
 }
 
 export interface ForgeView {
@@ -42,6 +45,8 @@ export interface ForgeView {
   readonly problems: readonly string[];
   /** What a fight will make of it that the maker may not expect; never a refusal. */
   readonly notes: readonly string[];
+  /** Where in the home village it will be taught, in words; null when it won't be. */
+  readonly taughtAt: string | null;
 }
 
 /** The fighters a made technique has been given, by name. */
@@ -64,6 +69,7 @@ export function madeShelf(ctx: GameContext): readonly MadeShelfItem[] {
     element: def.element ?? null,
     kinds: techniqueKinds(def),
     givenTo: givenTo(ctx, def.id),
+    taughtAt: ctx.edits.taught?.includes(def.id) ? shelfWords(def.rank) : null,
   }));
 }
 
@@ -103,5 +109,6 @@ export function forgeView(ctx: GameContext, draft: TechniqueDraft): ForgeView {
     hands: `In the hands of a ${draft.rank}-grade fighter`,
     problems: draftProblems(draft),
     notes: notesOn(draft, sheet, maxChakra(stats)),
+    taughtAt: draft.taught && shelfForRank(draft.rank) ? shelfWords(draft.rank) : null,
   };
 }
