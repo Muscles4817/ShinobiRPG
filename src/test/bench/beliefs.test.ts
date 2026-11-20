@@ -12,6 +12,7 @@ import { hasVerb, isHindering } from '@/systems/combat/rules/verbs';
 import { toSetup } from './fighters';
 import { castMember, CAST_IDS, type CastId } from './matrixCast';
 import { tracedSkirmish } from './runner';
+import { benchMinds } from './minds';
 
 /**
  * Beliefs (`engines/plan/mind/`) are shown only: a fight comes out the same, decision by decision,
@@ -110,6 +111,7 @@ function exchanges(engine: CombatEngine, [a, b]: readonly [CastId, CastId], seed
       enemies: [toSetup(castMember(b, 'chunin'), 'foe')],
       canFlee: false,
       watch: true,
+      ...benchMinds(),
     },
     rng,
   );

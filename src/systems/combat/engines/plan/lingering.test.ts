@@ -6,6 +6,7 @@ import type { TechniqueEffect } from '@/systems/techniques';
 import { SLIPS } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique, RangeBand } from '../../contract';
+import { splitNarration } from '../../rules/narration';
 import { useJutsu } from './jutsu';
 import { lingerAfter, lingeringStatuses } from './lingering';
 import { react } from './react';
@@ -147,6 +148,20 @@ describe('verbs that leave something behind, in plan & watch', () => {
     expect(bandit(round).health).toBeLessThan(before);
     round = lingerAfter(lingerAfter(round, 2), 3);
     expect(bandit(round).afflictions).toBeUndefined();
+  });
+
+  it('a burn that finishes someone tells only what it took', () => {
+    const fire = technique([{ verb: 'afflict', power: 10, harm: 'burn' }]);
+    const burning = landed(roundAt(), fire, (r) => (bandit(r).afflictions ?? []).length > 0);
+    const nearlyDown = {
+      ...burning,
+      fighters: burning.fighters.map((f) => (f.id === 'bandit' ? { ...f, health: 1 } : f)),
+    };
+    const after = lingerAfter(nearlyDown, 1);
+    const said = after.lines.slice(nearlyDown.lines.length).map(splitNarration);
+    const harm = said.flatMap((l) => l.amounts.filter((a) => a.kind === 'harm'));
+    expect(harm.map((a) => a.amount)).toEqual([1]);
+    expect(bandit(after).health).toBe(0);
   });
 
   it('bleeds stack; a poison saps strength and speed until it wears off', () => {

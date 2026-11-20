@@ -5,6 +5,7 @@ import { toSetup } from './fighters';
 import { castMember, CAST_IDS, type CastId } from './matrixCast';
 import { castTally, EMPTY_TALLY, EVERY_WHY, tallied, tallyTable } from './decisions';
 import { skirmishOnce, tracedSkirmish, type Skirmish } from './runner';
+import { benchMinds } from './minds';
 
 /**
  * The decision log (`decisionLog.ts`) records today's AI without changing it: a traced fight
@@ -79,6 +80,7 @@ describe('the decision log', () => {
       allies: [],
       enemies: [toSetup(castMember('stalker', 'chunin'), 'foe')],
       canFlee: false,
+      ...benchMinds(),
     };
     const engine = createPlanEngine();
     expect(decisionsOf(engine.start(setup, createRng(1)))).toEqual([]);
