@@ -1,5 +1,7 @@
 import { COMMIT_BREATH, type Commitment } from '../../rules/commitment';
 import { breathOf } from './effort';
+import { WAITING } from './counterLines';
+import { counterWaitsOf } from '../../rules/counters';
 import { told, type Bank } from './fresh';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { momentOf } from './voice';
@@ -28,6 +30,10 @@ const COMMITTING: Readonly<Record<Commitment, Bank>> = {
       '{a} brace{a.s} for whatever comes.',
     ],
   },
+  counter: { id: 'wait-blow', lines: WAITING.blow },
+  'counter-blade': { id: 'wait-blade', lines: WAITING.blade },
+  'counter-thrown': { id: 'wait-thrown', lines: WAITING.thrown },
+  'look-away': { id: 'wait-eyes', lines: WAITING.eyes },
 };
 
 /** Whether the fighter has the breath for a commitment. */
@@ -53,9 +59,15 @@ export function commit(round: Round, { actor }: Turn, kind: Commitment): Round {
   );
 }
 
-/** A fighter's turn begins: whatever they committed to last turn (or a gather) is over. */
+/**
+ * A fighter's turn begins: whatever they committed to last turn (or a gather) is over, and a
+ * counter read wrong no longer leaves them open.
+ */
 export function released(round: Round, id: string): Round {
   const f = fighterIn(round, id);
-  if (!f?.committed && !f?.gathering) return round;
-  return { ...round, fighters: patch(round.fighters, id, { committed: null, gathering: false }) };
+  if (!f?.committed && !f?.gathering && !f?.exposed) return round;
+  // A counter still waiting when their turn comes waited for nothing.
+  const idle = counterWaitsOf(f.committed) !== null ? { waitedIdle: round.number } : {};
+  const { exposed: _open, ...rest } = { ...f, ...idle, committed: null, gathering: false };
+  return { ...round, fighters: round.fighters.map((g) => (g.id === id ? rest : g)) };
 }

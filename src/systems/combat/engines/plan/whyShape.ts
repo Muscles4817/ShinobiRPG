@@ -18,6 +18,8 @@ export const PLAN_WHYS = [
   'setup',
   /** Playing for time against a killer (`survival.ts`). */
   'survival',
+  /** Waiting to counter what their read of a foe's cues says is coming (`counterRead.ts`). */
+  'counter-read',
   /** A summoner's call from the kit (`calling.ts`). */
   'call',
   /** Readying the charge before making for their distance (an empower, clones, an entry). */

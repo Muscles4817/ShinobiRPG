@@ -7,6 +7,7 @@ import { effortOf } from './effort';
 import { styleMoves } from './repertoire';
 import { shapeOf, type CombatGear } from '../../gearContract';
 import { COMMIT_BREATH } from '../../rules/commitment';
+import { COUNTER_IDS, type CounterWaits } from '../../rules/counters';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
 import { isDefenceCard, type Card, type DefenceCard } from './cards';
 import type { PlanFighter } from './state';
@@ -110,8 +111,24 @@ function namedPlainly(card: Card): card is Extract<Card, { kind: Plainly }> {
   return card.kind in PLAIN_LABELS;
 }
 
+/** Each counter by what it waits for. */
+const COUNTER_LABELS: Readonly<Record<CounterWaits, string>> = {
+  blow: 'Counter',
+  blade: 'Parry',
+  thrown: 'Knock down',
+  eyes: 'Look away',
+};
+
+const COUNTER_DETAIL: Readonly<Record<CounterWaits, string>> = {
+  blow: 'Wait for a blow or a grab up close: read it and turn it round',
+  blade: 'Wait for a blade: read it, parry and cut back',
+  thrown: 'Wait for thrown steel: knock it down and throw back',
+  eyes: 'Wait for eyes that would trap you, and look away',
+};
+
 export function cardLabel(card: Card, fighter: Armed): string {
   if (card.kind === 'dodge' && card.clear) return 'Dodge clear';
+  if (card.kind === 'counter') return COUNTER_LABELS[card.waits];
   if (namedPlainly(card)) return PLAIN_LABELS[card.kind];
   switch (card.kind) {
     case 'strike':
@@ -133,12 +150,16 @@ const DODGE_CLEAR_DETAIL = `Always ready, may slip a hit and spring back a dista
 const DEFENCE_DETAIL: Readonly<Record<DefenceCard['kind'], string>> = {
   guard: 'Always ready, takes the edge off every hit',
   dodge: 'Always ready, may slip any hit and stay in reach',
-  counter: 'Always ready, hits back up close',
+  counter: COUNTER_DETAIL.blow,
   evade: `Spend the turn keeping clear of everything, ${COMMIT_BREATH.evade} breath`,
   brace: `Spend the turn standing firm against blows and holds, ${COMMIT_BREATH.brace} breath`,
 };
 
 function defenceDetail(card: DefenceCard): string {
+  if (card.kind === 'counter') {
+    const breath = COMMIT_BREATH[COUNTER_IDS[card.waits]];
+    return `${COUNTER_DETAIL[card.waits]}; read wrong, you are open. ${breath} breath`;
+  }
   return card.kind === 'dodge' && card.clear ? DODGE_CLEAR_DETAIL : DEFENCE_DETAIL[card.kind];
 }
 

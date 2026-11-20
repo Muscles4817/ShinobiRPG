@@ -76,6 +76,9 @@ describe('plan & watch cards', () => {
     const ids = (cards: readonly Card[]) =>
       cards.map((c) => (c.kind === 'jutsu' ? c.technique.id : cardId(c)));
     expect(ids(cardsFor(hero!, 'close'))).toEqual([
+      'counter',
+      'counter-thrown',
+      'look-away',
       'evade',
       'brace',
       'gather',
@@ -84,6 +87,7 @@ describe('plan & watch cards', () => {
       'daze',
     ]);
     expect(ids(cardsFor(hero!, 'far'))).toEqual([
+      'counter-thrown',
       'evade',
       'brace',
       'gather',
@@ -92,7 +96,7 @@ describe('plan & watch cards', () => {
       'daze',
       'blast',
     ]);
-    expect(ids(reactionsFor(hero!, 'close'))).toEqual(['guard', 'dodge', 'dodge-clear', 'counter']);
+    expect(ids(reactionsFor(hero!, 'close'))).toEqual(['guard', 'dodge', 'dodge-clear']);
     expect(ids(reactionsFor(hero!, 'far'))).toEqual(['guard', 'dodge']);
   });
 
@@ -217,9 +221,11 @@ describe('plan & watch engine', () => {
     const state = start();
     const option = (s: CombatState, id: string) => engine.view(s).options.find((o) => o.id === id);
     expect(option(state, 'ready:close:guard')?.selected).toBe(true);
-    expect(option(state, 'ready:close:counter')?.setting).toBe('Defence');
-    const countering = act(engine, state, 'ready:close:counter');
-    expect(decode(countering).fighters[0]!.reactions?.close).toBe('counter');
+    expect(option(state, 'ready:close:dodge')?.setting).toBe('Defence');
+    // A counter is an action, slotted, never a defence kept ready.
+    expect(option(state, 'ready:close:counter')).toBeUndefined();
+    const countering = act(engine, state, 'ready:close:dodge');
+    expect(decode(countering).fighters[0]!.reactions?.close).toBe('dodge');
     expect(option(state, 'keep:mid:any')?.selected).toBe(true);
     const ranged = act(engine, countering, 'keep:mid:far');
     expect(decode(ranged).fighters[0]!.keepAt).toBe('far');
@@ -307,12 +313,17 @@ describe('plan & watch engine', () => {
     const hero = broken.fighters[0]!;
     expect(hero.loadout.close).toEqual(defaultLoadout(hero, broken.fighters).close);
     // A plan saved before readiness: its first defence at each distance becomes its reaction,
-    // and plain blows and techniques no longer known drop out.
+    // and plain blows and techniques no longer known drop out. A counter kept there is now an
+    // action, so it stays a slot.
     const old = decode(
       begin({ close: ['counter', 'jutsu:gone', 'strike'], mid: ['dodge', 'jutsu:blast'], far: [] }),
     ).fighters[0]!;
-    expect(old.loadout).toEqual({ close: [], mid: plainSlots(['jutsu:blast']), far: [] });
-    expect(old.reactions).toEqual({ close: 'counter', mid: 'dodge', far: 'guard' });
+    expect(old.loadout).toEqual({
+      close: plainSlots(['counter']),
+      mid: plainSlots(['jutsu:blast']),
+      far: [],
+    });
+    expect(old.reactions).toEqual({ close: 'guard', mid: 'dodge', far: 'guard' });
     const plan = {
       loadout: { close: [], mid: plainSlots(['jutsu:blast']), far: [] },
       reactions: { close: 'dodge', mid: 'guard', far: 'guard' },

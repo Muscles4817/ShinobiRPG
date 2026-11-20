@@ -63,7 +63,14 @@ export function walksInto(card: Card, defence: DefenceKind): boolean {
  * A commitment shows as plainly as a defence kept (`docs/design/defence-plan.md` 3.4, breaking a
  * turtle): a Brace is met as a Guard (a break goes through it), an Evade as a Dodge.
  */
-const COMMITTED_AS: Readonly<Record<Commitment, DefenceKind>> = { brace: 'guard', evade: 'dodge' };
+const COMMITTED_AS: Readonly<Record<Commitment, DefenceKind>> = {
+  brace: 'guard',
+  evade: 'dodge',
+  counter: 'counter',
+  'counter-blade': 'counter',
+  'counter-thrown': 'counter',
+  'look-away': 'counter',
+};
 
 /** The defence a target is committed to now, else the one they have been seen to keep here. */
 export function seenDefence(

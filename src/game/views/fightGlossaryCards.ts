@@ -26,8 +26,8 @@ export const CARD_ENTRIES: readonly GlossaryEntry[] = [
   ),
   defence(
     'Counter',
-    'Kept ready at a distance, it takes no slot and hits back at blows up close.',
-    'Attack from further off or with a technique; a foe who has seen it holds their blows back.',
+    'An action: spend the turn waiting for one kind of attack (a blow up close, a blade, thrown steel, or eyes to look away from). Read cleanly, it stops the first such attack and answers it; read late, it only turns it aside; read wrong, you are open until your next turn. Paid in breath.',
+    'Send something it is not waiting for, or come too fast to read; a committed attack (a charge) is the easiest to read.',
   ),
   defence(
     'Substitution',
@@ -47,7 +47,7 @@ export const CARD_ENTRIES: readonly GlossaryEntry[] = [
   action(
     'Strike',
     'A blow or cut in your style, the move that suits the moment, paid in breath rather than chakra.',
-    'A Guard softens it, a Dodge slips it, and a ready Counter hits back.',
+    'A Guard softens it, a Dodge slips it, and a Counter waiting for it may turn it round.',
   ),
   action(
     'Throw',
@@ -86,12 +86,12 @@ export const CARD_ENTRIES: readonly GlossaryEntry[] = [
   ),
   footwork(
     'Close in',
-    'A step towards the foe: it costs the turn and leaves no Guard or Counter that exchange.',
+    'A step towards the foe: it costs the turn and leaves no Guard that exchange.',
     'A foe holding off fires at whoever steps in on them.',
   ),
   footwork(
     'Back off',
-    'A step away, clear of the nearer foes: it costs the turn and leaves no Guard or Counter that exchange.',
+    'A step away, clear of the nearer foes: it costs the turn and leaves no Guard that exchange.',
     'A foe as quick may keep pace.',
   ),
   footwork(

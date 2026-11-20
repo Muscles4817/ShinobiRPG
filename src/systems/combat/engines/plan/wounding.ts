@@ -59,6 +59,7 @@ function blowsFor(aimed: Aimed, use: Wounding, { scale, kills }: Force): Blow[] 
     kind: attackKindOf(t),
     discipline: t.discipline,
     came: approachOf(t),
+    technique: true,
     ...(t.element ? { element: t.element } : {}),
     ...(t.accuracy ? { accuracy: t.accuracy } : {}),
     // A killing blow goes through a guard as a break does: only a swap gets out of its way.

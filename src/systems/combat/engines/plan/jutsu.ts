@@ -33,6 +33,7 @@ import { holdIllusion } from './illusions';
 import { closingOn } from './stages';
 import { isPinned } from '../../rules/verbs/lingering';
 import { fittingTargets } from './fitting';
+import { metByCounters } from './techniqueCounters';
 import { damage, type Aimed } from './wounding';
 import { conditionOf, landsOnFoe, shakenOff } from './takingHold';
 import { opponentsOf, type Turn } from './senses';
@@ -344,10 +345,12 @@ function single(round: Round, turn: Turn, t: CombatTechnique): Round {
   // on a target this exchange (`oneNightmare.ts`).
   const fitting = fittingTargets(paid, { actor, t, targets: targetsOf(paid, turn, t) });
   const free = stillFree(fitting.round, actor, { t, targets: fitting.targets });
-  const targets = free.targets;
-  if (isHarmful(t) && targets.length === 0) return free.round;
-  const seen = targets.filter((foe) => slips(free.round, turn, foe, t));
-  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t, rng: turn.rng }), free.round);
+  // A counter waiting for this kind of attack meets it first (`counter.ts`).
+  const met = metByCounters(free.round, turn, { t, targets: free.targets });
+  const targets = met.targets;
+  if (isHarmful(t) && targets.length === 0) return met.round;
+  const seen = targets.filter((foe) => slips(met.round, turn, foe, t));
+  const told = seen.reduce((r, foe) => toldSlip(r, { actor, foe, t, rng: turn.rng }), met.round);
   if (isHarmful(t) && seen.length === targets.length) {
     return aftermath(told, turn, { t, caught: targets });
   }

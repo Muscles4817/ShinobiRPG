@@ -70,6 +70,10 @@ export interface Summoned {
   readonly pooledAt?: number;
   /** A technique's second stage waiting to close on this fighter (`stages.ts`). */
   readonly closing?: { readonly by: string; readonly techniqueId: string; readonly armed?: true };
+  /** Caught waiting on a counter that read it wrong: open until their next turn (`counter.ts`). */
+  readonly exposed?: true;
+  /** The exchange a counter of theirs last waited for nothing (`counterRead.ts`). */
+  readonly waitedIdle?: number;
   /** Big enough to carry its caller (`riding.ts`). */
   readonly mount?: true;
 }

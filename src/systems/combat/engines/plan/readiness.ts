@@ -79,8 +79,8 @@ export function cleanReactions(fighter: Ready, reactions: Reactions): Reactions 
 
 /**
  * The defence that can react: reeling from a daze, a fighter can still put a guard up, but not
- * dodge, counter or swap out; on the move (they stepped this exchange), a Guard or a Counter
- * can't be set, though a Dodge or a swap still works.
+ * dodge or swap out; on the move (they stepped this exchange), a Guard can't be set, though a
+ * Dodge or a swap still works.
  */
 export function readyDefences(
   target: PlanFighter,
@@ -88,9 +88,10 @@ export function readyDefences(
 ): Card[] {
   const kept = reactionAt(target, bandOf(round, target));
   // Hands on a channelled hold leave none for a defence, and slack threads none for a puppet.
-  if (!kept || target.holding || hangsSlack(round, target)) return [];
+  // Caught waiting on a counter read wrong, nothing comes up (`counter.ts`).
+  if (!kept || target.holding || target.exposed || hangsSlack(round, target)) return [];
   // Reeling, or gathering their strength, only a Guard still comes up (`gather.ts`).
   if ((isDazed(target) || target.gathering === true) && kept.kind !== 'guard') return [];
-  const stance = kept.kind === 'guard' || kept.kind === 'counter';
+  const stance = kept.kind === 'guard';
   return target.movedAt === round.number && stance ? [] : [kept];
 }

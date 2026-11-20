@@ -1,3 +1,4 @@
+import { COUNTER_IDS } from '../../rules/counters';
 import { afterUsing } from '../../rules/trumps';
 import { restingAfter } from './recovery';
 import { strike } from './arms';
@@ -66,6 +67,8 @@ function spent(round: Round, turn: Turn, card: SelfCard): Round {
     case 'evade':
     case 'brace':
       return commit(round, turn, card.kind);
+    case 'counter':
+      return commit(round, turn, COUNTER_IDS[card.waits]);
     case 'gather':
       return gather(round, turn);
   }

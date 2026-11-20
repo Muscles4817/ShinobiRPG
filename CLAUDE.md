@@ -256,6 +256,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     a fist), the defender's avoid rating against how fast it arrives (speed with perception;
     a genjutsu is noticed, willpower with perception), a stance (anyone slips some, a ready Dodge
     many more), accuracy and an area's size (wide hard to get clear of, vast impossible).
+    **Counters are slotted** (`rules/counters.ts`, `plan/counter.ts`): an action that spends the
+    turn waiting for one kind of attack, read from its tags (`rules/tags/approach.ts`): a blow or
+    grab up close bare-handed, a blade with a blade in hand, thrown steel, eyes to look away
+    from. The first such attack is read (eyes and wits against speed and skill, a committed attack
+    easier): cleanly, it is stopped and answered (harder for a committed attack); late, turned
+    aside; wrong, it lands and they are `exposed`, no defence up until their next turn. A
+    technique meets it as it is used (`plan/techniqueCounters.ts`), whole. A mind that reads the
+    fight waits to counter only what its read of a foe's cues is sure of, and only something
+    worth a turn (`plan/counterRead.ts`). Riposte techniques (the `counter` verb) stay their own.
     **Defence can be committed to** (`rules/commitment.ts`, `plan/commitment.ts`): Evade and
     Brace are actions, slotted like any other and paid in breath, that spend the turn on not
     being hit and hold until the fighter's next turn: Evade adds a large stance to every avoid
@@ -290,8 +299,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     afterwards they are steady for an exchange (`canDaze`), so dazes can't be chained. A plan is
     **actions** per distance, three to six by intellect grade (`slotLimit`: E–D 3, C 4, B–A 5, S 6):
     techniques, tools, Search, Dispel, Evade, Brace and Gather. Defences and footwork take no slot
-    (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Dodge clear, Counter
-    or a substitution; never stacked: a Dodge is a choice, staying in reach or, with Dodge clear,
+    (`plan/readiness.ts`): each distance keeps **one defence** ready (Guard, Dodge, Dodge clear or a
+    substitution; never stacked: a Dodge is a choice, staying in reach or, with Dodge clear,
     springing back a distance for breath, `plan/leap.ts`, where a light attack's thrower can likely
     follow and a heavy one's can't; a heavy attack is easier to slip with a ready Dodge, a light one
     harder, `plan/weight.ts`) that reacts on its own (a **spin**, a substitution that `spins`
@@ -300,7 +309,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     swapping out of one a round, kept ready ahead of a plain swap; only illusions and an empty
     tank get past it: `plan/footwork.ts`), and a plan may say where to **fight at**:
     the fighter steps towards it first (after an emergency slot), and a step still costs the turn
-    (`plan/stepping.ts`) and leaves them unable to set a Guard or a Counter that exchange
+    (`plan/stepping.ts`) and leaves them unable to set a Guard that exchange
     (`plan/steps.ts`). At mid and far a plan may **hold off** with kunai or a wounding
     technique (`plan/zoning.ts`, `rules/zoning.ts`): whoever steps in on a holder who hasn't
     acted yet meets that shot instead of the step's own contest (aim against speed, areas far

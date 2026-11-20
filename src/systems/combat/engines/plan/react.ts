@@ -1,16 +1,15 @@
+import { counterOn, exposed, type Countered } from './counter';
 import { threadsCutBy } from './puppets';
 import type { Rng } from '@/core';
 import type { Accuracy, AreaSize, Discipline, Element } from '@/systems/techniques';
 
 import { alive, hasPerk } from '../../rules/body';
-import { strikeDamage } from '../../rules/damage';
-import { counterChance, guardScale } from '../../rules/defence';
-import { counterSkill, cutSkill, heldGuard } from '../../rules/blades';
+import { guardScale } from '../../rules/defence';
+import { heldGuard } from '../../rules/blades';
 import { confuseChance, confusionTurns, HIDDEN_DAMAGE } from '../../rules/conditions';
-import { FORESIGHT_COUNTER, foreseen } from '../../rules/eyes';
 import { hitTypeOf, type HitType } from '../../rules/hits';
 import { wearShroud } from './shrouds';
-import { canAttackFrom, kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
+import { kitDamageScale, packScale, type AttackKind } from '../../rules/kit';
 import { harmLine, reactionLine } from '../../rules/narration';
 import type { RangeBand } from '../../contract';
 import { AREA_RULES, brokenScale, covered, substitutable } from '../../rules/verbs';
@@ -26,9 +25,8 @@ import { weightOf } from './weight';
 import { taken, wound } from './wound';
 import { committedTo } from './commitment';
 import { BRACE_LETS } from '../../rules/commitment';
-import { canHit } from './rows';
 import { isDazed } from './daze';
-import { counterLine, hitLine, missLine, momentOf, type MissWhy } from './voice';
+import { hitLine, missLine, momentOf, type MissWhy } from './voice';
 import { kitNote } from './kitNote';
 import { fighterIn, patch, say, type DefenceKind, type PlanFighter, type Round } from './state';
 import { confusedLine } from './sceneVoice';
@@ -39,21 +37,16 @@ import { distanceBetween } from './distance';
 import { slipCause, slipCauseBeside, withCause } from './causes';
 import type { Approach } from '../../rules/tags';
 
-/** Foresight finds a Counter's moment more often. */
-const FORESEES_OPENING = { scale: FORESIGHT_COUNTER, ceiling: 0.8 };
 /**
  * A blow meets the avoid roll (`avoid.ts`: anyone slips some, a ready Dodge many more), unless
  * its technique already made it. Then the defence a fighter keeps ready at a distance
- * (`readiness.ts`) reacts on its own: a substitution escapes it, Guard softens it (guard),
- * Counter hits back up close (taijutsu); see `rules/defence.ts`. A dazed fighter can only
- * guard, and a break goes straight through a guard. Kits shape every hit: armour and spirits
- * shrug off some kinds of attack (less of a break), packs hit harder together, hidden attackers
- * harder still, illusionists' hits confuse, and cowards run. A
- * counter is a blow up close, so it can't reach an attacker standing behind their front row.
- * Before any of it, a clone may take the blow instead (`decoys.ts`).
+ * (`readiness.ts`) reacts on its own: a substitution escapes it, Guard softens it (guard); see
+ * `rules/defence.ts`. A dazed fighter can only guard, and a break goes straight through a guard.
+ * Kits shape every hit: armour and spirits shrug off some kinds of attack (less of a break),
+ * packs hit harder together, hidden attackers harder still, illusionists' hits confuse, and
+ * cowards run. Before any of it, a counter waiting for this kind of blow meets it (`counter.ts`)
+ * and a clone may take the blow instead (`decoys.ts`).
  */
-
-const COUNTER_SCALE = 0.6;
 
 export interface Blow {
   readonly raw: number;
@@ -73,6 +66,8 @@ export interface Blow {
   readonly element?: Element;
   /** How it came, for the story of a defence against it (`rules/tags/approach.ts`). */
   readonly came?: Approach;
+  /** A technique's hit: a waiting counter met the technique as it was used (`jutsu.ts`). */
+  readonly technique?: true;
   /** An area hit: bursts every clone and still reaches its target (`decoys.ts`). */
   readonly area?: boolean;
   /** How much ground an area hit covers: wider is harder to slip and beats a plain Guard. */
@@ -132,30 +127,6 @@ function confuse(round: Round, { attacker, target, rng }: Hit): Round {
   );
 }
 
-/** The skill behind a blow a Counter answers: a cut's kenjutsu, else taijutsu. */
-function skillBehind(attacker: PlanFighter, blow: Blow): number {
-  const cut = blow.kind === 'weapon' || blow.discipline === 'kenjutsu';
-  return cut ? cutSkill(attacker) : attacker.attributes.taijutsu;
-}
-
-function counter(round: Round, { attacker, target, blow: met, rng }: Hit): Round {
-  const struck = fighterIn(round, target.id);
-  const skills = { attack: skillBehind(attacker, met), answer: counterSkill(target) };
-  const chance = foreseen(counterChance(skills), target, FORESEES_OPENING);
-  if (!struck || !alive(struck) || !rng.chance(chance)) return round;
-  const blow: Blow = {
-    // A broad blade in the countered hand turns some of the answer aside.
-    raw: strikeDamage(target, attacker, rng.next()) * COUNTER_SCALE * (1 - heldGuard(attacker)),
-    what: 'counter',
-    dodgeable: false,
-    physical: true,
-    kind: 'blow',
-  };
-  const damage = taken(attacker, Math.max(1, Math.round(kitted(round, struck, attacker, blow))));
-  const line = reactionLine(counterLine(momentOf(round, target.id), target), 'countered');
-  return wound(round, attacker.id, damage, harmLine(line, damage));
-}
-
 /**
  * What a Guard lets through of this blow: a guarding weapon in hand (a greatsword, a staff)
  * catches more, and a piercing weapon goes partly through it.
@@ -184,7 +155,7 @@ function guardOn({ attacker, target, blow }: Hit, guardReady: boolean): Guarding
   return { guarded, smashed: guarding && blow.breaks === true, lets };
 }
 
-type Ready = (kind: 'guard' | 'dodge' | 'counter') => boolean;
+type Ready = (kind: 'guard' | 'dodge') => boolean;
 
 interface Evasion {
   /** The round with the blow slipped, or null when it still lands. */
@@ -237,17 +208,6 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
 }
 
 /** A Counter answers a hand-to-hand blow up close, if the attacker is in reach. */
-function canCounterBack(round: Round, { attacker, target, blow }: Hit, has: Ready): boolean {
-  return (
-    has('counter') &&
-    blow.physical &&
-    !blow.followUp &&
-    distanceBetween(round, attacker.id, target.id) === 'close' &&
-    canAttackFrom(target, 'close') &&
-    canHit({ kind: 'counter' }, attacker, round.fighters)
-  );
-}
-
 /** The defence a blow brings into play, as onlookers see it; none when it can't answer it. */
 function shown(ready: readonly Card[], blow: Blow, band: RangeBand): DefenceKind | null {
   const [kept] = ready;
@@ -289,9 +249,28 @@ function brokeGuard(round: Round, targetId: string, by: string): Round {
   return { ...round, fighters: patch(round.fighters, targetId, { guardBrokenBy }) };
 }
 
+/** A plain blow (a technique's are met as it is used, `jutsu.ts`) meeting a waiting counter. */
+function waitedFor(round: Round, { attacker, target, blow, rng }: Hit): Countered {
+  if (blow.followUp || blow.technique) return { round, stopped: false };
+  const thrown = !blow.physical;
+  return counterOn(round, {
+    attacker,
+    target,
+    what: blow.what,
+    came: blow.came ?? 'blow',
+    skill: blowSkill(attacker, blow.kind, thrown),
+    opens: false,
+    eyeContact: false,
+    rng,
+  });
+}
+
 /** Lands a blow on the target, letting their clones, ready defence and kit react. */
 export function react(start: Round, struck: Hit): Round {
-  const answered = riposteFirst(start, struck);
+  const riposted = riposteFirst(start, struck);
+  if (riposted.stopped) return riposted.round;
+  // A counter waiting for this kind of attack meets it first (`counter.ts`).
+  const answered = waitedFor(riposted.round, struck);
   if (answered.stopped) return answered.round;
   const { what, area, raw, breaks } = struck.blow;
   const incoming = {
@@ -310,13 +289,15 @@ export function react(start: Round, struck: Hit): Round {
   const { attacker, target, blow } = hit;
   // An attack through the blind spot meets no ready defence (`blindSpot.ts`).
   const blind = throughBlindSpot(decoyed.round, hit);
-  const ready = blind ? [] : readyDefences(target, decoyed.round);
+  // Caught waiting on a counter read wrong, they have no defence up (`counter.ts`).
+  const open = blind || exposed(target);
+  const ready = open ? [] : readyDefences(target, decoyed.round);
   // A defence that comes into play gives itself away to everyone facing its owner.
   const band = distanceBetween(decoyed.round, attacker.id, target.id);
   const seen = blind ? foundBlindSpot(decoyed.round, attacker, target) : decoyed.round;
   const round = noteDefence(seen, target.id, band, shown(ready, blow, band));
   const has: Ready = (kind) => ready.some((c) => c.kind === kind);
-  const evasion = evade(round, hit, has);
+  const evasion = exposed(target) ? { slipped: null, tried: false } : evade(round, hit, has);
   if (evasion.slipped) return evasion.slipped;
   const swap = blow.light ? { round, escaped: false } : throughSwap(round, ready, hit);
   if (swap.escaped) return swap.round;
@@ -353,5 +334,5 @@ export function react(start: Round, struck: Hit): Round {
   const cut = threadsCutBy(wound(marked, target.id, damage, ...lines), attacker, target);
   const worn = wearShroud(cut, target.id, hitTypeOf(blow), damage);
   const landed = confuse(worn, hit);
-  return canCounterBack(shielded, hit, has) ? counter(landed, hit) : landed;
+  return landed;
 }

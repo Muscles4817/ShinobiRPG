@@ -96,6 +96,7 @@ function foresightScale({ form, discipline }: Incoming): number {
 /** The chance this attack doesn't reach its target. */
 export function avoidOdds(round: Round, incoming: Incoming): number {
   // Eyes that see everything see an illusion for what it is (`rules/eyes.ts`), and a puppet
+  if (incoming.target.exposed === true) return 0;
   const illusion = incoming.discipline === 'genjutsu';
   // has no mind to fool (`rules/puppets.ts`).
   const unfooled = seesThroughIllusions(incoming.target) || incoming.target.puppet === true;
@@ -113,7 +114,8 @@ function avoidRoll(round: Round, incoming: Incoming): number {
   if (mount) return avoidRoll(round, { ...incoming, target: leapingClear(mount) });
   const { attacker, form } = incoming;
   const target = dulled(round.field, incoming.target);
-  if (isDazed(target) || incoming.killing === 0) return 0;
+  // Caught waiting on a counter read wrong, they are as open as the dazed (`counter.ts`).
+  if (isDazed(target) || target.exposed === true || incoming.killing === 0) return 0;
   const dodging = dodgesHere(round, target);
   const evading = committedTo(target, 'evade');
   const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
@@ -152,7 +154,7 @@ function bodyScale(target: PlanFighter, incoming: Incoming): number {
 }
 
 /** Share of the target's health a technique's wounding effects would take, mid-roll. */
-function threatOf(attacker: PlanFighter, target: PlanFighter, t: CombatTechnique): number {
+export function threatOf(attacker: PlanFighter, target: PlanFighter, t: CombatTechnique): number {
   const wounding = t.effects.filter(
     (e) => e.verb === 'damage' || e.verb === 'area' || e.verb === 'break',
   );
