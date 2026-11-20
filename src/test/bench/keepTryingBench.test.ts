@@ -20,7 +20,7 @@ interface Matchup {
   readonly you: FighterSpec;
   readonly foe: FighterSpec;
   /** A plan with somewhere to get to (`keepAt`), as the engine remembers one. */
-  readonly plan: object;
+  readonly plan: BenchLoadout & { readonly keepAt: 'close' | 'mid' | 'far' };
   /** The way this matchup shows to be worth choosing. */
   readonly shows: Way;
 }
@@ -65,8 +65,8 @@ const MATCHUPS: readonly Matchup[] = [
 ];
 
 function winRate(m: Matchup, way: Way): number {
-  // The bench's loadout type knows only slots; the engine reads the rest of a remembered plan.
-  const plan = { ...m.plan, keepTrying: way } as BenchLoadout;
+  // The engine reads the rest of a remembered plan beside its slots.
+  const plan: BenchLoadout = { ...m.plan, keepTrying: way } as BenchLoadout & { keepTrying: Way };
   const skirmish = {
     player: { ...m.you, plan },
     allies: [],
