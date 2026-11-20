@@ -341,6 +341,21 @@ export interface CombatExperiments {
 }
 
 /** Someone who has stood on the field this fight: who, what they're called, and their side. */
+/** One exchange of the plan screen's preview: what your plan should play, and why. */
+export interface CombatPreviewExchange {
+  readonly exchange: number;
+  /** What it plays. */
+  readonly play: string;
+  /** Which part of the plan chose it ("First choice", "Fight at: before your slots"). */
+  readonly from: string;
+  /** Slots above it passed over, each with why. */
+  readonly passed?: readonly string[];
+  /** Some slots above it are passed over as in the exchange before (not listed again). */
+  readonly passedAsBefore?: true;
+  /** A note on how it should go (a step's odds). */
+  readonly note?: string;
+}
+
 export interface CombatCastMember {
   readonly id: string;
   readonly name: string;
@@ -485,6 +500,8 @@ export interface CombatView {
    * lines being shown is named and sided from here (`plan/cast.ts`).
    */
   readonly cast?: readonly CombatCastMember[];
+  /** While planning: what the plan should play in each exchange of the round (Plan & Watch). */
+  readonly preview?: readonly CombatPreviewExchange[];
   readonly options: readonly CombatOption[];
   /** Current distance, for engines that track range. */
   readonly range?: RangeBand;

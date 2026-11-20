@@ -82,7 +82,7 @@ function engaged(round: Round, actor: PlanFighter, foe: PlanFighter): boolean {
  * The chance a step past `foe` is made: speed against speed, size, clones and footing. Someone
  * already fighting another up close can't keep a second away: stepping in on them is sure.
  */
-function stepChance(
+export function stepChance(
   round: Round,
   actor: PlanFighter,
   foe: PlanFighter,

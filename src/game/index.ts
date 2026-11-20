@@ -232,6 +232,7 @@ export {
 } from './views/peopleScenes';
 export type {
   CombatView,
+  CombatPreviewExchange,
   CombatOption,
   CombatantView,
   CombatMeter,
