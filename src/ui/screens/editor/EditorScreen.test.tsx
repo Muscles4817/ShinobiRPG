@@ -147,4 +147,21 @@ describe('the editor', () => {
     expect(edits.data).not.toContain('made-lantern-comet');
     expect(screen.getByText(/Nothing made yet/)).toBeInTheDocument();
   });
+
+  it('opens a technique’s page from its card, and adds it from there', async () => {
+    const { user, sheet } = await openKakashi();
+    const read = within(sheet).getAllByRole('button', { name: /^Read / });
+    const name = read
+      .at(-1)!
+      .getAttribute('aria-label')!
+      .replace(/^Read /, '');
+    await user.click(read.at(-1)!);
+    const page = within(sheet).getByRole('region', { name: `Technique: ${name}` });
+    expect(within(page).getByText('In Kakashi Hatake’s hands')).toBeInTheDocument();
+    await user.click(within(page).getByRole('button', { name: `Add ${name}` }));
+    // Now held: the page stays open under its card in the list they fight with, offering Remove.
+    const held = within(sheet).getByRole('region', { name: `Technique: ${name}` });
+    expect(within(held).getByRole('button', { name: `Remove ${name}` })).toBeInTheDocument();
+    expect(within(sheet).getAllByRole('button', { name: `Remove ${name}` })).toHaveLength(2);
+  });
 });

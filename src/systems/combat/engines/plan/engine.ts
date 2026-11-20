@@ -40,6 +40,7 @@ import {
   type PlanFighter,
   type PlanState,
 } from './state';
+import { inspectPlan } from './inspect';
 import { editTeam } from './orders';
 import { summonFatesOf, summonSharesOf } from './summons';
 import { metersOf, poolsLeft } from './swarmView';
@@ -288,6 +289,10 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
         ...(plan.watching ? { watched: true as const } : {}),
         ...(plan.called && plan.phase === 'loadout' ? { called: CALLED_FOR[plan.called] } : {}),
       };
+    },
+
+    inspect(state) {
+      return inspectPlan(read(state));
     },
 
     outcome(state): CombatOutcome | null {

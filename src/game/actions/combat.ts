@@ -1,6 +1,7 @@
 import type { CombatOutcome, CombatView } from '@/systems/combat';
 
 import { finaleOf } from '../combatFinale';
+import { withFightEnd } from '../fightRecord';
 import { afterPouch, PLAYER_COMBATANT_ID } from '../combatants';
 import type { GameContext } from '../context';
 import { noteForestFight } from '../exam/forest';
@@ -65,17 +66,18 @@ export const combatAct: ActionHandler<ActionOf<'combatAct'>> = {
     const outcome = engine.outcome(combat);
     if (!outcome) return { ...state, combat };
     // Finals watched from the stands: a card, and what watching taught. Nobody was you.
-    if (state.exams.spectating) {
+    const done = withFightEnd(state, combat, ctx);
+    if (done.exams.spectating) {
       const view = engine.view(combat);
-      return { ...resolveFinals({ ...state, combat }, outcome, ctx), combatFinale: finaleOf(view) };
+      return { ...resolveFinals({ ...done, combat }, outcome, ctx), combatFinale: finaleOf(view) };
     }
     // A versus bout only reports: no toll, no growth, nothing kept.
-    if (state.versus) {
+    if (done.versus) {
       const view = engine.view(combat);
-      return { ...resolveVersus({ ...state, combat }, outcome), combatFinale: finaleOf(view) };
+      return { ...resolveVersus({ ...done, combat }, outcome), combatFinale: finaleOf(view) };
     }
     const lessons = fightLessons(state, outcome, ctx);
-    const ended = afterPouch(rememberPlan({ ...state, combat }, engine.id, outcome), outcome);
+    const ended = afterPouch(rememberPlan({ ...done, combat }, engine.id, outcome), outcome);
     const view = engine.view(combat);
     // Spars and exam bouts stop before anyone is really hurt.
     const sparring = state.people.sparringWith !== null || inBout(state);

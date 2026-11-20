@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { FighterEditor, StatId } from '@/game';
+import type { EditorTechniquePage, FighterEditor, StatId } from '@/game';
 
 import { Portrait } from '../../art/Portrait';
 import { GradeBadge } from '../../components/Grade';
@@ -12,6 +12,8 @@ interface FighterEditorSheetProps {
   readonly onStat: (stat: StatId, value: number) => void;
   readonly onTechniques: (ids: readonly string[]) => void;
   readonly onReset: () => void;
+  /** A technique's page in this fighter's hands. */
+  readonly pageOf: (techniqueId: string) => EditorTechniquePage | null;
   /** Back to the list, on a phone; left out where the list stays beside the sheet. */
   readonly onBack?: () => void;
 }
@@ -98,6 +100,7 @@ export function FighterEditorSheet(props: FighterEditorSheetProps) {
         techniques={editor.techniques}
         choices={editor.choices}
         onChange={props.onTechniques}
+        pageOf={props.pageOf}
       />
     </article>
   );

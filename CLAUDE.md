@@ -93,7 +93,12 @@ ui ──► game ──► content ──► systems ──► core
    spar) is game state (`people.sparringWith`), never the engine's concern. The player's
    choice is a `CombatChoice` (option id + optional target); the view may add `range`,
    `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move, and only that; a dazed foe's says it loses the turn) `known` (the cards you know they hold, said apart from it) and `distance` (a foe's from you, your side's from the foe each faces), and options say their `kind` so one fight
-   screen can lay out any engine.
+   screen can lay out any engine. An engine may also `inspect` a fight (`CombatInspection`: each
+   fighter as it holds them, the decision log of a traced fight, the rest of its state, as plain
+   data) for debugging only; the game keeps the last fight whole as it is fought (`fightRecord/`,
+   `noteFight` in `dispatch`: every line in order, everyone after each step, the fight laid open
+   at its start and end), never in saves, and versus bouts are traced so it holds every choice
+   with its reasons. After a bout it downloads as one JSON file (`fightRecordFile`).
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
    `ActionOption`s that already carry the `GameAction` to dispatch and the blocker reason.
 7. **Content is data, validated by tests.** Unique ids, resolvable references, reachable
@@ -1035,7 +1040,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     (`ContentEdits.techniques`, ids `made-…`): a draft whose verbs' fields are declared once
     (`VERB_FIELDS`) for the form, the checker and the reader of untrusted data alike; never a
     written chakra cost (a fight charges what it does); read in the forge as a fight will read
-    it (`forgeView`), and given to fighters on the Fighters page. One marked taught
+    it (`forgeView`), and given to fighters on the Fighters page, where any technique's card
+    opens its page read in that fighter's hands (`editorTechniquePage`). One marked taught
     (`ContentEdits.taught`, `made/shelving.ts`) goes on the home village's shelf for its rank
     (academy E–D, library C–A, never S), so a new game can learn it.
     Its technique finder (`browseTechniques`, `game/finder/`) filters by art, rank, element and

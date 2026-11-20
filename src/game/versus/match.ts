@@ -71,6 +71,8 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     canFlee: !watching,
     // A bout goes on while anyone on your side still fights, as it does for the other side.
     toTheLast: true,
+    // Every choice is kept with its reasons, for the fight record's download; it changes nothing.
+    trace: true,
     ...(pick.ground ? { ground: pick.ground } : {}),
     ...(pick.start && pick.start !== 'mid' ? { opening: { range: pick.start } } : {}),
     ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),

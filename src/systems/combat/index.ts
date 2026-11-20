@@ -15,6 +15,8 @@ export type {
   CombatView,
   CombatResult,
   CombatOutcome,
+  CombatInspection,
+  InspectedFighter,
   CombatCost,
   CombatOpening,
   CombatExperiments,

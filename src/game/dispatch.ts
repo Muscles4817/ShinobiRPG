@@ -1,3 +1,4 @@
+import { noteFight } from './fightRecord';
 import { createRng, err, ok, type Result } from '@/core';
 
 import { HANDLERS } from './actions/registry';
@@ -60,6 +61,11 @@ export function dispatch(
     ctx,
   );
   const styled = noteNewMoves(state, noteFieldBook(state, gifted, ctx), ctx);
-  const next = noteDayEnd(state, noteArrival(state, styled, ctx), action);
+  const next = noteFight(
+    state,
+    noteDayEnd(state, noteArrival(state, styled, ctx), action),
+    action,
+    ctx,
+  );
   return ok({ ...next, rngState: rng.state() });
 }

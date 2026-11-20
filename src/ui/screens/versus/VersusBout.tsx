@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import { createVersus, dispatch, type GameAction, type GameState } from '@/game';
+import { createVersus, dispatch, fightRecordFile, type GameAction, type GameState } from '@/game';
+
+import { downloadFile } from '../../downloadFile';
 
 import { Notice } from '../../components/Notice';
 import { appClass } from '../../layout/sceneLayout';
@@ -25,8 +27,10 @@ function startBout(choice: VersusChoice): { state: GameState | null; notice: str
   return made.ok ? { state: made.value, notice: null } : { state: null, notice: made.error };
 }
 
-/** What to do once a bout is over. */
-function AfterBout({ choice, onRematch, onChangeFighters, onMenu }: VersusBoutProps) {
+/** What to do once a bout is over, with the bout kept whole to download. */
+function AfterBout(props: VersusBoutProps & { readonly state: GameState }) {
+  const { choice, onRematch, onChangeFighters, onMenu, state } = props;
+  const file = fightRecordFile(state, choice.ctx);
   return (
     <main className="versus-after">
       <h1>Bout over</h1>
@@ -56,6 +60,23 @@ function AfterBout({ choice, onRematch, onChangeFighters, onMenu }: VersusBoutPr
           Main menu
         </button>
       </nav>
+      {file && (
+        <section className="versus-record" aria-label="Fight record">
+          <button
+            type="button"
+            className="btn ghost wide"
+            onClick={() => {
+              downloadFile(file.name, file.text);
+            }}
+          >
+            Download fight record
+          </button>
+          <p className="muted">
+            Every fighter as they began and ended, every choice with its reasons and every line of
+            the fight, as one file to read or hand to an assistant.
+          </p>
+        </section>
+      )}
     </main>
   );
 }
@@ -117,7 +138,7 @@ export function VersusBout(props: VersusBoutProps) {
           <CombatScene ctx={ctx} state={state} perform={perform} seeAll />
         </div>
       ) : (
-        !report && <AfterBout {...props} />
+        !report && <AfterBout {...props} state={state} />
       )}
       {report && !state.combatFinale && (
         <ReportCard
