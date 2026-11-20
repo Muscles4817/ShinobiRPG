@@ -31,8 +31,11 @@ import {
  */
 const MIRROR = { min: 0.4, max: 0.7 } as const;
 const MIRROR_SEEDS = 1000;
-/** A thousand fights take a while on a slow runner. */
-const MIRROR_TIMEOUT_MS = 60_000;
+/**
+ * A thousand fights take a while on a slow runner: about 50 seconds for the taijutsu mirror on a
+ * fast machine, and past a minute on CI's, so the limit leaves room for that.
+ */
+const MIRROR_TIMEOUT_MS = 180_000;
 /** Against the genin of their year, a fresh character wins this often on average… */
 const CLASSMATES_AVERAGE = 0.25;
 /** …and no specialty falls below this. */
