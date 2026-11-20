@@ -44,6 +44,8 @@ export { dispatchAlone } from './offThread';
 // The content editor's whole public API (`edits/index.ts`).
 export * from './edits';
 export * from './finder';
+// The last fight kept whole, to download for debugging (`fightRecord/`).
+export { fightRecordDocument, fightRecordFile, type FightRecord } from './fightRecord';
 export { saveSummary, type SaveSummary } from './views/menu';
 // Versus mode's whole public API (`versus/index.ts`).
 export * from './versus';

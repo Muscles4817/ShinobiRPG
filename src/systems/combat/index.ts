@@ -35,6 +35,7 @@ export type {
   CombatOccasion,
   CombatPreviewExchange,
 } from './contract';
+export type { CombatInspection, InspectedFighter } from './inspectionContract';
 export {
   COMBAT_TRAITS,
   COMBAT_ITEM_EFFECTS,

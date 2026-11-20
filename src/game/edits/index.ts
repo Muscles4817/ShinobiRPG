@@ -13,6 +13,7 @@ export {
   writeEditBook,
   type EditBook,
 } from './book';
+export { editorTechniquePage, type EditorTechniquePage } from './techniquePage';
 export { EDIT_STAT_MAX, EDIT_STAT_MIN, editStat, editTechniques, resetFighter } from './edit';
 export {
   editorRoster,

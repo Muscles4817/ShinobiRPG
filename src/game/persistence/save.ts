@@ -25,7 +25,9 @@ interface SaveFile {
 }
 
 export function serialize(state: GameState): string {
-  const file: SaveFile = { version: SAVE_VERSION, state };
+  // The fight record is for downloading after a fight, not for keeping: it stays out of saves.
+  const { fightRecord: _record, fightEnd: _end, ...kept } = state;
+  const file: SaveFile = { version: SAVE_VERSION, state: kept };
   return JSON.stringify(file);
 }
 

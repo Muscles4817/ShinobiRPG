@@ -1,3 +1,7 @@
+import type { CombatInspection } from './inspectionContract';
+import type { CombatSide } from './sides';
+
+export type { CombatSide } from './sides';
 import type { Grammar, Result, Rng } from '@/core';
 import type { Stats } from '@/systems/stats';
 import type { CostTemplate, Element, FieldId, TechniqueDef } from '@/systems/techniques';
@@ -377,8 +381,6 @@ export interface CombatState {
   readonly data: unknown;
 }
 
-export type CombatSide = 'player' | 'enemy';
-
 export interface CombatantView {
   readonly id: string;
   readonly name: string;
@@ -581,4 +583,6 @@ export interface CombatEngine {
   view(state: CombatState): CombatView;
   /** Null while the fight is still going. */
   outcome(state: CombatState): CombatOutcome | null;
+  /** The fight laid open for debugging; engines that can't say leave it out. */
+  inspect?(state: CombatState): CombatInspection;
 }

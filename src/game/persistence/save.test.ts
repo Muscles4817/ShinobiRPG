@@ -14,7 +14,10 @@ describe('persistence', () => {
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
     state = intoFight(state);
     expect(state.combat).not.toBeNull();
-    expect(deserialize(serialize(state))).toEqual({ ok: true, value: state });
+    // The fight record is for downloading, never kept: a loaded fight records afresh.
+    expect(state.fightRecord?.open).toBe(true);
+    const { fightRecord: _record, ...kept } = state;
+    expect(deserialize(serialize(state))).toEqual({ ok: true, value: kept });
   });
 
   it('a save made mid-mission at what was a fight steps into its encounter', () => {

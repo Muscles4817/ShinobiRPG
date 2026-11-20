@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import {
   contextForPack,
   editorRoster,
+  editorTechniquePage,
   editStat,
   editTechniques,
   fighterEditor,
@@ -95,6 +96,7 @@ function FightersPage({ ctx, packId, wide }: FightersProps) {
       onReset={() => {
         change(packId, resetFighter(ctx.edits, editor.fighter.id));
       }}
+      pageOf={(techniqueId) => editorTechniquePage(ctx, editor.fighter.id, techniqueId)}
       {...(wide
         ? {}
         : {

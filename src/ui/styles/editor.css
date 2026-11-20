@@ -223,3 +223,67 @@
 .editor-sheet .finder-pager {
   color: var(--paper-muted);
 }
+
+/* A card opens its technique's page: the card is a button with no chrome of its own. */
+.editor-card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.editor-card[aria-pressed='true'] .tcard {
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--seal);
+}
+
+/* On a phone the page opens under its card, across the whole list. */
+.editor-techniques li.editor-page-row {
+  grid-column: 1 / -1;
+}
+
+/* On a desk the page stands at the head of the techniques column while the list scrolls. */
+.editor-page-slot {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--paper) var(--grain-ink);
+  padding-bottom: 8px;
+  border-bottom: 1px dotted var(--paper-muted);
+}
+
+.editor-sheet .editor-page {
+  background: transparent;
+  color: var(--paper-ink);
+  border: 1px solid var(--paper-muted);
+}
+
+.editor-sheet .editor-page .story,
+.editor-sheet .editor-page b {
+  color: var(--paper-ink);
+}
+
+.editor-sheet .editor-page .tsheet dt,
+.editor-sheet .editor-page .muted {
+  color: var(--paper-muted);
+}
+
+.editor-sheet .editor-page .btn.ghost {
+  color: var(--paper-ink);
+  border-color: var(--paper-muted);
+}
+
+.editor-sheet .editor-page .tsheet-reach span {
+  color: var(--paper-muted);
+  border-color: var(--paper-muted);
+}
+
+.editor-sheet .editor-page .tsheet-reach span.on {
+  color: var(--paper-ink);
+  border-color: var(--seal);
+}

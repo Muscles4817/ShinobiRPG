@@ -2,7 +2,7 @@ import type { Contract } from '@/systems/contracts';
 import type { DustScroll, DustStore } from '@/systems/dusts';
 import type { Hive } from '@/systems/hives';
 import type { Workshop } from '@/systems/puppets';
-import type { CombatState, WeaponMastery } from '@/systems/combat';
+import type { CombatInspection, CombatState, WeaponMastery } from '@/systems/combat';
 import type { Companions } from '@/systems/companions';
 import type { MapStyle } from './mapStyle';
 import type { FieldBook } from '@/systems/collections';
@@ -27,6 +27,7 @@ import type { ContentEdits } from './edits/state';
 import type { Daybook, DayEndMode } from './daybook/state';
 import type { Rival } from './rival/state';
 import type { CombatFinale } from './combatFinale';
+import type { FightRecord } from './fightRecord/state';
 import type { Exams } from './exam/state';
 import type { People } from './people/state';
 import type { Assignment, Mentor } from './sensei/state';
@@ -59,6 +60,13 @@ export interface GameState {
   readonly combat: CombatState | null;
   /** A fight that just ended, kept for the watch screen until you move on. */
   readonly combatFinale: CombatFinale | null;
+  /**
+   * The last fight kept whole as it was fought, to download for debugging (`fightRecord/`).
+   * Never written into saves; absent until a fight is fought.
+   */
+  readonly fightRecord?: FightRecord;
+  /** The fight laid open as it ended, handed from the act that ended it to `noteFight`. */
+  readonly fightEnd?: CombatInspection;
   /**
    * A trip of your own just walked to its end, kept so the map can walk its last stretch and
    * say where you are, until you walk in (`leaveJourney`). Like a finished fight, it never
