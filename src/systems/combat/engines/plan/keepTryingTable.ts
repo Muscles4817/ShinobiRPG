@@ -17,14 +17,12 @@ export const TRY_SETTING = 'Keep trying';
 
 const TRY_LABEL: Readonly<Record<KeepTrying, string>> = {
   always: 'Every exchange',
-  once: 'Once a round',
   clear: 'Only when the way is clear',
   odds: 'When the odds are fair',
 };
 
 const TRY_DETAIL: Readonly<Record<KeepTrying, string>> = {
   always: 'Every turn goes on getting there until you do',
-  once: 'Try once, then fight where you stand until next round',
   clear: 'Only when every foe facing you is dazed or held',
   odds: 'Only while getting there is at least an even chance',
 };

@@ -2,7 +2,7 @@ import { RANGE_BANDS } from '../../rules/range';
 import { bandOf } from './distance';
 import { opponentsOf, inSight } from './senses';
 import type { PlanFighter, Round } from './state';
-import { stepChance } from './steps';
+import { stepChance } from './stepContest';
 
 /**
  * The chance a fighter's next step towards where they fight would be made now, against the

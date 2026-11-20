@@ -1,5 +1,4 @@
 import { COUNTER_IDS } from '../../rules/counters';
-import { roundOfExchange } from './keepTryingShape';
 import { afterUsing } from '../../rules/trumps';
 import { restingAfter } from './recovery';
 import { strike } from './arms';
@@ -26,21 +25,13 @@ function practise(round: Round, actor: PlanFighter, work: 'blows' | 'footwork'):
   return { ...round, fighters: patch(round.fighters, actor.id, { [work]: done + 1 }) };
 }
 
-/** A step taken while making for where they fight marks the round they tried in (`keepTrying.ts`). */
-function triedFor(round: Round, actor: PlanFighter): Round {
-  if (actor.keepAt === undefined) return round;
-  const triedFor = roundOfExchange(round.number);
-  const fighters = round.fighters.map((f) => (f.id === actor.id ? { ...f, triedFor } : f));
-  return { ...round, fighters };
-}
-
 export function play(round: Round, turn: Turn, card: Card): Round {
   if (isReadyDefence(card)) return round;
   if (spendsOnSelf(card)) return spent(round, turn, card);
   switch (card.kind) {
     case 'step':
       return step(
-        triedFor(practise(round, turn.actor, 'footwork'), turn.actor),
+        practise(round, turn.actor, 'footwork'),
         { ...turn, target: turn.target ?? facing(round, turn.actor) },
         card.direction,
       );

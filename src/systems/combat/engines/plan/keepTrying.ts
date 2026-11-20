@@ -1,16 +1,17 @@
 import type { RangeBand } from '../../contract';
-import { RANGE_BANDS, RANGE_LABEL } from '../../rules/range';
+import { RANGE_BANDS } from '../../rules/range';
 import { attacksFrom } from './stepping';
 import { findCard, isOffence } from './cards';
 import { isOpen } from './finishers';
-import { roundOfExchange, type KeepTrying } from './keepTryingShape';
+import type { KeepTrying } from './keepTryingShape';
 import type { PlanFighter } from './state';
 
 /**
- * How hard a fighter keeps trying to get where they fight (`keepAt`): every exchange, once a
- * round and then fighting where they stand, or only when the way is clear (every foe facing
- * them dazed or held). Unset, the plan suggests one by what its slots do where it isn't going: a
- * plan with attacks that work from elsewhere tries once; one with nothing there keeps trying.
+ * How hard a fighter keeps trying to get where they fight (`keepAt`): while the step there is at
+ * least an even chance (the suggestion), every exchange, or only when the way is clear (every
+ * foe facing them dazed or held). The bench (`keepTryingBench.test.ts`) keeps each the best in
+ * some matchup: a brawler with nothing else to do keeps trying, a caster a fast blade punishes
+ * for stepping does better standing, an illusionist who dazes first goes when the way is clear.
  */
 
 type Planned = PlanFighter;
@@ -33,12 +34,8 @@ export function suggestedKeepTrying(fighter: Planned): {
   readonly way: KeepTrying;
   readonly why: string;
 } {
-  const fallback = fallbackBand(fighter);
-  if (fallback) {
-    return {
-      way: 'once',
-      why: `Your plan still attacks from ${RANGE_LABEL[fallback].toLowerCase()} range`,
-    };
+  if (fallbackBand(fighter)) {
+    return { way: 'odds', why: 'Your plan still attacks from where you are' };
   }
   return { way: 'always', why: 'Nothing in your plan attacks from anywhere else' };
 }
@@ -65,8 +62,6 @@ export function triesNow(fighter: PlanFighter, at: Attempt | undefined): boolean
   switch (keepTryingOf(fighter)) {
     case 'always':
       return true;
-    case 'once':
-      return fighter.triedFor !== roundOfExchange(at.exchange);
     case 'clear':
       return at.foes.length > 0 && at.foes.every(isOpen);
     case 'odds':

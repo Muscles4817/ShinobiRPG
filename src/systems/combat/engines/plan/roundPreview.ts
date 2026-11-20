@@ -13,9 +13,9 @@ import { opponentsOf } from './senses';
 import { slotVerdict, type Chosen } from './slots';
 import type { Why } from './whyShape';
 import { fighterIn, type PlanFighter, type PlanState, type Round } from './state';
-import { stepChance } from './steps';
+import { stepChance } from './stepContest';
 import { recovered } from './tiring';
-import { ROUND_EXCHANGES, roundOfExchange } from './keepTryingShape';
+import { ROUND_EXCHANGES } from './keepTryingShape';
 import { cardLabel } from './wording';
 
 /**
@@ -84,10 +84,6 @@ const PREVIEW_SEED = 1;
  */
 function afterPlaying(round: Round, self: PlanFighter, chosen: Chosen): PlanFighter {
   const card = chosen.card;
-  // A step towards where they fight marks the round tried in, as playing it would.
-  if (card.kind === 'step' && self.keepAt !== undefined) {
-    return { ...self, triedFor: roundOfExchange(round.number) };
-  }
   if (card.kind === 'step' || finding(card)) return self;
   const turn = { actor: self, target: chosen.target, rng: createRng(PREVIEW_SEED) };
   return fighterIn(play(round, turn, card), self.id) ?? self;

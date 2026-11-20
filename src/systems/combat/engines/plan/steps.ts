@@ -1,12 +1,11 @@
 import { rushedIn } from './closeQuarters';
 import { springTraps } from './traps';
 import { payFor } from './effort';
-import { clamp } from '@/core';
 
 import type { RangeBand } from '../../contract';
 import { RANGE_BANDS, stepBack, stepIn } from '../../rules/range';
-import { footingOf, withinGround } from '../../rules/ground';
-import { cloneStepBonus, isPinned } from '../../rules/verbs';
+import { withinGround } from '../../rules/ground';
+import { isPinned } from '../../rules/verbs';
 import type { Card } from './cards';
 import type { Turn } from './senses';
 import { isEntry } from './stepping';
@@ -15,23 +14,18 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
-import { sizeGap, STEP_PER_SIZE, walksThrough } from '../../rules/size';
+import { walksThrough } from '../../rules/size';
 import { bandOf, distanceBetween, sameSpacing, withMoves } from './distance';
 import { movesFor } from './pairMoves';
 import { causeLine } from '../../rules/causes';
 import { stepCause } from './causes';
-import { farGapScale } from './farGap';
+import { stepChance } from './stepContest';
 
 /**
  * A step: the fighter tries for the next distance in or out, contested by the foe's speed. A
  * step costs the turn, and while on the move they can't set a Guard or a Counter (`movedAt`, read in
  * `react.ts`). Stepping in on someone who holds foes off is their contest instead (`zoning.ts`).
  */
-
-const STEP_BASE = 0.55;
-const STEP_PER_SPEED = 0.04;
-const STEP_MIN = 0.25;
-const STEP_MAX = 0.85;
 
 /** A step that can go no further (in at close, back at far) is told as staying put. */
 const NO_FURTHER: Readonly<Record<RangeBand, string>> = {
@@ -66,41 +60,6 @@ function arrive(
 }
 
 const KEPT_UP = '{b} keep{b.s} pace with {a.them}.';
-
-/** Whether someone else on the stepper's side is already up close with `foe`, keeping them busy. */
-function engaged(round: Round, actor: PlanFighter, foe: PlanFighter): boolean {
-  return round.fighters.some(
-    (f) =>
-      f.side === actor.side &&
-      f.id !== actor.id &&
-      alive(f) &&
-      distanceBetween(round, f.id, foe.id) === 'close',
-  );
-}
-
-/**
- * The chance a step past `foe` is made: speed against speed, size, clones and footing. Someone
- * already fighting another up close can't keep a second away: stepping in on them is sure.
- */
-export function stepChance(
-  round: Round,
-  actor: PlanFighter,
-  foe: PlanFighter,
-  direction: 'in' | 'back',
-): number {
-  if (direction === 'in' && engaged(round, actor, foe)) return 1;
-  const speedGap = actor.attributes.speed - foe.attributes.speed;
-  // A bigger body leans its weight into a step in (`size.ts`).
-  const weight = direction === 'in' ? Math.max(0, sizeGap(actor, foe)) * STEP_PER_SIZE : 0;
-  // Clones crowding round the one stepping make them harder to cut off.
-  const contest =
-    clamp(STEP_BASE + speedGap * STEP_PER_SPEED, STEP_MIN, STEP_MAX) +
-    cloneStepBonus(actor) +
-    weight;
-  // Off their footing (on water they can't stand on), every step is harder; so is the far gap.
-  const at = distanceBetween(round, actor.id, foe.id);
-  return contest * footingOf(round.ground, actor) * farGapScale(actor, at, direction);
-}
 
 /**
  * Drawing back from more than one foe up close, each of the others gets a chance to keep pace
