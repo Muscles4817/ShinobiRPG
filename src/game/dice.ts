@@ -1,4 +1,4 @@
-import { hashUnit } from '@/core';
+import { drawUnit, hashUnit } from '@/core';
 import type { DiceTable, Pastime } from '@/content';
 
 import type { GameContext } from './context';
@@ -48,12 +48,15 @@ export function lastThrowTonight(state: GameState): DiceThrow | null {
   return night?.day === state.time.day ? night.last : null;
 }
 
-/** How the next cup at this table will come up. */
+/**
+ * How the next cup at this table will come up. Each die is its own draw (`drawUnit`): with
+ * `hashUnit` the dice of one cup nearly always matched, so the cup nearly always came up even.
+ */
 export function nextCup(state: GameState, placeId: string, table: DiceTable): number[] {
   const round = roundsTonight(state);
   return Array.from(
     { length: table.dice },
-    (_, die) => 1 + Math.floor(hashUnit(state.board.seed, state.time.day, placeId, round, die) * 6),
+    (_, die) => 1 + Math.floor(drawUnit(state.board.seed, state.time.day, placeId, round, die) * 6),
   );
 }
 
