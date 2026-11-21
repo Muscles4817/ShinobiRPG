@@ -4,6 +4,7 @@ import { statTier, STAT_GRADES } from '@/systems/stats';
 import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { causeLine } from '../../rules/causes';
+import { tagsOf } from '../../rules/tags';
 import { tell } from '../../rules/telling';
 import { isPinned } from '../../rules/verbs';
 import { rushStrike } from './arms';
@@ -38,9 +39,13 @@ const CROWDED_MAX = 0.9;
 
 const ARTS = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
 
-/** Hand signs a technique takes: none for the body arts, more the higher its rank. */
-export function signsOf(t: Pick<CombatTechnique, 'discipline' | 'rank'>): number {
-  if (t.discipline === 'taijutsu' || t.discipline === 'kenjutsu') return 0;
+/**
+ * Hand signs a technique takes: none for one its tags say is done without them (the body arts,
+ * anything worked by touch or the eyes, a summoning written signless), more the higher its rank.
+ * Whether it is a summoning, a shroud or an attack doesn't enter into it.
+ */
+export function signsOf(t: CombatTechnique): number {
+  if (!tagsOf(t).execution.handSigns) return 0;
   const rank = STAT_GRADES.indexOf(t.rank ?? 'E');
   return rank <= 1 ? 1 : rank <= 3 ? 2 : 3;
 }

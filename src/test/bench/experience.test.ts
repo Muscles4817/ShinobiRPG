@@ -69,8 +69,10 @@ export const BASELINES: Readonly<Record<string, Baseline>> = {
     oneScreenShare: 1,
   },
   'fresh genin v their mirror': {
-    // 7.95, 0.875 and 0.228 before three slots, the academy swap and pouch (P2.4).
-    planScreens: 7.867,
+    // 7.95, 0.875 and 0.228 before three slots, the academy swap and pouch (P2.4). 7.867 plan
+    // screens until hand signs could be broken up close: the mirror's casts come apart in reach,
+    // so its fights are a little shorter.
+    planScreens: 7.733,
     repeatShare: 0.625,
     lostShare: 0.105,
     oneScreenShare: 0,

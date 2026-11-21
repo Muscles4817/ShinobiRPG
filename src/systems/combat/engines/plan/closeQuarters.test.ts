@@ -60,11 +60,31 @@ function at(fs: readonly PlanFighter[], band: 'close' | 'mid'): Round {
 
 describe('hand signs up close', () => {
   it('the body arts take none, and a higher rank takes more', () => {
-    expect(signsOf({ discipline: 'taijutsu', rank: 'S' })).toBe(0);
-    expect(signsOf({ discipline: 'kenjutsu', rank: 'A' })).toBe(0);
-    expect(signsOf({ discipline: 'ninjutsu', rank: 'E' })).toBeLessThan(
-      signsOf({ discipline: 'ninjutsu', rank: 'A' }),
-    );
+    const t = (discipline: CombatTechnique['discipline'], rank: 'E' | 'A' | 'S') => ({
+      ...blast,
+      discipline,
+      rank,
+    });
+    expect(signsOf(t('taijutsu', 'S'))).toBe(0);
+    expect(signsOf(t('kenjutsu', 'A'))).toBe(0);
+    expect(signsOf(t('ninjutsu', 'E'))).toBeLessThan(signsOf(t('ninjutsu', 'A')));
+  });
+
+  it('a technique its tags say is done without signs takes none, whatever it is', () => {
+    const summon: CombatTechnique = {
+      id: 'call',
+      name: 'Call',
+      discipline: 'ninjutsu',
+      rank: 'B',
+      effects: [{ verb: 'summon', power: 0, call: 'toad' }],
+      chakraCost: 20,
+    };
+    expect(signsOf(summon)).toBeGreaterThan(0);
+    const signless = {
+      ...summon,
+      tags: { execution: { handSigns: false, tell: 'loud' as const } },
+    };
+    expect(signsOf(signless)).toBe(0);
   });
 
   it('a quicker crowder breaks them more often', () => {

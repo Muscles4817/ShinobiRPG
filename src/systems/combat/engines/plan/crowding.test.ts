@@ -90,11 +90,17 @@ const cast = (round: Round) => ({
 
 describe('keeping the seals clear of a crowder', () => {
   it('a caster sure to lose the seals, with nothing signless to throw, steps back', () => {
-    const round = closeRound({});
+    // Quick enough on their feet that the step back makes room.
+    const round = closeRound({ attributes: { speed: 40 } });
     expect(crowdWary(round, caster(round), cast(round))).toMatchObject({
       card: { kind: 'step', direction: 'back' },
       why: 'crowded',
     });
+  });
+
+  it('casts anyway when the crowder would only follow a step back', () => {
+    const round = closeRound({});
+    expect(crowdWary(round, caster(round), cast(round))).toBeNull();
   });
 
   it('throws something signless instead when it beats the cast after its risk', () => {
