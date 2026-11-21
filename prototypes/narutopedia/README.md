@@ -5,7 +5,7 @@ One-off scripts that read Narutopedia (naruto.fandom.com) through its MediaWiki 
 pack, ready to review and edit by hand:
 
 - `src/content/packs/naruto/techniques/canon/wiki/`: the drafted techniques (177), a file per art.
-- `src/content/packs/naruto/canonKits/kits.ts`: who gains what (`CANON_KITS`), what each teacher
+- `src/content/packs/naruto/canonKits/kits*.ts` and `sources.ts`: who gains what (`CANON_KITS`), what each teacher
   of the world now teaches (`CANON_TEACHES`), what is shelved (`CANON_SHELVED`), and the kit kept
   by people of the world who had no arsenal (`KIT_KEPT`). `apply.ts` lays it over the pack.
 

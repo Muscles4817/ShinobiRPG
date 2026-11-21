@@ -1,5 +1,6 @@
 import type { LocationDef, PersonDef, PlaceDef } from '../../../types';
-import { CANON_KITS, CANON_SHELVED, CANON_TEACHES, KIT_KEPT } from './kits';
+import { CANON_KITS } from './kits';
+import { CANON_SHELVED, CANON_TEACHES, KIT_KEPT } from './sources';
 
 /**
  * Laying the fighters' canon kits over the pack as written (`kits.ts`): each fighter's arsenal

@@ -316,23 +316,63 @@ def ts_map(name, doc, m):
 
 
 os.makedirs(KITS_DIR, exist_ok=True)
-kit_lines = ['/**', " * What each versus fighter gains of their canon kit (Narutopedia's users of each jutsu, read",
-             ' * in `prototypes/narutopedia/`): techniques the pack had that they lacked, and the drafts in',
-             ' * `techniques/canon/wiki/`. Laid over the people by `withCanonKits` (`apply.ts`). A bloodline',
-             " * power a fighter doesn't use in the pack, summoning, sage arts and tailed-beast powers are",
-             ' * left out on purpose; drop a line here to take a technique back off someone.', ' */', '']
-kit_lines += ts_map('CANON_KITS', 'Technique ids added to each fighter (by person id), after what they fight with now.', kits)
-kit_lines += ['']
-kit_lines += ts_map('CANON_TEACHES', 'New techniques each teacher of the world now teaches, so they have a source.', teaches)
-kit_lines += ['', '/** Techniques shelved in the home village for people of the world who teach nothing. */',
-              f'export const CANON_SHELVED = {{ academy: {ts_value(academy, 0)}, library: {ts_value(library, 0)} }} as const;', '',
-              '/** People of the world without an arsenal, who keep the kit they fight with now beside these. */',
-              f'export const KIT_KEPT: Readonly<Record<string, readonly string[]>> = {{']
-for p in arsenal_from_kit:
-    key = p if re.match(r'^[a-z][a-zA-Z0-9]*$', p) else f"'{p}'"
-    kit_lines.append(f'  {key}: {ts_value(roster[p]["techniqueIds"], 2)},')
-kit_lines += ['};', '']
-open(os.path.join(KITS_DIR, 'kits.ts'), 'w').write('\n'.join(kit_lines))
+for f in glob.glob(os.path.join(KITS_DIR, 'kits*.ts')) + glob.glob(os.path.join(KITS_DIR, 'sources.ts')):
+    os.remove(f)
+
+
+def key_of(k):
+    return k if re.match(r'^[a-z][a-zA-Z0-9]*$', k) else f"'{k}'"
+
+
+def entry_lines(ids):
+    # Prettier keeps a short list on one line and breaks a long one an id a line.
+    one = 4 + len(', '.join(f"'{i}'" for i in ids)) + 20
+    return 1 if one <= 100 else len(ids) + 2
+
+
+KIT_DOC = [
+    '/**',
+    " * What each versus fighter gains of their canon kit (Narutopedia's users of each jutsu, read in",
+    ' * `prototypes/narutopedia/`): techniques the pack had that they lacked, and the drafts in',
+    ' * `techniques/canon/wiki/`, after what they fight with now. Laid over the people by',
+    " * `withCanonKits` (`apply.ts`). A bloodline power a fighter doesn't use in the pack, summoning,",
+    ' * sage arts and tailed-beast powers are left out on purpose; drop an id here to take a',
+    ' * technique back off someone. By person id, in parts of the alphabet to keep each file short.',
+    ' */',
+]
+parts, part, size = [], [], 0
+for k in sorted(kits):
+    n = entry_lines(kits[k])
+    if part and size + n > 230:
+        parts.append(part)
+        part, size = [], 0
+    part.append(k)
+    size += n
+if part:
+    parts.append(part)
+kit_names = []
+for i, keys in enumerate(parts, 1):
+    name = f'CANON_KITS_{i}'
+    kit_names.append((f'kits{i}', name))
+    lines = KIT_DOC + [f'export const {name}: Readonly<Record<string, readonly string[]>> = {{']
+    lines += [f'  {key_of(k)}: {ts_value(kits[k], 2)},' for k in keys] + ['};', '']
+    open(os.path.join(KITS_DIR, f'kits{i}.ts'), 'w').write('\n'.join(lines))
+kits_index = [f"import {{ {n} }} from './{f}';" for f, n in kit_names]
+kits_index += ['', '/** Technique ids added to each fighter (by person id), after what they fight with now. */',
+               'export const CANON_KITS: Readonly<Record<string, readonly string[]>> = {',
+               *[f'  ...{n},' for _, n in kit_names], '};', '']
+open(os.path.join(KITS_DIR, 'kits.ts'), 'w').write('\n'.join(kits_index))
+
+src = ['/** Where the canon kits\' new techniques are learned, so each has a source (`apply.ts`). */', '']
+src += ['/** New techniques each teacher of the world now teaches. */',
+        'export const CANON_TEACHES: Readonly<Record<string, readonly string[]>> = {']
+src += [f'  {key_of(k)}: {ts_value(teaches[k], 2)},' for k in sorted(teaches)] + ['};', '']
+src += ['/** Techniques shelved in the home village for people of the world who teach nothing. */',
+        f'export const CANON_SHELVED = {{ academy: {ts_value(academy, 0)}, library: {ts_value(library, 0)} }} as const;', '',
+        '/** People of the world without an arsenal, who keep the kit they fight with now beside these. */',
+        'export const KIT_KEPT: Readonly<Record<string, readonly string[]>> = {']
+src += [f'  {key_of(p)}: {ts_value(roster[p]["techniqueIds"], 2)},' for p in arsenal_from_kit] + ['};', '']
+open(os.path.join(KITS_DIR, 'sources.ts'), 'w').write('\n'.join(src))
 
 report = {'techniques': len(techs), 'files': len(files), 'fighters': len(kits),
           'grants': sum(len(v) for v in kits.values()), 'teaches': sum(len(v) for v in teaches.values()),

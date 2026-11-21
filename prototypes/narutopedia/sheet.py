@@ -18,7 +18,7 @@ def eff(t):
 
 L = ['# Canon kits from Narutopedia: review sheet', '',
      "What `prototypes/narutopedia/` gave the `naruto` fan pack's versus fighters, to read and correct.",
-     'The kits live in `src/content/packs/naruto/canonKits/kits.ts` (drop an id to take a technique',
+     'The kits live in `src/content/packs/naruto/canonKits/kits*.ts` (drop an id to take a technique',
      'back off someone) and the drafted techniques in `src/content/packs/naruto/techniques/canon/wiki/`',
      '(edit them freely).', '',
      f"**{rep['techniques']} techniques drafted, {rep['grants']} additions across {rep['fighters']} fighters, "
