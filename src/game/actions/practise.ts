@@ -1,7 +1,7 @@
 import { exerciseBlocker, FALL_HARM, practiseSession } from '../exercises';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
-import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
+import { adjust, busyReason, chip, firstBlocker, log, placesHere, spendTime } from '../ops';
 import { hardWorkEnergy } from '../profile';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -12,8 +12,8 @@ const PRACTICE_SLOTS = 1;
 export const practise: ActionHandler<ActionOf<'practise'>> = {
   check(state, action, ctx) {
     const exercise = ctx.content.exercises.get(action.exerciseId);
-    const here = placeHere(state, ctx, 'training');
-    if (!exercise || !(here?.exerciseIds ?? []).includes(exercise.id))
+    const grounds = placesHere(state, ctx, 'training');
+    if (!exercise || !grounds.some((p) => (p.exerciseIds ?? []).includes(exercise.id)))
       return 'That isn’t practised here.';
     const energy = hardWorkEnergy(state.character, ctx, exercise.energyCost);
     return firstBlocker(

@@ -10,6 +10,9 @@ import {
 
 import type { PlaceProps } from '../types';
 
+/** A section of the home page: it shows your home, so it needs no place id of its own. */
+type HomeSectionProps = Omit<PlaceProps, 'placeId'>;
+
 type Perform = (action: GameAction) => void;
 
 function Act({
@@ -59,7 +62,7 @@ function SpotRow({ spot, perform }: { readonly spot: SpotView; readonly perform:
   );
 }
 
-function Furnish({ ctx, state, perform }: PlaceProps) {
+function Furnish({ ctx, state, perform }: HomeSectionProps) {
   const view = furnishView(state, ctx);
   return (
     <section id="furnish" className="room-slip home-make">
@@ -200,7 +203,7 @@ function Guest({
 }
 
 /** What makes the place yours: furniture, keepsakes, and the rooms a bigger home opens. */
-export function HomeMaking(props: PlaceProps) {
+export function HomeMaking(props: HomeSectionProps) {
   const rooms = homeRoomsView(props.state, props.ctx);
   return (
     <>

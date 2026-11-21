@@ -88,7 +88,13 @@ describe('companions (smoke test)', () => {
     const done: GameAction[] = [];
     const state = withHound(newGame({ wallet: { ryo: 100 } }));
     render(
-      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+      <VetPage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={() => undefined}
+        placeId="animal-clinic"
+      />,
     );
     expect(screen.getByText(/Ash is in good health/)).toBeTruthy();
     await user.click(screen.getByRole('button', { name: 'Buy a dose' }));
@@ -100,7 +106,13 @@ describe('companions (smoke test)', () => {
     const done: GameAction[] = [];
     const state = newGame({ wallet: { ryo: 1000 } });
     render(
-      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+      <VetPage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={() => undefined}
+        placeId="animal-clinic"
+      />,
     );
     expect(screen.getByRole('heading', { name: 'The litter' })).toBeTruthy();
     await user.click(screen.getByRole('button', { name: 'Take a pup home' }));
@@ -132,7 +144,13 @@ describe('companions (smoke test)', () => {
     const pup = { ...owner.companions.owned.player!, id: 'stray-hound-9', name: 'Mochi' };
     const state = { ...owner, companions: { ...owner.companions, waiting: pup } };
     render(
-      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+      <VetPage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={() => undefined}
+        placeId="animal-clinic"
+      />,
     );
     expect(screen.getByRole('heading', { name: 'Mochi is waiting' })).toBeTruthy();
     expect(screen.getByText(/Rehome Ash first/)).toBeTruthy();
@@ -160,7 +178,13 @@ describe('companions (smoke test)', () => {
     const done: GameAction[] = [];
     const state = withHound(newGame({ wallet: { ryo: 500 } }), { bond: 90 });
     render(
-      <VetPage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={() => undefined} />,
+      <VetPage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={() => undefined}
+        placeId="animal-clinic"
+      />,
     );
     await user.click(screen.getByRole('button', { name: 'Have Kaori drill Ash in Taijutsu' }));
     await user.click(screen.getByRole('button', { name: 'Teach Ash Baying Howl' }));

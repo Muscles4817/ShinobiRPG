@@ -20,7 +20,7 @@ import {
   currentLocation,
   firstBlocker,
   log,
-  placeHere,
+  placesHere,
   spendTime,
   statChips,
 } from '../ops';
@@ -106,9 +106,11 @@ function teachingBlocker(state: GameState, ctx: GameContext, action: TrainWith):
   if (!person) return 'You don’t know anyone by that name.';
   const teaching = teachingOf(state, person);
   if (!teaching) return `${person.name} doesn’t train shinobi.`;
-  const place = placeHere(state, ctx, 'training');
-  if (!place) return 'Training together happens at a training ground.';
-  if (!presentFor(state, ctx, person, place.id)) return elsewhere(state, ctx, person);
+  const grounds = placesHere(state, ctx, 'training');
+  if (grounds.length === 0) return 'Training together happens at a training ground.';
+  // At any training ground here: a location may have more than one.
+  if (!grounds.some((p) => presentFor(state, ctx, person, p.id)))
+    return elsewhere(state, ctx, person);
   const unmet = teaching.price && readPrice(state, ctx, person, teaching.price).find((p) => !p.met);
   return firstBlocker(
     statBlocker(state, ctx, teaching, action.statId),

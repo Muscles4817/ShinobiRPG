@@ -24,7 +24,13 @@ function chunin(state: GameState): GameState {
 describe('sources (smoke test)', () => {
   it('bars the stacks with a lattice until your sensei signs a permit, then shelves them by art', async () => {
     const { unmount } = render(
-      <LibraryPage ctx={ctx} state={ready()} perform={ignore} onBack={ignore} />,
+      <LibraryPage
+        ctx={ctx}
+        state={ready()}
+        perform={ignore}
+        onBack={ignore}
+        placeId="lantern-archive"
+      />,
     );
     const lattice = screen.getByRole('region', { name: 'The stacks' });
     expect(within(lattice).getByText(/need a permit from their sensei/)).toBeInTheDocument();
@@ -33,7 +39,13 @@ describe('sources (smoke test)', () => {
 
     const permit = { ...ready(), people: { ...ready().people, permits: ['library'] } };
     const shelves = render(
-      <LibraryPage ctx={ctx} state={permit} perform={ignore} onBack={ignore} />,
+      <LibraryPage
+        ctx={ctx}
+        state={permit}
+        perform={ignore}
+        onBack={ignore}
+        placeId="lantern-archive"
+      />,
     );
     const restricted = screen.getByRole('region', { name: 'Restricted stacks' });
     expect(within(restricted).getByText(/for chūnin and above/)).toBeInTheDocument();
@@ -48,6 +60,7 @@ describe('sources (smoke test)', () => {
         state={chunin(ready())}
         perform={(a) => done.push(a)}
         onBack={ignore}
+        placeId="lantern-archive"
       />,
     );
     const ninjutsu = screen.getByRole('region', { name: 'Ninjutsu' });
@@ -62,7 +75,15 @@ describe('sources (smoke test)', () => {
     const scrolls = { 'kindled-pulse': true as const };
     const state = { ...base, inventory: { ...base.inventory, scrolls } };
     const done: GameAction[] = [];
-    render(<HomePage ctx={ctx} state={state} perform={(a) => done.push(a)} onBack={ignore} />);
+    render(
+      <HomePage
+        ctx={ctx}
+        state={state}
+        perform={(a) => done.push(a)}
+        onBack={ignore}
+        placeId="home"
+      />,
+    );
     expect(screen.getByRole('button', { name: 'Read scrolls' })).toBeInTheDocument();
     const desk = screen.getByRole('region', { name: 'Your scrolls' });
     await user.click(within(desk).getByRole('button', { name: 'Study' }));

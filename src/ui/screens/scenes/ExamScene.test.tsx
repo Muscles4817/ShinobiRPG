@@ -31,6 +31,7 @@ describe('exams (smoke test)', () => {
         state={examDay()}
         perform={(a) => done.push(a)}
         onBack={() => undefined}
+        placeId="mission-hall"
       />,
     );
     const notice = screen.getByRole('region', { name: 'The Lantern Trials' });

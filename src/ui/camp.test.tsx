@@ -19,6 +19,7 @@ describe('the camp page', () => {
         state={inTheDeep()}
         perform={(a) => done.push(a)}
         onBack={() => undefined}
+        placeId="cedar-deep-camp"
       />,
     );
     expect(screen.getByText('2 days of food in your pack')).toBeInTheDocument();

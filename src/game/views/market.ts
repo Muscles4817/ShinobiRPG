@@ -4,7 +4,7 @@ import { pantryCount } from '@/systems/inventory';
 import { METER_MAX } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
-import { placeHere } from '../ops';
+import { placeShown } from '../ops';
 import type { GameState } from '../state';
 import { closedSign, festivalToday, marketPrice, seasonNote, stallsHere } from '../village';
 import { newInBook } from '../actions/recipes';
@@ -108,9 +108,11 @@ function cookbookItem(state: GameState, ctx: GameContext, id: string): CookbookI
 }
 
 /** Travelling merchants not here today, soonest first. */
-function merchantsComing(state: GameState, ctx: GameContext): string[] {
-  const market = placeHere(state, ctx, 'market');
-  return (market?.stalls ?? [])
+function merchantsComing(
+  state: GameState,
+  market: { readonly stalls: readonly Stall[] },
+): string[] {
+  return market.stalls
     .map((stall) => ({ stall, days: daysUntilVisit(stall, state.time.day) }))
     .filter((m): m is { stall: Stall; days: number } => m.days !== null && m.days > 0)
     .sort((a, b) => a.days - b.days)
@@ -121,18 +123,22 @@ function merchantsComing(state: GameState, ctx: GameContext): string[] {
     );
 }
 
-export function marketView(state: GameState, ctx: GameContext): MarketView | null {
-  const place = placeHere(state, ctx, 'market');
+export function marketView(
+  state: GameState,
+  ctx: GameContext,
+  placeId?: string,
+): MarketView | null {
+  const place = placeShown(state, ctx, 'market', placeId);
   if (!place) return null;
   const fullness = Math.round(state.character.vitals.satiety);
   const hunger = METER_MAX - fullness;
   return {
     name: place.name,
     festival: festivalToday(state, ctx)?.name ?? null,
-    coming: merchantsComing(state, ctx),
+    coming: merchantsComing(state, place),
     ryo: state.wallet.ryo,
     hunger,
-    stalls: stallsHere(state, ctx).map((stall) => ({
+    stalls: stallsHere(state, ctx, place.id).map((stall) => ({
       name: stall.name,
       festival: stall.festival,
       blurb: stall.blurb,

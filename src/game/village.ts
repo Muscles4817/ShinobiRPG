@@ -14,7 +14,7 @@ import { newPostingsTomorrow } from './board';
 import type { GameContext } from './context';
 import { examRumours } from './exam/calendar';
 import { ringOrder, stillOpen, stretchOf } from './gossip';
-import { placeHere, placesHere } from './ops';
+import { placesHere } from './ops';
 import { atHomeVillage } from './homeVillage';
 import type { GameState } from './state';
 import { townMarkup } from './greetings';
@@ -146,15 +146,20 @@ export interface MarketStall extends Stall {
  * The market's stalls here, with today's festival stalls set up in front; travelling merchants
  * only on their days (`merchants.ts`).
  */
-export function stallsHere(state: GameState, ctx: GameContext): MarketStall[] {
-  const market = placeHere(state, ctx, 'market');
-  if (!market) return [];
-  const festive = festivalToday(state, ctx)?.stalls ?? [];
+export function stallsHere(state: GameState, ctx: GameContext, marketId?: string): MarketStall[] {
+  const markets = placesHere(state, ctx, 'market');
+  const [first] = markets;
+  if (!first) return [];
+  const shown = marketId === undefined ? markets : markets.filter((m) => m.id === marketId);
+  // A festival sets up in front of the location's first market.
+  const festive = shown.includes(first) ? (festivalToday(state, ctx)?.stalls ?? []) : [];
   return [
     ...festive.map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: true })),
-    ...market.stalls
-      .filter((stall) => visitingOn(stall, state.time.day))
-      .map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: false })),
+    ...shown.flatMap((market) =>
+      market.stalls
+        .filter((stall) => visitingOn(stall, state.time.day))
+        .map((stall) => ({ ...inSeasonStall(stall, state, ctx), festival: false })),
+    ),
   ];
 }
 

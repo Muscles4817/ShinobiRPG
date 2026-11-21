@@ -24,6 +24,7 @@ describe('making a home (smoke test)', () => {
         state={ready()}
         perform={(a) => done.push(a)}
         onBack={() => undefined}
+        placeId="lettings"
       />,
     );
     expect(screen.getByText('The river houses are still being built.')).toBeInTheDocument();

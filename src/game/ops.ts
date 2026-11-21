@@ -149,7 +149,25 @@ export function placesHere<K extends PlaceKind>(
   );
 }
 
-/** The first place of the given kind where the character is, if the location has one. */
+/**
+ * The place of the given kind here that a page was opened for (`placeId`); without one, the
+ * first of its kind. A location may have more than one training ground or market, so a page
+ * names its own.
+ */
+export function placeShown<K extends PlaceKind>(
+  state: Pick<GameState, 'locationId'>,
+  ctx: GameContext,
+  kind: K,
+  placeId?: string,
+): Extract<PlaceDef, { kind: K }> | undefined {
+  const places = placesHere(state, ctx, kind);
+  return placeId === undefined ? places[0] : places.find((p) => p.id === placeId);
+}
+
+/**
+ * The first place of the given kind where the character is, if the location has one: for
+ * asking whether there is one. A page showing a place uses `placeShown`.
+ */
 export function placeHere<K extends PlaceKind>(
   state: Pick<GameState, 'locationId'>,
   ctx: GameContext,

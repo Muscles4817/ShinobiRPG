@@ -6,7 +6,7 @@ import type { Discipline } from '@/systems/techniques';
 
 import { TRAIN_WITH_ENERGY, TRAIN_WITH_SLOTS } from '../actions/trainWith';
 import type { GameContext } from '../context';
-import { placeHere } from '../ops';
+import { placeShown } from '../ops';
 import { bondOf, everyone, fullName } from '../people/cast';
 import { readPrice, type PricePart } from '../people/price';
 import { personStats } from '../people/progress';
@@ -185,8 +185,12 @@ function order(a: Teaching, b: Teaching): number {
   return Number(b.isSensei) - Number(a.isSensei) || b.factor - a.factor;
 }
 
-export function teacherOffers(state: GameState, ctx: GameContext): TeacherOffer[] {
-  const place = placeHere(state, ctx, 'training');
+export function teacherOffers(
+  state: GameState,
+  ctx: GameContext,
+  placeId?: string,
+): TeacherOffer[] {
+  const place = placeShown(state, ctx, 'training', placeId);
   if (!place) return [];
   return everyone(state, ctx)
     .filter((p) => presentFor(state, ctx, p, place.id))
