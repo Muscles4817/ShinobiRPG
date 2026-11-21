@@ -1069,6 +1069,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   module level `/*#__NO_SIDE_EFFECTS__*/`; otherwise array spreads and calls keep its data alive.
   Name a fan pack's jobs in its arcs by literal id, not `JOB.id`: a property read survives
   tree-shaking and keeps the job's text in the release build.
+- Generated additions to people's kits and to the shelves (`content/kitAdditions.ts`) are laid
+  over a pack's people and locations rather than written into them: the fan pack's canon kits
+  and fill (`packs/naruto/canonKits/`), the original pack's lantern techniques and fill
+  (`packs/original/kits/`, `techniques/lantern/`). How they were made is in `prototypes/`.
 - Content is typed TypeScript for now (type-checked, validated, zero runtime cost). If packs
   ever need to be authored outside the codebase or loaded at runtime (mods, downloads), move
   them to JSON with a runtime schema at the same `ContentPack` boundary — nothing else changes.

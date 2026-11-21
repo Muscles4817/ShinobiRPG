@@ -171,7 +171,9 @@ describe('versus bouts', () => {
     const as = playerSetup(kankuro, state, naruto);
     // At the Chūnin Exams, Karasu is his only puppet.
     expect(as.calls?.map((c) => [c.id, c.puppet])).toEqual([['karasu', true]]);
-    expect(as.techniques.map((t) => t.id)).toEqual(['chakra-threads', 'unseal-karasu']);
+    expect(as.techniques.map((t) => t.id)).toEqual(
+      expect.arrayContaining(['chakra-threads', 'unseal-karasu']),
+    );
     const watched = createVersus(naruto, {
       side: ['person:kankuro'],
       foes: ['person:maki'],
@@ -181,8 +183,10 @@ describe('versus bouts', () => {
     if (!watched.ok) throw new Error(watched.error);
     const done = fightOut(watched.value, naruto);
     expect(done.reports[0]?.kind).toBe('fight');
-    // The story keeps only its last lines (`LOG_LIMIT`): by the end, Crow is out and fighting.
-    expect(done.combatFinale?.log.join(' ')).toMatch(/Crow lands its Hidden Blades/);
+    // The whole story (the fight record): Crow unfolds out of its scroll and fights.
+    const story = done.fightRecord?.lines.join(' ') ?? '';
+    expect(story).toMatch(/Crow unfolds out of it/);
+    expect(story).toMatch(/Crow looses Hidden Blades/);
   });
 
   /** A watched bout's whole story, start to finish. */
@@ -206,9 +210,9 @@ describe('versus bouts', () => {
     );
     // Some bouts end before Sage Mode opens: the first few seeds show the whole style.
     // Against a foe whose waves sweep the field, Sage Mode's stillness is broken before it
-    // opens (Kisame's sharks), so the style is shown against one who fights a body at a time.
+    // opens (Kisame's sharks, Asuma's wider kit), so the style is shown against an illusionist.
     const story = [1, 2, 3, 4, 5, 6]
-      .map((seed) => watchedStory('person:jiraiya', 'person:asuma', seed))
+      .map((seed) => watchedStory('person:jiraiya', 'person:kurenai', seed))
       .find((told) => told.includes('Natural energy floods into Jiraiya'));
     expect(story).toBeDefined();
     expect(story).toMatch(/Gamabunta answers the call/);
