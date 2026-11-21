@@ -1,6 +1,6 @@
 /**
- * Flags a fighter carries into a fight for its close-quarters rules and the rules on trial
- * (`CombatExperiments`), as a shape only so the fight state can hold it: each flag is set at the
+ * Flags a fighter carries into a fight for its close-quarters rules and the teleport, as a shape
+ * only so the fight state can hold it: each flag is set at the
  * fight's start and read once where its rule lives.
  */
 export interface OnTrial {

@@ -52,10 +52,9 @@ export function GroundPicker({ setup }: { readonly setup: VersusSetupState }) {
   );
 }
 
-/** The rules on trial a bout carries, as the setup has them ticked, and where it starts. */
-export function trialsOf(setup: VersusSetupState) {
-  const { handSigns, teleport, start } = setup;
-  return { handSigns, teleport, start };
+/** Where the bout starts, as the setup has it. */
+export function openingOf(setup: VersusSetupState) {
+  return { start: setup.start };
 }
 
 /** Where the bout starts, with what starting there means. */
@@ -79,45 +78,6 @@ export function StartPicker({ setup }: { readonly setup: VersusSetupState }) {
         ))}
       </select>
       {chosen && <p className="muted">{chosen.line}</p>}
-    </section>
-  );
-}
-
-/** Rules on trial: off unless turned on here, for this bout only. */
-export function TrialRules({ setup }: { readonly setup: VersusSetupState }) {
-  return (
-    <section className="versus-slot versus-trial">
-      <span className="versus-trial-head">Rules on trial</span>
-      <label className="versus-trial-rule" htmlFor="versus-hand-signs">
-        <input
-          id="versus-hand-signs"
-          type="checkbox"
-          checked={setup.handSigns}
-          onChange={(e) => {
-            setup.setHandSigns(e.target.checked);
-          }}
-        />
-        Hand signs can be broken up close
-      </label>
-      <p className="muted">
-        With a foe close enough to touch, a technique that needs hand signs is a contest: speed and
-        chakra control against their speed and taijutsu. Lost, the seals come apart.
-      </p>
-      <label className="versus-trial-rule" htmlFor="versus-teleport">
-        <input
-          id="versus-teleport"
-          type="checkbox"
-          checked={setup.teleport}
-          onChange={(e) => {
-            setup.setTeleport(e.target.checked);
-          }}
-        />
-        Teleporters move without spending the turn
-      </label>
-      <p className="muted">
-        Once a round, a fighter with the Flying Thunder God changes distance in an instant, past any
-        guard and with no one keeping pace, and still takes their turn.
-      </p>
     </section>
   );
 }
@@ -170,7 +130,7 @@ export function StartBout({
   readonly onFight: (choice: VersusChoice) => void;
 }) {
   const { ctx, side, foes, ground, problem } = setup;
-  const trials = trialsOf(setup);
+  const trials = openingOf(setup);
   const start = (watch: boolean) => {
     if (ctx) onFight({ ctx, side, foes, ground, watch, ...trials });
   };

@@ -68,40 +68,12 @@ describe('versus setup on a desk', () => {
     expect(onFight).toHaveBeenCalledWith(expect.objectContaining({ watch: false }));
   });
 
-  it('tries hand signs up close only when you turn it on', async () => {
-    asDesk(true);
-    const user = userEvent.setup();
-    const onFight = vi.fn();
-    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ handSigns: false }));
-    await user.click(screen.getByRole('checkbox', { name: 'Hand signs can be broken up close' }));
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ handSigns: true }));
-  });
-
-  it('lets teleporters move freely only when you turn it on', async () => {
-    asDesk(true);
-    const user = userEvent.setup();
-    const onFight = vi.fn();
-    render(<VersusSetup initial={null} onFight={onFight} onBack={() => undefined} />);
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ teleport: false }));
-    await user.click(
-      screen.getByRole('checkbox', { name: 'Teleporters move without spending the turn' }),
-    );
-    await user.click(screen.getByRole('button', { name: 'Fight' }));
-    expect(onFight).toHaveBeenLastCalledWith(expect.objectContaining({ teleport: true }));
-  });
-
   it('opens the roster over the page on a phone instead', async () => {
     asDesk(false);
     const user = userEvent.setup();
     render(<VersusSetup initial={null} onFight={() => undefined} onBack={() => undefined} />);
     expect(screen.queryByRole('region', { name: 'Fighters' })).toBeNull();
-    expect(
-      screen.getByRole('checkbox', { name: 'Teleporters move without spending the turn' }),
-    ).not.toBeChecked();
+    expect(screen.getByLabelText('Starting distance')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Add an opponent' }));
     expect(screen.getByRole('dialog', { name: 'Opponent 2' })).toBeInTheDocument();
   });

@@ -29,10 +29,6 @@ export interface VersusChoice {
   readonly ground: VersusGround['id'];
   /** Only watch: your side fights on its own too. */
   readonly watch: boolean;
-  /** Hand signs can be broken up close, a rule on trial. */
-  readonly handSigns: boolean;
-  /** Teleporters change distance without spending the turn, a rule on trial. */
-  readonly teleport: boolean;
   /** Where the bout starts. */
   readonly start: VersusStart['id'];
 }
@@ -54,27 +50,15 @@ function placed(ids: readonly string[], index: number, id: string): string[] {
   return index >= ids.length ? [...ids, id] : ids.map((old, i) => (i === index ? id : old));
 }
 
-/**
- * The rules on trial a bout turns on, each off until ticked, and where it starts, remembered from
- * the last bout.
- */
-function useTrialRules(initial: VersusChoice | null) {
-  const [handSigns, setHandSigns] = useState(initial?.handSigns ?? false);
-  const [teleport, setTeleport] = useState(initial?.teleport ?? false);
+/** Where the bout starts, remembered from the last bout. */
+function useStart(initial: VersusChoice | null) {
   const [start, setStart] = useState<VersusStart['id']>(initial?.start ?? 'mid');
-  return {
-    handSigns,
-    setHandSigns,
-    teleport,
-    setTeleport,
-    start,
-    setStart,
-  };
+  return { start, setStart };
 }
 
 /**
  * Everything the versus setup keeps, for either layout: the world, both sides, the ground, the
- * rules on trial, the roster filter, which slot is being chosen for and whose profile is open.
+ * starting distance, the roster filter, which slot is being chosen for and whose profile is open.
  */
 export function useVersusSetup(initial: VersusChoice | null) {
   const packs = useMemo(() => packChoices(), []);
@@ -85,7 +69,7 @@ export function useVersusSetup(initial: VersusChoice | null) {
   const [sideIds, setSideIds] = useState<readonly string[]>(initial?.side ?? []);
   const [foeIds, setFoeIds] = useState<readonly string[]>(initial?.foes ?? []);
   const [ground, setGround] = useState<VersusGround['id']>(initial?.ground ?? 'arena');
-  const trials = useTrialRules(initial);
+  const trials = useStart(initial);
   const [filter, setFilter] = useState<VersusFilter>(OPEN_FILTER);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);

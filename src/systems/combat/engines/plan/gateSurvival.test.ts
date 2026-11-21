@@ -13,8 +13,12 @@ import { newKiller } from './survival';
  */
 
 const SEEDS = 20;
-/** One who plays for time outlasts the gate at least this often. */
-const STALLER_SURVIVES = 0.5;
+/**
+ * One who plays for time outlasts the gate at least this often. It was half, until hand signs
+ * could be broken up close: the bolts thrown between Braces now mostly come apart in a gated
+ * foe's face (5 in 20 outlast it, and no trader does).
+ */
+const STALLER_SURVIVES = 0.25;
 /** One who trades outlasts it at most this often. */
 const TRADER_SURVIVES = 0.2;
 
