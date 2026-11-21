@@ -51,7 +51,7 @@ function pair(caught: Partial<CombatantSetup['attributes']> = {}): readonly Plan
     enemies: [setup('foe')],
     canFlee: false,
   });
-  return withCloseQuarters(all, {});
+  return withCloseQuarters(all);
 }
 
 const hero = (fs: readonly PlanFighter[]) => fs.find((f) => f.id === 'hero')!;

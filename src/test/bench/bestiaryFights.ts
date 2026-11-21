@@ -48,7 +48,9 @@ export const TOO_MUCH_BELOW = 0.3;
 /** The archetypes' average win rate against a foe and its retinue, over `seeds` fights each. */
 export function beatenAt(def: EnemyDef, scale: Scale, seeds: number): number {
   const engine = createPlanEngine();
-  const rates = ARCHETYPE_IDS.map((id) => {
+  // Wins are counted, then divided once: an average of averages drifts below a round share
+  // (four in ten came out a hair under 0.4).
+  const wins = ARCHETYPE_IDS.map((id) => {
     const spec = archetype(id, scale);
     let wins = 0;
     for (let seed = 1; seed <= seeds; seed++) {
@@ -71,7 +73,7 @@ export function beatenAt(def: EnemyDef, scale: Scale, seeds: number): number {
       }
       if (engine.outcome(state)?.result === 'victory') wins += 1;
     }
-    return wins / seeds;
+    return wins;
   });
-  return rates.reduce((sum, r) => sum + r, 0) / rates.length;
+  return wins.reduce((sum, w) => sum + w, 0) / (seeds * wins.length);
 }

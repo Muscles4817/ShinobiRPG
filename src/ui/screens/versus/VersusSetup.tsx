@@ -1,13 +1,6 @@
 import { useWideScreen } from '../../layout/useWideScreen';
 import { PickSheet } from './PickSheet';
-import {
-  BothSides,
-  GroundPicker,
-  StartPicker,
-  TrialRules,
-  StartBout,
-  WorldPicker,
-} from './SetupParts';
+import { BothSides, GroundPicker, StartPicker, StartBout, WorldPicker } from './SetupParts';
 import { useVersusSetup, type VersusChoice } from './useVersusSetup';
 import { VersusDesk } from './VersusDesk';
 
@@ -44,7 +37,6 @@ export function VersusSetup({ initial, onFight, onBack }: VersusSetupProps) {
           <BothSides setup={setup} active={setup.slot} onOpen={setup.openSlot} />
           <GroundPicker setup={setup} />
           <StartPicker setup={setup} />
-          <TrialRules setup={setup} />
           <StartBout setup={setup} onFight={onFight} />
           {setup.slot && <PickSheet setup={setup} slot={setup.slot} />}
         </>

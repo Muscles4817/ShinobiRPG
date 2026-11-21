@@ -1,9 +1,10 @@
 import { clamp } from '@/core';
 import { statTier, STAT_GRADES } from '@/systems/stats';
 
-import type { CombatSetup, CombatTechnique } from '../../contract';
+import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { causeLine } from '../../rules/causes';
+import { tagsOf } from '../../rules/tags';
 import { tell } from '../../rules/telling';
 import { isPinned } from '../../rules/verbs';
 import { rushStrike } from './arms';
@@ -20,7 +21,7 @@ import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './s
  *   lighter than a set strike and met by the ready defence as any blow is. Getting in is no
  *   longer a turn handed to the foe; getting in on someone faster still is the hard case, since
  *   their turn comes first.
- * - **Hand signs up close**, still on trial (`CombatExperiments.handSigns`). A technique that needs hand signs (read from its art and rank: the
+ * - **Hand signs up close**. A technique that needs hand signs (read from its art and rank: the
  *   body arts need none) is a contest when an able foe stands close and can see its caster: the
  *   caster's speed and chakra control against the crowder's speed and taijutsu, harder the more
  *   signs it takes. Lost, the seals come apart, the turn is gone and half the chakra with it. A
@@ -38,9 +39,13 @@ const CROWDED_MAX = 0.9;
 
 const ARTS = ['taijutsu', 'ninjutsu', 'genjutsu', 'kenjutsu', 'fuuinjutsu'] as const;
 
-/** Hand signs a technique takes: none for the body arts, more the higher its rank. */
-export function signsOf(t: Pick<CombatTechnique, 'discipline' | 'rank'>): number {
-  if (t.discipline === 'taijutsu' || t.discipline === 'kenjutsu') return 0;
+/**
+ * Hand signs a technique takes: none for one its tags say is done without them (the body arts,
+ * anything worked by touch or the eyes, a summoning written signless), more the higher its rank.
+ * Whether it is a summoning, a shroud or an attack doesn't enter into it.
+ */
+export function signsOf(t: CombatTechnique): number {
+  if (!tagsOf(t).execution.handSigns) return 0;
   const rank = STAT_GRADES.indexOf(t.rank ?? 'E');
   return rank <= 1 ? 1 : rank <= 3 ? 2 : 3;
 }
@@ -52,16 +57,12 @@ function isRusher(f: PlanFighter): boolean {
   return grade >= STAT_GRADES.indexOf(RUSHER_FROM) || a.taijutsu >= best;
 }
 
-/** Who rushes in, and the hand-sign rule where a fight tries it, on the fighters it applies to. */
-export function withCloseQuarters(
-  fighters: readonly PlanFighter[],
-  setup: Pick<CombatSetup, 'experiments'>,
-): PlanFighter[] {
-  const handSigns = setup.experiments?.handSigns === true;
+/** Who rushes in, and who can be crowded out of their hand signs (everyone), on each fighter. */
+export function withCloseQuarters(fighters: readonly PlanFighter[]): PlanFighter[] {
   return fighters.map((f) => ({
     ...f,
     ...(isRusher(f) ? { rushes: true as const } : {}),
-    ...(handSigns ? { crowdable: true as const } : {}),
+    crowdable: true as const,
   }));
 }
 
@@ -104,6 +105,16 @@ const sealing = (f: PlanFighter) => f.attributes.speed + f.attributes.chakraCont
 export function crowdedChance(caster: PlanFighter, foe: PlanFighter, signs: number): number {
   const gap = crowding(foe) - sealing(caster);
   return clamp(signs * PER_SIGN + gap * PER_POINT, CROWDED_MIN, CROWDED_MAX);
+}
+
+/**
+ * The share of a technique that gets cast with this foe up close: all of it unless its seals can
+ * be broken, else what is left after the chance they come apart (`survival.ts` weighs a race by it).
+ */
+export function castShare(caster: PlanFighter, foe: PlanFighter, t: CombatTechnique): number {
+  const signs = signsOf(t);
+  if (!caster.crowdable || signs === 0) return 1;
+  return 1 - crowdedChance(caster, foe, signs);
 }
 
 const CAME_APART =

@@ -27,6 +27,10 @@
  * harder step both ways, so the trapper, who must come in, beats the sensor 11 in a hundred where
  * it beat it 27 (100 fights each way). The mimic beats the sensor 68 in a hundred, up from 46,
  * inside the band over a hundred fights but past it on the matrix's eight.
+ * Hand signs can be broken up close in every fight: a technique whose tags say it takes signs (a
+ * summoning, cast armour, any cast) can come apart with a quick foe in reach. The summoner now
+ * loses to the rusher, the mist blade and the cloner, who get in before the calls are made, and
+ * the shrouded fighter to the trapper.
  */
 const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   rusher:
@@ -56,9 +60,9 @@ const OUTLIERS_BY_BUILD: Readonly<Record<string, string>> = {
   counterer:
     'versatile illusionist stalker areaCaster sealer trapper medic cloner shrouded summoner puppeteer hive dust assassin foresight mimic rusher',
   shrouded:
-    'illusionist sealer cloner counterer summoner puppeteer hive dust gates powerhouse areaCaster medic assassin',
+    'illusionist sealer cloner counterer summoner puppeteer hive dust gates powerhouse areaCaster medic assassin trapper',
   summoner:
-    'powerhouse illusionist stalker trapper counterer puppeteer hive dust assassin gates areaCaster mimic',
+    'powerhouse illusionist stalker trapper counterer puppeteer hive dust assassin gates areaCaster mimic rusher mistBlade cloner',
   puppeteer:
     'rusher versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded dust gates assassin foresight mimic powerhouse summoner',
   hive: 'rusher powerhouse versatile illusionist stalker mistBlade areaCaster sealer trapper medic sensor cloner counterer shrouded summoner puppeteer dust gates foresight mimic assassin',

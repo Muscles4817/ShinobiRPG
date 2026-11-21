@@ -16,6 +16,7 @@ import { readsInTheMoment } from './judgement';
 import { opponentsOf } from './senses';
 import type { PlanFighter, Round } from './state';
 import { distanceBetween } from './distance';
+import { castShare } from './closeQuarters';
 
 /**
  * Survival, as judgement (`docs/design/defence-plan.md` 3.7). A fighter who reads the fight sees
@@ -61,14 +62,22 @@ function wounds(attacker: PlanFighter, target: PlanFighter, technique: CombatTec
   }, 0);
 }
 
-/** The heaviest blow a fighter could land on a target from a distance (any, when absent). */
+/**
+ * The heaviest blow a fighter could land on a target from a distance (any, when absent). Up close,
+ * a technique whose seals the target could break counts only for the share that gets cast.
+ */
 export function heaviest(attacker: PlanFighter, target: PlanFighter, band?: RangeBand): number {
   const blow =
     band === undefined || band === 'close' ? strikeDamage(attacker, target, MID_ROLL) : 0;
+  const crowded = band === 'close';
   const techniques = attacker.techniques
     .map((technique): Card => ({ kind: 'jutsu', technique }))
     .filter((c) => playable(attacker, c) && (band === undefined || fitsBand(c, band)))
-    .map((c) => (c.kind === 'jutsu' ? wounds(attacker, target, c.technique) : 0));
+    .map((c) => {
+      if (c.kind !== 'jutsu') return 0;
+      const share = crowded ? castShare(attacker, target, c.technique) : 1;
+      return wounds(attacker, target, c.technique) * share;
+    });
   return Math.max(blow, ...techniques);
 }
 

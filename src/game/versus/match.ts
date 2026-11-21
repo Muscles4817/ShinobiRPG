@@ -27,21 +27,8 @@ export interface VersusPick {
   readonly ground?: CombatGround;
   /** Only watch: both sides fight on their own, round after round. */
   readonly watch?: boolean;
-  /** Hand signs can be broken up close (a rule on trial, `CombatExperiments.handSigns`). */
-  readonly handSigns?: boolean;
-  /** Teleporters change distance without spending the turn (a rule on trial, `CombatExperiments.teleport`). */
-  readonly teleport?: boolean;
   /** Where the bout starts; mid range, as fights do, when absent. */
   readonly start?: RangeBand;
-}
-
-/** The rules on trial a pick turns on, if any. */
-function experimentsOf(pick: VersusPick) {
-  const experiments = {
-    ...(pick.handSigns ? { handSigns: true } : {}),
-    ...(pick.teleport ? { teleport: true } : {}),
-  };
-  return Object.keys(experiments).length > 0 ? { experiments } : {};
 }
 
 /** A sandbox whose character is your fighter, so every read of "you" reads them. */
@@ -76,7 +63,6 @@ export function createVersus(ctx: GameContext, pick: VersusPick): Result<GameSta
     ...(pick.ground ? { ground: pick.ground } : {}),
     ...(pick.start && pick.start !== 'mid' ? { opening: { range: pick.start } } : {}),
     ...(watching ? { watch: true, intro: `${sideName} against ${foeName}.` } : {}),
-    ...experimentsOf(pick),
   };
   const vitals = { ...sandbox.character.vitals, health: player.health, chakra: player.chakra };
   const match = {

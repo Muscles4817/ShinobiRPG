@@ -31,7 +31,7 @@ const blast: CombatTechnique = {
   chakraCost: 20,
 };
 
-function fighters(rules: { handSigns?: boolean }, foe: Partial<CombatantSetup['attributes']> = {}) {
+function fighters(foe: Partial<CombatantSetup['attributes']> = {}) {
   const setup = (
     id: string,
     extra: Partial<CombatantSetup['attributes']> = {},
@@ -51,7 +51,7 @@ function fighters(rules: { handSigns?: boolean }, foe: Partial<CombatantSetup['a
     enemies: [setup('foe', foe)],
     canFlee: false,
   });
-  return withCloseQuarters(all, { experiments: rules });
+  return withCloseQuarters(all);
 }
 
 function at(fs: readonly PlanFighter[], band: 'close' | 'mid'): Round {
@@ -60,36 +60,55 @@ function at(fs: readonly PlanFighter[], band: 'close' | 'mid'): Round {
 
 describe('hand signs up close', () => {
   it('the body arts take none, and a higher rank takes more', () => {
-    expect(signsOf({ discipline: 'taijutsu', rank: 'S' })).toBe(0);
-    expect(signsOf({ discipline: 'kenjutsu', rank: 'A' })).toBe(0);
-    expect(signsOf({ discipline: 'ninjutsu', rank: 'E' })).toBeLessThan(
-      signsOf({ discipline: 'ninjutsu', rank: 'A' }),
-    );
+    const t = (discipline: CombatTechnique['discipline'], rank: 'E' | 'A' | 'S') => ({
+      ...blast,
+      discipline,
+      rank,
+    });
+    expect(signsOf(t('taijutsu', 'S'))).toBe(0);
+    expect(signsOf(t('kenjutsu', 'A'))).toBe(0);
+    expect(signsOf(t('ninjutsu', 'E'))).toBeLessThan(signsOf(t('ninjutsu', 'A')));
+  });
+
+  it('a technique its tags say is done without signs takes none, whatever it is', () => {
+    const summon: CombatTechnique = {
+      id: 'call',
+      name: 'Call',
+      discipline: 'ninjutsu',
+      rank: 'B',
+      effects: [{ verb: 'summon', power: 0, call: 'toad' }],
+      chakraCost: 20,
+    };
+    expect(signsOf(summon)).toBeGreaterThan(0);
+    const signless = {
+      ...summon,
+      tags: { execution: { handSigns: false, tell: 'loud' as const } },
+    };
+    expect(signsOf(signless)).toBe(0);
   });
 
   it('a quicker crowder breaks them more often', () => {
-    const [caster, slow] = fighters({ handSigns: true });
-    const [, quick] = fighters({ handSigns: true }, { speed: 40, taijutsu: 40 });
+    const [caster, slow] = fighters();
+    const [, quick] = fighters({ speed: 40, taijutsu: 40 });
     expect(crowdedChance(caster!, quick!, 2)).toBeGreaterThan(crowdedChance(caster!, slow!, 2));
   });
 
-  it('come apart only up close, only with the rule on, and never with the crowder dazed', () => {
+  it('come apart only up close, and never with the crowder dazed', () => {
     const tries = (round: Round) =>
       Array.from({ length: 60 }, (_, seed) => {
         const caster = round.fighters.find((f) => f.id === 'foe')!;
         const target = round.fighters.find((f) => f.id === 'hero')!;
         return sealsBroken(round, { actor: caster, target, rng: createRng(seed + 1) }, blast);
       }).filter((r) => r !== null).length;
-    const on = fighters({ handSigns: true }, { speed: 10 });
+    const on = fighters({ speed: 10 });
     expect(tries(at(on, 'close'))).toBeGreaterThan(0);
     expect(tries(at(on, 'mid'))).toBe(0);
-    expect(tries(at(fighters({}, { speed: 10 }), 'close'))).toBe(0);
     const dazed = on.map((f) => (f.id === 'hero' ? { ...f, stunned: 1 } : f));
     expect(tries(at(dazed, 'close'))).toBe(0);
   });
 
   it('cost half the chakra and say why', () => {
-    const round = at(fighters({ handSigns: true }, { speed: 5, chakraControl: 5 }), 'close');
+    const round = at(fighters({ speed: 5, chakraControl: 5 }), 'close');
     const caster = round.fighters.find((f) => f.id === 'foe')!;
     const target = round.fighters.find((f) => f.id === 'hero')!;
     const broken = Array.from({ length: 60 }, (_, seed) =>
@@ -104,13 +123,13 @@ describe('hand signs up close', () => {
 
 describe('rushing in', () => {
   it('only a taijutsu fighter rushes', () => {
-    expect(fighters({}).find((f) => f.id === 'hero')?.rushes).toBe(true);
-    const caster = fighters({}, { taijutsu: 5, ninjutsu: 30 }).find((f) => f.id === 'foe');
+    expect(fighters().find((f) => f.id === 'hero')?.rushes).toBe(true);
+    const caster = fighters({ taijutsu: 5, ninjutsu: 30 }).find((f) => f.id === 'foe');
     expect(caster?.rushes).toBeUndefined();
   });
 
   it('strikes as they land close, not when they were already there', () => {
-    const fs = fighters({});
+    const fs = fighters();
     const hero = fs.find((f) => f.id === 'hero')!;
     const foe = fs.find((f) => f.id === 'foe')!;
     const before = at(fs, 'mid');

@@ -33,8 +33,6 @@ function choice(watch: boolean): VersusChoice {
     foes: [second!.id],
     ground: 'arena',
     watch,
-    handSigns: false,
-    teleport: false,
     start: 'mid',
   };
 }

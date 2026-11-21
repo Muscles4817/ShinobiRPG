@@ -64,8 +64,8 @@ export interface Skirmish {
   readonly foes: readonly FighterSpec[];
   /** Both sides fight by their own judgement: no one keeps the player's plan for them. */
   readonly watch?: boolean;
-  /** What the fight is fought under: rules on trial, how it opens, the ground. */
-  readonly context?: Pick<CombatSetup, 'experiments' | 'opening' | 'ground'>;
+  /** What the fight is fought under: how it opens, the ground. */
+  readonly context?: Pick<CombatSetup, 'opening' | 'ground'>;
 }
 
 /** One seeded fight of `player` against `opponent`. */

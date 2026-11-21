@@ -1,4 +1,4 @@
-import type { CombatSetup, RangeBand } from '../../contract';
+import type { RangeBand } from '../../contract';
 import { stepBack, stepIn } from '../../rules/range';
 import { causeLine } from '../../rules/causes';
 import { isPinned } from '../../rules/verbs';
@@ -11,8 +11,7 @@ import { isEntry } from './stepping';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
 
 /**
- * The teleport, a rule on trial (`CombatExperiments.teleport`; the owner's decision in
- * `docs/design/combat-ai-plan.md` Part 13b): a fighter with the `teleport` perk (the Flying
+ * The teleport (the owner's decision in `docs/design/combat-ai-plan.md` Part 13b): a fighter with the `teleport` perk (the Flying
  * Thunder God) changes distance without spending the turn, once a round. Whatever footwork their
  * turn would have played (a step, a technique that only moves them, or an entry's way in) is a
  * blink instead: sure,
@@ -26,12 +25,8 @@ const BLINK_LINES: Record<RangeBand, string> = {
   far: '{a} vanish{a.es} and {a.is} across the field from {b.them}.',
 };
 
-/** Who blinks in a fight that tries the teleport. */
-export function withTeleports(
-  fighters: readonly PlanFighter[],
-  setup: Pick<CombatSetup, 'experiments'>,
-): PlanFighter[] {
-  if (!setup.experiments?.teleport) return [...fighters];
+/** Who blinks: anyone with the `teleport` perk. */
+export function withTeleports(fighters: readonly PlanFighter[]): PlanFighter[] {
   return fighters.map((f) => (f.perks.includes('teleport') ? { ...f, teleports: true } : f));
 }
 
