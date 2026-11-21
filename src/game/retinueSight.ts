@@ -1,4 +1,4 @@
-import { hashUnit } from '@/core';
+import { drawUnit } from '@/core';
 import type { EnemyDef, FoeSummon, RetinueEntry, RetinueTell } from '@/content';
 
 import type { GameState } from './state';
@@ -49,7 +49,7 @@ export function retinueSeen(
   const perception = state.character.stats.perception;
   return retinue.filter(
     (entry, k) =>
-      hashUnit(state.board.seed, 'retinue', def.id, k) < glanceOdds(entry.tell, perception),
+      drawUnit(state.board.seed, 'retinue', def.id, k) < glanceOdds(entry.tell, perception),
   );
 }
 
@@ -65,7 +65,7 @@ export function glanceCatches(
 ): boolean {
   if (knowledge === 'full') return true;
   const odds = glanceOdds(look.tell, state.character.stats.perception);
-  return hashUnit(state.board.seed, look.key, def.id) < odds;
+  return drawUnit(state.board.seed, look.key, def.id) < odds;
 }
 
 /** What a foe carries of hive and dust that a glance can tell: a hive hides; a gourd shows. */
@@ -93,6 +93,6 @@ export function summonsSeen(
   const perception = state.character.stats.perception;
   return summons.filter(
     (entry, k) =>
-      hashUnit(state.board.seed, 'summon', def.id, k) < glanceOdds(entry.tell, perception),
+      drawUnit(state.board.seed, 'summon', def.id, k) < glanceOdds(entry.tell, perception),
   );
 }

@@ -3,95 +3,143 @@
   Asuka squares up. “Don’t hold back.”
   —— The fight begins ——
   —— First exchange ——
-  Asuka starts with Lantern Cut before anyone has settled.
-  Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [Guarded] [−22]
-  You feint, looking to close in, and Asuka doesn’t bite. [Outpaced]
+  You close in at once.
+  Asuka opens with Lantern Cut.
+  Asuka’s Lantern Cut hacks into you, harder than a spar calls for. [−30]
   —— Second exchange ——
   Asuka reaches for Lantern Cut again.
-  Asuka’s Lantern Cut slashes you, through an opening they learned on the training ground with you. [Guarded] [−19]
-  Asuka sees the next try coming too, and you get nowhere. [Outpaced]
+  Asuka’s Lantern Cut slashes you, through an opening they learned on the training ground with you. [Guarded] [−18]
+  You launch into Gale Heel.
+  You land your Gale Heel on Asuka. [Guarded] [−11]
   —— Third exchange ——
-  Asuka catches the eye and lets Shadow Feint unfold.
-  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
-  You feint, looking to close in, and Asuka doesn’t bite. [Outpaced]
+  Asuka uses Lantern Cut once more.
+  Asuka’s Lantern Cut cuts you. [Guarded] [−17]
+  You use Gale Heel once more.
+  You catch Asuka with your Gale Heel. [Guarded] [−10]
   —— Last exchange ——
-  Asuka’s blade flows into Lantern Cut.
-  Asuka’s Lantern Cut carves into you, and it leaves you shaken. [Guarded] [−20]
-  Asuka sees the next try coming too, and you get nowhere. [Outpaced]
+  Asuka reaches for Lantern Cut again.
+  Asuka’s Lantern Cut bites into you cleanly. [Guarded] [−19]
+  You go back to Gale Heel.
+  You find the strength from somewhere, and your Gale Heel rips into Asuka. [Guarded] [−10]
   That round went badly for you.
   —— The next round begins ——
   —— First exchange ——
-  The air around Asuka wavers as Shadow Feint takes hold.
-  You catch the first sign of Asuka’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
-  You keep low and come in under Asuka’s guard, inside Asuka’s reach.
+  Steel flashes as Asuka looses Lantern Cut.
+  You were waiting for exactly that, and Asuka’s Lantern Cut finds nothing. [Missed] [Too quick for it]
+  You explode forward with Gale Heel.
+  Asuka sees your Gale Heel coming, and it misses. [Missed] [Too quick for it]
   —— Second exchange ——
-  Asuka uses Shadow Feint once more.
-  You see through Asuka’s Shadow Feint, and it never takes hold. [Missed] [Seen it before]
-  You launch into Gale Heel.
-  Your Gale Heel rips into Asuka, through an opening you learned on the training ground with them. [Guarded] [−8]
+  Hurt and running short of time, you reach for Shadow Feint.
+  Asuka is dazed, and the ground tilts under them.
+  Asuka stands blinking while the exchange goes by without them.
   —— Third exchange ——
   Steel flashes as Asuka looses Lantern Cut.
-  Asuka’s Lantern Cut carves into you, harder than a spar calls for. [Guarded] [−22]
-  You reach for Gale Heel again.
-  You find the strength from somewhere, and your Gale Heel slices across Asuka. [Guarded] [−8]
-  —— Last exchange ——
-  Asuka goes back to Lantern Cut.
-  Asuka’s Lantern Cut hacks into you. [Guarded] [−17]
-  You go down in a heap, laughing at yourself for walking into it.
-  Asuka stands back, breathing hard, and tells you what they saw you do wrong.
+  Asuka’s Lantern Cut bites into you, through an opening they learned on the training ground with you. [Guarded] [−16]
+  You drop to your knees and topple over.
+  Asuka is already talking about the next one before you are back on your feet.
   summary: You lasted two rounds before going down. Asuka was still standing.
 
 ########## a rival’s spar ##########
-  Jin squares up.
+  Ibuki squares up.
   —— The fight begins ——
   —— First exchange ——
-  You close in at once.
-  Jin has been keeping Shadow Feint for this, and uses it now.
-  You see through Jin’s Shadow Feint, and it never takes hold. [Missed] [Seen it before]
+  Ibuki can’t find a target.
+  You set off a flash that lights every corner of the field.
   —— Second exchange ——
-  You send Gale Heel howling out.
-  Your Gale Heel cuts into Jin, and you let him know it. [Guarded] [−8]
-  Steel flashes as Jin looses Forge Cut.
-  Jin’s Forge Cut cuts you cleanly. [Guarded] [−19]
+  Ibuki catches the eye and lets Lantern Mirage unfold.
+  You see through Ibuki’s Lantern Mirage, and it never takes hold. [Missed] [Got lucky]
+  You keep low and come in under Ibuki’s guard, inside Ibuki’s reach.
   —— Third exchange ——
-  You use Gale Heel once more.
-  You land your Gale Heel on Jin. [Guarded] [−8]
-  Jin catches the eye and lets Shadow Feint unfold.
-  You catch the first sign of Jin’s Shadow Feint and shake it off before it settles. [Missed] [Seen it before]
-  —— Last exchange ——
-  Jin has been keeping Lantern Cut for this, and uses it now.
-  Jin’s Lantern Cut slashes you cleanly. [Guarded] [−18]
-  You send Gale Heel howling out.
-  Jin sees your Gale Heel coming, and it misses. [Missed] [Got lucky]
-  That round went badly for you.
-  —— The next round begins ——
-  —— First exchange ——
-  Steel flashes as Jin looses Forge Cut.
-  Jin’s Forge Cut cuts you. [Guarded] [−19]
+  Ibuki melts back into the illusion.
+  Ibuki reaches for Lantern Mirage again.
+  Ibuki’s Lantern Mirage sinks into you, and she lets you know it. [Guarded] [−15]
+  You trace the illusion back to Ibuki.
   You explode forward with Gale Heel.
-  Your Gale Heel rips into Jin, and you let him know it. [Guarded] [−9]
-  —— Second exchange ——
-  Jin goes back to Forge Cut.
-  Jin catches you with his Forge Cut. [Guarded] [−19]
-  You fix your eyes on the field and cast Shadow Feint.
-  Jin is dazed, and the ground tilts under him.
-  —— Third exchange ——
-  You go in with Temple-Bell Palm.
-  Your Temple-Bell Palm lands on Jin cleanly, smashing through the guard. [Guard broken] [−10]
-  Jin shakes his head, still reeling.
+  Your Gale Heel slices across Ibuki cleanly. [Guarded] [−11]
   —— Last exchange ——
-  Jin has been keeping Forge Cut for this, and uses it now.
-  Jin lands his Forge Cut on you. [Guarded] [−19]
-  You go back to Temple-Bell Palm.
-  Your Temple-Bell Palm hits Jin, battering the guard aside. [Guard broken] [−8]
+  You are on her before the seals are done, and Ibuki’s Lantern Mirage comes apart. [No room for the seals]
+  You go back to Gale Heel.
+  You catch Ibuki with your Gale Heel. [Guarded] [−11]
+  —— The next round begins ——
+  —— First exchange ——
+  The air around Ibuki wavers as Guiding Light takes hold.
+  You shake the illusion off. [Resisted]
+  You use Gale Heel once more.
+  Ibuki was waiting for exactly that, and your Gale Heel finds nothing. [Missed] [Too quick for it]
+  —— Second exchange ——
+  Ibuki melts back into the illusion.
+  Ibuki fixes her eyes on the field and casts Lantern Mirage.
+  Ibuki catches you with her Lantern Mirage. [Guarded] [−14]
+  You follow the blow back to Ibuki.
+  You send Gale Heel howling out.
+  Ibuki sees your Gale Heel coming, and it misses. [Missed] [Too quick for it]
+  —— Third exchange ——
+  Ibuki uses Lantern Mirage once more.
+  Ibuki’s Lantern Mirage grips you, and she lets you know it. [Guarded] [−11]
+  You catch the eye and let Shadow Feint unfold.
+  Ibuki catches the first sign of your Shadow Feint and shakes it off before it settles. [Missed] [Too quick for it]
+  —— Last exchange ——
+  Ibuki reaches for Lantern Mirage again.
+  Ibuki’s Lantern Mirage sinks into you. [Guarded] [−11]
+  You have been keeping Temple-Bell Palm for this, and use it now. [Off plan: nothing slotted fit]
+  Your Temple-Bell Palm hits Ibuki cleanly, battering the guard aside. [Guard broken] [−9]
   That round went badly for you.
   —— The next round begins ——
   —— First exchange ——
-  Jin draws into Forge Cut.
-  Jin’s Forge Cut cuts you, and he lets you know it. [Guarded] [−6]
+  Ibuki is gone again, and the air where she stood is empty.
+  Ibuki has been keeping Lantern Mirage for this, and uses it now.
+  Ibuki’s Lantern Mirage grips you. [Guarded] [−13]
+  Your senses swim in Ibuki’s illusion.
+  You pick out Ibuki. [Off plan: no one in sight]
+  —— Second exchange ——
+  Tired now, Ibuki still goes to Palm Strike.
+  You were waiting for exactly that, and Ibuki’s Palm Strike finds nothing. [Missed] [Too quick for it]
+  You shake off the illusion. [Off plan: nothing slotted fit]
+  You go in with Temple-Bell Palm.
+  Ibuki reads the first sign of your Temple-Bell Palm and is clear of it. [Missed] [Too quick for it]
+  —— Third exchange ——
+  Tired now, Ibuki still goes to Lantern Mirage.
+  Ibuki’s Lantern Mirage takes hold of you, and she lets you know it. [Guarded] [−10]
+  You catch the eye and let Shadow Feint unfold.
+  Ibuki reels, the world spinning.
+  —— Last exchange ——
+  Ibuki is gone again, and the air where she stood is empty.
+  Ibuki shakes her head, still reeling.
+  You scan the field and see nothing. [Off plan: no one in sight]
+  —— The next round begins ——
+  —— First exchange ——
+  Ibuki has been keeping Lantern Mirage for this, and uses it now.
+  You see through Ibuki’s Lantern Mirage, and it never takes hold. [Missed] [Got lucky]
+  You spot Ibuki. [Off plan: no one in sight]
+  —— Second exchange ——
+  Ibuki fixes her eyes on the field and casts Guiding Light.
+  You catch the first sign of Ibuki’s Guiding Light and shake it off before it settles. [Missed] [Got lucky]
+  You go in with Temple-Bell Palm. [Off plan: nothing slotted fit]
+  Ibuki reads the first sign of your Temple-Bell Palm and is clear of it. [Missed] [Too quick for it]
+  —— Third exchange ——
+  Ibuki fades out of sight again.
+  Ibuki has been keeping Palm Strike for this, and uses it now.
+  Ibuki’s Palm Strike only just clips you. [Guarded] [−7]
+  You pick out Ibuki. [Off plan: no one in sight]
+  —— Last exchange ——
+  Ibuki goes back to Palm Strike.
+  Ibuki’s Palm Strike grazes you, close enough to count. [Guarded] [−5]
+  You blink, and the field is no longer where it was.
+  Your senses lie to you, and the attack goes wide. [Off plan: nothing slotted fit]
+  Ibuki shifts her stance, ready for you in some new way.
+  —— The next round begins ——
+  —— First exchange ——
+  Tired now, Ibuki still goes to Palm Strike.
+  You were waiting for exactly that, and Ibuki’s Palm Strike finds nothing. [Missed] [Too quick for it]
+  Hurt and running short of time, you reach for Temple-Bell Palm. [Off plan: nothing slotted fit]
+  Ibuki slips your Temple-Bell Palm and makes a point of how easily. [Dodged]
+  —— Second exchange ——
+  Ibuki melts back into the illusion.
+  Ibuki has been keeping Lantern Mirage for this, and uses it now.
+  Ibuki’s Lantern Mirage takes hold of you, and she lets you know it. [Guarded] [−14]
   You go down hard, and it costs you more than the fall.
-  Jin walks away before you can get up.
-  summary: You lasted three rounds before going down. Jin was still standing.
+  Ibuki stands over you long enough to be sure you know who won.
+  summary: You lasted five rounds before going down. Ibuki was still standing.
 
 ########## wolves in a forest ##########
   Two grey wolves square up.

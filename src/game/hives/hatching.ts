@@ -1,4 +1,4 @@
-import { hashUnit } from '@/core';
+import { drawUnit } from '@/core';
 import { crossed, type Hive } from '@/systems/hives';
 import { write, type JournalChip, type NewEntry } from '@/systems/journal';
 
@@ -33,7 +33,8 @@ export function broodHatched(state: GameState, ctx: GameContext): GameState {
   const { breeding: _done, ...hive } = yours.hive;
   if (!jar) return withHive(state, hive);
   let k = 0;
-  const draw = () => hashUnit(state.board.seed, 'brood', brood.readyDay, (k += 1));
+  // Each draw its own (`drawUnit`): a cross's draws decide separate things.
+  const draw = () => drawUnit(state.board.seed, 'brood', brood.readyDay, (k += 1));
   const bred = hive.bred ?? [];
   const id = `bred-${bred.length + 1}`;
   const named = { id, name: `${yours.strain.name} × ${jar.name}` };

@@ -1,5 +1,5 @@
 import type { PersonDef, RitualKind, SenseiRitual, SessionFormat } from '@/content';
-import { hashUnit } from '@/core';
+import { drawUnit, hashUnit } from '@/core';
 import { stageOf } from '@/systems/bonds';
 import { DAYS_PER_WEEK, TIME_SLOTS, weekOf, type TimeSlot } from '@/systems/time';
 
@@ -55,7 +55,7 @@ function offsets(state: GameState, sensei: PersonDef, week: number, count: numbe
     return Array.from({ length: count }, (_, i) => Math.floor((i * DAYS_PER_WEEK) / count));
   }
   return Array.from({ length: DAYS_PER_WEEK }, (_, offset) => offset)
-    .map((offset) => ({ offset, k: hashUnit(state.board.seed, week, sensei.id, 'meet', offset) }))
+    .map((offset) => ({ offset, k: drawUnit(state.board.seed, week, sensei.id, 'meet', offset) }))
     .sort((a, b) => a.k - b.k)
     .slice(0, count)
     .map(({ offset }) => offset)
