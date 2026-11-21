@@ -4,6 +4,7 @@ import { crowdedChance, crowder, signsOf } from './closeQuarters';
 import { readsInTheMoment } from './judgement';
 import type { Chosen } from './slots';
 import type { PlanFighter, Round } from './state';
+import { stepChance } from './stepContest';
 import { strongestBand } from './stepping';
 import { cardWorth } from './worth';
 
@@ -16,7 +17,8 @@ import { cardWorth } from './worth';
  *   worth more than the cast after the chance of losing it; a cast that isn't an attack (a heal,
  *   armour, a trap, an empower) is never swapped for one. Either is cast unless losing it is
  *   likelier than not, and then the fighter steps back.
- * The step may still be kept pace with, and that is the caster's trouble.
+ * A step back that the crowder would most likely keep pace with makes no room: then the caster
+ * casts after all, and takes the chance.
  *
  * The player's own plan is theirs (`kitPlay` in `priority.ts`): they meet this only when they only
  * watch.
@@ -26,6 +28,8 @@ import { cardWorth } from './worth';
 const WARY_FROM = 0.25;
 /** From this chance, a cast with nothing better in its place is given up for a step back. */
 const STEP_BACK_FROM = 0.5;
+/** A step back is worth taking for room only if it is at least this likely to be made. */
+const ROOM_FROM = 0.5;
 
 const STEP_BACK: Card = { kind: 'step', direction: 'back' };
 
@@ -59,8 +63,9 @@ function insteadOf(weighing: Weighing, cast: Card): Chosen | null {
   const atHome = strongestBand(self) === 'close';
   const quiet = atHome && isOffence(cast) ? quietAttack(weighing, cast) : null;
   if (quiet) return { card: quiet, target: foe, why: 'crowded' };
-  const makesRoom = !atHome || risk >= STEP_BACK_FROM;
-  return makesRoom && !isPinned(self)
+  const wantsRoom = !atHome || risk >= STEP_BACK_FROM;
+  const getsRoom = stepChance(weighing.round, self, foe, 'back') >= ROOM_FROM;
+  return wantsRoom && getsRoom && !isPinned(self)
     ? { card: STEP_BACK, target: undefined, why: 'crowded' }
     : null;
 }

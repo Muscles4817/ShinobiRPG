@@ -102,6 +102,16 @@ export function crowdedChance(caster: PlanFighter, foe: PlanFighter, signs: numb
   return clamp(signs * PER_SIGN + gap * PER_POINT, CROWDED_MIN, CROWDED_MAX);
 }
 
+/**
+ * The share of a technique that gets cast with this foe up close: all of it unless its seals can
+ * be broken, else what is left after the chance they come apart (`survival.ts` weighs a race by it).
+ */
+export function castShare(caster: PlanFighter, foe: PlanFighter, t: CombatTechnique): number {
+  const signs = signsOf(t);
+  if (!caster.crowdable || signs === 0) return 1;
+  return 1 - crowdedChance(caster, foe, signs);
+}
+
 const CAME_APART =
   '{b} {b.is} on {a.them} before the seals are done, and {a.poss} {what} comes apart.';
 
