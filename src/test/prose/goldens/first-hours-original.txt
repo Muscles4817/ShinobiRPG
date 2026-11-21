@@ -218,12 +218,12 @@ view:
 === rival ===
 view:
   person:
-    name: Jin
+    name: Ibuki
     relation: rival
-    fullName: Jin Kurogane
+    fullName: Ibuki Tōkaku
     title: Genin
     specialty:
-      label: Kenjutsu
+      label: Genjutsu
     stageName: Stranger
     where: At the Training Grounds
     talk:
@@ -231,9 +231,9 @@ view:
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word gets round which team you landed on
-  title: Jin finds you
-  lines[0]: Jin has been watching you since the academy. Today he wants you to know it.
-  lines[1]: “You’re the one from the back of the hall.” It isn’t a question.
+  title: Ibuki finds you
+  lines[0]: Ibuki has been watching you since the academy. Today she wants you to know it.
+  lines[1]: “I hope your sensei is patient. I mean that kindly. I’ll help, if you ever ask.”
   choices[0]:
     label: “Enjoy it while it lasts.”
   choices[1]:
@@ -241,10 +241,10 @@ view:
   choices[2]:
     label: “I’ll beat you, and you’ll know you were beaten.”
   choices[3]:
-    label: Hold his look, and walk past.
+    label: Hold her look, and walk past.
 
 >>> answerRival
-  journal «Jin»: Jin says nothing, but nods once, which is a speech by his standards.
+  journal «Ibuki»: Ibuki laughs, properly. “That’s the spirit.” [Rivalry: respect]
 
 ########## day 1 ##########
 
@@ -1615,12 +1615,12 @@ view:
 === rival ===
 view:
   person:
-    name: Jin
+    name: Ibuki
     relation: rival
-    fullName: Jin Kurogane
+    fullName: Ibuki Tōkaku
     title: Genin
     specialty:
-      label: Kenjutsu
+      label: Genjutsu
     stageName: Stranger
     where: At the Training Grounds
     talk:
@@ -1628,8 +1628,8 @@ view:
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Jin again
-  lines[0]: Jin stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
+  title: Ibuki again
+  lines[0]: Ibuki offered, in front of your team, to carry your pack, “since it looks heavy for you.”
   choices[0]:
     label: Let it go.
     heard: Asuka would like it; Goro and Gōran wouldn’t.
@@ -1695,12 +1695,12 @@ view:
 === rival ===
 view:
   person:
-    name: Jin
+    name: Ibuki
     relation: rival
-    fullName: Jin Kurogane
+    fullName: Ibuki Tōkaku
     title: Genin
     specialty:
-      label: Kenjutsu
+      label: Genjutsu
     stageName: Stranger
     where: At the Training Grounds
     talk:
@@ -1708,8 +1708,8 @@ view:
     spar:
       blocker: Your rival is waiting for an answer.
   kicker: Word reaches you
-  title: Jin again
-  lines[0]: Jin stopped at the edge of your drill, corrected your stance in one sentence, and walked on.
+  title: Ibuki again
+  lines[0]: Ibuki offered, in front of your team, to carry your pack, “since it looks heavy for you.”
   choices[0]:
     label: Let it go.
     heard: Asuka would like it; Goro and Gōran wouldn’t.
