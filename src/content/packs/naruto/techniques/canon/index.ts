@@ -16,6 +16,7 @@ import { CANON_SASUKE_TECHNIQUES } from './sasuke';
 import { CANON_SENSEI_TECHNIQUES } from './senseis';
 import { CANON_STANDARD } from './standard';
 import { CANON_TOOL_TECHNIQUES } from './tools';
+import { WIKI_TECHNIQUES } from './wiki';
 
 /**
  * Canon jutsu added from the Narutopedia research (`docs/research/naruto-jutsu.md`), a file per
@@ -38,4 +39,5 @@ export const CANON_TECHNIQUES: readonly TechniqueDef[] = /*#__PURE__*/ (() => [
   ...CANON_ANIME_CLAN_TECHNIQUES,
   ...CANON_TOOL_TECHNIQUES,
   ...CANON_JONIN_TECHNIQUES,
+  ...WIKI_TECHNIQUES,
 ])();
