@@ -14,7 +14,6 @@ import {
   SETTLE_EXCHANGES,
   settleDrain,
   spentFrom,
-  swarmAffords,
   swarmSearch,
 } from '../../rules/swarms';
 import { harmLine } from '../../rules/narration';
@@ -56,11 +55,6 @@ export function settledSlips(round: Round, attacker: Hive, target: Hive): number
   const glow = settledHost(round, target)?.swarm;
   const blind = settledHost(round, attacker)?.swarm;
   return (glow ? glowSlipScale(glow.strain) : 1) * (blind ? blindSlipScale(blind.strain) : 1);
-}
-
-/** Whether a fighter has the insects a technique asks of their hive. */
-export function hasInsectsFor(fighter: Hive, t: CombatTechnique): boolean {
-  return swarmAffords(fighter.swarm, t.swarmCost);
 }
 
 /** What a technique spends from its user's hive, as a change to them. */
