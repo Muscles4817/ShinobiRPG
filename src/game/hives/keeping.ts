@@ -3,6 +3,7 @@ import { afterFight, bredFor } from '@/systems/hives';
 import { isHungry } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import type { GameState } from '../state';
 import { broodHatched } from './hatching';
 import { bornHive, DEFAULT_SHARE, qualitiesInBody, yourHive } from './hive';
@@ -37,7 +38,7 @@ export function hiveDayPassed(state: GameState, ctx: GameContext): GameState {
   const given = broodHatched(givenOldSave(state, ctx), ctx);
   const yours = yourHive(given, ctx);
   if (!yours) return given;
-  const atHome = given.locationId === ctx.content.startLocationId && given.mission === null;
+  const atHome = atHomeVillage(given, ctx) && given.mission === null;
   const hive = bredFor(yours.hive, yours.cap, {
     atHome,
     hungry: isHungry(given.character.vitals),

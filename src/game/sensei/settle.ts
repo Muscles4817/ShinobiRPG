@@ -4,6 +4,7 @@ import { write, type NewEntry } from '@/systems/journal';
 import { slotName, weekOf, type TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import { laidUp } from '../injuries';
 import { personSlots } from '../people/pronouns';
 import { placeInSentence } from '../placeName';
@@ -52,7 +53,7 @@ function lessonHad(state: GameState, sensei: PersonDef, day: number): boolean {
 function excused(state: GameState, ctx: GameContext): boolean {
   return (
     (state.mission !== null && state.mission.venture?.depth !== 'edge') ||
-    state.locationId !== ctx.content.startLocationId ||
+    !atHomeVillage(state, ctx) ||
     laidUp(state, ctx) !== null
   );
 }

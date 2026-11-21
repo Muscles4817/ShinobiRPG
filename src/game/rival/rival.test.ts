@@ -2,6 +2,7 @@ import { act, ctx, fightOut, newGame } from '@/test/gameFixtures';
 import { createStats } from '@/systems/stats';
 
 import { createNewGame } from '../creation';
+import { dispatch } from '../dispatch';
 import { closeDay } from '../daybook/close';
 import { openDay } from '../daybook/open';
 import { draft, formTeam } from '@/test/gameFixtures';
@@ -105,6 +106,51 @@ describe('challenges', () => {
     const next = noteRival(game, later, ctx).rival!;
     expect(next.challenge).toBeNull();
     expect(next.heat).toBeLessThan(50);
+  });
+});
+
+describe('only when you are in one town', () => {
+  const AWAY = 'port-shiomachi';
+
+  it('are never made, nor do they needle you, while you are in another town', () => {
+    const game = withRival(newGame(), { lastChallengeDay: -10, challenge: null, beat: null });
+    const before = { ...withRival(game, { firsts: {} }), locationId: AWAY };
+    for (let day = 2; day < 30; day++) {
+      const after = {
+        ...withRival(game, { firsts: { 'taijutsu:2': 'them' } }),
+        locationId: AWAY,
+        time: { day, slot: 0 },
+      };
+      const next = noteRival(before, after, ctx).rival!;
+      expect(next.challenge).toBeNull();
+      expect(next.beat).toBeNull();
+    }
+  });
+
+  it('lapse without a cost when you leave town, since you never turned them down', () => {
+    const game = withRival(newGame(), {
+      heat: 50,
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
+    const next = noteRival(game, { ...game, locationId: AWAY }, ctx).rival!;
+    expect(next.challenge).toBeNull();
+    expect(next.heat).toBe(50);
+  });
+
+  it('can’t be taken up or put to them from another town', () => {
+    const challenged = withRival(newGame(), {
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
+    const away = { ...challenged, locationId: AWAY };
+    expect(dispatch(away, { type: 'acceptChallenge' }, ctx).ok).toBe(false);
+    const putToThem = withRival(away, { challenge: null });
+    const put = dispatch(
+      putToThem,
+      { type: 'challengeRival', contest: 'spar', stakes: 'pride' },
+      ctx,
+    );
+    expect(put.ok).toBe(false);
+    expect(rivalChallengeView(away, ctx)?.accept.blocker).toMatch(/isn’t around/);
   });
 });
 

@@ -2,6 +2,7 @@ import type { CombatOutcome } from '@/systems/combat';
 import { gathered, storeAfterFight } from '@/systems/dusts';
 
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import type { GameState } from '../state';
 import { bornDust, drawable, yourDust } from './dust';
 
@@ -35,7 +36,7 @@ export function dustDayPassed(state: GameState, ctx: GameContext): GameState {
   const given = givenOldSave(state, ctx);
   const yours = yourDust(given, ctx);
   if (!yours) return given;
-  const atHome = given.locationId === ctx.content.startLocationId && given.mission === null;
+  const atHome = atHomeVillage(given, ctx) && given.mission === null;
   const dust = gathered(yours.store, yours.cap, { atHome, drawable: drawable(yours.def) });
   return dust === yours.store ? given : { ...given, dust };
 }

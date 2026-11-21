@@ -2,7 +2,7 @@ import { fillSlots } from '@/core';
 
 import type { GameContext } from '../context';
 import { placeHere, busyReason, firstBlocker, healthFraction, log, chip } from '../ops';
-import { findPerson } from '../people/cast';
+import { findPerson, whereNow } from '../people/cast';
 import { personSlots } from '../people/pronouns';
 import { toneReaction } from '../people/together';
 import { hardWorkEnergy } from '../profile';
@@ -36,11 +36,18 @@ export function rivalSlots(state: GameState, ctx: GameContext): Readonly<Record<
   return personSlots('name', person ?? ANY_RIVAL);
 }
 
-/** Why you can't settle it with them right now, if you can't. */
+/**
+ * Why you can't settle it with them right now, if you can't. Taking up a contest runs the spar
+ * or race directly, not through `spar.check`, so everything that check asks of meeting them
+ * (they are around, you are at a training ground) must be asked here too.
+ */
 export function contestBlocker(state: GameState, ctx: GameContext): string | null {
   const energy = hardWorkEnergy(state.character, ctx, SPAR_ENERGY);
+  const person = state.rival ? findPerson(state, ctx, state.rival.personId) : undefined;
   return firstBlocker(
     busyReason(state),
+    (!person || whereNow(state, ctx, person) === null) &&
+      fillSlots('{name} {name.is}n’t around right now.', rivalSlots(state, ctx)),
     weakFromHunger(state),
     laidUp(state, ctx),
     !placeHere(state, ctx, 'training') &&

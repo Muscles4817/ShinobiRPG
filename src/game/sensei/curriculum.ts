@@ -5,6 +5,7 @@ import { hungerLevel } from '@/systems/vitals';
 
 import type { GameAction } from '../actions/types';
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import { nominationMissions } from '../exam/entry';
 import { log } from '../ops';
 import { bondOf } from '../people/cast';
@@ -230,7 +231,7 @@ const BEFORE: Partial<Record<GameAction['type'], readonly CurriculumBeatId[]>> =
 function beatFor(state: GameState, ctx: GameContext, ids: readonly CurriculumBeatId[]) {
   const { mentor } = state;
   const sensei = mentorOf(state, ctx);
-  const home = state.locationId === ctx.content.startLocationId && state.mission === null;
+  const home = atHomeVillage(state, ctx) && state.mission === null;
   if (mentor.curriculum === 'skipped' || mentor.opening || !sensei || !home) return null;
   if (!waysOf(sensei)) return null;
   const id = ids.find((beat) => !mentor.beats.includes(beat) && TIMELY[beat](state, sensei));

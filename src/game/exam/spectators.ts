@@ -7,6 +7,7 @@ import { daysUntil, TIME_SLOTS } from '@/systems/time';
 
 import { PLAYER_COMBATANT_ID } from '../combatants';
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import { startFight } from '../fightStyle';
 import { growCharacter } from '../growth';
 import { underSensei } from '../mentorship';
@@ -56,7 +57,7 @@ function tournamentOf(exam: ExamDef): TournamentStageDef | null {
 
 /** An exam whose finals are held at home today, if you are home to see them. */
 export function finalsToday(state: GameState, ctx: GameContext): ExamDef | null {
-  if (state.locationId !== ctx.content.startLocationId) return null;
+  if (!atHomeVillage(state, ctx)) return null;
   const held = (exam: ExamDef) => exam.dates.some((d) => daysUntil(state.time.day, d) === 0);
   return ctx.content.exams.all.find((exam) => held(exam) && tournamentOf(exam)) ?? null;
 }

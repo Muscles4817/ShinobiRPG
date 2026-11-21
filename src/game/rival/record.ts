@@ -1,7 +1,7 @@
 import { hashUnit } from '@/core';
 
 import type { GameContext } from '../context';
-import { findPerson } from '../people/cast';
+import { findPerson, inTownWith } from '../people/cast';
 import { personStats } from '../people/progress';
 import type { GameState } from '../state';
 import { chooseRival } from './choose';
@@ -18,6 +18,10 @@ import { clampHeat, type Contest, type Rival } from './state';
  * now and then, never more often than `CHALLENGE_GAP`; on a quiet day they may needle you
  * instead. They challenge you on the ground that suits them: a race when the course favours
  * them, otherwise a spar or a race as the day falls.
+ *
+ * All of it needs the two of you in one town (`inTownWith`): while you are apart (another town,
+ * a job, a journey, an exam) nothing is made, and a challenge left standing simply lapses, at no
+ * cost, since you never turned it down.
  */
 
 const CHALLENGE_GAP = 3;
@@ -89,8 +93,15 @@ function dayTurned(rival: Rival, firstsBefore: Rival, state: GameState, ctx: Gam
   return made.challenge ? made : provoked(made, state);
 }
 
-function away(state: GameState): boolean {
-  return state.mission !== null || state.exams.run !== null;
+/** While you are apart a challenge can't stand: it lapses, and you never turned it down. */
+function apart(rival: Rival): Rival {
+  return rival.challenge ? { ...rival, challenge: null } : rival;
+}
+
+/** Whether you and your rival are in one town and free, so they can find you. */
+function together(rival: Rival, state: GameState, ctx: GameContext): boolean {
+  const person = findPerson(state, ctx, rival.personId);
+  return person !== undefined && inTownWith(state, ctx, person);
 }
 
 export function noteRival(before: GameState, after: GameState, ctx: GameContext): GameState {
@@ -101,8 +112,9 @@ export function noteRival(before: GameState, after: GameState, ctx: GameContext)
     return rival ? { ...after, rival } : after;
   }
   const rival = scored(after.rival, after, ctx);
-  const turned =
-    after.time.day !== before.time.day && !away(after)
+  const turned = !together(rival, after, ctx)
+    ? apart(rival)
+    : after.time.day !== before.time.day
       ? dayTurned(rival, before.rival ?? rival, after, ctx)
       : rival;
   return turned === after.rival ? after : { ...after, rival: turned };

@@ -2,6 +2,7 @@ import { diffStats } from '@/systems/stats';
 import { weekOf } from '@/systems/time';
 
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import { busyReason, firstBlocker, log, spendTime, statChips } from '../ops';
 import { mentorOf, teamDayOf, teamDayOpen, teamKey } from '../sensei/plan';
 import { spendTeamDay } from '../sensei/teamDays';
@@ -26,7 +27,7 @@ export const teamDay: ActionHandler<ActionOf<'teamDay'>> = {
       busyReason(state),
       state.mentor.outcomes[teamKey(now.teamDay.day)] === 'kept' && 'You were there today.',
       !teamDayOpen(state, now.teamDay) && `The team meets from ${now.teamDay.from}.`,
-      state.locationId !== ctx.content.startLocationId && 'The team meets at home.',
+      !atHomeVillage(state, ctx) && 'The team meets at home.',
     );
   },
   perform(state, _action, ctx) {
