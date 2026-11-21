@@ -46,6 +46,7 @@ Work from the facts given; do not fetch anything. Be decisive: this is a draft a
 ```
 
 ### Discipline and element
+
 - Genjutsu if classified Genjutsu. Taijutsu for unarmed body techniques. Kenjutsu for a blade or
   any held weapon form (the engine requires a blade in hand for kenjutsu). Fūinjutsu for sealing
   and barrier-formula techniques. Everything else ninjutsu.
@@ -55,6 +56,7 @@ Work from the facts given; do not fetch anything. Be decisive: this is a draft a
 - `needsNature`: true for elemental techniques of rank B and up; false otherwise.
 
 ### Rank (important)
+
 - Use the wiki rank when given. Otherwise judge from power: E trivial, D basic, C solid, B strong,
   A elite, S legendary.
 - THEN cap it: the rank must not exceed the LOWEST grade among its users in the technique's
@@ -62,6 +64,7 @@ Work from the facts given; do not fetch anything. Be decisive: this is a draft a
   If the cap forces it below what the technique deserves, lower the power to fit the rank too.
 
 ### Effects: verbs and the power scale
+
 Power medians in the pack by rank (stay near these; a fighter's signature move may go one rank
 above; never above 40):
 
@@ -92,6 +95,7 @@ move       -   7   6   8   8   8
 
 Each effect is `{ "verb": "...", "power": n, ...its fields }`. Fields by verb (omit optional
 ones unless they matter):
+
 - damage: `hits` 2-5 for a flurry (optional)
 - area: `size` "small" | "wide" | "vast" (vast is extremely rare: only a technique that levels a
   battlefield; wide for a big wave, sea of flame, rain of blades)
@@ -112,6 +116,7 @@ ones unless they matter):
 - daze, seal, heal, confuse, conceal, sense, break, counter: power only
 
 Shape guidance:
+
 - A plain attack: one damage. A big elemental wave or rain: area (wide). A drilling or spiralling
   strike that punches through guards: break. A strike that also stuns: damage then daze.
 - A binding (prison, web, cocoon, shadow, chains, wood binding): pin. A paralysis: daze or pin.
@@ -133,6 +138,7 @@ Shape guidance:
   sabaku, akasuna, kamaitachi, sakyu, hozuki, hoshigaki, yuki. Otherwise omit.
 
 ## Output
+
 Write the JSON array to the output path given to you, one object per task, same order. Validate
 it parses (e.g. `python3 -c "import json;json.load(open(PATH))"`). Then reply with only: how many
 drafts, duplicates and skips, and any task you were unsure about.
