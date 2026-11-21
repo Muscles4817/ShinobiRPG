@@ -7,7 +7,7 @@ import type { CombatSwarm } from '../../swarmContract';
 import { playable } from './cards';
 import { settledSlips, settleOn, swarmSpent, swarmStruck, swarmsAfter } from './swarm';
 import { hiveMeter } from './swarmView';
-import { fighterIn, initialFighters, type Round } from './state';
+import { fighterIn, initialFighters, type PlanFighter, type Round } from './state';
 
 /** A hive in a planned fight: spent, settled on foes, burnt and thinned, and hunting the hidden. */
 
@@ -86,6 +86,10 @@ function round(swarm: CombatSwarm = HIVE): Round {
 }
 
 const host = (r: Round) => fighterIn(r, 'host')!;
+
+/** The fight's fighters with the foe changed, as a test sets them up. */
+const withFoe = (r: Round, over: Partial<PlanFighter>): PlanFighter[] =>
+  r.fighters.map((f) => (f.id === 'foe' ? { ...f, ...over } : f));
 const foe = (r: Round) => fighterIn(r, 'foe')!;
 
 describe('a hive in a planned fight', () => {
@@ -142,5 +146,21 @@ describe('a hive in a planned fight', () => {
     const wasps = { ...HIVE, strain: { ...HIVE.strain, gifts: { venom: 2 } } };
     const r = settleOn(round(wasps), 'host', [foe(round(wasps))], SWARM);
     expect(foe(swarmsAfter(r, createRng(1))).health).toBeLessThan(100);
+  });
+
+  it('venom is harm like any other: a shadow clone it reaches pops', () => {
+    const wasps = { ...HIVE, strain: { ...HIVE.strain, gifts: { venom: 2 } } };
+    const settled = settleOn(round(wasps), 'host', [foe(round(wasps))], SWARM);
+    const clone = { ...settled, fighters: withFoe(settled, { shadowOf: 'maker' }) };
+    expect(foe(swarmsAfter(clone, createRng(1))).health).toBe(0);
+  });
+
+  it('venom is harm like any other: a coward it leaves badly hurt runs', () => {
+    const wasps = { ...HIVE, strain: { ...HIVE.strain, gifts: { venom: 2 } } };
+    const settled = settleOn(round(wasps), 'host', [foe(round(wasps))], SWARM);
+    const shaken = { ...settled, fighters: withFoe(settled, { health: 30, traits: ['coward'] }) };
+    const after = swarmsAfter(shaken, createRng(1));
+    expect(foe(after).health).toBe(0);
+    expect(after.lines.some((l) => l.includes('run'))).toBe(true);
   });
 });

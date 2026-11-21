@@ -22,6 +22,7 @@ import { tell } from '../../rules/telling';
 import { ABSORB_SHARE, areaSize, effectsOf } from '../../rules/verbs';
 import type { Hive } from './hive';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { taken, wound } from './wound';
 
 /**
  * A hive in a planned fight (`rules/swarms.ts`): swarm techniques spend insects, a swarm
@@ -186,13 +187,10 @@ function drawn(round: Round, carrier: PlanFighter): Round {
 function envenomed(round: Round, carrier: PlanFighter, host: PlanFighter | undefined): Round {
   const venom = host?.swarm ? settleVenom(host.swarm) : 0;
   const now = fighterIn(round, carrier.id);
-  if (venom <= 0 || !now) return round;
-  const hurt = Math.min(now.health, venom);
-  const after = {
-    ...round,
-    fighters: patch(round.fighters, now.id, { health: now.health - hurt }),
-  };
-  return say(after, harmLine(tell('The venom works on {t}.', { t: now }), hurt));
+  if (venom <= 0 || !now || now.health <= 0) return round;
+  // Through `wound`, like any harm: a shadow clone pops, a channelled hold breaks, a coward runs.
+  const hurt = taken(now, venom);
+  return wound(round, now.id, hurt, harmLine(tell('The venom works on {t}.', { t: now }), hurt));
 }
 
 /** A host's hive finds hidden foes on its own, the keener the strain and the fuller the hive. */
