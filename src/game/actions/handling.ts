@@ -16,6 +16,7 @@ import {
   log,
   placeHere,
   placesHere,
+  ryoChip,
   spendTime,
   statChips,
 } from '../ops';
@@ -107,7 +108,7 @@ export const handlerSession: ActionHandler<ActionOf<'handlerSession'>> = {
       tone: 'success',
       chips: [
         ...statChips(diffStats(yours.companion.stats, stats)),
-        ...(fee > 0 ? [chip(`−${fee} ryo`, 'cost')] : []),
+        ...(fee > 0 ? [ryoChip(-fee)] : []),
       ],
     });
   },
@@ -147,7 +148,7 @@ export const handlerTeach: ActionHandler<ActionOf<'handlerTeach'>> = {
       heading: `${yours.companion.name} learns ${name}`,
       text: `It takes the afternoon and a great deal of patience, but by the end ${yours.companion.name} has it.`,
       tone: 'success',
-      chips: [chip(name, 'gain'), ...(fee > 0 ? [chip(`−${fee} ryo`, 'cost')] : [])],
+      chips: [chip(name, 'gain'), ...(fee > 0 ? [ryoChip(-fee)] : [])],
     });
   },
 };
@@ -177,7 +178,7 @@ export const buyLore: ActionHandler<ActionOf<'buyLore'>> = {
         heading: lore.name,
         text: `You read ${lore.name} cover to cover. Your own sessions with a companion will count for more.`,
         tone: 'success',
-        chips: [chip(`−${lore.cost} ryo`, 'cost')],
+        chips: [ryoChip(-lore.cost)],
       },
     );
   },

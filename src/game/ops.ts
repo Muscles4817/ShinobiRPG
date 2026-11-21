@@ -83,6 +83,16 @@ export function chip(label: string, tone: ChipTone): JournalChip {
   return { label, tone };
 }
 
+/**
+ * A chip for ryo changing hands: "−12 ryo", "+240 ryo" (with `what` after it: "−30 ryo
+ * passage"). It carries the amount itself, so the day's purse never reads it back from words.
+ */
+export function ryoChip(amount: number, what?: string): JournalChip {
+  const sign = amount < 0 ? '−' : '+';
+  const label = `${sign}${Math.abs(amount)} ryo${what ? ` ${what}` : ''}`;
+  return { label, tone: amount < 0 ? 'cost' : 'gain', ryo: amount };
+}
+
 /** Growth below this reads "a touch"; up to a whole point, "a little". */
 const TOUCH_BELOW = 0.05;
 

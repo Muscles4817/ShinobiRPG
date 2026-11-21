@@ -3,7 +3,7 @@ import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { atHome } from '../home/home';
-import { chip, log, placesHere } from '../ops';
+import { chip, log, placesHere, ryoChip } from '../ops';
 import type { GameState } from '../state';
 import { drawable, yourDust } from './dust';
 
@@ -38,10 +38,7 @@ export function makeDust(state: GameState, ctx: GameContext): GameState {
       heading: `A batch of ${yours.def.name.toLowerCase()}`,
       text: making.how,
       tone: 'success',
-      chips: [
-        chip(`−${making.ryo} ryo`, 'cost'),
-        chip(`+${count - yours.store.count} dust`, 'gain'),
-      ],
+      chips: [ryoChip(-making.ryo), chip(`+${count - yours.store.count} dust`, 'gain')],
     },
   );
 }
@@ -71,7 +68,7 @@ export function buyDust(state: GameState, ctx: GameContext): GameState {
     {
       text: `You buy a sealed batch of ${yours.def.name.toLowerCase()} and pour it into your store.`,
       tone: 'success',
-      chips: [chip(`−${price} ryo`, 'cost'), chip(`+${count - yours.store.count} dust`, 'gain')],
+      chips: [ryoChip(-price), chip(`+${count - yours.store.count} dust`, 'gain')],
     },
   );
 }

@@ -9,7 +9,7 @@ import {
   roundsTonight,
   winnings,
 } from '../dice';
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { busyReason, firstBlocker, log, placeHere, ryoChip } from '../ops';
 import { closedReason } from '../village';
 import { tellDaily } from '../everyday/tell';
 import { DICE_LOST, DICE_WON } from '../everyday/tableLines';
@@ -64,7 +64,7 @@ export const playDice: ActionHandler<ActionOf<'playDice'>> = {
       heading: here.pastime.name,
       tone: won > 0 ? 'success' : 'warning',
       text: `${lifted} ${said.text}`,
-      chips: [won > 0 ? chip(`+${won} ryo`, 'gain') : chip(`−${action.stake} ryo`, 'cost')],
+      chips: [won > 0 ? ryoChip(won) : ryoChip(-action.stake)],
     });
   },
 };

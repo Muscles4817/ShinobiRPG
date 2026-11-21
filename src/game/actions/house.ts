@@ -1,7 +1,7 @@
 import { buyHouse as owning, ownsHouse } from '@/systems/housing';
 import { spend } from '@/systems/wallet';
 
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { busyReason, chip, firstBlocker, log, placeHere, ryoChip } from '../ops';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -28,7 +28,7 @@ export const buyHouse: ActionHandler<ActionOf<'buyHouse'>> = {
         heading: house.name,
         text: `${house.seller} counts the coins twice and hands over the key. The house is yours.`,
         tone: 'success',
-        chips: [chip(`−${house.price} ryo`, 'cost'), chip('A house of your own', 'gain')],
+        chips: [ryoChip(-house.price), chip('A house of your own', 'gain')],
       },
     );
   },

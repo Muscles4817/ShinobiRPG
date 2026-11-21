@@ -10,7 +10,7 @@ import { deduct } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { atHome, currentHome } from '../home/home';
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { busyReason, chip, firstBlocker, log, placeHere, ryoChip } from '../ops';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -74,7 +74,7 @@ export const moveHome: ActionHandler<ActionOf<'moveHome'>> = {
         heading: `Moving day: ${home.lodging}`,
         text: home.movingIn,
         tone: 'success',
-        chips: [chip(`−${cost} ryo`, 'cost'), chip(action.buy ? 'Yours' : 'Rented', 'gain')],
+        chips: [ryoChip(-cost), chip(action.buy ? 'Yours' : 'Rented', 'gain')],
       },
     );
   },
@@ -107,7 +107,7 @@ export const buyFurnishing: ActionHandler<ActionOf<'buyFurnishing'>> = {
           ? 'The joiner’s boy carries it home and sets it where it belongs.'
           : 'The joiner’s boy carries it home. There’s nowhere to put it yet.',
         tone: 'info',
-        chips: [chip(`−${cost} ryo`, 'cost')],
+        chips: [ryoChip(-cost)],
       },
     );
   },

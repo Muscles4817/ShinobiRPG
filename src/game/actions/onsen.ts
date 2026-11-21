@@ -4,7 +4,7 @@ import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { SOAK_ENERGY, SOAK_HEALTH, SOAK_SLOTS } from '../onsen';
-import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
+import { adjust, busyReason, chip, firstBlocker, log, placeHere, ryoChip, spendTime } from '../ops';
 import { bondOf, findPerson, peopleAt } from '../people/cast';
 import { outingWarmth, timeTogether, type Outing } from '../people/together';
 import type { GameState } from '../state';
@@ -82,7 +82,7 @@ export const soak: ActionHandler<ActionOf<'soak'>> = {
       text: companion ? fillSlots(said.text, personSlots('them', companion)) : said.text,
       tone: 'success',
       chips: [
-        chip(`−${fee} ryo`, 'cost'),
+        ryoChip(-fee),
         chip(`Energy +${SOAK_ENERGY}`, 'gain'),
         chip(`Health +${SOAK_HEALTH}`, 'gain'),
         ...together.chips,

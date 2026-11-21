@@ -13,9 +13,10 @@ import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { gearRankBlocker } from '../gear';
-import { busyReason, chip, firstBlocker, log, placesHere } from '../ops';
+import { busyReason, firstBlocker, log, placesHere, ryoChip } from '../ops';
 import type { GameState } from '../state';
 import { closedReason, isOpen, marketPrice, stallsHere } from '../village';
+import { noteShopping } from './shopping';
 import type { ActionHandler, ActionOf } from './types';
 import { townPrice } from '../greetings';
 
@@ -65,7 +66,7 @@ export const buyGear: ActionHandler<ActionOf<'buyGear'>> = {
         heading: `Bought ${def.name}`,
         text: def.description,
         tone: 'success',
-        chips: [chip(`−${townPrice(def.cost, state, ctx)} ryo`, 'cost')],
+        chips: [ryoChip(-townPrice(def.cost, state, ctx))],
       },
     );
   },
@@ -87,9 +88,12 @@ export const buyTool: ActionHandler<ActionOf<'buyTool'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.tools.require(action.toolId);
-    const paid = spend(state.wallet, townPrice(def.cost, state, ctx));
-    if (!paid.ok) return state;
-    return { ...state, wallet: paid.value, inventory: addTool(state.inventory, def.id) };
+    const shop = toolShopFor(state, ctx, def.id);
+    const price = townPrice(def.cost, state, ctx);
+    const paid = spend(state.wallet, price);
+    if (!paid.ok || !shop) return state;
+    const bought = { ...state, wallet: paid.value, inventory: addTool(state.inventory, def.id) };
+    return noteShopping(bought, shop.name, price);
   },
 };
 
@@ -135,8 +139,11 @@ export const buyIngredient: ActionHandler<ActionOf<'buyIngredient'>> = {
   },
   perform(state, action, ctx) {
     const def = ctx.content.ingredients.require(action.ingredientId);
-    const paid = spend(state.wallet, marketPrice(def.cost, state, ctx));
-    if (!paid.ok) return state;
-    return { ...state, wallet: paid.value, inventory: stock(state.inventory, def.id) };
+    const stall = grocerFor(state, ctx, def.id);
+    const price = marketPrice(def.cost, state, ctx);
+    const paid = spend(state.wallet, price);
+    if (!paid.ok || !stall) return state;
+    const bought = { ...state, wallet: paid.value, inventory: stock(state.inventory, def.id) };
+    return noteShopping(bought, stall.name, price);
   },
 };

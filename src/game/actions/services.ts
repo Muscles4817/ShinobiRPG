@@ -3,7 +3,7 @@ import { treat as treatInjury } from '@/systems/injuries';
 import { MAX_HEALTH } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
-import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
+import { adjust, busyReason, chip, firstBlocker, log, placeHere, ryoChip, spendTime } from '../ops';
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
 import { atRentedHome } from './daily';
@@ -37,7 +37,7 @@ export const payRent: ActionHandler<ActionOf<'payRent'>> = {
         text: 'You count out the coins. The landlady pretends not to watch.',
         tone: 'info',
         chips: [
-          chip(`−${state.housing.rentPerWeek} ryo`, 'cost'),
+          ryoChip(-state.housing.rentPerWeek),
           chip(`Paid through day ${housing.paidThroughDay}`, 'info'),
         ],
       },
@@ -96,7 +96,7 @@ export const treat: ActionHandler<ActionOf<'treat'>> = {
       chips: [
         chip('Health restored', 'gain'),
         ...(set ? [chip('Injuries heal faster', 'gain')] : []),
-        chip(`−${bill} ryo`, 'cost'),
+        ryoChip(-bill),
       ],
     });
   },

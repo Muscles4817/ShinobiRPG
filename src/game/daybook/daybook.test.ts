@@ -6,6 +6,8 @@ import { PASS_DAYS } from '../leave';
 import { dispatch } from '../dispatch';
 import type { GameState } from '../state';
 import { dayEndView } from '../views/dayEnd';
+import { ryoChip } from '../ops';
+import { marketView } from '../views/market';
 import { purseLines } from './purse';
 
 /** The same day, at night. */
@@ -96,23 +98,48 @@ describe('the day’s record', () => {
 
 describe('the purse', () => {
   it('adds up each line by what it was for, and sets down what the record missed', () => {
-    const entry = (heading: string, label: string) => ({
+    const entry = (heading: string, amount: number) => ({
       id: 1,
       day: 1,
       slot: 0,
       heading,
       text: '',
       tone: 'info' as const,
-      chips: [{ label, tone: 'cost' as const }],
+      chips: [{ label: `${amount} ryo`, tone: 'cost' as const, ryo: amount }],
     });
-    const lines = purseLines(
-      [entry('Rice', '−12 ryo'), entry('Rice', '−12 ryo'), entry('Patrol', '+50 ryo')],
-      20,
-    );
+    const lines = purseLines([entry('Rice', -12), entry('Rice', -12), entry('Patrol', 50)], 20);
     expect(lines).toEqual([
       { label: 'Rice', amount: -24 },
       { label: 'Patrol', amount: 50 },
       { label: 'Odds and ends', amount: -6 },
     ]);
+  });
+
+  it('reads the amount a chip carries, never its words', () => {
+    const passage = {
+      id: 1,
+      day: 1,
+      slot: 0,
+      heading: 'Setting out',
+      text: '',
+      tone: 'info' as const,
+      chips: [ryoChip(-30, 'passage'), { label: 'Rent: 40 ryo / week', tone: 'cost' as const }],
+    };
+    expect(passage.chips[0]?.label).toBe('−30 ryo passage');
+    expect(purseLines([passage], -30)).toEqual([{ label: 'Setting out', amount: -30 }]);
+  });
+
+  it('accounts for groceries: one line for the stall, however much is bought', () => {
+    const start = newGame({ wallet: { ryo: 500 } });
+    const stall = marketView(start, ctx)!.stalls.find(
+      (s) => s.ingredients.length > 1 && !s.closed,
+    )!;
+    const [first, second] = stall.ingredients;
+    let state = act(start, first!.action);
+    state = act(state, second!.action);
+    state = act(state, first!.action);
+    const slept = act(atNight(state), { type: 'sleep' });
+    const purse = slept.daybook.ended?.purse;
+    expect(purse?.lines).toEqual([{ label: stall.name, amount: slept.wallet.ryo - 500 }]);
   });
 });

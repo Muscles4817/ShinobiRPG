@@ -6,7 +6,7 @@ import { withCompanion, yourCompanion } from '../companions/care';
 import { keeperSlots } from '../companions/keeper';
 import { maxHealthOf } from '../companions/make';
 import type { GameContext } from '../context';
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { busyReason, chip, firstBlocker, log, placeHere, ryoChip } from '../ops';
 import type { GameState } from '../state';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -55,7 +55,7 @@ export const treatCompanion: ActionHandler<ActionOf<'treatCompanion'>> = {
     return log(withCompanion({ ...state, wallet }, treated), {
       text: `The vet cleans and binds ${treated.name}’s wounds. It will be on its feet sooner.`,
       tone: 'success',
-      chips: fee > 0 ? [chip(`−${fee} ryo`, 'cost')] : [chip('Free at the clan’s kennels', 'gain')],
+      chips: fee > 0 ? [ryoChip(-fee)] : [chip('Free at the clan’s kennels', 'gain')],
     });
   },
 };
@@ -79,7 +79,7 @@ export const buyMedicine: ActionHandler<ActionOf<'buyMedicine'>> = {
       {
         text: 'A small bottle of bitter medicine, wrapped in paper.',
         tone: 'info',
-        chips: [chip(`−${vet.medicineCost} ryo`, 'cost')],
+        chips: [ryoChip(-vet.medicineCost)],
       },
     );
   },

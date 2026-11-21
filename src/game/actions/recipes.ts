@@ -5,7 +5,7 @@ import { knowsRecipe, learnRecipes } from '@/systems/cooking';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { busyReason, chip, firstBlocker, log, spendTime } from '../ops';
+import { busyReason, chip, firstBlocker, log, ryoChip, spendTime } from '../ops';
 import { bondOf, findPerson, requirePerson, whereNow } from '../people/cast';
 import { personSlots } from '../people/pronouns';
 import type { GameState } from '../state';
@@ -55,7 +55,7 @@ export const buyCookbook: ActionHandler<ActionOf<'buyCookbook'>> = {
         heading: book.name,
         text: `${book.description} You read it cover to cover on the walk home.`,
         tone: 'success',
-        chips: [...names.map((n) => chip(`Learned ${n}`, 'gain')), chip(`−${cost} ryo`, 'cost')],
+        chips: [...names.map((n) => chip(`Learned ${n}`, 'gain')), ryoChip(-cost)],
       },
     );
   },

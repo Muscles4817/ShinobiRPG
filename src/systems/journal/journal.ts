@@ -8,6 +8,11 @@ export type ChipTone = 'gain' | 'cost' | 'harm' | 'info';
 export interface JournalChip {
   readonly label: string;
   readonly tone: ChipTone;
+  /**
+   * The ryo this entry moved, signed (spent is negative), when the chip is for money changing
+   * hands. The label is only its words: the day's purse adds up this, never the label.
+   */
+  readonly ryo?: number;
 }
 
 export interface JournalEntry {
@@ -44,4 +49,24 @@ export function write(
     entries: [...journal.entries, full].slice(-JOURNAL_LIMIT),
     nextId: journal.nextId + 1,
   };
+}
+
+/**
+ * Writes `entry`, or folds it into the last entry when `joins` says they are one moment (a
+ * few things bought at one stall in one sitting): `merge` makes the folded entry.
+ */
+export function writeOrJoin(
+  journal: Journal,
+  when: { day: number; slot: number },
+  entry: NewEntry,
+  fold: {
+    readonly joins: (last: JournalEntry) => boolean;
+    readonly merge: (last: JournalEntry) => NewEntry;
+  },
+): Journal {
+  const last = journal.entries.at(-1);
+  const sameSitting = last?.day === when.day && last.slot === when.slot;
+  if (!last || !sameSitting || !fold.joins(last)) return write(journal, when, entry);
+  const joined: JournalEntry = { ...fold.merge(last), id: last.id, day: last.day, slot: last.slot };
+  return { ...journal, entries: [...journal.entries.slice(0, -1), joined] };
 }

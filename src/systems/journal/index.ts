@@ -2,6 +2,7 @@ export {
   JOURNAL_LIMIT,
   EMPTY_JOURNAL,
   write,
+  writeOrJoin,
   type Journal,
   type JournalEntry,
   type JournalTone,
