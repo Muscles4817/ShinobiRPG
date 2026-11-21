@@ -205,8 +205,10 @@ describe('versus bouts', () => {
       expect.arrayContaining(['gamabunta', 'fukasaku', 'shima']),
     );
     // Some bouts end before Sage Mode opens: the first few seeds show the whole style.
+    // Against a foe whose waves sweep the field, Sage Mode's stillness is broken before it
+    // opens (Kisame's sharks), so the style is shown against one who fights a body at a time.
     const story = [1, 2, 3, 4, 5, 6]
-      .map((seed) => watchedStory('person:jiraiya', 'person:kisame', seed))
+      .map((seed) => watchedStory('person:jiraiya', 'person:asuma', seed))
       .find((told) => told.includes('Natural energy floods into Jiraiya'));
     expect(story).toBeDefined();
     expect(story).toMatch(/Gamabunta answers the call/);
@@ -298,12 +300,16 @@ describe('rules in every bout', () => {
     // A caster who reads the fight keeps clear of a crowder (`crowding.ts`); Naruto casts anyway.
     const crowded = { side: 'person:kiba', foe: 'person:naruto' };
     expect(linesIn({}, 'before the seals are done', crowded)).toBeGreaterThan(0);
-    expect(linesIn({}, 'as he lands')).toBeGreaterThan(0);
+    // Han closes bare-handed on anyone he faces (a fighter with a reaching opener needn't rush in).
+    expect(
+      linesIn({}, 'as he lands', { side: 'person:konohamaru', foe: 'person:han' }),
+    ).toBeGreaterThan(0);
   });
 
   it('the Flying Thunder God changes distance without spending the turn', () => {
+    // Begun at far, Minato has ground to close, so his footwork is where the blink shows.
     const who = { side: 'person:minato', foe: 'person:asuma' };
-    expect(linesIn({}, 'vanishes and is', who)).toBeGreaterThan(0);
+    expect(linesIn({ start: 'far' }, 'vanishes and is', who)).toBeGreaterThan(0);
   });
 
   it('a bout starts where it is set to', () => {

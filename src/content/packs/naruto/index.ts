@@ -37,6 +37,7 @@ import { SHARED_TOPICS, TEMPLATE_CONVERSATIONS } from '../../shared/talk';
 import { CAMP_FINDS } from '../../shared/wilds';
 import { NARUTO_COOKBOOKS, NARUTO_INGREDIENTS, NARUTO_RECIPES } from './kitchen';
 import { DESERT_FOX } from '../../shared/wildKinds';
+import { withCanonKits, withCanonShelves } from './canonKits';
 import { DUELIST_GEAR, DUELIST_PUPPETS, DUELIST_TECHNIQUES, DUELISTS } from './duelists';
 import { GEAR } from './gear';
 import { INJURIES } from '../../shared/injuries';
@@ -142,7 +143,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   startingRyo: 300,
   startingTools: STARTING_POUCH,
   text: NARUTO_TEXT,
-  locations: NARUTO_LOCATIONS,
+  locations: withCanonShelves(NARUTO_LOCATIONS, 'konohagakure'),
   routes: NARUTO_ROUTES,
   atlas: NARUTO_ATLAS,
   exercises: EXERCISES,
@@ -253,7 +254,7 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
   recipes: NARUTO_RECIPES,
   cookbooks: NARUTO_COOKBOOKS,
   campFinds: CAMP_FINDS,
-  people: [
+  people: withCanonKits([
     ...SENSEIS,
     ...NEW_SENSEIS,
     ...INSTRUCTORS,
@@ -273,8 +274,8 @@ export const NARUTO_PACK: ContentPack = /*#__PURE__*/ (() => ({
     ...OTAFUKU_PEOPLE,
     ...SHUKUBA_PEOPLE,
     ...FIRE_TEMPLE_PEOPLE,
-  ],
-  duelists: DUELISTS,
+  ]),
+  duelists: withCanonKits(DUELISTS),
   puppets: [...DUELIST_PUPPETS, WORKSHOP_DOLL],
   conversations: [
     ...GENERIC_CONVERSATIONS,

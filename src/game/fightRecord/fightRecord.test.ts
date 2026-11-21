@@ -36,8 +36,8 @@ describe('the fight record', () => {
 
   it('keeps the lines the engine let go over a fight planned round by round', () => {
     const made = createVersus(naruto, {
-      side: ['person:killer-b', 'person:konan', 'person:kakuzu'],
-      foes: ['person:deidara', 'person:sakumo', 'person:guy'],
+      side: ['person:hashirama', 'person:tobirama', 'person:hiruzen'],
+      foes: ['person:madara', 'person:itachi', 'person:kisame'],
       seed: 7,
     });
     if (!made.ok) throw new Error(made.error);
