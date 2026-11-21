@@ -1,3 +1,4 @@
+import { withLanternKits, withLanternShelves } from './kits';
 import { PUPPET_PART_TECHNIQUES, PUPPETRY } from '../../shared/puppetry';
 import { LANTERN_DOLL, LANTERN_MAKER, LANTERN_PUPPET_ARTS } from './puppeteer';
 import { GLASS_EYE_ARC, GLASS_EYE_JOBS } from './arcs/glassEye';
@@ -117,7 +118,7 @@ export const ORIGINAL_PACK: ContentPack = {
   startingRyo: 300,
   startingTools: STARTING_POUCH,
   text: ORIGINAL_TEXT,
-  locations: ORIGINAL_LOCATIONS,
+  locations: withLanternShelves(ORIGINAL_LOCATIONS, 'torogakure'),
   routes: ORIGINAL_ROUTES,
   atlas: ORIGINAL_ATLAS,
   exercises: EXERCISES,
@@ -236,7 +237,7 @@ export const ORIGINAL_PACK: ContentPack = {
   recipes: [...RECIPES, ...TOROGAKURE_RECIPES, ...REGIONAL_RECIPES],
   cookbooks: [...COOKBOOKS, ...TOROGAKURE_COOKBOOKS, ...REGIONAL_COOKBOOKS],
   campFinds: CAMP_FINDS,
-  people: [
+  people: withLanternKits([
     ...VILLAGE_COOKS,
     ...SENSEIS_AND_ELDERS,
     ...GENIN,
@@ -247,7 +248,7 @@ export const ORIGINAL_PACK: ContentPack = {
     ...WILD_FOLK,
     ...KIRI_FORD_PEOPLE,
     LANTERN_MAKER,
-  ],
+  ]),
   conversations: [
     ...GENERIC_CONVERSATIONS,
     ...TEMPLATE_CONVERSATIONS,

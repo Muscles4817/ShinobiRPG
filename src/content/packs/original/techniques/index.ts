@@ -16,6 +16,7 @@ import { SEALED_ARCHIVE } from './sealedArchive';
 import { SEVEN_WICKS } from './sevenWicks';
 import { TAIJUTSU } from './taijutsu';
 import { TAIJUTSU_VARIANTS } from './taijutsuVariants';
+import { LANTERN_TECHNIQUES } from './lantern';
 
 /**
  * The general techniques of the setting, one file per art, E to S. Clan, sensei, roster and
@@ -38,4 +39,5 @@ export const TECHNIQUES: readonly TechniqueDef[] = [
   ...FINISHERS,
   ...SEALED_ARCHIVE,
   ...CAST_ARMOUR,
+  ...LANTERN_TECHNIQUES,
 ];
