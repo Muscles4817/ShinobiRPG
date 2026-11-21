@@ -754,6 +754,12 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     field for a clean B-rank or deadly job, at the end of an arc with `recommends` (its patron's
     words), or on their sensei's word at a lesson after a year (high regard, no exam days away,
     never a sensei who holds students back).
+    **Where a promotion is held** (`exam/promotionDay.ts`): the exam's, a field promotion and an
+    arc's where you stand; the village's own (a jōnin's nomination, a sensei's recommendation) on a
+    day set at home (`PROMOTION_NOTICE_DAYS` ahead, `exams.promotionDay`), and no job that would
+    keep you away over it is signed out (`dateClash` in `awayNotes.ts`). If the day comes while you
+    are away anyway, it is held without you and the rank waits at the home village's mission hall
+    (`collectPromotion`).
     Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it, in a ceremony
     that reads the record back; S-rank hunts for jōnin-grade rogues are theirs. Those not
     sitting it are **spectators** (`exam/spectators.ts`, the exam's `spectators` lines): in the
@@ -997,8 +1003,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 
 31. **You have a rival** (`docs/design/rival-plan.md`, `game/rival/`). Once your team is settled,
     `chooseRival` takes a classmate on another team by a **shape** rolled from the seed (prodigy,
-    neck, chaser, fallen: the gap is never evened out) and a temperament from their traits. The
-    `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
+    neck, chaser, fallen: the gap is never evened out) and a temperament from their traits.
+    Nothing of the rivalry happens while you are apart (`inTownWith`, `people/cast.ts`: another town,
+    a job, a journey, an exam): no challenge or needling is made, a standing challenge lapses at no
+    cost, and a contest needs them around. The `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
     tastes, and your team and sensei lean by theirs: `replies.ts`), the **tally** (spars, races;
     first to each grade, scored by `noteRival` in `dispatch`), at most one **challenge** (theirs
     on the day's turn, on the ground that suits them, lapsing after the next; or yours from
@@ -1016,7 +1024,8 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `guestId`; moving (`moveHome`) keeps your furniture. A piece (`FurnishingDef`) does one thing,
     read at one hook while you are at home (`comforts`: sleep, nap, study, guests; decor is
     comfort only), and comfort warms dinners at home. The finest pieces are gifts from new close
-    friends (`noteHomeGifts` in `dispatch`). Rooms: a garden (`GardenCrop` from seed), a yard
+    friends (`noteHomeGifts` in `dispatch`): handed over if they can find you, else left at your door
+    (`housing.doorstep`) and found when you are next home. Rooms: a garden (`GardenCrop` from seed), a yard
     (cheaper drills) and a guest room (the guest is home every evening). The keepsake shelf is
     read from memories, rival wins and ranks, never stored.
 

@@ -1,7 +1,7 @@
 import { bondWith } from '@/systems/bonds';
 import { EMPTY_FIELD_BOOK } from '@/systems/collections';
 import { pantryCount } from '@/systems/inventory';
-import { act, ctx, newGame } from '@/test/gameFixtures';
+import { act, ctx, lastEntry, newGame } from '@/test/gameFixtures';
 
 import { blockerFor } from '../dispatch';
 import { whereNow, findPerson } from '../people/cast';
@@ -148,6 +148,25 @@ describe('gifts and keepsakes', () => {
     const gifted = noteHomeGifts(withBond(50), withBond(60), ctx);
     expect(gifted.housing.furniture).toContain('silk-futon');
     expect(noteHomeGifts(withBond(60), withBond(62), ctx)).toEqual(withBond(62));
+  });
+
+  it('is left at your door while you are away, and found when you are next home', () => {
+    const game = newGame();
+    const id = game.people.team!.teammateIds[0]!;
+    const away = (points: number) => ({
+      ...game,
+      locationId: 'port-shiomachi',
+      people: { ...game.people, bonds: { ...game.people.bonds, [id]: bondWith(points) } },
+    });
+    const left = noteHomeGifts(away(50), away(60), ctx);
+    expect(left.housing.furniture).toContain('silk-futon');
+    expect(left.housing.doorstep).toEqual([{ furnishingId: 'silk-futon', fromId: id }]);
+    expect(left.journal).toEqual(away(60).journal);
+
+    const home = { ...left, locationId: game.locationId };
+    const found = noteHomeGifts(home, home, ctx);
+    expect(found.housing.doorstep).toEqual([]);
+    expect(lastEntry(found)?.text).toMatch(/waits at your door/);
   });
 
   it('keeps what you shared with people, a race won and the vest of each rank', () => {

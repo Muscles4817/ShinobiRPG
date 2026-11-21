@@ -9,7 +9,7 @@ import type {
 } from '@/systems/combat';
 import { createStats } from '@/systems/stats';
 
-import { ctx, newGame, veteran } from './gameFixtures';
+import { act, ctx, newGame, veteran } from './gameFixtures';
 
 /** Autumn's seventh day in the first year: the original pack's exam (season 2, day 7). */
 export const EXAM_DAY = 2 * 28 + 7;
@@ -119,4 +119,11 @@ export function scriptedCtx(script: Script, context: GameContext = ctx): GameCon
     },
   };
   return { ...context, engines: [engine] };
+}
+
+/** Slept through at home until the village holds the promotion it set a day for. */
+export function onTheDay(state: GameState): GameState {
+  let now = state;
+  for (let night = 0; night < 10 && !now.exams.ceremony; night++) now = act(now, { type: 'sleep' });
+  return now;
 }

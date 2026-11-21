@@ -4,6 +4,7 @@ import { eat, rest, sleep, train } from './daily';
 import { encounterApproach, encounterRecon } from './encounter';
 import { acceptPromotion, enterExam, examAnswer, examContinue, examFinal } from './exam';
 import { watchFinals } from './watchFinals';
+import { collectPromotion } from './collectPromotion';
 import { missionChoose, missionContinue, startMission } from './mission';
 import { missionCamp, missionDecide } from './missionStory';
 import { payRent, treat } from './services';
@@ -177,4 +178,5 @@ export const HANDLERS: Registry = {
   examContinue,
   watchFinals,
   acceptPromotion,
+  collectPromotion,
 };

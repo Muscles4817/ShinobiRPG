@@ -13,7 +13,7 @@ import {
 } from '@/systems/missions';
 
 import { hearOf } from '../atlas';
-import { examClash } from '../awayNotes';
+import { dateClash } from '../awayNotes';
 import { availability, crewFor, takeJob } from '../board';
 import { pickTaken } from '../sensei/pick';
 
@@ -49,9 +49,9 @@ import type { ActionHandler, ActionOf } from './types';
 
 const MIN_HEALTH_FOR_MISSION = 0.4;
 
-/** Your sensei's refusal to sign you out for a job that would make you miss your exam. */
+/** The refusal to sign you out for a job that would make you miss your promotion or exam. */
 function senseiForbids(state: GameState, ctx: GameContext, def: MissionDef): string | null {
-  const clash = examClash(state, ctx, def);
+  const clash = dateClash(state, ctx, def);
   return clash?.blocks ? clash.text : null;
 }
 

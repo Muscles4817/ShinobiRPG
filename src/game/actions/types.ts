@@ -163,7 +163,8 @@ export type GameAction =
   | { readonly type: 'examFinal'; readonly stay: boolean }
   | { readonly type: 'examContinue' }
   | { readonly type: 'watchFinals' }
-  | { readonly type: 'acceptPromotion' };
+  | { readonly type: 'acceptPromotion' }
+  | { readonly type: 'collectPromotion' };
 
 export type GameActionType = GameAction['type'];
 export type ActionOf<T extends GameActionType> = Extract<GameAction, { type: T }>;

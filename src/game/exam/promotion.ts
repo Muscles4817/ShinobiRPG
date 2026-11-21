@@ -11,6 +11,7 @@ import { busyReason, chip, log } from '../ops';
 import type { GameState } from '../state';
 import { farewellDue, partWays } from '../sensei/farewell';
 import { examHere } from './current';
+import { awardPromotion, notePromotionDay, promotionPending } from './promotionDay';
 import { arcRecommendation } from './routes';
 import type { Ceremony } from './state';
 import { unlocksFor } from './unlocks';
@@ -90,16 +91,16 @@ export function joninGap(state: GameState): string | null {
 
 /**
  * Checked after every action, once you are free to hear it (not mid-mission, mid-fight or
- * mid-talk): a jōnin's nomination once a chūnin's record earns it, or a finished arc's
- * recommendation for a genin who is ready (`routes.ts`).
+ * mid-talk): a promotion whose day has come (`promotionDay.ts`), a jōnin's nomination once a
+ * chūnin's record earns it (set for a day at home), or a finished arc's recommendation for a
+ * genin who is ready (`routes.ts`, held where you stand).
  */
 export function notePromotions(state: GameState, ctx: GameContext): GameState {
-  if (state.exams.ceremony || busyReason(state)) return state;
+  const held = notePromotionDay(state, ctx);
+  if (promotionPending(held) || busyReason(held)) return held;
   const ceremony: Ceremony | null =
-    joninGap(state) === null
-      ? { rank: 'jonin', route: 'nomination' }
-      : arcRecommendation(state, ctx);
-  return ceremony ? { ...state, exams: { ...state.exams, ceremony } } : state;
+    joninGap(held) === null ? { rank: 'jonin', route: 'nomination' } : arcRecommendation(held, ctx);
+  return ceremony ? awardPromotion(held, ctx, ceremony) : held;
 }
 
 function withVest(state: GameState, ctx: GameContext, rank: PromotedRank): GameState {

@@ -4,6 +4,7 @@ import { daysAway, type MissionDef } from '@/systems/missions';
 import type { GameContext } from './context';
 import { nextSitting } from './exam/calendar';
 import { nominationBlocker, senseiOf } from './exam/entry';
+import { promotionClash } from './exam/promotionDay';
 import { jobAsWalked } from './jobRoads';
 import type { GameState } from './state';
 
@@ -11,7 +12,8 @@ import type { GameState } from './state';
  * What a job that keeps you away for days means at home. The village carries on without you
  * (the board, peers' training and gossip catch up by day), but an exam doesn't wait: a job that
  * would keep you out past one you could sit is a warning, and your sensei won't sign you out for
- * it once they would nominate you.
+ * it once they would nominate you. Nor does a promotion the village has set a day for: the hall
+ * won't send you out over it.
  */
 
 export interface ExamClash {
@@ -25,8 +27,14 @@ function inDays(days: number): string {
   return days === 1 ? 'tomorrow' : `in ${counted(days, 'day')}`;
 }
 
+/** A day at home a job would make you miss (a promotion, then an exam), or null. */
+export function dateClash(state: GameState, ctx: GameContext, def: MissionDef): ExamClash | null {
+  const promotion = promotionClash(state, ctx, def);
+  return promotion ? { blocks: true, text: promotion } : examClash(state, ctx, def);
+}
+
 /** The exam a job would make you miss, or null when you'd be back in time. */
-export function examClash(state: GameState, ctx: GameContext, def: MissionDef): ExamClash | null {
+function examClash(state: GameState, ctx: GameContext, def: MissionDef): ExamClash | null {
   const away = daysAway(jobAsWalked(state, ctx, def));
   const sitting = nextSitting(state, ctx);
   if (away === 0 || !sitting || sitting.daysAway >= away) return null;

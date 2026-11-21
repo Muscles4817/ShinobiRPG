@@ -9,6 +9,8 @@ export interface Exams {
   readonly run: ExamRun | null;
   readonly lastSatDay: number | null;
   readonly ceremony: Ceremony | null;
+  /** A promotion the village holds on a set day, before its scene (`exam/promotionDay.ts`). */
+  readonly promotionDay: PromotionDay | null;
   /** The day you last watched an exam's finals from the stands (`exam/spectators.ts`). */
   readonly watchedDay: number | null;
   /** True while the fight under way is the finals you are watching. */
@@ -27,10 +29,22 @@ export type Ceremony =
 
 export type PromotionRoute = Ceremony['route'];
 
+/**
+ * A promotion the village will hold on `day`. Held at home on the day if you are there and
+ * free; `missed` once the day came while you were away, and then it waits for you to report to
+ * the mission hall.
+ */
+export interface PromotionDay {
+  readonly ceremony: Ceremony;
+  readonly day: number;
+  readonly missed: boolean;
+}
+
 export const NO_EXAMS: Exams = {
   run: null,
   lastSatDay: null,
   ceremony: null,
+  promotionDay: null,
   watchedDay: null,
   spectating: false,
 };

@@ -1,6 +1,6 @@
 import { ventureDays, type VenturePlan } from '@/systems/missions';
 
-import { examClash } from '../awayNotes';
+import { dateClash } from '../awayNotes';
 import type { GameContext } from '../context';
 import { wildsHere } from '../gathering';
 import { laidUp } from '../injuries';
@@ -35,7 +35,7 @@ export const venture: ActionHandler<ActionOf<'venture'>> = {
   check(state, action, ctx) {
     const plan = planHere(state, ctx, action);
     if (!plan) return 'There is no way further in from here.';
-    const clash = examClash(state, ctx, ventureMission(plan, ctx));
+    const clash = dateClash(state, ctx, ventureMission(plan, ctx));
     return firstBlocker(
       ventureBlocker(state, ctx),
       ventureLeaveBlocker(state, ventureDays(action.depth), action.depth === 'heart'),

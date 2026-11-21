@@ -90,7 +90,7 @@ describe('an exam while you’re away', () => {
   it('warns that you’d miss it', () => {
     const state = packed({ ...newGame({}, ctx), time: { day: EXAM_DAY - 1, slot: 0 } }, 3);
     const notice = missionBoardView(state, ctx)!.notices.find((n) => n.id === ROAD_JOB.id);
-    expect(notice?.examClash).toBe('The Lantern Trials: tomorrow. You’d be away.');
+    expect(notice?.dateClash).toBe('The Lantern Trials: tomorrow. You’d be away.');
     expect(notice?.blocker).toBeNull();
   });
 

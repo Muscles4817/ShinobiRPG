@@ -1,5 +1,6 @@
 import { CONTENT_PACKS } from '@/content';
 import type { LedgerLine, MissionRun } from '@/systems/missions';
+import { onTheDay } from '@/test/examFixtures';
 import { act, ctx, newGame, postEverything, veteran } from '@/test/gameFixtures';
 
 import { createGameContext } from './context';
@@ -117,7 +118,9 @@ describe('a sensei’s recommendation', () => {
     ({ type: 'trainWith', personId, statId: 'taijutsu' }) as const;
 
   it('comes after a lesson, a year on, from a sensei who rates you highly', () => {
-    const after = act(yearOn('goran'), lesson('goran'));
+    const set = act(yearOn('goran'), lesson('goran'));
+    expect(set.exams.promotionDay?.ceremony).toEqual({ rank: 'chunin', route: 'sensei' });
+    const after = onTheDay(set);
     expect(after.exams.ceremony).toEqual({ rank: 'chunin', route: 'sensei' });
     expect(promotionScene(after, ctx)?.speech).toContain('Gōran');
   });
@@ -125,9 +128,9 @@ describe('a sensei’s recommendation', () => {
   it('waits for the year and the regard', () => {
     const early = { ...yearOn('goran'), time: { day: SENSEI_RECOMMENDATION_DAYS - 6, slot: 0 } };
     const tooEarly = { ...early, mentor: { ...early.mentor, settledDay: early.time.day - 1 } };
-    expect(act(tooEarly, lesson('goran')).exams.ceremony).toBeNull();
+    expect(act(tooEarly, lesson('goran')).exams.promotionDay).toBeNull();
     const lukewarm = yearOn('goran', SENSEI_RECOMMENDATION_REGARD - 5);
-    expect(act(lukewarm, lesson('goran')).exams.ceremony).toBeNull();
+    expect(act(lukewarm, lesson('goran')).exams.promotionDay).toBeNull();
   });
 
   it('waits for the exam instead when one is days away', () => {
@@ -137,7 +140,7 @@ describe('a sensei’s recommendation', () => {
       time: { day: EXAM_WEEK, slot: 0 },
       mentor: { ...state.mentor, settledDay: EXAM_WEEK - 1 },
     };
-    expect(act(examWeek, lesson('goran')).exams.ceremony).toBeNull();
+    expect(act(examWeek, lesson('goran')).exams.promotionDay).toBeNull();
   });
 
   it('never comes from a sensei who holds students back', () => {
@@ -159,6 +162,6 @@ describe('a sensei’s recommendation', () => {
           : p,
       ),
     });
-    expect(act(yearOn('goran'), lesson('goran'), holdsBack).exams.ceremony).toBeNull();
+    expect(act(yearOn('goran'), lesson('goran'), holdsBack).exams.promotionDay).toBeNull();
   });
 });

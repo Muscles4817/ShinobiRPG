@@ -6,11 +6,12 @@ import { findPerson } from '../people/cast';
 import type { GameState } from '../state';
 import { festivalNotice, rumoursToday } from '../village';
 import { examNotice } from './examNotice';
+import { promotionNotice } from './promotionNotice';
 import { senseiWeekView } from './senseiWeek';
 
 /**
  * What the day ahead holds, for the plaques at the foot of the end-of-day sheet (and the morning
- * slip): the reasons to come back. Read from the same rules that run the day (your sensei's
+ * slip): the reasons to come back. Read from the same rules that run the day (a promotion's day, your sensei's
  * week, the calendar, the board, the gossip, your rent and your wounds), most pressing first.
  */
 
@@ -44,7 +45,16 @@ const hook = (glyph: string, text: string, stamp: string | null = null, warm = f
 function rivalry(state: GameState, ctx: GameContext): DayHook[] {
   const rival = state.rival;
   const person = rival?.challenge && findPerson(state, ctx, rival.personId);
-  return person ? [hook('競', `${person.name} challenged you to a spar`, 'Rival', true)] : [];
+  const contest = rival?.challenge?.contest === 'race' ? 'a race' : 'a spar';
+  return person ? [hook('競', `${person.name} challenged you to ${contest}`, 'Rival', true)] : [];
+}
+
+function promotion(state: GameState, ctx: GameContext): DayHook[] {
+  const notice = promotionNotice(state, ctx);
+  if (!notice) return [];
+  return notice.collect
+    ? [hook('昇', 'Report to the hall for your rank', notice.when, true)]
+    : [hook('昇', notice.title, notice.when, notice.when === 'Today')];
 }
 
 function wounds(state: GameState): DayHook[] {
@@ -105,6 +115,7 @@ const FREE_DAY = hook('道', 'A free day to train, cook or wander');
 /** The day ahead's plaques, most pressing first; never empty. */
 export function dayHooks(state: GameState, ctx: GameContext): DayHook[] {
   const all = [
+    ...promotion(state, ctx),
     ...rivalry(state, ctx),
     ...wounds(state),
     ...exam(state, ctx),

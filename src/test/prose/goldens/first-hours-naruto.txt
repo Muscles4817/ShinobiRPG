@@ -713,7 +713,7 @@ view:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
-    text: Rock challenged you to a spar
+    text: Rock challenged you to a race
     stamp: Rival
   ahead[1]:
     text: The Chūnin Exams
@@ -900,7 +900,7 @@ view:
       label: Miso Chashu Ramen
   aheadLabel: Tomorrow
   ahead[0]:
-    text: Rock challenged you to a spar
+    text: Rock challenged you to a race
     stamp: Rival
   ahead[1]:
     text: The Chūnin Exams
