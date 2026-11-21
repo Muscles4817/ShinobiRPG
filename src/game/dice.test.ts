@@ -102,4 +102,20 @@ describe('chō-han at the back table', () => {
     expect(view.roundsLeft).toBe(DICE_ROUNDS_PER_NIGHT - 1);
     expect(tavernView(after, ctx)!.pastimes.find((p) => p.id === 'shogi')?.dice).toBeNull();
   });
+
+  it('comes up even about half the time, with two dice or three', () => {
+    const NIGHTS = 3000;
+    const base = at(NIGHT);
+    for (const dice of [2, 3]) {
+      let even = 0;
+      for (let day = 1; day <= NIGHTS; day++) {
+        const night = { ...base, time: { day, slot: NIGHT } };
+        if (callOf(nextCup(night, 'any-bar', { kind: 'dice', dice, stakes: [10] })) === 'even') {
+          even += 1;
+        }
+      }
+      expect(even / NIGHTS).toBeGreaterThan(0.45);
+      expect(even / NIGHTS).toBeLessThan(0.55);
+    }
+  });
 });
