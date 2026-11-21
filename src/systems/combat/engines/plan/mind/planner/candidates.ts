@@ -13,11 +13,12 @@ import { cardWorth } from '../../worth';
 import { competenceOf, tierFor } from '../competence';
 import { enabledBy, holdsNow, makes, type Fact } from './facts';
 import { TIERS, type Tier } from './ladder';
+import { proposalsFor } from './proposals';
 
 /**
- * What the planner scores (`search.ts`): single first cards by a prior that costs no exchange
- * (what the fighter would play now first, then attacks by what they are worth against the nearest
- * foe), and pairs where the first card makes true what the second needs (`facts.ts`), proposed as
+ * What the planner scores (`search.ts`): what the fighter's objective proposes (`proposals.ts`),
+ * then single first cards by a prior that costs no exchange (what the fighter would play now
+ * first, then attacks by what they are worth against the nearest foe), and pairs where the first card makes true what the second needs (`facts.ts`), proposed as
  * deep as the mind sees: tactical intelligence, lifted by expertise for a pair inside one art.
  */
 
@@ -87,6 +88,13 @@ function pairs(
   });
 }
 
+/** A single first card at the front, if it isn't among the singles already. */
+function withSingle(singles: Candidate[], id: CardId): void {
+  if (!singles.some((c) => c.sequence.length === 1 && c.sequence[0] === id)) {
+    singles.unshift({ sequence: [id], relies: [[]] });
+  }
+}
+
 /** What a mind of this tier scores from here, singles first. */
 export function candidatesFor(
   state: PlanState,
@@ -105,13 +113,12 @@ export function candidatesFor(
     .slice(0, tier.firstK)
     .map((id): Candidate => ({ sequence: [id], relies: [[]] }));
   // The next step of a plan already held is what it would do anyway; else its plan of cards.
-  const anyway = keep ?? cardId(plannedPlay(self, now).card);
+  // What the objective proposes is tried, and the first it can play is what it would do anyway
+  // (a held plan's next step still comes first); else its plan of cards, as before.
+  const proposed = proposalsFor(state, self).filter((id) => first.includes(id));
+  const anyway = keep ?? proposed[0] ?? cardId(plannedPlay(self, now).card);
   const usual = first.includes(anyway) ? anyway : undefined;
-  if (
-    usual !== undefined &&
-    !singles.some((c) => c.sequence[0] === usual && c.sequence.length === 1)
-  ) {
-    singles.unshift({ sequence: [usual], relies: [[]] });
-  }
+  for (const id of [...proposed].reverse()) withSingle(singles, id);
+  if (usual !== undefined) withSingle(singles, usual);
   return { candidates: [...singles, ...pairs(state, self, tier, { first, all })], all, usual };
 }
