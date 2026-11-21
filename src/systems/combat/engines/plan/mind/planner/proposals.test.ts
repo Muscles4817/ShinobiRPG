@@ -78,6 +78,13 @@ describe('what an objective proposes', () => {
     expect(proposalsFor(near.state, near.foe)).toEqual(['step-back', 'gather']);
   });
 
+  it('surviving, a fighter is offered every way of playing for time', () => {
+    const { state, foe } = fight('close', 'survive');
+    expect(proposalsFor(state, foe)).toEqual(
+      expect.arrayContaining(['evade', 'step-back', 'brace']),
+    );
+  });
+
   it('an objective not yet taken on proposes nothing', () => {
     const { state, foe } = fight('mid', 'wear-down');
     expect(proposalsFor(state, foe)).toEqual([]);
