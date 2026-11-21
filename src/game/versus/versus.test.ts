@@ -264,10 +264,10 @@ describe('versus team fights', () => {
   });
 });
 
-describe('rules on trial', () => {
-  /** Lines in a watched bout (Konohamaru against Neji, unless named) that tell a rule on trial. */
+describe('rules in every bout', () => {
+  /** Lines in a watched bout (Konohamaru against Neji, unless named) that tell a rule. */
   function linesIn(
-    pick: { handSigns?: boolean; teleport?: boolean; start?: 'far' },
+    pick: { start?: 'far' },
     marker: string,
     who: { side: string; foe: string } = { side: 'person:konohamaru', foe: 'person:neji' },
   ): number {
@@ -294,19 +294,16 @@ describe('rules on trial', () => {
     return found;
   }
 
-  it('hand signs break only in a bout that turns them on; rushing in is in every bout', () => {
+  it('hand signs can break up close, and a taijutsu fighter rushes in', () => {
     // A caster who reads the fight keeps clear of a crowder (`crowding.ts`); Naruto casts anyway.
     const crowded = { side: 'person:kiba', foe: 'person:naruto' };
-    expect(linesIn({ handSigns: true }, 'before the seals are done', crowded)).toBeGreaterThan(0);
-    expect(linesIn({}, 'before the seals are done', crowded)).toBe(0);
-    expect(linesIn({}, 'before the seals are done')).toBe(0);
+    expect(linesIn({}, 'before the seals are done', crowded)).toBeGreaterThan(0);
     expect(linesIn({}, 'as he lands')).toBeGreaterThan(0);
   });
 
-  it('the Flying Thunder God takes no turn only in a bout that turns it on', () => {
+  it('the Flying Thunder God changes distance without spending the turn', () => {
     const who = { side: 'person:minato', foe: 'person:asuma' };
-    expect(linesIn({ teleport: true }, 'vanishes and is', who)).toBeGreaterThan(0);
-    expect(linesIn({}, 'vanishes and is', who)).toBe(0);
+    expect(linesIn({}, 'vanishes and is', who)).toBeGreaterThan(0);
   });
 
   it('a bout starts where it is set to', () => {

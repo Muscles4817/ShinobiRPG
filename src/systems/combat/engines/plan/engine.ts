@@ -209,10 +209,7 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
         on: setup.instinct !== true && !instinct,
         watched: setup.watch === true,
       });
-      const opened = openFight(
-        withTeleports(withCloseQuarters(thinking, setup), setup),
-        setup.opening,
-      );
+      const opened = openFight(withTeleports(withCloseQuarters(thinking)), setup.opening);
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
       // Bodies already standing beside their callers join before anyone moves (`present.ts`).

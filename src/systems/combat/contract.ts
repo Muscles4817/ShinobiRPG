@@ -107,7 +107,7 @@ export type CombatPerk =
   | 'shield'
   | 'all-seeing'
   | 'raises'
-  /** Changes distance in an instant (the Flying Thunder God), a rule on trial (`teleport`). */
+  /** Changes distance in an instant (the Flying Thunder God), once a round (`plan/blink.ts`). */
   | 'teleport';
 
 export { COMBAT_GROUNDS, type CombatGround } from './groundContract';
@@ -320,8 +320,6 @@ export interface CombatSetup {
    * falling ends the fight, as it does on a job.
    */
   readonly toTheLast?: boolean;
-  /** Rules on trial, off unless a fight turns them on (versus play-testing). */
-  readonly experiments?: CombatExperiments;
   /**
    * Benches and tests only: the engine keeps why each fighter chose each move (Plan & Watch's
    * decision log, `decisionsOf`). Changes nothing anyone does.
@@ -333,17 +331,6 @@ export interface CombatSetup {
    * the minds. Unset, foes think ahead (and, in a bout only watched, your side too).
    */
   readonly instinct?: boolean;
-}
-
-/**
- * Rules being play-tested before they are adopted. Each is off when absent, and engines that
- * don't know one ignore it.
- */
-export interface CombatExperiments {
-  /** Up close, a technique that needs hand signs may come apart before it's cast (`plan/closeQuarters.ts`). */
-  readonly handSigns?: boolean;
-  /** A fighter with the `teleport` perk changes distance without spending the turn, once a round (`plan/blink.ts`). */
-  readonly teleport?: boolean;
 }
 
 /** Someone who has stood on the field this fight: who, what they're called, and their side. */

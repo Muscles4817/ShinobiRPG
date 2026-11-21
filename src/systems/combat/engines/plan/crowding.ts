@@ -8,7 +8,7 @@ import { strongestBand } from './stepping';
 import { cardWorth } from './worth';
 
 /**
- * Keeping the seals clear of a crowder (with the `handSigns` rule on trial, `closeQuarters.ts`).
+ * Keeping the seals clear of a crowder (hand signs up close, `closeQuarters.ts`).
  * A mind that reads the fight, about to make hand signs with an able foe close enough to break them,
  * weighs it by what kind of fighter it is and what the cast is for:
  * - a caster whose kit is strongest further off steps back to make room, whatever the cast;

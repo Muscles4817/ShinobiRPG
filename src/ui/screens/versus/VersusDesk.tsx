@@ -11,8 +11,7 @@ import {
   GroundPicker,
   StartPicker,
   StartBout,
-  TrialRules,
-  trialsOf,
+  openingOf,
   WorldPicker,
 } from './SetupParts';
 import { placeLabel, slotLabel, type Slot } from './SideSlots';
@@ -63,7 +62,7 @@ function useFightKey(setup: VersusSetupState, onFight: (choice: VersusChoice) =>
                 foes,
                 ground,
                 watch: false,
-                ...trialsOf(setup),
+                ...openingOf(setup),
               });
             }
           : undefined,
@@ -104,7 +103,6 @@ export function VersusDesk({
         <BothSides setup={setup} active={slot} onOpen={setup.openSlot} />
         <GroundPicker setup={setup} />
         <StartPicker setup={setup} />
-        <TrialRules setup={setup} />
         <div className="versus-start">
           <StartBout setup={setup} onFight={onFight} />
           <p className="key-note">Enter fights.</p>

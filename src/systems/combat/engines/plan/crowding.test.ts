@@ -39,7 +39,6 @@ const elbow: CombatTechnique = {
 };
 
 interface Caster {
-  readonly handSigns?: boolean;
   readonly attributes?: Partial<CombatantSetup['attributes']>;
   readonly techniques?: readonly CombatTechnique[];
 }
@@ -47,7 +46,7 @@ interface Caster {
 /** A fighter no one plans for: a bout only watched (`ownPlan`). */
 const planless = ({ ownPlan: _own, ...f }: PlanFighter): PlanFighter => f;
 
-function closeRound({ handSigns = true, attributes = {}, techniques = [bolt] }: Caster): Round {
+function closeRound({ attributes = {}, techniques = [bolt] }: Caster): Round {
   const setup = (id: string, extra: Partial<CombatantSetup>): CombatantSetup => ({
     id,
     name: id,
@@ -72,7 +71,7 @@ function closeRound({ handSigns = true, attributes = {}, techniques = [bolt] }: 
   });
   return {
     number: 1,
-    fighters: withCloseQuarters(fighters.map(planless), { experiments: { handSigns } }),
+    fighters: withCloseQuarters(fighters.map(planless)),
     range: 'close',
     lines: [],
     seen: {},
@@ -107,9 +106,7 @@ describe('keeping the seals clear of a crowder', () => {
     });
   });
 
-  it('casts anyway with the rule off, with a dull mind, or with the player’s own plan', () => {
-    const off = closeRound({ handSigns: false });
-    expect(crowdWary(off, caster(off), cast(off))).toBeNull();
+  it('casts anyway with a dull mind, or with the player’s own plan', () => {
     const dull = closeRound({ attributes: { intellect: 2 } });
     expect(crowdWary(dull, caster(dull), cast(dull))).toBeNull();
     const { watching: _watched, ...shown } = closeRound({});

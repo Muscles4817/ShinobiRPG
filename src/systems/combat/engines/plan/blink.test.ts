@@ -3,7 +3,7 @@ import { afterBlink, blinkInstead, blinksReady, withTeleports } from './blink';
 import { distanceBetween } from './distance';
 import { initialFighters, type PlanFighter, type Round } from './state';
 
-/** The teleport, a rule on trial (`blink.ts`). */
+/** The teleport (`blink.ts`). */
 
 const base: CombatantSetup['attributes'] = {
   strength: 20,
@@ -42,12 +42,12 @@ function fighters(teleport: boolean): readonly PlanFighter[] {
     perks,
   });
   const all = initialFighters({
-    player: setup('hero', ['teleport']),
+    player: setup('hero', teleport ? ['teleport'] : []),
     allies: [],
     enemies: [setup('foe')],
     canFlee: false,
   });
-  return withTeleports(all, { experiments: { teleport } });
+  return withTeleports(all);
 }
 
 function at(fs: readonly PlanFighter[], band: RangeBand): Round {
@@ -58,7 +58,7 @@ const hero = (r: Round) => r.fighters.find((f) => f.id === 'hero')!;
 const stepIn = { kind: 'step', direction: 'in' } as const;
 
 describe('the teleport', () => {
-  it('turns a step into a blink only with the rule on', () => {
+  it('turns a step into a blink only for a fighter with the perk', () => {
     expect(blinkInstead(at(fighters(false), 'mid'), hero(at(fighters(false), 'mid')), stepIn)).toBe(
       null,
     );

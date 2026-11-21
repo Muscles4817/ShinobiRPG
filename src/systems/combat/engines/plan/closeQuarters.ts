@@ -1,7 +1,7 @@
 import { clamp } from '@/core';
 import { statTier, STAT_GRADES } from '@/systems/stats';
 
-import type { CombatSetup, CombatTechnique } from '../../contract';
+import type { CombatTechnique } from '../../contract';
 import { alive } from '../../rules/body';
 import { causeLine } from '../../rules/causes';
 import { tell } from '../../rules/telling';
@@ -20,7 +20,7 @@ import { fighterIn, patch, paying, say, type PlanFighter, type Round } from './s
  *   lighter than a set strike and met by the ready defence as any blow is. Getting in is no
  *   longer a turn handed to the foe; getting in on someone faster still is the hard case, since
  *   their turn comes first.
- * - **Hand signs up close**, still on trial (`CombatExperiments.handSigns`). A technique that needs hand signs (read from its art and rank: the
+ * - **Hand signs up close**. A technique that needs hand signs (read from its art and rank: the
  *   body arts need none) is a contest when an able foe stands close and can see its caster: the
  *   caster's speed and chakra control against the crowder's speed and taijutsu, harder the more
  *   signs it takes. Lost, the seals come apart, the turn is gone and half the chakra with it. A
@@ -52,16 +52,12 @@ function isRusher(f: PlanFighter): boolean {
   return grade >= STAT_GRADES.indexOf(RUSHER_FROM) || a.taijutsu >= best;
 }
 
-/** Who rushes in, and the hand-sign rule where a fight tries it, on the fighters it applies to. */
-export function withCloseQuarters(
-  fighters: readonly PlanFighter[],
-  setup: Pick<CombatSetup, 'experiments'>,
-): PlanFighter[] {
-  const handSigns = setup.experiments?.handSigns === true;
+/** Who rushes in, and who can be crowded out of their hand signs (everyone), on each fighter. */
+export function withCloseQuarters(fighters: readonly PlanFighter[]): PlanFighter[] {
   return fighters.map((f) => ({
     ...f,
     ...(isRusher(f) ? { rushes: true as const } : {}),
-    ...(handSigns ? { crowdable: true as const } : {}),
+    crowdable: true as const,
   }));
 }
 

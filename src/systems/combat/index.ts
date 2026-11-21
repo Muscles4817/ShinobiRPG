@@ -17,7 +17,6 @@ export type {
   CombatOutcome,
   CombatCost,
   CombatOpening,
-  CombatExperiments,
   CombatOpeningField,
   CombatEngine,
   CombatChoice,

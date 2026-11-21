@@ -78,7 +78,7 @@ const PERK_WORDS: Readonly<Record<CombatPerk, string>> = {
   shield: 'Shield: dust that rises on its own against a hit',
   'all-seeing': 'All-seeing: sees everything at once, so no illusion takes hold',
   raises: 'Raises the fallen: brings a body of its own mind back up',
-  teleport: 'Teleports: changes distance in an instant (a rule on trial)',
+  teleport: 'Teleports: changes distance in an instant, once a round',
 };
 
 const sandboxes = new WeakMap<GameContext, GameState>();
