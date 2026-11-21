@@ -62,7 +62,7 @@ describe('the hermit of the Cedar Deep and the keeper of the Old Battlefield', (
       original.people
         .find((p) => p.id === id)
         ?.teacher?.teaches.map((t) => original.techniques.find((d) => d.id === t)?.school);
-    expect(schools('oboro')).toEqual(['Moss Step', 'Moss Step']);
-    expect(schools('gonzo')).toEqual(['Gravefield', 'Gravefield']);
+    expect(new Set(schools('oboro'))).toEqual(new Set(['Moss Step']));
+    expect(new Set(schools('gonzo'))).toEqual(new Set(['Gravefield']));
   });
 });

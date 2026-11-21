@@ -55,3 +55,14 @@ python3 sheet.py ../../docs/research/canon-kits-review.md
 The pack you dump already holds the kits applied here, so a second run only finds what is still
 missing; `compile.py` rewrites `kits.ts` and the `wiki/` folder, so keep the first run's lists
 (or empty them first) before running it on new drafts alone.
+
+## Filling thin fighters
+
+Narutopedia lists users only for jutsu seen used, so minor characters gained little. `fill.py`
+gives every versus fighter under a target (Kage 12, jōnin 9, chūnin 6, genin 5) generic
+techniques a person of the pack could have learned: shelved ones, their own clan's and those of
+schools they already hold; never someone's signature (`signature.py`: a jutsu with fewer than
+six named users on the wiki goes only to them); usable now; variety first (close, ranged,
+defence, control, utility), then fit by art and element. `emit_fill.py` writes it as
+`canonKits/fill*.ts`. Both run on a pack inventory (`out/<pack>-inv.json`), so they work for
+any pack.

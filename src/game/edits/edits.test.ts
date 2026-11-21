@@ -63,15 +63,17 @@ describe('fighter edits', () => {
   });
 
   it('give a person without an arsenal one built from the kit they were given', () => {
-    const IBIKI = 'person:ibiki';
-    expect(naruto.content.people.require('ibiki').arsenal).toBeUndefined();
-    const editor = fighterEditor(naruto, IBIKI)!;
+    // Every fighter of the fan pack now has an arsenal; Jin of the lantern pack has none.
+    const lanterns = contextForPack('original')!;
+    const JIN = 'person:jin';
+    expect(lanterns.content.people.require('jin').arsenal).toBeUndefined();
+    const editor = fighterEditor(lanterns, JIN)!;
     const kit = editor.techniques.map((t) => t.id);
     expect(kit.length).toBeGreaterThan(0);
     const extra = editor.choices.find((t) => t.ready)!;
-    const ctx = edited(editTechniques(naruto, IBIKI, [...kit, extra.id]));
-    expect(ctx.content.people.require('ibiki').arsenal?.techniqueIds).toEqual([...kit, extra.id]);
-    expect(fighterEditor(ctx, IBIKI)?.techniques.map((t) => t.id)).toContain(extra.id);
+    const ctx = contextForPack('original', editTechniques(lanterns, JIN, [...kit, extra.id]))!;
+    expect(ctx.content.people.require('jin').arsenal?.techniqueIds).toEqual([...kit, extra.id]);
+    expect(fighterEditor(ctx, JIN)?.techniques.map((t) => t.id)).toContain(extra.id);
   });
 
   it('reset one fighter back to the pack', () => {
