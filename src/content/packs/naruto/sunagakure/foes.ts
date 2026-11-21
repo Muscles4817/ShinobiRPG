@@ -35,6 +35,7 @@ export const DESERT_FOES: readonly EnemyDef[] = [
   {
     id: 'tainted-jackal',
     kind: 'Tainted beast',
+    form: 'beast',
     danger: 'armed',
     name: 'Tainted Jackal',
     description:
@@ -49,6 +50,7 @@ export const DESERT_FOES: readonly EnemyDef[] = [
   {
     id: 'tainted-scorpion',
     kind: 'Tainted beast',
+    form: 'beast',
     danger: 'deadly',
     name: 'Tainted Scorpion',
     description:

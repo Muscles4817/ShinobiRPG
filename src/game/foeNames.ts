@@ -8,12 +8,19 @@ import { counted, hashUnit, listed, plural } from '@/core';
  * foe in the same fight is always the same.
  */
 
-/** Kinds of foe the story calls "it" unless the foe says otherwise. */
-const CREATURE_KINDS: readonly string[] = ['Beast', 'Spirit'];
+/**
+ * A creature or a spirit, by what the foe declares (a `form` other than a person, or the
+ * spirit trait), never by its banner: `kind` is only the words on it.
+ */
+export function isCreature(def: Pick<EnemyDef, 'form' | 'traits'>): boolean {
+  return (
+    (def.form !== undefined && def.form !== 'person') || def.traits?.includes('spirit') === true
+  );
+}
 
 export function foeGrammar(def: EnemyDef, combatantId: string): FoePronouns {
   if (def.pronouns) return def.pronouns;
-  if (CREATURE_KINDS.includes(def.kind) || def.traits?.includes('spirit')) return 'it';
+  if (isCreature(def)) return 'it';
   return hashUnit(combatantId, 'pronouns') < 0.5 ? 'he' : 'she';
 }
 

@@ -120,6 +120,7 @@ export function smugglersAndSellswords(kit: FoeKit): EnemyDef[] {
     {
       id: 'guard-dog',
       kind: 'Beast',
+      form: 'beast',
       danger: 'petty',
       name: 'Guard Dog',
       description: 'Big, chained most of the day, and in a very bad mood about it.',

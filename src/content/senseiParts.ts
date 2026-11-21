@@ -1,3 +1,4 @@
+import type { CombatForm } from '@/systems/combat';
 import type { Discipline, Element } from '@/systems/techniques';
 
 import type { Tone } from './people';
@@ -58,8 +59,10 @@ export interface SenseiPastBeat {
 export interface SenseiPastFoe {
   /** An epithet after the name, e.g. "the Black Wing". */
   readonly epithet: string;
-  /** The banner in a fight: "Rogue", "Deserter", "Spirit". */
+  /** The banner in a fight: "Rogue", "Deserter", "Spirit". Words only. */
   readonly kind: string;
+  /** What they are when not a person (a spirit is "it"): the foe's `EnemyDef.form`. */
+  readonly form?: Exclude<CombatForm, 'person'>;
   readonly description: string;
   /**
    * The art they fight with (their techniques are the pack's of this art), or `theirs`: the

@@ -168,6 +168,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'forest-tiger',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Forest Tiger',

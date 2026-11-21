@@ -10,6 +10,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Feral Tanuki's numbers.
     id: 'reikon-macaque',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'petty',
     name: 'Reikon Macaque',
@@ -26,6 +27,7 @@ export const JOB_ENEMIES: readonly EnemyDef[] = [
     // Ash Wood Boar's numbers.
     id: 'ash-fell-bear',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Ash Fell Bear',

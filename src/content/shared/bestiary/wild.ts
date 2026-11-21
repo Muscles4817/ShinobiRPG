@@ -16,6 +16,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'wild-dog',
     kind: 'Beast',
+    form: 'beast',
     danger: 'petty',
     name: 'Wild Dog',
     description: 'Ribs showing, ears flat, and never alone for long.',
@@ -27,6 +28,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'grey-wolf',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'petty',
     name: 'Grey Wolf',
@@ -39,6 +41,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'wolf-pack-leader',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Wolf Pack Leader',
@@ -55,6 +58,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'giant-centipede',
     kind: 'Beast',
+    form: 'beast',
     danger: 'armed',
     name: 'Giant Centipede',
     description:
@@ -80,6 +84,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'mountain-eagle',
     kind: 'Beast',
+    form: 'beast',
     danger: 'petty',
     name: 'Mountain Eagle',
     blow: 'talon',
@@ -92,6 +97,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'old-cave-bear',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'deadly',
     name: 'Old Cave Bear',
@@ -108,6 +114,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'marsh-viper',
     kind: 'Beast',
+    form: 'beast',
     danger: 'petty',
     name: 'Marsh Viper',
     description: 'A brown coil in brown water. You find it by standing on it.',
@@ -119,6 +126,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'giant-salamander',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Giant Salamander',
@@ -132,6 +140,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'moray-eel',
     kind: 'Beast',
+    form: 'beast',
     danger: 'petty',
     name: 'Moray Eel',
     description: 'Lives in a hole in the rocks and objects to hands.',
@@ -143,6 +152,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'shore-crab',
     kind: 'Beast',
+    form: 'beast',
     danger: 'armed',
     name: 'Great Shore Crab',
     blow: 'claw',
@@ -155,6 +165,7 @@ export const WILD_BEASTS: readonly EnemyDef[] = [
   {
     id: 'reef-shark',
     kind: 'Beast',
+    form: 'beast',
     danger: 'armed',
     name: 'Reef Shark',
     description: 'Comes in with the tide when the boats are gutting fish, and stays for more.',
