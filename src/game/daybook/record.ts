@@ -6,7 +6,8 @@ import { openDay } from './open';
 /**
  * Keeps the day's record as actions happen (called from `dispatch`). When an action carries
  * time into a new morning, the day that ended is closed and kept for the end-of-day sheet, and
- * a new one opens. A day that ends on the road, mid-job or mid-exam is not kept: the job's
+ * a new one opens. A day that ends on the road (or a trip walked in one go), mid-job or
+ * mid-exam is not kept: the job's
  * debrief and the trip home tell those days, and the record starts again from there.
  */
 
@@ -17,11 +18,23 @@ function away(state: GameState): boolean {
   return state.mission !== null || state.exams.run !== null;
 }
 
+/**
+ * A trip that ended inside this one action: a hurried one walks every leg and arrives in a
+ * single action, so neither end of it is away, but the days between were on the road.
+ */
+function arrivedFromTheRoad(before: GameState, after: GameState): boolean {
+  return after.journeyEnd !== null && after.journeyEnd !== before.journeyEnd;
+}
+
 export function noteDayEnd(before: GameState, after: GameState, action: GameAction): GameState {
   const { start } = after.daybook;
   if (start === null) return { ...after, daybook: { ...after.daybook, start: openDay(after) } };
   if (after.time.day === before.time.day) return after;
-  const keep = !away(before) && !away(after) && (after.settings.dayEnd ?? 'full') !== 'off';
+  const keep =
+    !away(before) &&
+    !away(after) &&
+    !arrivedFromTheRoad(before, after) &&
+    (after.settings.dayEnd ?? 'full') !== 'off';
   const ended = keep ? closeDay(start, after, SLEEPING.includes(action.type)) : after.daybook.ended;
   return { ...after, daybook: { start: openDay(after), ended } };
 }

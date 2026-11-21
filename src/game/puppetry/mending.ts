@@ -3,7 +3,7 @@ import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
 import { atABench, atWorkshop, WORKSHOP_MENDS } from './workshop';
-import { chip, log } from '../ops';
+import { chip, log, ryoChip } from '../ops';
 import type { GameState } from '../state';
 import { yourPuppets, type YourPuppet } from './yours';
 
@@ -68,7 +68,7 @@ export function mendPuppet(state: GameState, ctx: GameContext, puppetId: string)
       heading: `Mending ${puppet.owned.name}`,
       text: mendLine(puppet.owned, after),
       tone: 'success',
-      chips: [chip(`−${ryo} ryo`, 'cost'), chip(`+${share}% mended`, 'gain')],
+      chips: [ryoChip(-ryo), chip(`+${share}% mended`, 'gain')],
     },
   );
 }

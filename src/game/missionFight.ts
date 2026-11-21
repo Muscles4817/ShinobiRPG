@@ -35,7 +35,7 @@ import {
 import { teamAllies } from './missionTeam';
 import { companionAllies } from './companions/combatant';
 import { withSummons } from './contracts/summons';
-import { adjust, chip, log, spendTime } from './ops';
+import { adjust, log, ryoChip, spendTime } from './ops';
 import { addReport } from './reports';
 import { takeSpoils } from './spoils';
 import type { GameState } from './state';
@@ -118,7 +118,7 @@ function hospitalise(state: GameState, ctx: GameContext, beaten: Beaten): GameSt
     {
       text,
       tone: 'warning',
-      chips: [chip(`−${fee} ryo`, 'cost')],
+      chips: [ryoChip(-fee)],
     },
   );
   return addReport(logged, {

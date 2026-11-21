@@ -13,7 +13,7 @@ import { STAT_GRADES, statTier } from '@/systems/stats';
 import { spend } from '@/systems/wallet';
 
 import type { GameContext } from '../context';
-import { chip, log, placesHere } from '../ops';
+import { chip, log, placesHere, ryoChip } from '../ops';
 import type { GameState } from '../state';
 import { sealCap, SEAL_RYO, sealsProblem } from './seals';
 import { atABench, atWorkshop, puppetRoom, WORKSHOP_REACH } from './workshop';
@@ -65,7 +65,7 @@ export function buyMaterial(state: GameState, ctx: GameContext, materialId: stri
     {
       text: `You buy a lot of ${material.name.toLowerCase()} for the bench.`,
       tone: 'success',
-      chips: [chip(`−${material.price} ryo`, 'cost'), chip('+1 lot', 'gain')],
+      chips: [ryoChip(-material.price), chip('+1 lot', 'gain')],
     },
   );
 }
@@ -168,7 +168,7 @@ export function startBuild(state: GameState, ctx: GameContext, order: BuildOrder
       heading: rebuild ? `${job.name} goes back on the bench` : `${job.name} on the bench`,
       text: `You lay out the ${frame.name.toLowerCase()} and its mechanisms. A few days’ work will see it walk.`,
       tone: 'success',
-      chips: [chip(`−${lots} lots`, 'cost'), ...(ryo > 0 ? [chip(`−${ryo} ryo`, 'cost')] : [])],
+      chips: [chip(`−${lots} lots`, 'cost'), ...(ryo > 0 ? [ryoChip(-ryo)] : [])],
     },
   );
 }

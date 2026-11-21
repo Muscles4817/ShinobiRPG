@@ -106,11 +106,12 @@ export function foeFor(
   return {
     id: input.id,
     kind: past.foe.kind,
+    ...(past.foe.form ? { form: past.foe.form } : {}),
     danger: 'deadly',
     name: input.name,
     // A past's foe has a name (or an epithet) of their own; a spirit is "it".
     proper: true,
-    pronouns: past.foe.kind === 'Spirit' ? 'it' : rolledPronouns(input.id),
+    pronouns: past.foe.form ? 'it' : rolledPronouns(input.id),
     description: fill(past.foe.description, input.slots),
     baseStat: FOE_BASE,
     statBonuses: { [input.art]: FOE_ART, speed: FOE_SPEED, perception: FOE_PERCEPTION },

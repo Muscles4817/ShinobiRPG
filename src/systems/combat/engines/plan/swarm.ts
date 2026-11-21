@@ -14,7 +14,6 @@ import {
   SETTLE_EXCHANGES,
   settleDrain,
   spentFrom,
-  swarmAffords,
   swarmSearch,
 } from '../../rules/swarms';
 import { harmLine } from '../../rules/narration';
@@ -22,6 +21,7 @@ import { tell } from '../../rules/telling';
 import { ABSORB_SHARE, areaSize, effectsOf } from '../../rules/verbs';
 import type { Hive } from './hive';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { taken, wound } from './wound';
 
 /**
  * A hive in a planned fight (`rules/swarms.ts`): swarm techniques spend insects, a swarm
@@ -55,11 +55,6 @@ export function settledSlips(round: Round, attacker: Hive, target: Hive): number
   const glow = settledHost(round, target)?.swarm;
   const blind = settledHost(round, attacker)?.swarm;
   return (glow ? glowSlipScale(glow.strain) : 1) * (blind ? blindSlipScale(blind.strain) : 1);
-}
-
-/** Whether a fighter has the insects a technique asks of their hive. */
-export function hasInsectsFor(fighter: Hive, t: CombatTechnique): boolean {
-  return swarmAffords(fighter.swarm, t.swarmCost);
 }
 
 /** What a technique spends from its user's hive, as a change to them. */
@@ -186,13 +181,10 @@ function drawn(round: Round, carrier: PlanFighter): Round {
 function envenomed(round: Round, carrier: PlanFighter, host: PlanFighter | undefined): Round {
   const venom = host?.swarm ? settleVenom(host.swarm) : 0;
   const now = fighterIn(round, carrier.id);
-  if (venom <= 0 || !now) return round;
-  const hurt = Math.min(now.health, venom);
-  const after = {
-    ...round,
-    fighters: patch(round.fighters, now.id, { health: now.health - hurt }),
-  };
-  return say(after, harmLine(tell('The venom works on {t}.', { t: now }), hurt));
+  if (venom <= 0 || !now || now.health <= 0) return round;
+  // Through `wound`, like any harm: a shadow clone pops, a channelled hold breaks, a coward runs.
+  const hurt = taken(now, venom);
+  return wound(round, now.id, hurt, harmLine(tell('The venom works on {t}.', { t: now }), hurt));
 }
 
 /** A host's hive finds hidden foes on its own, the keener the strain and the fuller the hive. */

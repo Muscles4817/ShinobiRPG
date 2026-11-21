@@ -15,6 +15,7 @@ import {
   log,
   placeHere,
   placesHere,
+  ryoChip,
   spendTime,
   statChips,
 } from '../ops';
@@ -170,7 +171,7 @@ export const eat: ActionHandler<ActionOf<'eat'>> = {
       chips: [
         chip(`Hunger −${def.satiety}`, 'gain'),
         ...(def.energy > 0 ? [chip(`Energy +${def.energy}`, 'gain')] : []),
-        chip(`−${cost} ryo`, 'cost'),
+        ryoChip(-cost),
       ],
     });
   },

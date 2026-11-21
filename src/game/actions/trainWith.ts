@@ -21,6 +21,7 @@ import {
   firstBlocker,
   log,
   placesHere,
+  ryoChip,
   spendTime,
   statChips,
 } from '../ops';
@@ -168,7 +169,7 @@ function report(state: GameState, before: GameState, session: Session): GameStat
         : []),
       ...(taught?.unstable ? [chip(`${taught.name} unstable`, 'cost')] : []),
       ...(energy > 0 ? [chip(`−${energy} energy`, 'cost')] : []),
-      ...(ryo > 0 ? [chip(`−${ryo} ryo`, 'cost')] : []),
+      ...(ryo > 0 ? [ryoChip(-ryo)] : []),
     ],
   });
   if (!teaching.isSensei) return logged;

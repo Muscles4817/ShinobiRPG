@@ -17,6 +17,7 @@ export const SPIRIT_BARGAIN: SenseiPast = {
   foe: {
     epithet: 'the Thing in the Reeds',
     kind: 'Spirit',
+    form: 'spirit',
     description:
       'An old spirit of still water that saved {lost} once, for a price {name} has not finished paying.',
     art: 'genjutsu',

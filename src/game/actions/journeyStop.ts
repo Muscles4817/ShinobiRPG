@@ -14,7 +14,7 @@ import { growCharacter, logDiscoveries } from '../growth';
 import { chakraBody } from '../hives/hive';
 import { roomPrice, stopAt, type StopOffer } from '../journeyStops';
 import { activeMission, activeStage, afterStage } from '../missionFlow';
-import { adjust, chip, log, statChips } from '../ops';
+import { adjust, chip, log, ryoChip, statChips } from '../ops';
 import { placeInText } from '../placeName';
 import { CAMP_HEALTH_SHARE, travel } from '../road';
 import type { GameState } from '../state';
@@ -50,7 +50,7 @@ function stayAtInn(state: GameState, ctx: GameContext, offer: StopOffer & { kind
     heading: `A room at ${placeInText(offer.inn.name)}`,
     text: line,
     tone: 'info',
-    chips: [chip(`−${price} ryo`, 'cost'), chip(`+${health} health`, 'gain')],
+    chips: [ryoChip(-price), chip(`+${health} health`, 'gain')],
   });
   return { state: logged, line, skipCamp: true };
 }

@@ -10,6 +10,7 @@ export const DESERT_BEASTS: readonly EnemyDef[] = [
   {
     id: 'sand-viper',
     kind: 'Beast',
+    form: 'beast',
     danger: 'petty',
     name: 'Sand Viper',
     blow: 'bite',
@@ -23,6 +24,7 @@ export const DESERT_BEASTS: readonly EnemyDef[] = [
   {
     id: 'striped-hyena',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'petty',
     name: 'Striped Hyena',
@@ -36,6 +38,7 @@ export const DESERT_BEASTS: readonly EnemyDef[] = [
   {
     id: 'desert-lion',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Desert Lion',

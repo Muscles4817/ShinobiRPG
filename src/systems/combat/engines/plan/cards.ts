@@ -2,7 +2,7 @@ import { affords } from './effort';
 import { canCall } from './calls';
 import { canCommit } from './commitment';
 import { canGather } from './gather';
-import { hasInsectsFor } from './swarm';
+import { hasInsectsFor } from './hive';
 import { hasDustFor } from './dust';
 import { threadsForbid } from './puppets';
 import { statTier, type StatGrade } from '@/systems/stats';

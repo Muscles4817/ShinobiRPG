@@ -174,6 +174,7 @@ export const EXAM_ENEMIES: readonly EnemyDef[] = [
   {
     id: 'ash-wood-boar',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'armed',
     name: 'Ash Wood Boar',

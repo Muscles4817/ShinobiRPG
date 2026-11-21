@@ -1,7 +1,7 @@
 import { isHungry } from '@/systems/vitals';
 import { spend } from '@/systems/wallet';
 
-import { busyReason, chip, firstBlocker, placeHere } from '../ops';
+import { busyReason, firstBlocker, placeHere, ryoChip } from '../ops';
 import { INN_NIGHTS } from '../everyday/awayLines';
 import { tellDaily } from '../everyday/tell';
 import { placeInText } from '../placeName';
@@ -37,7 +37,7 @@ export const takeRoom: ActionHandler<ActionOf<'takeRoom'>> = {
       text: `${inn.keeper} hands you a key. ${said.text}`,
       uneasy: hungry,
       heading: `A room at ${placeInText(inn.name)}`,
-      chips: [chip(`−${room} ryo`, 'cost')],
+      chips: [ryoChip(-room)],
     });
   },
 };

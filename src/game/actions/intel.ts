@@ -2,7 +2,7 @@ import { stageFoes } from '@/systems/missions';
 import { spend } from '@/systems/wallet';
 
 import { availability } from '../board';
-import { busyReason, chip, firstBlocker, log, placeHere } from '../ops';
+import { busyReason, firstBlocker, log, placeHere, ryoChip } from '../ops';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -36,7 +36,7 @@ export const buyIntel: ActionHandler<ActionOf<'buyIntel'>> = {
         heading: `The report on ${def.title}`,
         text: 'The clerk slides the client’s report across the counter. Now you know who you’ll face.',
         tone: 'info',
-        chips: [chip(`−${INTEL_FEE} ryo`, 'cost')],
+        chips: [ryoChip(-INTEL_FEE)],
       },
     );
   },

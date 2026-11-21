@@ -1,9 +1,10 @@
-import type { EnemyDef } from '@/content';
+import { CONTENT_PACKS, type EnemyDef } from '@/content';
 import { ctx, newGame } from '@/test/gameFixtures';
 
 import { enemyParty, playerCombatant } from './combatants';
 import { debriefStory } from './debriefStory';
-import { beatenLine, foeCalled, foeGrammar, foeList } from './foeNames';
+import { contextForPack } from './context';
+import { beatenLine, foeCalled, foeGrammar, foeList, isCreature } from './foeNames';
 
 const foe = (id: string): EnemyDef => ctx.content.enemies.require(id);
 
@@ -49,6 +50,25 @@ describe('naming foes for the story', () => {
     const human = foeGrammar(foe('bandit-thug'), 'bandit-thug#0');
     expect(['he', 'she']).toContain(human);
     expect(foeGrammar(foe('bandit-thug'), 'bandit-thug#0')).toBe(human);
+  });
+
+  it('reads what a foe is from what it declares, never from the words on its banner', () => {
+    const naruto = contextForPack('naruto');
+    if (!naruto) return;
+    // The banner says "Tainted beast", not "Beast": the declared form decides.
+    const jackal = naruto.content.enemies.require('tainted-jackal');
+    expect(foeGrammar(jackal, 'tainted-jackal#0')).toBe('it');
+    expect(foeGrammar({ ...jackal, kind: 'Beast', form: 'person' }, 'x#0')).not.toBe('it');
+  });
+
+  it('gives every foe its banner calls a beast or a spirit a creature’s form or “it”', () => {
+    const creatureWords = /\b(beast|spirit|animal|wraith)\b/i;
+    const unmarked = CONTENT_PACKS.flatMap((pack) =>
+      pack.enemies
+        .filter((e) => creatureWords.test(e.kind) && !isCreature(e) && e.pronouns !== 'it')
+        .map((e) => `${pack.id}: ${e.id} (${e.kind})`),
+    );
+    expect(unmarked).toEqual([]);
   });
 
   it('tells the player as you, and foes as the story calls them', () => {

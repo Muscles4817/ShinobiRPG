@@ -15,7 +15,7 @@ import { trackingChance, wildHere, type WildKind } from '../companions/wild';
 import type { GameContext } from '../context';
 import { weakFromHunger } from '../hunger';
 import { laidUp } from '../injuries';
-import { adjust, busyReason, chip, firstBlocker, log, placeHere, spendTime } from '../ops';
+import { adjust, busyReason, firstBlocker, log, placeHere, ryoChip, spendTime } from '../ops';
 import { bondOf, findPerson } from '../people/cast';
 import { hardWorkEnergy } from '../profile';
 import type { GameState } from '../state';
@@ -109,7 +109,7 @@ export const takePup: ActionHandler<ActionOf<'takePup'>> = {
           ? `${giver} lifts a pup out of the pen and puts it in your arms. “For a friend.” You call it ${name}.`
           : `You pick a pup from the litter, and it picks you back. You call it ${name}.`,
       tone: 'success',
-      chips: price > 0 ? [chip(`−${price} ryo`, 'cost')] : [],
+      chips: price > 0 ? [ryoChip(-price)] : [],
     });
   },
 };

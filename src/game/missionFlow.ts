@@ -19,7 +19,7 @@ import { forestCleared, forestLost } from './exam/forest';
 import { afterFieldWork } from './exam/routes';
 import { jobAsWalked } from './jobRoads';
 import { arrive, journeyMission } from './journeys';
-import { chip, log, placeHere } from './ops';
+import { chip, log, placeHere, ryoChip } from './ops';
 import { handedOver } from './missionRewards';
 import { tendWounds } from './missionTeam';
 import { bondOf } from './people/cast';
@@ -107,7 +107,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     text: ending ?? `${def.client} thanks you.`,
     tone: 'success',
     chips: [
-      chip(`+${earned.ryo} ryo`, 'gain'),
+      ryoChip(earned.ryo),
       chip(`+${earned.reputation} reputation`, 'gain'),
       ...(teamBond > 0 ? [chip(`+${teamBond} team bond`, 'gain')] : []),
       ...gifts.chips,

@@ -8,7 +8,7 @@ import {
 import { findJourney, type Journey, type RouteDef } from '@/systems/travel';
 
 import type { GameContext } from './context';
-import { chip, log } from './ops';
+import { chip, log, ryoChip } from './ops';
 import { endsOpen, roadOpen } from './routeNeeds';
 import { settle } from './story/state';
 import { keepsToSafeRoads } from './leave';
@@ -195,7 +195,7 @@ export function setOut(state: GameState, ctx: GameContext, trip: Departure): Gam
       heading: def.title,
       text: def.summary,
       tone: 'info',
-      chips: passage > 0 ? [chip(`−${passage} ryo passage`, 'cost')] : [],
+      chips: passage > 0 ? [ryoChip(-passage, 'passage')] : [],
     },
   );
 }

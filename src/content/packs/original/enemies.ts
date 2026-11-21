@@ -4,6 +4,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'feral-tanuki',
     kind: 'Beast',
+    form: 'beast',
     drops: ['wild-game'],
     danger: 'petty',
     name: 'Feral Tanuki',
@@ -132,6 +133,7 @@ export const ENEMIES: readonly EnemyDef[] = [
   {
     id: 'poachers-hound',
     kind: 'Beast',
+    form: 'beast',
     danger: 'petty',
     name: 'Poacher’s Hound',
     description: 'A lean grey hound that goes for the ankles and never lets go.',
