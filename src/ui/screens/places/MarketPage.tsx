@@ -39,8 +39,8 @@ function CookbookButton({
 }
 
 /** A street of stalls: shop curtains, product cards with price tags, and your purse. */
-export function MarketPage({ ctx, state, perform, onBack }: PlaceProps) {
-  const view = marketView(state, ctx);
+export function MarketPage({ ctx, state, perform, onBack, placeId }: PlaceProps) {
+  const view = marketView(state, ctx, placeId);
   const header = headerView(state, ctx);
   if (!view) return null;
   return (

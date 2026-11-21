@@ -3,7 +3,7 @@ import { applyTraining, STAT_INFO, type StatId } from '@/systems/stats';
 import { DISCIPLINES, type Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
-import { placeHere } from '../ops';
+import { placeShown } from '../ops';
 import { assumedAptitude } from '../growth';
 import { growthFor, hardWorkEnergy } from '../profile';
 import { hasMastered, progressOf } from '../exercises';
@@ -83,8 +83,12 @@ function groupOf(stats: readonly StatId[]): DrillGroup {
   return stats.some((s) => STAT_INFO[s].group === 'body') ? 'body' : 'mind';
 }
 
-export function trainingView(state: GameState, ctx: GameContext): TrainingView | null {
-  const place = placeHere(state, ctx, 'training');
+export function trainingView(
+  state: GameState,
+  ctx: GameContext,
+  placeId?: string,
+): TrainingView | null {
+  const place = placeShown(state, ctx, 'training', placeId);
   if (!place) return null;
   const { stats, vitals } = state.character;
   const lastHeading = state.journal.entries.at(-1)?.heading;
@@ -117,8 +121,8 @@ export function trainingView(state: GameState, ctx: GameContext): TrainingView |
     energy: Math.round(vitals.energy),
     drillsLeft: Math.floor(vitals.energy / typical),
     drills,
-    teachers: teacherOffers(state, ctx),
-    sparring: sparOptions(state, ctx),
+    teachers: teacherOffers(state, ctx, place.id),
+    sparring: sparOptions(state, ctx, place.id),
     exercises: exerciseCards(state, ctx, place.exerciseIds ?? []),
     companion: companionDrills(state, ctx),
   };

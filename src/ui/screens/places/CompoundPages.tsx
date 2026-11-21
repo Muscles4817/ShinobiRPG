@@ -10,8 +10,8 @@ interface QuarterProps extends PlaceProps {
 }
 
 /** The clans' quarter: a gate for each clan, how it treats outsiders, and who is home. */
-export function QuarterPage({ ctx, state, onBack, onOpenPlace }: QuarterProps) {
-  const view = quarterView(state, ctx);
+export function QuarterPage({ ctx, state, onBack, onOpenPlace, placeId }: QuarterProps) {
+  const view = quarterView(state, ctx, placeId);
   const header = headerView(state, ctx);
   if (!view) return null;
   return (

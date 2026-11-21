@@ -1,6 +1,6 @@
 import type { Find } from '@/systems/cooking';
 
-import type { ContentPack, FishingSpot, PlaceDef, Stall } from './types';
+import type { ContentPack, FishingSpot, PlaceDef, PlaceKind, Stall } from './types';
 import { duplicateIds } from './catalog';
 
 /**
@@ -98,7 +98,29 @@ export function validateWorld(pack: ContentPack): string[] {
       if (!reached[kind].has(id)) problems.push(`${kind} "${id}" is not offered at any place`);
     });
   }
-  return [...problems, ...visitProblems(pack), ...inTextProblems(pack)];
+  return [...problems, ...visitProblems(pack), ...inTextProblems(pack), ...repeatProblems(pack)];
+}
+
+/**
+ * Kinds of place a location may have more than one of: their pages, views and actions name the
+ * place they are for. Any other kind is looked up as the one of its kind here, so a second
+ * would never be reached; give its view and actions a place id before adding it here.
+ */
+const MANY_PER_LOCATION: readonly PlaceKind[] = [
+  'training',
+  'market',
+  'gear',
+  'wilds',
+  'quarter',
+  'compound',
+];
+
+function repeatProblems(pack: ContentPack): string[] {
+  return pack.locations.flatMap((location) => {
+    const kinds = location.places.map((p) => p.kind).filter((k) => !MANY_PER_LOCATION.includes(k));
+    const repeated = [...new Set(kinds.filter((k, i) => kinds.indexOf(k) !== i))];
+    return repeated.map((k) => `"${location.id}" has more than one ${k}, and only one is reached`);
+  });
 }
 
 /** A place's mid-sentence name starts lower case, or it would read as a title. */

@@ -31,9 +31,9 @@ function gainText(preview: StatPreview): string {
  * Training Grounds as a rack of ema (wooden shrine plaques): each drill headlines the stat it
  * grows most, with the rest beneath, under an energy budget.
  */
-export function TrainingPage({ ctx, state, perform, onBack }: PlaceProps) {
+export function TrainingPage({ ctx, state, perform, onBack, placeId }: PlaceProps) {
   const [filter, setFilter] = useState<DrillGroup | 'all'>('all');
-  const view = trainingView(state, ctx);
+  const view = trainingView(state, ctx, placeId);
   const header = headerView(state, ctx);
   const latest = hubView(state, ctx).latest;
   if (!view) return null;

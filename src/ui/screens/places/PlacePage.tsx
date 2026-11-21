@@ -21,7 +21,6 @@ import { WildsPage } from './WildsPage';
 /** Each kind of place has its own page design. */
 interface PlacePageProps extends PlaceProps {
   readonly kind: PlaceKind;
-  readonly placeId: string;
   /** Opens another place from this one (a compound from the clans' quarter). */
   readonly onOpenPlace: (placeId: string) => void;
 }
@@ -46,7 +45,7 @@ function RestPage({ kind, ...props }: PlaceProps & { readonly kind: RestKind }) 
   }
 }
 
-export function PlacePage({ kind, placeId, onOpenPlace, ...props }: PlacePageProps) {
+export function PlacePage({ kind, onOpenPlace, ...props }: PlacePageProps) {
   if (isRestKind(kind)) return <RestPage {...props} kind={kind} />;
   switch (kind) {
     case 'training':
@@ -60,13 +59,13 @@ export function PlacePage({ kind, placeId, onOpenPlace, ...props }: PlacePagePro
     case 'library':
       return <LibraryPage {...props} />;
     case 'gear':
-      return <GearShopPage {...props} placeId={placeId} />;
+      return <GearShopPage {...props} />;
     case 'wilds':
-      return <WildsPage {...props} placeId={placeId} />;
+      return <WildsPage {...props} />;
     case 'quarter':
       return <QuarterPage {...props} onOpenPlace={onOpenPlace} />;
     case 'compound':
-      return <CompoundPage {...props} placeId={placeId} />;
+      return <CompoundPage {...props} />;
     case 'vet':
       return <VetPage {...props} />;
     case 'lettings':

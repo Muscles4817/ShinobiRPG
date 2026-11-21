@@ -2,7 +2,7 @@ import type { OutsiderStance, PlaceDef, QuarterFields } from '@/content';
 
 import { compoundAccess, compoundHere, type Compound } from '../compounds';
 import type { GameContext } from '../context';
-import { currentLocation } from '../ops';
+import { currentLocation, placeShown } from '../ops';
 import { findPerson, fullName, peopleHere } from '../people/cast';
 import type { GameState } from '../state';
 import { knowsRite, riteOf } from '../hives/rite';
@@ -87,10 +87,14 @@ export interface QuarterView {
   readonly compounds: readonly CompoundCard[];
 }
 
-/** The clans' quarter of your location, if it has one. */
-export function quarterView(state: GameState, ctx: GameContext): QuarterView | null {
-  const quarter = currentLocation(state, ctx).places.find((p) => p.kind === 'quarter');
-  if (quarter?.kind !== 'quarter') return null;
+/** A clans' quarter of your location (the one opened, else the first), if it has one. */
+export function quarterView(
+  state: GameState,
+  ctx: GameContext,
+  placeId?: string,
+): QuarterView | null {
+  const quarter = placeShown(state, ctx, 'quarter', placeId);
+  if (!quarter) return null;
   return {
     name: quarter.name,
     blurb: quarter.blurb,

@@ -2,7 +2,7 @@ import type { Discipline } from '@/systems/techniques';
 
 import { SPAR_ENERGY } from '../actions/spar';
 import type { GameContext } from '../context';
-import { placeHere } from '../ops';
+import { placeShown } from '../ops';
 import { everyone, whereNow } from '../people/cast';
 import { scoutPerson, type ScoutingRead } from '../scouting';
 import type { GameState } from '../state';
@@ -25,8 +25,8 @@ export interface SparOption extends Choice {
  * Partners worth offering at the training ground: your teammates (wherever they are in the
  * village) and genin training here now. Anyone else around can be asked from their sheet.
  */
-export function sparOptions(state: GameState, ctx: GameContext): SparOption[] {
-  const training = placeHere(state, ctx, 'training');
+export function sparOptions(state: GameState, ctx: GameContext, placeId?: string): SparOption[] {
+  const training = placeShown(state, ctx, 'training', placeId);
   const teammates = state.people.team?.teammateIds ?? [];
   return everyone(state, ctx)
     .filter((p) => p.role === 'genin')

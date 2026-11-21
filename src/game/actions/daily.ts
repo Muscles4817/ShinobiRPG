@@ -14,6 +14,7 @@ import {
   healthFraction,
   log,
   placeHere,
+  placesHere,
   spendTime,
   statChips,
 } from '../ops';
@@ -45,7 +46,9 @@ const YARD_ENERGY = 0.85;
 
 function offeredHere(state: GameState, ctx: GameContext) {
   return {
-    training: (id: string) => placeHere(state, ctx, 'training')?.trainingIds.includes(id) ?? false,
+    // Any training ground here: a location may have more than one.
+    training: (id: string) =>
+      placesHere(state, ctx, 'training').some((p) => p.trainingIds.includes(id)),
     yard: (id: string) =>
       atHome(state, ctx) &&
       hasRoom(state, ctx, 'yard') &&

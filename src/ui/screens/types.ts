@@ -10,6 +10,8 @@ export interface ScreenProps {
 /** Props for a page inside a village (a place). */
 export interface PlaceProps extends ScreenProps {
   readonly onBack: () => void;
+  /** The place this page was opened for: a location may have more than one of a kind. */
+  readonly placeId: string;
 }
 
 /** Props for the Bonds tab, which opens people and your companion. */
