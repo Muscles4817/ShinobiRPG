@@ -64,12 +64,12 @@ function daysToGrade(standing: ClassStanding, grade: StatGrade, days = DAYS): nu
 /** Fights against each classmate. */
 const FIGHTS_EACH = 50;
 /**
- * Fights against the year for two starts: about sixteen seconds alone on a dev machine, more on a
- * busy runner.
+ * Fights against the year for two starts: about half a minute alone on a dev machine, and twice
+ * that or more on a runner busy with every other suite.
  */
-const YEAR_TIMEOUT_MS = 60_000;
-/** Four months of play and hundreds of fights take a while on a slow runner. */
-const CLIMB_TIMEOUT_MS = 60_000;
+const YEAR_TIMEOUT_MS = 120_000;
+/** Four months of play and hundreds of fights: about forty seconds alone, far more on a busy runner. */
+const CLIMB_TIMEOUT_MS = 120_000;
 
 function againstTheirYear(state: GameState): number {
   const rested = {
