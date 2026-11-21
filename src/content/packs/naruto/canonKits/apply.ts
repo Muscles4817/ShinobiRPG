@@ -49,9 +49,6 @@ function shelved(place: PlaceDef): PlaceDef {
 
 /** The locations with the canon kits' shelved techniques in the home village's academy and library. */
 /*#__NO_SIDE_EFFECTS__*/
-export function withCanonShelves(
-  locations: readonly LocationDef[],
-  homeId: string,
-): LocationDef[] {
+export function withCanonShelves(locations: readonly LocationDef[], homeId: string): LocationDef[] {
   return locations.map((l) => (l.id === homeId ? { ...l, places: l.places.map(shelved) } : l));
 }
