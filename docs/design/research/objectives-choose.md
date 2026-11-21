@@ -45,6 +45,24 @@ What it says:
 Kept. Today's resting rule (`plan/resting.ts`) stays for fighters who don't think (the test
 runner's); a thinking fighter no longer defers to it.
 
+## Survive: tried, not kept
+
+Proposed every way of playing for time (a hold on the killer, Evade, a step back, Brace), with
+today's survival judgement (`plan/survival.ts`) first as the move to beat.
+
+| Fights                                                 | n   | Foe wins, before | Foe wins, with survive |
+| ------------------------------------------------------ | --- | ---------------- | ---------------------- |
+| the whole cast                                         | 924 | 55.4%            | 55.0%                  |
+| every foe against the two killers (gates and assassin) | 336 | 58.0%            | 55.4%                  |
+
+Neither is outside the noise (about ±3.8 points on the second), but both lean the wrong way. The
+extra ways let the planner trade today's judgement for an alternative its two-exchange look
+prefers, and the trade is no better: what a Brace or a step back buys against a killer shows only
+once the gate burns out, past the horizon. Survive stays on today's rule until the planner can see
+that far (a terminal estimate of the race, Part 13's open item), or until opponent prediction
+(Part 5) lets it value getting clear.
+
 ## Still to take on
 
-Survive, find, set up with finish, escalate; then control distance and wear down.
+Find, set up with finish, escalate; then control distance and wear down. Survive waits on a longer
+look.
