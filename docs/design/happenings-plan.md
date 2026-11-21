@@ -92,9 +92,22 @@ export const HAPPENINGS: readonly Happening[] = [/* in order: the array is the o
   state.
 - **Order is declared.** A snapshot test of `HAPPENINGS.map((h) => h.id)`.
 
-## Size
+## Built (21 November)
 
-Moving the twelve `note*` observers and the day work in `spendTime` onto the list: about 600 to 900
-lines, mostly moved rather than new. Behaviour shouldn't change, except where the property test
-finds another happening that reaches you where you aren't. No save change: holds live on the
-slices that own them.
+As planned, with these differences:
+
+- **Three lists, not one trigger vocabulary.** `BEFORE_ACTION` (one entry: your sensei shows you
+  first), `AFTER_ACTION` (sixteen, `aroundActions.ts`) and `TIME_PASSING` (eight,
+  `timePassing.ts`, run by `spendTime` with a cadence each: `stretch`, `newDay` or `eachDay`).
+  The day work stays inside `spendTime` because a job's legs pass days mid-action and what follows
+  in that action reads the healed, caught-up state.
+- **Needs are four:** `free`, `atHome` (where you are), `offDuty` (not on a job, journey or exam)
+  and `with` a person. "Where" and "busy" had to be apart: busy at home on a promotion's day, it
+  waits; away, it goes ahead without you. `otherwise` is told which needs failed.
+- **No "a day is a day" test yet.** The time list keeps today's cadences exactly; the happenings
+  marked `newDay` catch up their missed days by a marker on their own slice, as before.
+- **What changed in play:** the hunt no longer settles on exam days (it is `offDuty`, as days on
+  the road were), a friend may hand you a gift in their own town, and taking up a rival's spar
+  asks everything a spar asks (not after you've already spent the day with them).
+- `busyReason` moved to `busy.ts` (still re-exported by `ops`), so the needs don't import what
+  passes time.

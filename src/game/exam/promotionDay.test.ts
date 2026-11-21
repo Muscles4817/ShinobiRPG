@@ -1,11 +1,10 @@
-import { act, ctx, lastEntry, newGame } from '@/test/gameFixtures';
+import { act, ctx, happenAfter, lastEntry, newGame } from '@/test/gameFixtures';
 import { ROAD_JOB, roadCtx } from '@/test/roadFixtures';
 
 import { dateClash } from '../awayNotes';
 import { blockerFor } from '../dispatch';
 import type { GameState } from '../state';
 import { promotionNotice } from '../views/promotionNotice';
-import { notePromotions } from './promotion';
 import { awardPromotion, PROMOTION_NOTICE_DAYS } from './promotionDay';
 import type { Ceremony } from './state';
 
@@ -46,7 +45,7 @@ describe('a promotion the village holds', () => {
 
   it('is held on the day if you are home for it', () => {
     const set = setFor(newGame(), 1);
-    expect(notePromotions(set, ctx)).toBe(set);
+    expect(happenAfter(set, set).exams.ceremony).toBeNull();
     const held = act(set, { type: 'sleep' });
     expect(held.exams.ceremony).toEqual(SENSEI);
     expect(held.exams.promotionDay).toBeNull();
@@ -54,7 +53,8 @@ describe('a promotion the village holds', () => {
 
   it('goes ahead without you if you are away, and waits for you at the hall', () => {
     const set = setFor(newGame(), 1);
-    const away = notePromotions(onDay({ ...set, locationId: AWAY }, set.time.day + 1), ctx);
+    const there = onDay({ ...set, locationId: AWAY }, set.time.day + 1);
+    const away = happenAfter(there, there);
     expect(away.exams.ceremony).toBeNull();
     expect(away.exams.promotionDay?.missed).toBe(true);
     expect(lastEntry(away)?.heading).toBe('Raised in your absence');
@@ -62,10 +62,19 @@ describe('a promotion the village holds', () => {
     expect(promotionNotice(away, ctx)?.collect?.blocker).not.toBeNull();
 
     const home = { ...away, locationId: newGame().locationId };
-    expect(notePromotions(home, ctx).exams.ceremony).toBeNull(); // not until you report
+    expect(happenAfter(home, home).exams.ceremony).toBeNull(); // not until you report
     const collected = act(home, { type: 'collectPromotion' });
     expect(collected.exams.ceremony).toEqual(SENSEI);
     expect(collected.exams.promotionDay).toBeNull();
+  });
+
+  it('waits, busy at home on the day, rather than going ahead without you', () => {
+    const set = setFor(newGame(), 0);
+    const conversation = { personId: 'x', conversationId: 'x', topicKey: null, answer: null };
+    const talking: GameState = { ...set, people: { ...set.people, conversation } };
+    const busy = happenAfter(talking, talking);
+    expect(busy.exams.ceremony).toBeNull();
+    expect(busy.exams.promotionDay?.missed).toBe(false);
   });
 
   it('keeps you from a job that would take you away over it', () => {

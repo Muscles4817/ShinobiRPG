@@ -1,4 +1,4 @@
-import { act, ctx, fightOut, newGame } from '@/test/gameFixtures';
+import { act, ctx, fightOut, newGame, happenAfter } from '@/test/gameFixtures';
 import { createStats } from '@/systems/stats';
 
 import { createNewGame } from '../creation';
@@ -13,7 +13,6 @@ import { rivalryView } from '../views/rivalry';
 import { newFirsts } from './grades';
 import { rivalLine } from './lines';
 import { TELL } from './raceLines';
-import { noteRival } from './record';
 import { RIVAL_SHAPES, type Rival } from './state';
 
 const SEEDS = Array.from({ length: 40 }, (_, i) => i * 104729 + 7);
@@ -93,7 +92,7 @@ describe('challenges', () => {
       ...withRival(game, { firsts: { 'taijutsu:2': 'them' } }),
       time: { day: 2, slot: 0 },
     };
-    const next = noteRival(before, after, ctx).rival!;
+    const next = happenAfter(before, after).rival!;
     expect(next.challenge?.day).toBe(2);
   });
 
@@ -103,7 +102,7 @@ describe('challenges', () => {
       challenge: { day: 1, line: 'Spar.', contest: 'spar' },
     });
     const later = { ...game, time: { day: 3, slot: 0 } };
-    const next = noteRival(game, later, ctx).rival!;
+    const next = happenAfter(game, later).rival!;
     expect(next.challenge).toBeNull();
     expect(next.heat).toBeLessThan(50);
   });
@@ -121,7 +120,7 @@ describe('only when you are in one town', () => {
         locationId: AWAY,
         time: { day, slot: 0 },
       };
-      const next = noteRival(before, after, ctx).rival!;
+      const next = happenAfter(before, after).rival!;
       expect(next.challenge).toBeNull();
       expect(next.beat).toBeNull();
     }
@@ -132,7 +131,7 @@ describe('only when you are in one town', () => {
       heat: 50,
       challenge: { day: 1, line: 'Spar.', contest: 'spar' },
     });
-    const next = noteRival(game, { ...game, locationId: AWAY }, ctx).rival!;
+    const next = happenAfter(game, { ...game, locationId: AWAY }).rival!;
     expect(next.challenge).toBeNull();
     expect(next.heat).toBe(50);
   });

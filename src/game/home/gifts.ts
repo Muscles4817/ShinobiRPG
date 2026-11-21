@@ -4,14 +4,13 @@ import { addFurniture, ownsFurniture } from '@/systems/housing';
 
 import type { GameContext } from '../context';
 import { chip, log } from '../ops';
-import { atHomeVillage } from '../homeVillage';
-import { findPerson, whereNow } from '../people/cast';
+import { findPerson, inTownWith, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 
 /**
  * The finest furniture is never sold: a friend who becomes a close friend brings you a piece you
  * don't have yet, the first of the pack's gift pieces in order. Called from `dispatch`, so it
- * follows a bond however it grew. They hand it over only where they can find you; otherwise it is
+ * follows a bond however it grew (a happening after each action, `happenings/`). They hand it over only where they can find you; otherwise it is
  * left at your door, and you find it when you are next home (a more personal gift, given in
  * hand, would wait for a meeting instead).
  */
@@ -44,10 +43,10 @@ function handedOver(state: GameState, person: PersonDef, gift: FurnishingDef): G
   });
 }
 
-/** Gifts left at the door while you were away, told as you are next home. */
-function foundAtTheDoor(state: GameState, ctx: GameContext): GameState {
+/** Gifts left at the door while you were away, told as you are next home (a happening that needs it). */
+export function giftsFoundAtTheDoor(state: GameState, ctx: GameContext): GameState {
   const { doorstep } = state.housing;
-  if (doorstep.length === 0 || !atHomeVillage(state, ctx) || state.mission !== null) return state;
+  if (doorstep.length === 0) return state;
   const cleared: GameState = { ...state, housing: { ...state.housing, doorstep: [] } };
   return doorstep.reduce<GameState>((now, left) => {
     const person = findPerson(now, ctx, left.fromId);
@@ -66,19 +65,19 @@ function foundAtTheDoor(state: GameState, ctx: GameContext): GameState {
  * A new close friend's gift: handed over if they can find you (you are home and they are about),
  * else left at your door to be found when you are next home.
  */
-export function noteHomeGifts(before: GameState, after: GameState, ctx: GameContext): GameState {
+export function giftsGiven(before: GameState, after: GameState, ctx: GameContext): GameState {
   const notGiven = earned(ctx);
-  const given = closer(before, after).reduce((state, id) => {
+  return closer(before, after).reduce((state, id) => {
     const person = findPerson(state, ctx, id);
     const gift = ctx.content.furnishings.all.find(
       (f) => f.cost === undefined && !notGiven.has(f.id) && !ownsFurniture(state.housing, f.id),
     );
     if (!person || !gift) return state;
     const owned = { ...state, housing: addFurniture(state.housing, gift.id) };
-    const together = atHomeVillage(state, ctx) && whereNow(state, ctx, person) !== null;
-    if (together && state.mission === null) return handedOver(owned, person, gift);
+    // Each friend finds you or not by the one rule for being where someone is.
+    const together = inTownWith(state, ctx, person) && whereNow(state, ctx, person) !== null;
+    if (together) return handedOver(owned, person, gift);
     const left = { furnishingId: gift.id, fromId: person.id };
     return { ...owned, housing: { ...owned.housing, doorstep: [...owned.housing.doorstep, left] } };
   }, after);
-  return foundAtTheDoor(given, ctx);
 }

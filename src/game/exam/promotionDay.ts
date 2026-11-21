@@ -69,16 +69,22 @@ function heldNow(state: GameState, ceremony: Ceremony): GameState {
   return { ...state, exams: { ...state.exams, ceremony, promotionDay: null } };
 }
 
-/**
- * Checked after every action: on the day, at home and free, the ceremony is held; away, it goes
- * ahead without you, told once, and the rank waits at the hall.
- */
-export function notePromotionDay(state: GameState, ctx: GameContext): GameState {
+/** Whether the village's day for your promotion has come and it is still to be held. */
+function dueNow(state: GameState): PromotionDay | null {
   const due = state.exams.promotionDay;
-  if (!due || due.missed || state.time.day < due.day) return state;
-  if (atHomeVillage(state, ctx)) {
-    return busyReason(state) === null ? heldNow(state, due.ceremony) : state;
-  }
+  return due && !due.missed && state.time.day >= due.day ? due : null;
+}
+
+/** On the day, home and free: the ceremony is held (a happening that needs both). */
+export function promotionHeld(state: GameState): GameState {
+  const due = dueNow(state);
+  return due ? heldNow(state, due.ceremony) : state;
+}
+
+/** On the day and away: it goes ahead without you, told once, and the rank waits at the hall. */
+export function promotionMissed(state: GameState, ctx: GameContext): GameState {
+  const due = dueNow(state);
+  if (!due) return state;
   return log(
     { ...state, exams: { ...state.exams, promotionDay: { ...due, missed: true } } },
     {

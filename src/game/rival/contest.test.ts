@@ -1,7 +1,7 @@
 import { createRng } from '@/core';
 import { bondWith } from '@/systems/bonds';
 import { createStats } from '@/systems/stats';
-import { act, ctx, fightOut, newGame } from '@/test/gameFixtures';
+import { act, ctx, fightOut, newGame, happenAfter } from '@/test/gameFixtures';
 
 import { findPerson } from '../people/cast';
 import { peopleGrown } from '../people/progress';
@@ -13,7 +13,6 @@ import { PURSE } from './contest';
 import { trailsYou } from './drive';
 import { provocationToday } from './provocations';
 import { finishOf, legEdge, newRace, RACE_LEGS, runLeg } from './race';
-import { noteRival } from './record';
 import type { RaceMove, Rival } from './state';
 
 function withRival(state: GameState, patch: Partial<Rival>): GameState {
@@ -151,7 +150,7 @@ describe('provocations', () => {
     const game = quiet(newGame());
     const day = provokedDay(game);
     const later = { ...game, time: { day, slot: 0 } };
-    const next = noteRival(game, later, ctx);
+    const next = happenAfter(game, later);
     expect(next.rival!.beat?.kind).toBe('provocation');
     expect(rivalScene(next, ctx)!.title).toMatch(/again$/);
   });

@@ -1,21 +1,10 @@
-import { noteFight } from './fightRecord';
 import { createRng, err, ok, type Result } from '@/core';
 
 import { HANDLERS } from './actions/registry';
 import type { ActionHandler, GameAction } from './actions/types';
 import type { GameContext } from './context';
-import { noteArrival } from './atlas';
-import { noteDayEnd } from './daybook/record';
-import { noteFieldBook } from './fieldBook/rewards';
-import { noteHomeGifts } from './home/gifts';
-import { notePuppetsLearned } from './puppetry/keeping';
-import { noteRival } from './rival/record';
-import { notePromotions } from './exam/promotion';
-import { noteGradeUps } from './gradeUps';
-import { curriculumAfter, curriculumBefore } from './sensei/curriculum';
-import { flushMentorNotices } from './sensei/settle';
+import { aroundAction } from './happenings';
 import type { GameState } from './state';
-import { noteNewMoves } from './style';
 
 function handlerFor<A extends GameAction>(action: A): ActionHandler<A> {
   // The registry's mapped type guarantees HANDLERS[action.type] handles exactly `A`.
@@ -30,14 +19,8 @@ export function blockerFor(state: GameState, action: GameAction, ctx: GameContex
 /**
  * The single entry point for changing game state. Pure and deterministic: the same state,
  * action and context always produce the same result (randomness comes from `state.rngState`).
- * Whatever grew a stat into a new grade, the moment is noted here, once (`noteGradeUps`), and
- * unstable techniques the new grades have caught up with steady (see `gradeUps.ts`), and a
- * jōnin's nomination arrives once it is earned (`exam/promotion.ts`), and a day that ended is
- * closed into the day's record (`daybook/record.ts`), and a full page of the field book leaves
- * its reward (`fieldBook/rewards.ts`), and somewhere you arrive goes on your map (`atlas.ts`), and
- * the art of a puppet you learned comes with the puppet (`puppetry/keeping.ts`). What your sensei made of the days that passed is told
- * after the action that passed them (`sensei/settle.ts`), and what they want to show you before
- * the first of a thing comes just before it (`sensei/curriculum.ts`).
+ * The verb is checked and performed; around it, what the world does follows from it in the
+ * declared order (`happenings/aroundActions.ts`), each happening only where its needs hold.
  */
 export function dispatch(
   state: GameState,
@@ -49,23 +32,8 @@ export function dispatch(
   if (blocker) return err(blocker);
 
   const rng = createRng(state.rngState);
-  const shown = curriculumBefore(state, action, ctx);
-  const performed = curriculumAfter(
-    flushMentorNotices(handler.perform(shown, action, ctx, rng)),
-    ctx,
-  );
-  const graded = notePromotions(noteGradeUps(state, performed, ctx), ctx);
-  const gifted = notePuppetsLearned(
-    state,
-    noteHomeGifts(state, noteRival(state, graded, ctx), ctx),
-    ctx,
-  );
-  const styled = noteNewMoves(state, noteFieldBook(state, gifted, ctx), ctx);
-  const next = noteFight(
-    state,
-    noteDayEnd(state, noteArrival(state, styled, ctx), action),
-    action,
-    ctx,
+  const next = aroundAction({ state, action, ctx }, (shown) =>
+    handler.perform(shown, action, ctx, rng),
   );
   return ok({ ...next, rngState: rng.state() });
 }

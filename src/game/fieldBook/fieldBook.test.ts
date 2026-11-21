@@ -3,7 +3,7 @@ import { GRADE_XP } from '@/systems/cooking';
 import { scriptedCtx } from '@/test/examFixtures';
 import { act, ctx, intoFight, newGame, veteran, withAllStats } from '@/test/gameFixtures';
 
-import { noteHomeGifts } from '../home/gifts';
+import { giftsGiven } from '../home/gifts';
 import { contextForPack } from '../context';
 import type { GameState } from '../state';
 import { dayEndView } from '../views/dayEnd';
@@ -183,7 +183,7 @@ describe('a full page', () => {
         bonds: { ...owning.people.bonds, [id]: bondWith(points) },
       },
     });
-    const gifted = noteHomeGifts(withBond(50), withBond(60), ctx);
+    const gifted = giftsGiven(withBond(50), withBond(60), ctx);
     expect(gifted.housing.furniture).not.toContain('gyotaku-print');
     expect(gifted.housing.furniture).not.toContain('drying-rack');
   });

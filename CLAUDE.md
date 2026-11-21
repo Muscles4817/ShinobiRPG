@@ -79,7 +79,18 @@ ui ──► game ──► content ──► systems ──► core
    slice owned by one system. Never mutate; return new objects.
 2. **All change goes through `dispatch(state, action, ctx)`.** Player verbs are a discriminated
    union (`GameAction`); each has a handler with `check` (why not? — pure) and `perform`.
-   The UI uses `blockerFor` to disable buttons with a reason.
+   The UI uses `blockerFor` to disable buttons with a reason. A verb that runs another goes
+   through `performChecked` (`actions/compose.ts`), its own check asking the other's; a bare
+   `.perform(` anywhere else in `game/` is a lint error **(enforced)**. **What the world does to
+   you is a happening** (`game/happenings/`, `docs/design/happenings-plan.md`): a rival's
+   challenge, a friend's gift, a ceremony, a day's healing. Each is an entry in one ordered list
+   (around each action, `aroundActions.ts`; as time passes in `spendTime`, `timePassing.ts`, with
+   a cadence: every stretch, once on a new day, or each day that ended) that declares its
+   **needs** (`free`, `atHome`, `offDuty`, or `with` a person) and what happens **otherwise**
+   (told which need failed: hold, lapse, or a different telling). The sequencer is the only place
+   needs are asked, so a happening never tests where you are itself; the list's order is the
+   order things happen in, pinned by a test, and `happenings.test.ts` keeps a month away from
+   home free of anything that needs you there.
 3. **Determinism.** Randomness only via the `Rng` passed into `perform`; its state is stored
    in `GameState.rngState`. Same state + action ⇒ same result. `Math.random`/`Date.now` are
    lint errors **(enforced)**.
@@ -96,7 +107,7 @@ ui ──► game ──► content ──► systems ──► core
    screen can lay out any engine. An engine may also `inspect` a fight (`CombatInspection`: each
    fighter as it holds them, the decision log of a traced fight, the rest of its state, as plain
    data) for debugging only; the game keeps the last fight whole as it is fought (`fightRecord/`,
-   `noteFight` in `dispatch`: every line in order, everyone after each step, the fight laid open
+   `noteFight`, a happening after each action: every line in order, everyone after each step, the fight laid open
    at its start and end), never in saves, and versus bouts are traced so it holds every choice
    with its reasons. After a bout it downloads as one JSON file (`fightRecordFile`).
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
@@ -566,7 +577,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     who `drives` its retinue from off the field (`EnemyDef.drives`: the source of its retinue's
     mind, `enemyParty`; the original pack's mask-keeper). **Your puppets** (`systems/puppets`, `GameState.puppetry`,
     `game/puppetry/`): learning a technique that unseals one of the pack's puppets gives you that
-    puppet (`notePuppetsLearned` in `dispatch`); each rides into mission fights as whole as it is
+    puppet (`notePuppetsLearned`, a happening); each rides into mission fights as whole as it is
     and a broken one stays home (`withYourPuppets`); each comes home as whole as it ended the
     fight (`CombatOutcome.summonHealth`), beaten is broken, never lost; and it is mended at your
     bench at home (`mendPuppet`), a share a session for materials, more by your **craft**, a
@@ -760,7 +771,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     keep you away over it is signed out (`dateClash` in `awayNotes.ts`). If the day comes while you
     are away anyway, it is held without you and the rank waits at the home village's mission hall
     (`collectPromotion`).
-    Jōnin are nominated (`notePromotions` in `dispatch`) once the record earns it, in a ceremony
+    Jōnin are nominated (`promotionsEarned`, a happening that needs you `free`) once the record earns it, in a ceremony
     that reads the record back; S-rank hunts for jōnin-grade rogues are theirs. Those not
     sitting it are **spectators** (`exam/spectators.ts`, the exam's `spectators` lines): in the
     week before, your sensei invites you to watch when they won't put you forward (a teammate
@@ -911,7 +922,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     sessions in their formats (`senseiSession`: energy, no time slot, a share of a lesson split
     over the week). Your sensei's **regard** (`GameState.mentor`, `game/sensei/state.ts`) is
     their judgement of you, apart from the bond: kept meetings raise it, missed ones lower it by
-    their grip as each day is settled (`settleMentor` in `spendTime`; excused on a job, away or
+    their grip as each day is settled (`settleMentor`, a happening as time passes; excused on a job, away or
     laid up), and the nomination reads it. Their gatekeeping sets the pass and permit bond stages,
     how many jobs a nomination wants and their **readiness** standard (`game/exam/readiness.ts`,
     read for every road to chūnin): `rounded` (a skill at C and breadth across the rest) or
@@ -933,7 +944,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     philosophy set regard) and one question: shown everything, or not. The **curriculum** (the
     pack's `curriculum`, ordered by philosophy in `curriculum.ts`) is the tutorial: each beat is
     told once, just before the thing it explains (the first drill, spar, job, meal, journey…;
-    `curriculumBefore`/`curriculumAfter` in `dispatch`), in the sensei's own words for their
+    `curriculumBefore`/`curriculumAfter`, happenings that need you at home and off duty), in the sensei's own words for their
     feedback manner; what is left is offered on their slip, one a day; nothing is locked behind
     it. What a sensei says at sessions, sign-offs and morning notes is the pack's
     `senseiSpeech`, picked with `tellFresh` so it doesn't repeat. Turning up raises regard only to
@@ -992,7 +1003,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 
 30. **Days end with a sheet** (`docs/design/day-end-plan.md`). The day's record
     (`GameState.daybook`, `game/daybook/`) is a snapshot taken at dawn (`openDay`) and compared
-    at the next (`closeDay`) by `noteDayEnd` in `dispatch`, so a day ends the same way whether you
+    at the next (`closeDay`) by `noteDayEnd` (a happening after each action), so a day ends the same way whether you
     slept (`sleep`, `takeRoom`) or pushed on through the night, and no action logs anything for
     it. Days on a job, a journey or an exam aren't kept (the debrief tells them). The sheet
     (`views/dayEnd.ts`) shows only the sections something happened in, each kind of change with
@@ -1004,11 +1015,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 31. **You have a rival** (`docs/design/rival-plan.md`, `game/rival/`). Once your team is settled,
     `chooseRival` takes a classmate on another team by a **shape** rolled from the seed (prodigy,
     neck, chaser, fallen: the gap is never evened out) and a temperament from their traits.
-    Nothing of the rivalry happens while you are apart (`inTownWith`, `people/cast.ts`: another town,
-    a job, a journey, an exam): no challenge or needling is made, a standing challenge lapses at no
-    cost, and a contest needs them around. The `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
+    Nothing of the rivalry happens while you are apart (the `rival-day` happening needs you `with`
+    them: another town, a job, a journey or an exam keeps you apart): no challenge or needling is
+    made, a standing challenge lapses at no cost (its `otherwise`), and a contest needs them around. The `rival` slice keeps their **heat** (Bitter to Sworn; replies move it by tone and their
     tastes, and your team and sensei lean by theirs: `replies.ts`), the **tally** (spars, races;
-    first to each grade, scored by `noteRival` in `dispatch`), at most one **challenge** (theirs
+    first to each grade, scored by `rivalScored`, a happening), at most one **challenge** (theirs
     on the day's turn, on the ground that suits them, lapsing after the next; or yours from
     their sheet, once a day, for pride or a purse) and one **beat** (a moment waiting for your
     reply, a provocation among them: a scene with a `busyReason`). A **race** (`race.ts`) is
@@ -1024,7 +1035,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `guestId`; moving (`moveHome`) keeps your furniture. A piece (`FurnishingDef`) does one thing,
     read at one hook while you are at home (`comforts`: sleep, nap, study, guests; decor is
     comfort only), and comfort warms dinners at home. The finest pieces are gifts from new close
-    friends (`noteHomeGifts` in `dispatch`): handed over if they can find you, else left at your door
+    friends (`giftsGiven`, a happening): handed over if they can find you, else left at your door
     (`housing.doorstep`) and found when you are next home. Rooms: a garden (`GardenCrop` from seed), a yard
     (cheaper drills) and a guest room (the guest is home every evening). The keepsake shelf is
     read from memories, rival wins and ranks, never stored.
@@ -1115,6 +1126,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
 - **Add a player action:** add a variant to `GameAction` (`game/actions/types.ts`), write a
   handler (`check` + `perform`), register it in `game/actions/registry.ts` (the compiler
   insists), expose it through a view model, add tests.
+- **Add something the world does to you:** a happening, never a call added to `dispatch` or
+  `spendTime`: write its rule as a function of the state (it doesn't ask where you are), add an
+  entry to `AFTER_ACTION`, `BEFORE_ACTION` or `TIME_PASSING` (`game/happenings/`) at the point
+  in the order it belongs, with its `needs` (does it reach you? then where must you be?) and its
+  `otherwise` (held, lapsed or told differently when they fail), and update the order test.
 - **Add a system:** create `systems/<name>/` with `<name>.ts`, `index.ts` (public API) and
   `<name>.test.ts`. Add its slice to `GameState` + `createNewGame` + a save migration.
 - **Add content:** add entries to the pack's arrays _and_ offer them at a place (training at a
@@ -1513,6 +1529,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   an ordered list of events, each carrying the changes it causes; the screen folds them in order
   and never reads ahead. A new mechanic that changes a value emits its change at the moment it
   happens. (The fight screen broke this and drifted for months: `docs/design/event-stream-plan.md`.)
+- **What reaches you declares where you must be.** Anything that happens to the player without
+  their choosing is a happening with `needs` and an `otherwise` (`game/happenings/`), never a
+  location test written inside it. (Rival challenges reached the player in another town because
+  this was missing: `docs/design/happenings-plan.md`.)
 - **Behaviour comes from declared data, not names or words.** If code checks an id, a name or a
   description's wording to decide behaviour, the data is missing a field or a tag: add it (as the
   technique tags did, `systems/techniques/tags.ts`).

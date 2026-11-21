@@ -12,6 +12,7 @@ import {
   type GameContext,
   type GameState,
 } from '@/game';
+import { afterAction } from '@/game/happenings';
 import { createDuelEngine } from '@/systems/combat';
 import { markRewarded } from '@/systems/collections';
 import type { Companion } from '@/systems/companions';
@@ -224,4 +225,16 @@ export function withHound(state: GameState, overrides: Partial<Companion> = {}):
     ...overrides,
   };
   return { ...state, companions: { ...state.companions, owned: { player: hound } } };
+}
+
+/** An action that changes nothing, for running what happens after one on states made by hand. */
+const QUIET_ACTION: GameAction = { type: 'setDayEnd', mode: 'full' };
+
+/** What happens after an action that took `before` to `after` (the real sequencer, in order). */
+export function happenAfter(
+  before: GameState,
+  after: GameState,
+  context: GameContext = ctx,
+): GameState {
+  return afterAction({ state: before, action: QUIET_ACTION, ctx: context }, after);
 }
