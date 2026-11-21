@@ -50,9 +50,21 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
     newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed,
     ctx,
   );
-  const bred = newDay ? dustDayPassed(hiveDayPassed(grown, ctx), ctx) : grown;
-  const mentored = newDay ? settleHunt(settleMentor(bred, ctx), ctx) : bred;
+  // A long stretch (an S-rank job's eight slots) can cross more than one night: what happens
+  // once a day happens once for each of them.
+  const days = time.day - state.time.day;
+  const bred = eachDay(grown, days, (s) => dustDayPassed(hiveDayPassed(s, ctx), ctx));
+  const mentored = eachDay(newDay ? settleMentor(bred, ctx) : bred, days, (s) =>
+    settleHunt(s, ctx),
+  );
   return { ...mentored, board: boardFor(mentored, ctx) };
+}
+
+/** `step` applied once for each of `days` days that ended. */
+function eachDay(state: GameState, days: number, step: (s: GameState) => GameState): GameState {
+  let now = state;
+  for (let day = 0; day < days; day++) now = step(now);
+  return now;
 }
 
 export function adjust(state: GameState, delta: VitalsDelta): GameState {

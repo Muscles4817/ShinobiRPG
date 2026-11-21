@@ -1,4 +1,7 @@
+import { signPass } from '@/systems/travel';
 import { act, ctx, newGame } from '@/test/gameFixtures';
+
+import { PASS_DAYS } from '../leave';
 
 import { dispatch } from '../dispatch';
 import type { GameState } from '../state';
@@ -75,6 +78,19 @@ describe('the day’s record', () => {
     const onTheRoad = act(away, { type: 'missionContinue' });
     expect(onTheRoad.mission).not.toBeNull();
     expect(onTheRoad.daybook.ended).toBeNull();
+  });
+
+  it('is not kept for a hurried trip walked in one go: the days were on the road', () => {
+    const genin = newGame();
+    const start = { ...genin, leave: signPass(genin.leave, genin.time.day, PASS_DAYS) };
+    const going = act(start, { type: 'travel', locationId: 'port-shiomachi', quick: true });
+    // Arriving in the same action as setting out is the case: a road event that stops the
+    // trip leaves it away, which was never kept.
+    expect(going.mission).toBeNull();
+    expect(going.locationId).toBe('port-shiomachi');
+    expect(going.time.day).toBeGreaterThan(start.time.day);
+    expect(going.daybook.ended).toBeNull();
+    expect(going.daybook.start?.day).toBe(going.time.day);
   });
 });
 

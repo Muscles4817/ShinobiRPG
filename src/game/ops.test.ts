@@ -1,6 +1,7 @@
-import { act, lastEntry, newGame } from '@/test/gameFixtures';
+import { SLOTS_PER_DAY } from '@/systems/time';
+import { act, ctx, lastEntry, newGame } from '@/test/gameFixtures';
 
-import { amountChip, amountWords, statChips } from './ops';
+import { amountChip, amountWords, spendTime, statChips } from './ops';
 
 describe('chips', () => {
   it('shows whole amounts as numbers and small ones as words', () => {
@@ -32,5 +33,16 @@ describe('chips', () => {
     const labels = slept.journal.entries.flatMap((e) => e.chips ?? []).map((c) => c.label);
     expect(labels).toContain('Energy & chakra restored');
     expect(labels).not.toContain('Health +0');
+  });
+});
+
+describe('time passing', () => {
+  it('does what happens once a day for every night a long stretch crosses', () => {
+    const hunted = { ...newGame(), hunt: { heat: 8 } };
+    const twoDays = spendTime(hunted, SLOTS_PER_DAY * 2, ctx);
+    const dayByDay = spendTime(spendTime(hunted, SLOTS_PER_DAY, ctx), SLOTS_PER_DAY, ctx);
+    expect(twoDays.time.day).toBe(hunted.time.day + 2);
+    expect(twoDays.hunt.heat).toBe(dayByDay.hunt.heat);
+    expect(twoDays.hunt.heat).toBeLessThan(7);
   });
 });
