@@ -6,6 +6,7 @@ import {
   type GameContext,
   type GameState,
 } from '@/game';
+import type { DayEnd } from '@/game/daybook/state';
 import { isRentOverdue } from '@/systems/housing';
 import {
   STAT_GRADES,
@@ -80,6 +81,10 @@ export interface DayRecord {
   readonly grades: Readonly<Record<StatId, StatGrade>>;
   readonly ryo: number;
   readonly missionsCompleted: number;
+  /** Wounds taken so far, to check each day's sheet against. */
+  readonly woundsTaken: number;
+  /** The sheet of the day that last ended, as the day's record kept it. */
+  readonly sheet: DayEnd | null;
 }
 
 /**
@@ -206,6 +211,8 @@ function record(state: GameState): DayRecord {
     grades: grades as Record<StatId, StatGrade>,
     ryo: state.wallet.ryo,
     missionsCompleted: state.standing.missionsCompleted,
+    woundsTaken: state.character.woundsTaken,
+    sheet: state.daybook.ended,
   };
 }
 

@@ -33,6 +33,7 @@ export const OLD_HANDS: MissionDef = {
             { kind: 'tally', tally: BREWER_CLUES, by: 1 },
           ],
           ledger: 'Oyuki told you Oharu’s sandals were by the well, not the river.',
+          ledgerSubject: 'its-own',
           noted: true,
         },
         {
@@ -46,6 +47,7 @@ export const OLD_HANDS: MissionDef = {
             { kind: 'tally', tally: BREWER_CLUES, by: 1 },
           ],
           ledger: 'Oyuki told you Oharu’s sandals were by the well, not the river.',
+          ledgerSubject: 'its-own',
           noted: true,
         },
         {
@@ -53,6 +55,7 @@ export const OLD_HANDS: MissionDef = {
           tone: 'challenge',
           reply: '“I sell pickles,” she says, and turns to the next customer.',
           ledger: 'Oyuki took offence and said nothing.',
+          ledgerSubject: 'its-own',
         },
       ],
     },
@@ -112,6 +115,7 @@ export const GRAVEDIGGER: MissionDef = {
             { kind: 'tally', tally: BREWER_CLUES, by: 1 },
           ],
           ledger: 'Jūbei told you Oharu’s coffin was buried empty.',
+          ledgerSubject: 'its-own',
           noted: true,
         },
         {
@@ -125,6 +129,7 @@ export const GRAVEDIGGER: MissionDef = {
             { kind: 'energy', by: -5 },
           ],
           ledger: 'Over a jug, Jūbei told you Oharu’s coffin was buried empty.',
+          ledgerSubject: 'its-own',
           noted: true,
         },
       ],

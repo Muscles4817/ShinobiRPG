@@ -66,13 +66,13 @@ export function resolveCheck(
     { kind: 'story', text: resultLine(stage, approach, success) },
   ];
   if (success) {
-    const won = applyOutcome(run, story, approach.onSuccess, 'gain');
+    const won = applyOutcome(run, story, approach.onSuccess, 'success');
     return { run: advance(won.run, ...notes), aborted: false, damage: 0, personal: won.personal };
   }
   // A docked check writes its own ledger line (below), so the outcome's line isn't written twice.
   const penalty = stage.onFailure === 'penalty';
   const failed = penalty ? { effects: approach.onFailure?.effects ?? [] } : approach.onFailure;
-  const lost = applyOutcome(run, story, failed, 'cost');
+  const lost = applyOutcome(run, story, failed, 'failure');
   const damage = stage.failureDamage ?? 0;
   if (stage.onFailure === 'abort') {
     const ended = { ...lost.run, notes: [...lost.run.notes, ...notes] };
@@ -90,6 +90,7 @@ export function resolveCheck(
       text: approach.onFailure?.ledger ?? fellShort(approach),
       tone: 'cost',
       pay: -CHECK_FAILURE_PENALTY,
+      setback: true,
     },
   );
   return { run: advance(docked, ...notes), aborted: false, damage, personal: lost.personal };

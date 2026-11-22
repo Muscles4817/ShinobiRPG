@@ -1,4 +1,5 @@
 import { nominationBlocker } from '@/game/exam/entry';
+import { factsOf } from '@/game/facts/record';
 import { personStats } from '@/game/people/progress';
 import { evenAptitude, fightingPower, STAT_IDS } from '@/systems/stats';
 import { ctx, newGame } from '@/test/gameFixtures';
@@ -90,6 +91,32 @@ describe('pacing: a focused player', () => {
   report(run, TAIJUTSU_FOCUS);
   const first = run.days[0]!;
   const last = run.days.at(-1)!;
+
+  it('tells each day what happened in it: the sheet’s jobs and wounds are the day’s facts', () => {
+    // The facts are written where jobs are finished and wounds taken; the counters are kept
+    // apart by the rules. A fact missed or written twice shows as a day that doesn't add up.
+    let jobsTold = 0;
+    run.days.forEach((today, i) => {
+      const yesterday = run.days[i - 1];
+      const { sheet } = today;
+      if (!yesterday || sheet?.day !== yesterday.day || sheet.days !== 1) return;
+      const jobs = factsOf(sheet.happened, 'jobDone');
+      expect(jobs).toHaveLength(today.missionsCompleted - yesterday.missionsCompleted);
+      const wounds = factsOf(sheet.happened, 'injuryAdded');
+      expect(wounds).toHaveLength(today.woundsTaken - yesterday.woundsTaken);
+      jobsTold += jobs.length;
+    });
+    expect(jobsTold).toBeGreaterThan(0);
+  });
+
+  it('is given a gift by each close friend once at most', () => {
+    const { givers } = run.state.housing;
+    expect(new Set(givers).size).toBe(givers.length);
+    const gifts = run.state.journal.entries.flatMap((e) =>
+      e.heading?.startsWith('A gift from ') ? [e.heading] : [],
+    );
+    expect(new Set(gifts).size).toBe(gifts.length);
+  });
 
   it('lives every day through real actions', () => {
     expect(run.days).toHaveLength(DAYS + 1);

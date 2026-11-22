@@ -4,20 +4,20 @@ import { write, type NewEntry } from '@/systems/journal';
 import { slotName, weekOf, type TimeSlot } from '@/systems/time';
 
 import type { GameContext } from '../context';
-import { atHomeVillage } from '../homeVillage';
-import { laidUp } from '../injuries';
 import { personSlots } from '../people/pronouns';
 import { placeInSentence } from '../placeName';
 import type { GameState } from '../state';
 import { tellFresh } from '../telling';
-import { meetingOn, mentorOf, teamDayOf, teamKey, type Meeting } from './plan';
+import { meetingOn, meetingSlots, mentorOf, teamDayOf, teamKey, type Meeting } from './plan';
 import { withAttendance, withRegard, type MeetingOutcome, type Mentor } from './state';
 import { waysOf } from './generate';
+import { excusedOn } from './whereabouts';
 
 /**
  * Settles the planned meetings of the days that have ended, as each new day begins: a lesson
  * is kept if you had it that week by then, a short session if you came; you are excused if
- * you were out on a job, away from the village or laid up; otherwise it is missed, and your
+ * you were never at hand while it was on (out on a job, away from the village or laid up, as
+ * the day's facts recorded it: `whereabouts.ts`); otherwise it is missed, and your
  * sensei's regard drops by how tight a grip they keep. Then, if they expect you today, a line
  * says so. What they have to say waits in `mentor.notices` until the action that brought the
  * morning has been told (`flushMentorNotices`, from `dispatch`), so a night's sleep reads
@@ -46,18 +46,6 @@ function lessonHad(state: GameState, sensei: PersonDef, day: number): boolean {
   return record?.week === weekOf(day) && record.lastDay <= day;
 }
 
-/**
- * Away on a job, a trip or a venture past the edge, out of the village or laid up. A day at the
- * edge of the woods needs no pass, so it is no excuse for missing your sensei.
- */
-function excused(state: GameState, ctx: GameContext): boolean {
-  return (
-    (state.mission !== null && state.mission.venture?.depth !== 'edge') ||
-    !atHomeVillage(state, ctx) ||
-    laidUp(state, ctx) !== null
-  );
-}
-
 /** Whether you have kept a planned meeting yet: had the week's lesson by then, or come. */
 export function meetingKept(state: GameState, sensei: PersonDef, meeting: Meeting): boolean {
   return meeting.kind === 'lesson'
@@ -65,9 +53,9 @@ export function meetingKept(state: GameState, sensei: PersonDef, meeting: Meetin
     : state.mentor.outcomes[meeting.day] === 'kept';
 }
 
-function outcomeOf(state: GameState, ctx: GameContext, sensei: PersonDef, meeting: Meeting) {
+function outcomeOf(state: GameState, sensei: PersonDef, meeting: Meeting) {
   if (meetingKept(state, sensei, meeting)) return 'kept';
-  return excused(state, ctx) ? 'excused' : 'missed';
+  return excusedOn(state, meeting.day, meetingSlots(meeting.from)) ? 'excused' : 'missed';
 }
 
 /** Where your sensei meets you, as it reads mid-sentence. */
@@ -88,10 +76,10 @@ function notice(state: GameState, entry: NewEntry): GameState {
 }
 
 /** A missed meeting's outcome and cost; the meeting itself if it was missed. */
-function settleMeeting(state: GameState, ctx: GameContext, sensei: PersonDef, day: number) {
+function settleMeeting(state: GameState, sensei: PersonDef, day: number) {
   const meeting = meetingOn(state, sensei, day);
   if (!meeting) return { state, missed: null };
-  const outcome: MeetingOutcome = outcomeOf(state, ctx, sensei, meeting);
+  const outcome: MeetingOutcome = outcomeOf(state, sensei, meeting);
   const grip = waysOf(sensei)?.grip ?? 'firm';
   const delta =
     outcome === 'missed'
@@ -109,7 +97,8 @@ function settleTeamDay(state: GameState, ctx: GameContext, sensei: PersonDef, da
   const teamDay = teamDayOf(state, sensei, weekOf(day));
   const key = teamKey(day);
   if (teamDay?.day !== day || state.mentor.outcomes[key] === 'kept') return { state, missed: null };
-  const outcome: MeetingOutcome = excused(state, ctx) ? 'excused' : 'missed';
+  const excused = excusedOn(state, day, meetingSlots(teamDay.from));
+  const outcome: MeetingOutcome = excused ? 'excused' : 'missed';
   const grip = waysOf(sensei)?.grip ?? 'firm';
   const delta = outcome === 'missed' ? -MISSED_REGARD[grip] : 0;
   const mentor = withRegard(
@@ -164,7 +153,7 @@ function missedNotice(state: GameState, ctx: GameContext, sensei: PersonDef, mis
 }
 
 function settleDay(state: GameState, ctx: GameContext, sensei: PersonDef, day: number) {
-  const met = settleMeeting(state, ctx, sensei, day);
+  const met = settleMeeting(state, sensei, day);
   const team = settleTeamDay(met.state, ctx, sensei, day);
   if (!met.missed && !team.missed) return team.state;
   return missedNotice(team.state, ctx, sensei, { meeting: met.missed, ritual: team.missed });

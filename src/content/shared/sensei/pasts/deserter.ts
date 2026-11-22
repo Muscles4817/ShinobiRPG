@@ -130,6 +130,7 @@ export const DESERTER: SenseiPast = {
       spared: 'Brought {lost} home to the village.',
       ended: '{lost} died, and the Free Blades scattered.',
     },
+    ledgerSubjects: { ended: 'its-own' },
     find: {
       title: 'Old Friends at {place}',
       summary: '{name} wants to find the Free Blades’ camp near {place} before they move.',

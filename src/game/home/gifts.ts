@@ -8,22 +8,23 @@ import { findPerson, inTownWith, whereNow } from '../people/cast';
 import type { GameState } from '../state';
 
 /**
- * The finest furniture is never sold: a friend who becomes a close friend brings you a piece you
- * don't have yet, the first of the pack's gift pieces in order. Called from `dispatch`, so it
- * follows a bond however it grew (a happening after each action, `happenings/`). They hand it over only where they can find you; otherwise it is
- * left at your door, and you find it when you are next home (a more personal gift, given in
- * hand, would wait for a meeting instead).
+ * The finest furniture is never sold: a close friend brings you a piece you don't have yet, the
+ * first of the pack's gift pieces in order, once. Who has given is kept (`housing.givers`), so a
+ * bond that dips below close friends and climbs back gives nothing more; the rule reads who is
+ * a close friend now and who has given, never how the bond moved in one action. A happening
+ * after each action (`happenings/`), so it follows a bond however it grew. They hand it over
+ * only where they can find you; otherwise it is left at your door, and you find it when you are
+ * next home (a more personal gift, given in hand, would wait for a meeting instead).
  */
 
 /** The bond stage at which a friend brings a gift for the house. */
 export const GIFT_STAGE = 3;
 
-function closer(before: GameState, after: GameState): string[] {
-  return Object.entries(after.people.bonds)
-    .filter(([id, bond]) => {
-      const was = before.people.bonds[id]?.points ?? 0;
-      return stageOf(was) < GIFT_STAGE && stageOf(bond.points) >= GIFT_STAGE;
-    })
+/** Close friends who have not given yet, in the order the bonds were made. */
+function owingAGift(state: GameState): string[] {
+  const { givers } = state.housing;
+  return Object.entries(state.people.bonds)
+    .filter(([id, bond]) => stageOf(bond.points) >= GIFT_STAGE && !givers.includes(id))
     .map(([id]) => id);
 }
 
@@ -61,23 +62,41 @@ export function giftsFoundAtTheDoor(state: GameState, ctx: GameContext): GameSta
   }, cleared);
 }
 
+/** The gift given: the piece is yours, and the friend is remembered as having given. */
+function given(
+  state: GameState,
+  person: PersonDef,
+  gift: FurnishingDef,
+  handed: boolean,
+): GameState {
+  const housing = addFurniture(state.housing, gift.id);
+  const left = handed ? [] : [{ furnishingId: gift.id, fromId: person.id }];
+  return {
+    ...state,
+    housing: {
+      ...housing,
+      givers: [...housing.givers, person.id],
+      doorstep: [...housing.doorstep, ...left],
+    },
+  };
+}
+
 /**
- * A new close friend's gift: handed over if they can find you (you are home and they are about),
- * else left at your door to be found when you are next home.
+ * A close friend's gift, once: handed over if they can find you (you are home and they are
+ * about), else left at your door to be found when you are next home.
  */
-export function giftsGiven(before: GameState, after: GameState, ctx: GameContext): GameState {
+export function giftsGiven(after: GameState, ctx: GameContext): GameState {
   const notGiven = earned(ctx);
-  return closer(before, after).reduce((state, id) => {
+  return owingAGift(after).reduce((state, id) => {
     const person = findPerson(state, ctx, id);
     const gift = ctx.content.furnishings.all.find(
       (f) => f.cost === undefined && !notGiven.has(f.id) && !ownsFurniture(state.housing, f.id),
     );
+    // With every piece already yours, there is nothing to bring; they still owe the next one.
     if (!person || !gift) return state;
-    const owned = { ...state, housing: addFurniture(state.housing, gift.id) };
     // Each friend finds you or not by the one rule for being where someone is.
     const together = inTownWith(state, ctx, person) && whereNow(state, ctx, person) !== null;
-    if (together) return handedOver(owned, person, gift);
-    const left = { furnishingId: gift.id, fromId: person.id };
-    return { ...owned, housing: { ...owned.housing, doorstep: [...owned.housing.doorstep, left] } };
+    const gave = given(state, person, gift, together);
+    return together ? handedOver(gave, person, gift) : gave;
   }, after);
 }

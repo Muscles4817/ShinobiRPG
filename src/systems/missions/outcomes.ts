@@ -1,5 +1,5 @@
 import type { MissionDef, MissionRun } from './missions';
-import { moveThread, withMark, type Effect, type LedgerTone } from './story';
+import { moveThread, withMark, type Effect, type LedgerLine, type LedgerTone } from './story';
 import type { Outcome } from './storyStages';
 
 /**
@@ -47,11 +47,24 @@ function applyOne(run: MissionRun, def: StoryDef, effect: Effect): MissionRun {
   }
 }
 
-/** How a ledger line reads, from what its effects did. */
-function toneOf(effects: readonly Effect[], fallback: LedgerTone): LedgerTone {
+/**
+ * What an outcome is to the job: one chosen (a decision, an ending), or the result of trying
+ * (a check, a watch) that worked or failed. A failure is a setback, as is any pay docked.
+ */
+export type OutcomeRole = 'chosen' | 'success' | 'failure';
+
+/** How a line reads when its effects don't say: a success a gain, a failure a cost. */
+const ROLE_TONE: Readonly<Record<OutcomeRole, LedgerTone>> = {
+  chosen: 'plain',
+  success: 'gain',
+  failure: 'cost',
+};
+
+/** How a ledger line reads, from what its effects did: a display tone, never a setback. */
+function toneOf(effects: readonly Effect[], role: OutcomeRole): LedgerTone {
   const pay = payOf(effects);
   if (pay < 0 || effects.some((e) => e.kind === 'harm')) return 'cost';
-  return pay > 0 ? 'gain' : fallback;
+  return pay > 0 ? 'gain' : ROLE_TONE[role];
 }
 
 function payOf(effects: readonly Effect[]): number {
@@ -90,7 +103,7 @@ export function applyOutcome(
   run: MissionRun,
   def: StoryDef,
   outcome: Outcome | undefined,
-  fallback: LedgerTone = 'plain',
+  role: OutcomeRole = 'chosen',
 ): Applied {
   const effects = outcome?.effects ?? [];
   const changed = effects.reduce((r, e) => applyOne(r, def, e), run);
@@ -100,17 +113,16 @@ export function applyOutcome(
   const line = {
     stageIndex: run.stageIndex,
     text: [outcome.ledger, ...new Set(threadClauses(run, changed, def, effects))].join(' '),
-    tone: toneOf(effects, fallback),
+    tone: toneOf(effects, role),
     ...(pay !== 0 ? { pay } : {}),
     ...(outcome.noted ? { noted: true as const } : {}),
+    ...(outcome.ledgerSubject ? { subject: outcome.ledgerSubject } : {}),
+    ...(role === 'failure' || pay < 0 ? { setback: true as const } : {}),
   };
   return { run: { ...changed, ledger: [...changed.ledger, line] }, personal };
 }
 
 /** A line written straight into the ledger, for what the rules did themselves. */
-export function addLedger(
-  run: MissionRun,
-  line: { readonly text: string; readonly tone: LedgerTone; readonly pay?: number },
-): MissionRun {
+export function addLedger(run: MissionRun, line: Omit<LedgerLine, 'stageIndex'>): MissionRun {
   return { ...run, ledger: [...run.ledger, { stageIndex: run.stageIndex, ...line }] };
 }

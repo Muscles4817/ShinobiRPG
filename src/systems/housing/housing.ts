@@ -31,6 +31,8 @@ export interface Housing extends HomeRef {
   readonly guestId: string | null;
   /** Gifts left at your door while you were away, told when you are next home. */
   readonly doorstep: readonly DoorstepGift[];
+  /** Friends who have given you a piece for the house: each gives once, whatever the bond does. */
+  readonly givers: readonly string[];
 }
 
 /** A piece of furniture a friend left at your door, and who left it. */
@@ -53,6 +55,7 @@ export const UNFURNISHED = {
   beds: [],
   guestId: null,
   doorstep: [],
+  givers: [],
 } as const satisfies Partial<Housing>;
 
 export function newTenancy(home: HomeRef, rentPerWeek: number, today: number): Housing {

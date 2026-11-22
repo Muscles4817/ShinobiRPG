@@ -122,6 +122,7 @@ export const GHOST_NIGHT: MissionDef = {
             { kind: 'memory', text: 'the night Oharu went home' },
           ],
           ledger: 'Oharu rests, and her husband is in the Watch’s cells. Only the Watch paid.',
+          ledgerSubject: 'its-own',
         },
         {
           when: { has: 'pressed' },

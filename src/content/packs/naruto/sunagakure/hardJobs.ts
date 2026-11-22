@@ -74,6 +74,7 @@ export const SUNA_HARD_JOBS: readonly MissionDef[] = [
             text: 'The door stays clean. Kiyose pays you in full, and for the first time he hands the coins over instead of leaving them on the desk.',
             effects: [{ kind: 'memory', text: 'a widow’s chalk in your hand' }],
             ledger: 'The chalk stopped.',
+            ledgerSubject: 'its-own',
           },
           {
             text: 'Kiyose scrubs the door himself. He pays you, and doesn’t ask what you said to her.',

@@ -2,9 +2,8 @@ import { STAT_IDS, type StatId } from '@/systems/stats';
 
 import { fieldBookKeys } from '../fieldBook/keys';
 import type { GameState } from '../state';
-import { jobDoneTitle } from './jobs';
 import { purseLines } from './purse';
-import { injuryKey } from './open';
+import { onTheSheet } from './sheetFacts';
 import type { DayEnd, DayStart, Find } from './state';
 
 /** A stat moved by less than this did not really grow (float dust from shared formulas). */
@@ -54,15 +53,6 @@ function finds(start: DayStart, state: GameState): Find[] {
   ];
 }
 
-function jobsDone(start: DayStart, state: GameState): string[] {
-  const count = state.standing.missionsCompleted - start.missionsCompleted;
-  if (count <= 0) return [];
-  const titles = state.journal.entries
-    .filter((e) => e.id >= start.journalFrom)
-    .flatMap((e) => jobDoneTitle(e.heading) ?? []);
-  return titles.slice(-count);
-}
-
 function purse(start: DayStart, state: GameState): DayEnd['purse'] {
   const change = state.wallet.ryo - start.ryo;
   const entries = state.journal.entries.filter((e) => e.id >= start.journalFrom);
@@ -88,7 +78,6 @@ function written(start: DayStart, state: GameState): DayEnd['fieldBook'] {
 
 /** What changed between `start` and now, for a day that has just ended. */
 export function closeDay(start: DayStart, state: GameState, slept: boolean): DayEnd {
-  const injuries = state.character.injuries.filter((i) => !start.injuries.includes(injuryKey(i)));
   const raced = rivalFirsts(start, state);
   const fieldBook = written(start, state);
   return {
@@ -100,12 +89,11 @@ export function closeDay(start: DayStart, state: GameState, slept: boolean): Day
     stats: grownStats(start, state),
     learned: newIds(start.techniques, state.techniques.known),
     rank: state.standing.rank === start.rank ? null : state.standing.rank,
-    jobs: jobsDone(start, state),
+    happened: state.facts.slice(start.factsFrom).filter(onTheSheet),
     bonds: movedBonds(start, state),
     regard: state.mentor.regard === start.regard ? null : [start.regard, state.mentor.regard],
     finds: finds(start, state),
     purse: purse(start, state),
-    injuries: injuries.map((i) => i.injuryId),
     satiety: [start.satiety, state.character.vitals.satiety],
   };
 }

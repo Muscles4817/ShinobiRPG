@@ -126,6 +126,7 @@ export const LOST_TEAM: SenseiPast = {
       spared: 'Brought {foe} home bound and alive.',
       ended: '{foe} died where {name}’s team fell.',
     },
+    ledgerSubjects: { ended: 'its-own' },
     find: {
       title: 'Back to {place}',
       summary: '{name} wants to see the place again, and find where {foe} is hiding.',

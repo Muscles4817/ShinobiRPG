@@ -28,6 +28,7 @@ describe('new game', () => {
       beds: [],
       guestId: null,
       doorstep: [],
+      givers: [],
     });
   });
 

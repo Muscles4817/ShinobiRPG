@@ -36,6 +36,7 @@ describe('the order things happen in', () => {
       'fight-recorded',
     ]);
     expect(TIME_PASSING.map((h) => `${h.id}:${h.every}`)).toEqual([
+      'whereabouts-noted:stretch',
       'wounds-mend:newDay',
       'peers-train:newDay',
       'companion-routine:stretch',

@@ -1,11 +1,12 @@
-import { weekOf } from '@/systems/time';
+import { slotsUntilNextMorning, weekOf } from '@/systems/time';
 import { act, ctx, newGame, veteran } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
+import { spendTime } from './ops';
 import { requirePerson } from './people/cast';
 import { pickDone, PICK_REGARD, senseiPick } from './sensei/pick';
 import { mentorOf, teamDayOf, teamKey, type TeamDay } from './sensei/plan';
-import { flushMentorNotices, settleMentor, MISSED_REGARD } from './sensei/settle';
+import { flushMentorNotices, MISSED_REGARD } from './sensei/settle';
 import { TEAM_DAY_REGARD, TEAMMATE_DAY_BOND } from './sensei/teamDays';
 import type { GameState } from './state';
 import { missionBoardView } from './views/boards';
@@ -54,9 +55,8 @@ describe('team days', () => {
 
   it('missed, cost regard by the sensei’s grip', () => {
     const { state, day } = onTeamDay('goran');
-    const next = flushMentorNotices(
-      settleMentor({ ...state, time: { day: day.day + 1, slot: 0 } }, ctx),
-    );
+    // The day passes at home, at hand: the sensei judges it by that.
+    const next = flushMentorNotices(spendTime(state, slotsUntilNextMorning(state.time), ctx));
     expect(next.mentor.outcomes[teamKey(day.day)]).toBe('missed');
     expect(next.journal.entries.map((e) => e.text)).toContainEqual(
       expect.stringMatching(/the contest|the team meal/),

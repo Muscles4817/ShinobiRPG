@@ -145,6 +145,7 @@ export const LANTERN_KEEPER_ACT_TWO: MissionDef = {
           reply: 'Akari lowers her hands, and Hiro keeps his up.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Akari offered not to fight.',
+          ledgerSubject: 'its-own',
         },
         {
           label: '“Beat him first. Talk after.”',

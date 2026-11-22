@@ -90,7 +90,10 @@ ui ──► game ──► content ──► systems ──► core
    (told which need failed: hold, lapse, or a different telling). The sequencer is the only place
    needs are asked, so a happening never tests where you are itself; the list's order is the
    order things happen in, pinned by a test, and `happenings.test.ts` keeps a month away from
-   home free of anything that needs you there.
+   home free of anything that needs you there. **What happened is a fact** (`game/facts/`): a
+   typed record written where the change is made, read by happenings, the day's sheet and your
+   sensei (who settles a day by the `atHand` slots noted as it passed, never by where you stand
+   at midnight), so nothing is found out by comparing states or reading words.
 3. **Determinism.** Randomness only via the `Rng` passed into `perform`; its state is stored
    in `GameState.rngState`. Same state + action ⇒ same result. `Math.random`/`Date.now` are
    lint errors **(enforced)**.
@@ -831,6 +834,11 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `noted` outcome, a clue found, gets a stamp),
     each crew member's bond since the start and last word, a grade (clean, rough, botched), and
     on a failure what would have helped (the best approach to the check, or the foe's trick).
+    A ledger line's tone is only how it reads; a **setback** is declared where it happens
+    (`LedgerLine.setback`: a failed check, docked pay; never a hurt taken on purpose) and the
+    grade counts those. A line is something you did, told with a "you", unless it declares its
+    own subject (`ledgerSubject: 'its-own'`, validated in `validateLedger.ts`); the debrief never
+    guesses grammar from the words.
 24. **Jobs leave something behind.** Outcomes can make the village remember (`world` effect →
     `village.marks`) and give everyone along a shared memory (`memory` → `village.memories`).
     What lasts (world marks, tallies, memories) is held on the run and kept only when the job
@@ -1002,10 +1010,15 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `?weather=rain`.
 
 30. **Days end with a sheet** (`docs/design/day-end-plan.md`). The day's record
-    (`GameState.daybook`, `game/daybook/`) is a snapshot taken at dawn (`openDay`) and compared
-    at the next (`closeDay`) by `noteDayEnd` (a happening after each action), so a day ends the same way whether you
-    slept (`sleep`, `takeRoom`) or pushed on through the night, and no action logs anything for
-    it. Days on a job, a journey or an exam aren't kept (the debrief tells them). The sheet
+    (`GameState.daybook`, `game/daybook/`) is closed by `noteDayEnd` (a happening after each
+    action), so a day ends the same way whether you slept (`sleep`, `takeRoom`) or pushed on
+    through the night. What has a **fact** is read from the day's facts (`GameState.facts`,
+    `game/facts/`: written by the one function that makes the change, `recordFact`; a wound
+    taken by `inflict`, each injury with its own `instance`, a job done by `afterStage`), never
+    from a dawn-against-night comparison; which facts the sheet tells is `onTheSheet`, an
+    exhaustive switch. What grows by degrees (stats, bonds, finds, the purse) is still a snapshot
+    taken at dawn (`openDay`) and compared at the next (`closeDay`). A new day lets the facts of
+    the days before go, once your sensei has settled them. Days on a job, a journey or an exam aren't kept (the debrief tells them). The sheet
     (`views/dayEnd.ts`) shows only the sections something happened in, each kind of change with
     its own look (moments sealed, growth as a grade bar, people with what getting closer opens
     next, finds as tiles, the purse as ledger lines read from the record's ryo chips), and the
@@ -1034,9 +1047,10 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     keeps `homeId`, owned `furniture`, what is `placed` in each spot, the garden's `beds` and a
     `guestId`; moving (`moveHome`) keeps your furniture. A piece (`FurnishingDef`) does one thing,
     read at one hook while you are at home (`comforts`: sleep, nap, study, guests; decor is
-    comfort only), and comfort warms dinners at home. The finest pieces are gifts from new close
-    friends (`giftsGiven`, a happening): handed over if they can find you, else left at your door
-    (`housing.doorstep`) and found when you are next home. Rooms: a garden (`GardenCrop` from seed), a yard
+    comfort only), and comfort warms dinners at home. The finest pieces are gifts from close
+    friends (`giftsGiven`, a happening), once each: who has given is kept (`housing.givers`), so a
+    bond that dips and recovers gives nothing more. A gift is handed over if they can find you,
+    else left at your door (`housing.doorstep`) and found when you are next home. Rooms: a garden (`GardenCrop` from seed), a yard
     (cheaper drills) and a guest room (the guest is home every evening). The keepsake shelf is
     read from memories, rival wins and ranks, never stored.
 

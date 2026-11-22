@@ -1,8 +1,9 @@
 import { BOND_STAGES, bondWith } from '@/systems/bonds';
 import { weekOf } from '@/systems/time';
-import { act, ctx, freshGame, newGame } from '@/test/gameFixtures';
+import { act, ctx, freshGame, newGame, veteran } from '@/test/gameFixtures';
 
 import { blockerFor } from './dispatch';
+import { spendTime } from './ops';
 import { meetingOn, meetingsPerWeek, mentorOf, weekPlan } from './sensei/plan';
 import {
   flushMentorNotices,
@@ -167,6 +168,28 @@ describe('settling the week', () => {
     const next = flushMentorNotices(settleMentor(away, ctx));
     expect(next.mentor.outcomes['2']).toBe('excused');
     expect(next.mentor.regard).toBe(start.mentor.regard);
+  });
+
+  describe('judges each day by what was true on it', () => {
+    const escort = () =>
+      act(veteran(newGame(), 5), { type: 'startMission', missionId: 'tea-merchant-escort' })
+        .mission!;
+    const dayOfMeeting = () => untilDay(withSensei(newGame(), 'goran'), 2);
+
+    it('a meeting skipped at home is missed, though a job runs past midnight', () => {
+      const skipped = spendTime(dayOfMeeting(), 3, ctx);
+      const outOnAJob = { ...skipped, mission: escort() };
+      const next = spendTime(outOnAJob, 1, ctx);
+      expect(next.mentor.outcomes['2']).toBe('missed');
+      expect(next.mentor.regard).toBe(skipped.mentor.regard - MISSED_REGARD.tight);
+    });
+
+    it('a meeting spent out on a job is excused, though you are home by midnight', () => {
+      const onTheJob = spendTime({ ...dayOfMeeting(), mission: escort() }, 3, ctx);
+      const next = spendTime({ ...onTheJob, mission: null }, 1, ctx);
+      expect(next.mentor.outcomes['2']).toBe('excused');
+      expect(next.mentor.regard).toBe(onTheJob.mentor.regard);
+    });
   });
 
   it('says in the morning when your sensei expects you, and keeps only this week', () => {

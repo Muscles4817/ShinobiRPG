@@ -181,6 +181,7 @@ export const FORGED_BLADE_ACT_TWO: MissionDef = {
             { kind: 'memory', text: 'the night at the forge' },
           ],
           ledger: 'The blade-bearer fell on the pass.',
+          ledgerSubject: 'its-own',
         },
       ],
     },

@@ -89,6 +89,7 @@ export const HER_ROOM: MissionDef = {
             ],
             ledger:
               'Her winter clothes were gone, and her mother’s comb, which no bandit would bother to take.',
+            ledgerSubject: 'its-own',
             noted: true,
           },
         },
@@ -103,6 +104,7 @@ export const HER_ROOM: MissionDef = {
             ],
             ledger:
               'The innkeeper says she paid a post rider to carry a letter to the Fire Temple.',
+            ledgerSubject: 'its-own',
             noted: true,
           },
         },

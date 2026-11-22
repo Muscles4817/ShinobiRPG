@@ -264,6 +264,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
             text: '{hurt}',
             effects: [{ kind: 'pay', share: -0.4 }],
             ledger: '{chargeName} bolted when the fighting started, and was hurt.',
+            ledgerSubject: 'its-own',
           },
           {
             when: { all: [{ has: 'knows-why' }, { thread: 'trust', atLeast: 3 }] },
@@ -274,6 +275,7 @@ export const D_RANK_ESCORT: readonly MissionTemplate[] = [
               { kind: 'memory', text: 'the road with {chargeName}' },
             ],
             ledger: '{chargeName} pressed a gift on you at the end of the road.',
+            ledgerSubject: 'its-own',
           },
           { text: '{ending}' },
         ],

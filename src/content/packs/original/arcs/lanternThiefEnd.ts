@@ -147,11 +147,13 @@ export const RELIT: MissionDef = {
           text: 'At dusk the whole wall is lit. Oume stands under the last lantern with her arm round her son, and both of them watch you go.',
           effects: [{ kind: 'world', mark: 'lantern-arc-done' }],
           ledger: 'The old wall is lit again, end to end.',
+          ledgerSubject: 'its-own',
         },
         {
           text: 'At dusk the whole wall is lit. Oume sets the last lantern on its hook herself, and is still standing there when you leave.',
           effects: [{ kind: 'world', mark: 'lantern-arc-done' }],
           ledger: 'The old wall is lit again, end to end.',
+          ledgerSubject: 'its-own',
         },
       ],
     },

@@ -111,3 +111,41 @@ As planned, with these differences:
   asks everything a spar asks (not after you've already spent the day with them).
 - `busyReason` moved to `busy.ts` (still re-exported by `ops`), so the needs don't import what
   passes time.
+
+## Facts: what happened, written down (22 November)
+
+The sequencer settled _when_ and _whether_; it left _what_ to be worked out afterwards. Happenings
+and the day's sheet found out what had happened by comparing the state before and after
+(`closer()` for gifts, a dawn snapshot for the day), by reading the present for a past day, or by
+reading words written for the player. Each of these broke:
+
+- **An injury's key was its end day**, and a healing meal or a hardy talent moves the end day, so
+  an old wound came back as a new one on the sheet ("you came home hurt" with no fight).
+- **A gift followed a bond crossing a stage**, and bonds fall as well as rise, so a friend who
+  dipped and recovered gave again.
+- **A setback was a ledger line's tone**, which is "cost" for any harm, so a shortcut taken on
+  purpose made a flawless job rough and lost a field promotion.
+- **Your sensei judged past days by the present**: on a job at midnight excused a skipped lesson;
+  home by midnight after a job through it was missed.
+- **The debrief guessed grammar** from a line's first word, and "Cut", "Put", "Fed" are not
+  spelled like past tenses.
+- **The gossip predicted tomorrow's jobs with today's record**, which a job finished today
+  changes.
+
+The fix is one more structure beside the sequencer: **facts** (`game/facts/`). A `Fact` is a
+discriminated union (`injuryAdded`, `jobDone`, `atHand`; a gift is remembered by who gave it, `housing.givers`), each with its day, written
+by `recordFact` from the one function that makes the change: `inflict` gives each wound an
+`instance` and records it, `afterStage` records the job with its grade, `giftsGiven` records the
+gift (and `housing.givers` remembers the giver for good), and a time happening first in
+`TIME_PASSING` (`whereabouts-noted`) records each slot you were at hand for your sensei. Readers
+switch over the kinds exhaustively: the sheet (`onTheSheet`), the sensei (`excusedOn`). Facts are
+kept from the day's opening, and a new day lets the earlier ones go.
+
+Where the record belongs to a run, the fact sits on it: a ledger line declares `setback` (a failed
+check, docked pay) and its `subject` (`its-own`, validated; otherwise yours). And where a future is
+told, it is decided once: the board decides tomorrow's new jobs a day ahead (`board.upcoming`), the
+gossip reads that, and the posting puts up the same.
+
+Invariants, tested over play that already runs: each day's sheet tells as many jobs and wounds as
+the counters moved (`src/test/pacing`), no close friend gives twice, and across every written road
+choice only docked pay is a setback.

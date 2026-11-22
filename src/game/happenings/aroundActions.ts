@@ -71,7 +71,7 @@ export const AFTER_ACTION: readonly ActionHappening[] = [
   },
   { id: 'rival-chosen', needs: [], run: ({ now, ctx }) => rivalChosen(now, ctx) },
   // Each friend's gift is handed over or left at the door by whether they can find you.
-  { id: 'gift-given', needs: [], run: ({ before, now, ctx }) => giftsGiven(before, now, ctx) },
+  { id: 'gift-given', needs: [], run: ({ now, ctx }) => giftsGiven(now, ctx) },
   {
     id: 'gifts-at-the-door',
     needs: [AT_HOME, OFF_DUTY],

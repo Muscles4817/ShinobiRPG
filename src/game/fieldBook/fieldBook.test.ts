@@ -183,7 +183,7 @@ describe('a full page', () => {
         bonds: { ...owning.people.bonds, [id]: bondWith(points) },
       },
     });
-    const gifted = giftsGiven(withBond(50), withBond(60), ctx);
+    const gifted = giftsGiven(withBond(60), ctx);
     expect(gifted.housing.furniture).not.toContain('gyotaku-print');
     expect(gifted.housing.furniture).not.toContain('drying-rack');
   });

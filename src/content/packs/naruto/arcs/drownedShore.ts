@@ -149,6 +149,7 @@ export const DROWNED_SHORE_ACT_TWO: MissionDef = {
           reply: 'She lifts the sea, and so does he, without meaning to.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Hotaru showed Nagi their water.',
+          ledgerSubject: 'its-own',
         },
         {
           label: '“He chose the smugglers. Fight him.”',

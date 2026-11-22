@@ -125,6 +125,7 @@ export const LOST_STUDENT: SenseiPast = {
       spared: 'Brought {lost} home from the pit.',
       ended: '{lost} died in the pit, and {name} sent its children home.',
     },
+    ledgerSubjects: { ended: 'its-own' },
     find: {
       title: 'The Pit at {place}',
       summary: 'Find {lost}’s fighting pit near {place}.',

@@ -124,6 +124,7 @@ export const RIVAL: SenseiPast = {
       spared: 'Brought {lost} home after the last bout.',
       ended: '{lost} died in the last bout, and {name} left the score uncounted.',
     },
+    ledgerSubjects: { ended: 'its-own' },
     find: {
       title: 'The Challenge at {place}',
       summary: '{name} wants to find where {lost} is waiting before the bout is fought.',
