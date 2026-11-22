@@ -218,7 +218,7 @@
   max-width: 560px;
   margin: 0 auto;
 }
-.app.wide.scene-combat .wide-scene:has(> .plan-screen, > .watch-screen) {
+.app.wide.scene-combat .wide-scene:has(> .plan-table > .plan-screen, > .watch-screen) {
   max-width: none;
   margin: 0;
 }

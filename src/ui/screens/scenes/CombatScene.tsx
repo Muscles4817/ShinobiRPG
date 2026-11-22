@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   combatLog,
@@ -175,7 +175,7 @@ type CombatSceneProps = ScreenProps & {
   /** See every fighter's bars in full (versus, where you set up both sides), not by your eyes. */
   readonly seeAll?: boolean;
   /** A step of the fight is being played off the page's thread: its lines aren't here yet. */
-  readonly thinking?: boolean;
+  readonly thinking: boolean;
 };
 
 const SEE_ALL: SightOf = () => SEEN_IN_FULL;
@@ -187,22 +187,29 @@ const SEE_ALL: SightOf = () => SEEN_IN_FULL;
  * (`useWatching`), so a step still being played changes nothing until its lines arrive, and
  * while it is out (`thinking`) the stage offers no way on. Turn-by-turn styles keep one screen.
  */
-export function CombatScene({ seeAll = false, thinking = false, ...props }: CombatSceneProps) {
-  const live = combatScene(props.state, props.ctx);
-  const view = live ?? finishedFightScene(props.state);
+export function CombatScene({ seeAll = false, thinking, state, ctx, perform }: CombatSceneProps) {
+  // Read once per state, so the beats keep their identity (and the stage's timer runs on) while
+  // the screen is drawn again for anything else.
+  const { live, view } = useMemo(() => {
+    const now = combatScene(state, ctx);
+    return { live: now, view: now ?? finishedFightScene(state) };
+  }, [state, ctx]);
   const length = view ? storyEnd(view) : 0;
   const staged = view !== null && isStaged(view);
   const { watch, playOn, watched, plan } = useWatching(length, staged);
+  const beats = useMemo(() => (view ? fightReplay(view, watch.from) : []), [view, watch.from]);
   if (!view) return null;
-  if (!staged) return <FightScreen {...props} view={view} />;
+  if (!staged) return <FightScreen ctx={ctx} state={state} perform={perform} view={view} />;
   const act = (o: CombatOption) => {
+    // A press while a step is out would be dropped: it changes nothing here either.
+    if (thinking) return;
     // Playing on (begin, the next exchange, the round, flight) stages what follows once it
     // arrives; changing your cards or orders just changes the table.
     if (o.kind === 'continue' || o.kind === 'escape') playOn(view.combatants);
-    props.perform({ type: 'combatAct', optionId: o.id });
+    perform({ type: 'combatAct', optionId: o.id });
   };
-  const reads = combatScouting(props.state, props.ctx);
-  const sightOf = seeAll ? SEE_ALL : fighterSight(props.state, props.ctx);
+  const reads = combatScouting(state, ctx);
+  const sightOf = seeAll ? SEE_ALL : fighterSight(state, ctx);
   const planning = view.options.some((o) => o.kind === 'plan');
   if (planning && !watch.holding) {
     return (
@@ -210,7 +217,8 @@ export function CombatScene({ seeAll = false, thinking = false, ...props }: Comb
         view={view}
         reads={reads}
         onPick={act}
-        techniqueOf={(id) => fightTechnique(props.state, props.ctx, id)}
+        waiting={thinking}
+        techniqueOf={(id) => fightTechnique(state, ctx, id)}
         sightOf={sightOf}
       />
     );
@@ -220,7 +228,7 @@ export function CombatScene({ seeAll = false, thinking = false, ...props }: Comb
       // New lines restage it, even when it was already up (a watched fight opens on it).
       key={`${watch.from}:${length}`}
       view={view}
-      beats={fightReplay(view, watch.from)}
+      beats={beats}
       fresh={length > watch.seen}
       waiting={thinking}
       reads={reads}
@@ -233,7 +241,7 @@ export function CombatScene({ seeAll = false, thinking = false, ...props }: Comb
         live
           ? null
           : () => {
-              props.perform({ type: 'leaveFight' });
+              perform({ type: 'leaveFight' });
             }
       }
     />

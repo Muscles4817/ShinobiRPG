@@ -53,16 +53,18 @@ export function useHealthPulses(
 
 /**
  * The flashes of a beat on the watch screen: the health moves the beat itself made, flashed only
- * when the beat was arrived at going on (`usePlayback`'s `arrival`, which keys each flash afresh),
+ * (the first against `before`, everyone as the beats began) when the beat was arrived at going on (`usePlayback`'s `arrival`, which keys each flash afresh),
  * never when it was reached going back or skipped to.
  */
 export function beatPulses(
   beats: readonly FightBeat[],
   at: number,
   arrival: number | null,
+  before: readonly CombatantView[] | null,
 ): Readonly<Record<string, HealthPulse>> {
   if (arrival === null) return {};
+  const started = Object.fromEntries((before ?? []).map((f) => [f.id, f.health]));
   return Object.fromEntries(
-    Object.entries(healthMoves(beats, at)).map(([id, kind]) => [id, { kind, n: arrival }]),
+    Object.entries(healthMoves(beats, at, started)).map(([id, kind]) => [id, { kind, n: arrival }]),
   );
 }

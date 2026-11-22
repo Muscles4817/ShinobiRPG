@@ -2,6 +2,10 @@
  * The plan screen: the card table between rounds of a planned fight. Both sides stand in a
  * formation strip (rows and the distance between them), your side in lantern, foes in crimson.
  */
+/* The table's controls, closed together while a step is still being played; no box of its own. */
+.plan-table {
+  display: contents;
+}
 .plan-screen {
   display: flex;
   flex-direction: column;

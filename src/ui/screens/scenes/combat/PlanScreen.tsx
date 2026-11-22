@@ -35,6 +35,8 @@ interface PlanScreenProps {
   readonly view: CombatView;
   readonly reads: Readonly<Record<string, ScoutingRead>>;
   readonly onPick: Pick;
+  /** A step you asked for is still being played: the table waits for it, its controls closed. */
+  readonly waiting: boolean;
   /** A technique a card plays, read in full for the preview beside the table. */
   readonly techniqueOf: (techniqueId: string) => JutsuCard | null;
   /** How much of each fighter's bars you can see. */
@@ -177,12 +179,15 @@ function BeginBar({ view, onPick }: { readonly view: CombatView; readonly onPick
  * until you begin. On a wide screen your cards, the field and the read of a fighter sit side by
  * side, so the table is in view while you set it.
  */
-export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanScreenProps) {
+export function PlanScreen(props: PlanScreenProps) {
+  const { view, reads, onPick, waiting, techniqueOf, sightOf } = props;
   const foes = view.combatants.filter((c) => c.side === 'enemy');
   const [selected, setSelected] = useState<string | null>(null);
   const pulses = useHealthPulses(view.combatants);
   const wide = useWideScreen();
-  const begin = view.options.find((o) => o.kind === 'continue' && !o.disabledReason);
+  const begin = waiting
+    ? undefined
+    : view.options.find((o) => o.kind === 'continue' && !o.disabledReason);
   useKeys(
     {
       Enter: begin
@@ -265,47 +270,51 @@ export function PlanScreen({ view, reads, onPick, techniqueOf, sightOf }: PlanSc
     return (
       <>
         {head}
-        <main className="page plan-screen">
-          <Pane name="cards">
-            <PlanPreviewContext.Provider value={previewFor}>
-              {cards}
-              <TeamPanel view={view} onPick={pickCard} />
-            </PlanPreviewContext.Provider>
-          </Pane>
-          <Pane name="field">
-            {formation}
-            {reserves}
-            <HowItWent view={view} />
-            <BeginBar view={view} onPick={onPick} />
-            <p className="key-note">Enter begins.</p>
-          </Pane>
-          <Pane name="read">
-            {technique ? (
-              <JutsuDetail card={technique} />
-            ) : (
-              <>
-                {fighterRead}
-                <FoeMoves foes={foes} field={view.combatants} />
-              </>
-            )}
-          </Pane>
-        </main>
+        <fieldset className="plan-table" disabled={waiting}>
+          <main className="page plan-screen">
+            <Pane name="cards">
+              <PlanPreviewContext.Provider value={previewFor}>
+                {cards}
+                <TeamPanel view={view} onPick={pickCard} />
+              </PlanPreviewContext.Provider>
+            </Pane>
+            <Pane name="field">
+              {formation}
+              {reserves}
+              <HowItWent view={view} />
+              <BeginBar view={view} onPick={onPick} />
+              <p className="key-note">Enter begins.</p>
+            </Pane>
+            <Pane name="read">
+              {technique ? (
+                <JutsuDetail card={technique} />
+              ) : (
+                <>
+                  {fighterRead}
+                  <FoeMoves foes={foes} field={view.combatants} />
+                </>
+              )}
+            </Pane>
+          </main>
+        </fieldset>
       </>
     );
   }
   return (
     <>
       {head}
-      <main className="page plan-screen">
-        {formation}
-        {reserves}
-        {fighterRead}
-        <HowItWent view={view} />
-        <FoeMoves foes={foes} field={view.combatants} />
-        {cards}
-        <TeamPanel view={view} onPick={onPick} />
-      </main>
-      <BeginBar view={view} onPick={onPick} />
+      <fieldset className="plan-table" disabled={waiting}>
+        <main className="page plan-screen">
+          {formation}
+          {reserves}
+          {fighterRead}
+          <HowItWent view={view} />
+          <FoeMoves foes={foes} field={view.combatants} />
+          {cards}
+          <TeamPanel view={view} onPick={onPick} />
+        </main>
+        <BeginBar view={view} onPick={onPick} />
+      </fieldset>
     </>
   );
 }

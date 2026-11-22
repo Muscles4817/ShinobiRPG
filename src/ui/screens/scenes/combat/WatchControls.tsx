@@ -15,25 +15,54 @@ export interface WatchNextProps {
   readonly onLeave: (() => void) | null;
 }
 
+/** What may come next once the beats have played: one way on, or the fight's steps. */
+type WatchNext =
+  | { readonly kind: 'only'; readonly label: string; readonly go: () => void }
+  | { readonly kind: 'steps'; readonly steps: readonly CombatOption[] };
+
 /**
- * What comes next once the beats have played: leaving a finished fight, the card table, the
- * next exchange, or flight.
+ * Leaving a finished fight, or the card table between rounds, is the one way on; mid-round it
+ * is the next exchange, the round, or flight. The buttons and Enter both read it here.
  */
-export function NextSteps({ view, waiting, onPick, onPlan, onLeave }: WatchNextProps) {
-  const only = onLeave ?? onPlan;
-  if (only) {
+export function watchNext({ view, onPlan, onLeave }: WatchNextProps): WatchNext {
+  if (onLeave) return { kind: 'only', label: 'Continue', go: onLeave };
+  if (onPlan) {
+    const label = view.called ? 'Change your plan' : 'Plan the next round';
+    return { kind: 'only', label, go: onPlan };
+  }
+  const steps = view.options.filter((o) => o.kind === 'continue' || o.kind === 'escape');
+  return { kind: 'steps', steps };
+}
+
+/** What Enter does once the beats have played: the one way on, or the first step open. */
+export function enterGoesOn(props: WatchNextProps): (() => void) | undefined {
+  if (props.waiting) return undefined;
+  const next = watchNext(props);
+  if (next.kind === 'only') return next.go;
+  const step = next.steps.find((o) => o.kind === 'continue' && !o.disabledReason);
+  return step
+    ? () => {
+        props.onPick(step);
+      }
+    : undefined;
+}
+
+/** What comes next once the beats have played, as buttons. */
+export function NextSteps(props: WatchNextProps) {
+  const { waiting, onPick } = props;
+  const next = watchNext(props);
+  if (next.kind === 'only') {
     return (
       <nav className="choices watch-next" aria-label="What next">
-        <button type="button" className="choice primary" disabled={waiting} onClick={only}>
-          {onLeave ? 'Continue' : view.called ? 'Change your plan' : 'Plan the next round'}
+        <button type="button" className="choice primary" disabled={waiting} onClick={next.go}>
+          {next.label}
         </button>
       </nav>
     );
   }
-  const steps = view.options.filter((o) => o.kind === 'continue' || o.kind === 'escape');
   return (
     <nav className="choices watch-next" aria-label="What next">
-      {steps.map((o) => (
+      {next.steps.map((o) => (
         <button
           key={o.id}
           type="button"

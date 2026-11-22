@@ -1609,19 +1609,22 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   spread into grids, in `wide-places.css`; the other tabs in `wide-tabs.css`), every rule under
   `.app.wide` or `.wide-main`, so the phone layout never changes with it. To set parts of a
   screen side by side, wrap them in a `Pane` (`ui/layout/Pane.tsx`): `display: contents` on a
-  phone, a column on desktop. Sheets (a person, your companion, a notice, the stove) open as a
-  drawer from the right, and Esc closes them (`useCloseOnEscape`). Keys on desktop go through
-  `useKeys` (`ui/layout/`, which leaves fields, modifiers and a focused control alone), and keys
-  reach only what is on top: the game decides what is laid over play (`overlayOnScreen`: a
-  report, or the day's sheet, waiting on a fight's or trip's last moments), and every layer under
-  it, or under a drawer, is a `KeyLayer` that isn't live, which suspends its `useKeys` and
-  `useCloseOnEscape`. A story scene keeps its frame at every width (`SceneBox`), so crossing the
-  breakpoint never remounts it. Number
+  phone, a column on desktop. Sheets (a person, your companion, a notice, the stove, the fight
+  guide) open as a drawer from the right over a `SheetBackdrop`, and Esc or a tap outside closes
+  them. Keys on desktop go through `useKeys` (`ui/layout/`, which leaves fields, modifiers and a
+  focused control alone), and keys reach only what is on top: every sheet and card laid over the
+  page (a `SheetBackdrop`, a report, the day's sheet, versus's fighter picker) is a `KeyLayer`
+  (`layout/KeyLayer.tsx`), a stack in which only the top-most open layer is live, so every key
+  under it, its Esc included, is suspended wherever it is drawn; a new sheet takes one and
+  nothing else. Which game card is laid over play is the game's to say (`overlayOnScreen`: a
+  report, or the day's sheet, waiting on a fight's or trip's last moments). A story scene keeps
+  its frame at every width (`SceneBox`), so crossing the breakpoint never remounts it. Number
   keys take a scene's choices (`useChoiceKeys`, with a `KeyHint`) and Enter the primary one, and
   a fight's watch screen plays on Space, steps on the arrows and skips on S. What the watch
   screen stages follows the log, never a press (`useWatching`: lines are staged once they exist,
-  so a step still out on its worker can't skip its round, and the stage offers no way on while it
-  is), and a beat flashes and sounds from its own data (`healthMoves`) and only going on, never
+  so a step still out on its worker can't skip its round, and while it is out the stage and the
+  card table offer nothing to press), and a beat flashes and sounds from its own data
+  (`healthMoves`, the first beat against everyone as the beats began) and only going on, never
   stepping back. Pointing at
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
   detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab

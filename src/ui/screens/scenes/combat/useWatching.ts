@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { CombatantView } from '@/game';
 
@@ -17,48 +17,46 @@ export interface Watching {
   readonly seen: number;
   /** The stage stays up after its beats until you go back to plan. */
   readonly holding: boolean;
-  /** Everyone as they stood when you last played on, for the gauges. */
+  /** Everyone as they stood when you last played on, for the gauges and the first beat. */
   readonly before: readonly CombatantView[] | null;
 }
 
-/** New lines since you last watched, not yet on the stage: stage them, and hold it. */
-export function stageNew(watch: Watching, length: number): Watching | null {
-  if (length <= watch.seen) return null;
+/** Watching from the end of a log of `length` lines, with nothing on the stage. */
+function caughtUp(length: number): Watching {
+  return { from: length, seen: length, holding: false, before: null };
+}
+
+/**
+ * Where watching should stand for a log of `length` lines, or null when it already does. Turn by
+ * turn (`staged` false) the log is the screen, so it keeps up and a finished fight stages only
+ * its end. Staged, lines not yet watched are put on the stage from where you left off, and held.
+ * A log shorter than what was watched is another fight's: start over at its end.
+ */
+export function nextWatching(watch: Watching, length: number, staged: boolean): Watching | null {
+  if (length < watch.seen) return caughtUp(length);
+  if (!staged) return watch.from === length && watch.seen === length ? null : caughtUp(length);
+  if (length === watch.seen) return null;
   if (watch.from === watch.seen && watch.holding) return null;
   return { ...watch, from: watch.seen, holding: true };
 }
 
-/** Turn by turn, the log is the screen: keep up, so a finished fight stages only its end. */
-function keptUp(watch: Watching, length: number): Watching | null {
-  return watch.from === length && watch.seen === length
-    ? null
-    : { from: length, seen: length, holding: false, before: null };
-}
-
 export function useWatching(length: number, staged: boolean) {
-  const [watch, setWatch] = useState<Watching>(() => ({
-    from: length,
-    seen: length,
-    holding: false,
-    before: null,
-  }));
+  const [watch, setWatch] = useState<Watching>(() => caughtUp(length));
   // Adjusting state while rendering (React's pattern for "state from changed props"): React
   // renders again at once, before anything is painted, so new lines are never shown unstaged.
-  const next = staged ? stageNew(watch, length) : keptUp(watch, length);
+  const next = nextWatching(watch, length, staged);
   if (next) setWatch(next);
-  return {
-    watch: next ?? watch,
-    /** You play on: everyone as they stand now is how the stage begins. */
-    playOn: (before: readonly CombatantView[]) => {
-      setWatch((w) => ({ ...w, before }));
-    },
-    /** The last beat on the stage has played (or been skipped to). */
-    watched: () => {
-      setWatch((w) => (w.seen === length ? w : { ...w, seen: length }));
-    },
-    /** Back to the card table. */
-    plan: () => {
-      setWatch((w) => ({ ...w, holding: false }));
-    },
-  };
+  /** You play on: everyone as they stand now is how the stage begins. */
+  const playOn = useCallback((before: readonly CombatantView[]) => {
+    setWatch((w) => ({ ...w, before }));
+  }, []);
+  /** The last beat on the stage has played (or been skipped to). */
+  const watched = useCallback(() => {
+    setWatch((w) => (w.seen === length ? w : { ...w, seen: length }));
+  }, [length]);
+  /** Back to the card table. */
+  const plan = useCallback(() => {
+    setWatch((w) => ({ ...w, holding: false }));
+  }, []);
+  return { watch: next ?? watch, playOn, watched, plan };
 }

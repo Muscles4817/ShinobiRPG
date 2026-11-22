@@ -31,8 +31,12 @@ describe('whose health a beat moved', () => {
     expect(healthMoves(BEATS, 2)).toEqual({ you: 'hurt', foe: 'healed' });
   });
 
-  it('says nothing for the first beat, or one past the end', () => {
+  it('reads the first beat against how everyone stood as the beats began', () => {
+    expect(healthMoves(BEATS, 0, { you: 100, foe: 90 })).toEqual({ foe: 'healed' });
     expect(healthMoves(BEATS, 0)).toEqual({});
+  });
+
+  it('says nothing one past the end', () => {
     expect(healthMoves(BEATS, 3)).toEqual({});
   });
 });

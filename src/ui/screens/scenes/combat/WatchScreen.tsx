@@ -235,7 +235,7 @@ export function WatchScreen(props: WatchScreenProps) {
             view={view}
             beat={beat}
             fighters={fighters}
-            pulses={beatPulses(beats, play.at, play.arrival)}
+            pulses={beatPulses(beats, play.at, play.arrival, props.before)}
             reads={reads}
             sightOf={props.sightOf}
           />
