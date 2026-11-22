@@ -63,7 +63,12 @@ export function guardScale(attacker: Rated, defender: Rated): number {
 
 /** The chance of slipping a blow, scaled by how sure it is to land. */
 export function slipChance(chance: number, accuracy: Accuracy | undefined): number {
-  return clamp(chance * ACCURACY_EVASION[accuracy ?? 'steady'], 0, SLIP_MAX);
+  return clamp(chance * accuracyScale(accuracy), 0, SLIP_MAX);
+}
+
+/** How much an attack's accuracy scales the chance of slipping it (wild easier, sure harder). */
+export function accuracyScale(accuracy: Accuracy | undefined): number {
+  return ACCURACY_EVASION[accuracy ?? 'steady'];
 }
 
 /**

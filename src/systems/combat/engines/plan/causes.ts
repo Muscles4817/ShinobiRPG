@@ -1,22 +1,24 @@
 import { causeLine, type NarrationCause } from '../../rules/causes';
 import { seesThroughIllusions } from '../../rules/eyes';
-import { avoidParts, partsOdds, SWIFT_INSTINCT, type AvoidParts, type Incoming } from './avoid';
+import { avoidParts, partsStrength, SWIFT_INSTINCT, type AvoidParts, type Incoming } from './avoid';
 import type { PlanFighter, Round } from './state';
 
 /**
  * Why an attack was slipped (audit P1.1), read from the avoid roll itself (`avoid.ts`): the roll's
  * parts are gathered once, and the cause is the part that did most to make the slip likely, found
- * by taking each away in turn and seeing how far the odds fall: eyes that saw it coming, a
+ * by taking each away in turn and seeing how far the roll's pull towards a slip falls (before the
+ * ceilings: at a cap, taking one part away would change nothing): eyes that saw it coming, a
  * committed Evade, a ready Dodge, a move leaned on until it was read, a wild swing, a body quicker
- * than the attack, a read of the attacker. An illusion seen through is slipped whatever the roll.
- * When nothing added much, the slip just went their way.
+ * than the attack (a swift one's instinct with it), a read of the attacker, a mind braced for the
+ * illusion, an attacker blinded (dust, insects), a small body. (Footing only ever hurts a slip.) An illusion
+ * seen through is slipped whatever the roll. When nothing added much, it went their way.
  */
 
 /**
- * A part whose taking away would leave less than this share of the slip's odds gone didn't
+ * A part whose taking away would leave less than this share of the roll's pull gone didn't
  * decide it: when no part did, it was luck.
  */
-const DECIDED_SHARE = 0.1;
+const DECIDED_SHARE = 0.08;
 
 /** Each part a slip may come from, and the roll with that part taken away. */
 const WITHOUT: readonly (readonly [NarrationCause, (p: AvoidParts) => AvoidParts])[] = [
@@ -25,9 +27,18 @@ const WITHOUT: readonly (readonly [NarrationCause, (p: AvoidParts) => AvoidParts
   ['dodge-ready', (p) => ({ ...p, roll: withoutDodge(p.roll) })],
   ['familiar', (p) => ({ ...p, roll: { ...p.roll, read: p.roll.read / p.familiar } })],
   ['wild', (p) => ({ ...p, roll: withoutAccuracy(p.roll) })],
-  ['quicker', (p) => ({ ...p, roll: { ...p.roll, rating: p.roll.arrival } })],
+  ['quicker', (p) => ({ ...p, roll: withoutQuickness(p.roll) })],
   ['read-it', (p) => ({ ...p, roll: { ...p.roll, read: p.familiar } })],
+  ['ready-for-it', (p) => ({ ...p, braced: 0 })],
+  ['blinded', (p) => ({ ...p, scales: [1, 1, p.scales[2], p.scales[3]] })],
+  ['small-target', (p) => ({ ...p, scales: [p.scales[0], p.scales[1], p.scales[2], 1] })],
 ];
+
+/** The roll from a body no quicker than the attack, without a swift body's instinct. */
+function withoutQuickness(roll: AvoidParts['roll']): AvoidParts['roll'] {
+  const bonus = roll.dodging ? (roll.bonus ?? 0) * (1 - SWIFT_INSTINCT) : 0;
+  return { ...roll, rating: roll.arrival, bonus };
+}
 
 /** The roll with no Dodge ready: a swift body still slips some on instinct. */
 function withoutDodge(roll: AvoidParts['roll']): AvoidParts['roll'] {
@@ -46,13 +57,13 @@ export function slipCause(round: Round, incoming: Incoming): NarrationCause {
   if (illusion && (seesThroughIllusions(target) || target.puppet === true)) return 'saw-through';
   const parts = avoidParts(round, incoming);
   if (!parts) return 'slipped';
-  const odds = partsOdds(parts);
+  const pull = partsStrength(parts);
   let best: { cause: NarrationCause; added: number } = {
     cause: 'slipped',
-    added: odds * DECIDED_SHARE,
+    added: pull * DECIDED_SHARE,
   };
   for (const [cause, without] of WITHOUT) {
-    const added = odds - partsOdds(without(parts));
+    const added = pull - partsStrength(without(parts));
     if (added > best.added) best = { cause, added };
   }
   return best.cause;

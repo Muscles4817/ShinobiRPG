@@ -1,6 +1,6 @@
 import { told } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
-import type { Incoming } from './avoid';
+import { avoidOdds, type Incoming } from './avoid';
 import { holdCause, slipCause, slipCauseBeside, stepCause, withCause } from './causes';
 import { initialFighters, type PlanFighter, type Round } from './state';
 
@@ -87,6 +87,41 @@ describe('why an attack was slipped', () => {
   it('a ready Dodge is left to the Dodged stamp', () => {
     expect(slipCauseBeside('dodge-ready', true)).toBeNull();
     expect(slipCauseBeside('dodge-ready', false)).toBe('dodge-ready');
+  });
+});
+
+describe('why the surest slips were slipped', () => {
+  const change = (r: Round, id: string, over: Partial<PlanFighter>): Round => ({
+    ...r,
+    fighters: r.fighters.map((f) => (f.id === id ? { ...f, ...over } : f)),
+  });
+  const dodging = { reactions: { close: 'dodge', mid: 'dodge', far: 'dodge' } } as const;
+
+  // At the ceiling, taking one part away changes nothing; the cause is read before it.
+  it('names a cause even when the odds are at their ceiling', () => {
+    const quick = { ...attributes, speed: 40, perception: 40, intellect: 40 };
+    const r = change(round({ attributes: quick }), 'hero', dodging);
+    const slow = blow(r, { form: 'technique', skill: 4, accuracy: 'wild' });
+    expect(avoidOdds(r, slow)).toBeCloseTo(0.75);
+    expect(slipCause(r, slow)).not.toBe('slipped');
+  });
+
+  it('a swift body’s instinct, with no Dodge ready, is its quickness', () => {
+    const r = round({ traits: ['swift'] });
+    expect(slipCause(r, blow(r))).toBe('quicker');
+  });
+
+  it('a mind braced for an illusion was ready for it', () => {
+    const r = change(round(), 'hero', { committed: 'brace' });
+    const illusion = blow(r, { form: 'technique', discipline: 'genjutsu' });
+    expect(slipCause(r, illusion)).toBe('ready-for-it');
+  });
+
+  it('an attacker blinded by dust couldn’t see to aim; a small body is hard to hit', () => {
+    const r = change(round(), 'foe', { blinded: { blinding: 3, exchanges: 2 } });
+    expect(slipCause(r, blow(r))).toBe('blinded');
+    const small = round({ size: 'small' });
+    expect(slipCause(small, blow(small))).toBe('small-target');
   });
 });
 

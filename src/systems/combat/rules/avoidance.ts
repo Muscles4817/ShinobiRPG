@@ -5,7 +5,7 @@ import type { CombatAttributes } from '../contract';
 import { evadeFocus, EVADE_MAX, EVADE_STANCE } from './commitment';
 import { paceLeft } from './pace';
 import { gapRatio } from './damage';
-import { SLIP_MAX, slipChance } from './defence';
+import { accuracyScale, SLIP_MAX, slipChance } from './defence';
 import { AREA_RULES, driveOf, resistOf, type EffectUse } from './verbs';
 
 /**
@@ -121,8 +121,8 @@ export interface AvoidRoll {
   readonly seesAll?: boolean;
 }
 
-/** The chance an attack doesn't reach its target at all. */
-export function avoidChance(roll: AvoidRoll): number {
+/** The terms of one avoid roll before any ceiling: the slip, the area's share, what pace leaves. */
+function avoidTerms(roll: AvoidRoll) {
   const gap = Math.log(gapRatio(roll.rating, roll.arrival));
   const base = AVOID_TOP * logistic(gap * AVOID_STEEPNESS);
   const evading = roll.evading === true;
@@ -136,8 +136,22 @@ export function avoidChance(roll: AvoidRoll): number {
   const chance = base * stance * roll.read + (roll.bonus ?? 0);
   const keepsUp = roll.rating * (seesAll ? SEEING_PACE : 1);
   const pace = roll.paceSpeed === undefined ? 1 : paceLeft(roll.paceSpeed, keepsUp);
-  const ceiling = avoidCeiling(evading, seesAll);
+  return { chance, area, pace, ceiling: avoidCeiling(evading, seesAll) };
+}
+
+/** The chance an attack doesn't reach its target at all. */
+export function avoidChance(roll: AvoidRoll): number {
+  const { chance, area, pace, ceiling } = avoidTerms(roll);
   return Math.min(ceiling, slipChance(chance, roll.accuracy)) * area * pace;
+}
+
+/**
+ * How strongly everything in the roll pulls towards a slip, before the ceilings that cap a
+ * chance: for telling which part decided it, since at the cap taking one away changes nothing.
+ */
+export function avoidStrength(roll: AvoidRoll): number {
+  const { chance, area, pace } = avoidTerms(roll);
+  return chance * accuracyScale(roll.accuracy) * area * pace;
 }
 
 /**

@@ -1,10 +1,11 @@
-import { bracedAvoid } from './braced';
+import { bracedAvoid, bracedFor, bracedShake } from './braced';
 import type { Accuracy, AreaSize, Discipline } from '@/systems/techniques';
 
 import type { CombatTechnique } from '../../contract';
 import {
   avoidCeiling,
   avoidChance,
+  avoidStrength,
   avoidRating,
   readRating,
   readScale,
@@ -124,6 +125,8 @@ export interface AvoidParts {
   readonly foresight: number | null;
   /** How much more easily it was read for having been leaned on (in the roll's `read`). */
   readonly familiar: number;
+  /** What a mind braced for this illusion adds to shaking it off (`braced.ts`); 0 otherwise. */
+  readonly braced: number;
 }
 
 /** The parts of one avoid roll; null when nothing can slip it (dazed, held for a killing blow). */
@@ -148,7 +151,23 @@ export function avoidParts(round: Round, incoming: Incoming): AvoidParts | null 
     bodyScale(target, incoming),
   ] as const;
   const foresight = roll.seesAll === true ? foresightScale(incoming) : null;
-  return { roll, scales, target, foresight, familiar: incoming.familiar ?? 1 };
+  const familiar = incoming.familiar ?? 1;
+  return { roll, scales, target, foresight, familiar, braced: bracing(round, incoming) };
+}
+
+/** What bracing adds against an illusion (`braced.ts`), as `avoidOdds` lays it on. */
+function bracing(round: Round, { discipline, target, attacker }: Incoming): number {
+  if (discipline !== 'genjutsu' || !bracedFor(round, target, attacker)) return 0;
+  return bracedShake(target, attacker);
+}
+
+/**
+ * How strongly the roll's parts pull towards a slip, before any ceiling (`avoidStrength`): what
+ * `causes.ts` weighs, since at a cap taking one part away would change nothing.
+ */
+export function partsStrength({ roll, scales, foresight, braced }: AvoidParts): number {
+  const [insects, dust, footing, body] = scales;
+  return avoidStrength(roll) * insects * dust * footing * body * (foresight ?? 1) + braced;
 }
 
 /** The rules' roll for one attack on a defender as they meet it. */
