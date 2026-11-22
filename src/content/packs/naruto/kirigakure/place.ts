@@ -238,6 +238,7 @@ export const KIRIGAKURE: LocationDef = {
       id: 'canal-stilt-house',
       kind: 'house',
       name: 'A Stilt House on the Back Canal',
+      inText: 'a stilt house on the Back Canal',
       icon: 'house',
       blurb:
         'Two rooms over the water and a ladder down to a boat. The last owners left in the night and nobody asks where.',

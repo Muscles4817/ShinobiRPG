@@ -42,14 +42,27 @@ export function readSave(raw: string): ReadSave {
   }
 }
 
+/** What became of a copy asked to be kept: kept, an earlier copy kept instead, or nothing. */
+export type CopyKept = 'kept' | 'earlier-kept' | 'not-kept';
+
 /**
- * Keeps `raw` as the device's kept copy. Text that isn't a save file at all (a file cut short,
- * say) never takes the place of a copy already kept, which is more likely the better one.
+ * Keeps `raw` as the device's kept copy, and says what was kept. Text that isn't a save file
+ * at all (a file cut short, say) never takes the place of a copy already kept, which is more
+ * likely the better one.
  */
-export function keepCopy(rescue: SaveStore, raw: string): void {
-  if (savedVersion(raw) === null && rescue.load() !== null) return;
-  saveSafely(rescue, raw);
+export function keepCopy(rescue: SaveStore, raw: string): CopyKept {
+  if (savedVersion(raw) === null && rescue.load() !== null) return 'earlier-kept';
+  return saveSafely(rescue, raw) ? 'kept' : 'not-kept';
 }
+
+/** What the player is told about the copy, after "Your save could not be loaded: …". */
+export const COPY_NOTICE: Readonly<Record<CopyKept, string>> = {
+  kept: 'A copy of it is kept on this device (Settings, Save data), and a new game won’t erase it.',
+  'earlier-kept':
+    'It couldn’t be kept as a copy, but an earlier copy is (Settings, Save data), and a new game won’t erase that.',
+  'not-kept':
+    'This device couldn’t keep a copy of it, so starting a new game will replace it for good.',
+};
 
 /** Whether this save was written by an older version, so loading it will change it. */
 export function fromOlderVersion(raw: string): boolean {

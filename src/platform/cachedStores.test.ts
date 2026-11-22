@@ -67,6 +67,17 @@ describe('stores in front of a native backend', () => {
     expect(disk.files.get('save')).toBe('three');
   });
 
+  it('says it is busy while a write is under way or waiting, and idle once written', async () => {
+    const disk = slowBackend();
+    const store = cachedStore(disk.backend, 'save', null);
+    expect(store.busy()).toBe(false);
+    store.save('one');
+    expect(store.busy()).toBe(true);
+    await disk.letGo();
+    await store.flushed();
+    expect(store.busy()).toBe(false);
+  });
+
   it('says a write failed on the next save, and recovers once one lands', async () => {
     const disk = slowBackend();
     const store = cachedStore(disk.backend, 'save', null);

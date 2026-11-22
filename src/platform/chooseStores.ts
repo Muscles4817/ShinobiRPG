@@ -1,4 +1,4 @@
-import { openCachedStores, type Stores } from './cachedStores';
+import { openCachedStores, type PendingWrites, type Stores } from './cachedStores';
 import { capacitorBackend } from './capacitorBackend';
 import { ELECTRON_BACKEND } from './electronBackend';
 import {
@@ -22,6 +22,8 @@ export interface ChosenStores {
   readonly stores: Stores;
   /** Which shell's files are in use, or null in a browser. */
   readonly shell: string | null;
+  /** A shell's writes behind the game, to be finished before the app closes; none in a browser. */
+  readonly writes: PendingWrites | null;
 }
 
 function browserStores(): Stores {
@@ -38,7 +40,9 @@ export async function chooseStores(
 ): Promise<ChosenStores> {
   for (const shell of backends) {
     const backend = shell.detect();
-    if (backend) return { stores: (await openCachedStores(backend)).stores, shell: shell.name };
+    if (!backend) continue;
+    const opened = await openCachedStores(backend);
+    return { stores: opened.stores, shell: shell.name, writes: opened };
   }
-  return { stores: browserStores(), shell: null };
+  return { stores: browserStores(), shell: null, writes: null };
 }

@@ -82,6 +82,7 @@ export const KIRI_FORD: LocationDef = {
       id: 'reed-row-house',
       kind: 'house',
       name: 'A House on Reed Row',
+      inText: 'a house on Reed Row',
       icon: 'house',
       blurb:
         'Two rooms over a boat shed, a stove, and a window over the river. The roof only leaks when it rains.',

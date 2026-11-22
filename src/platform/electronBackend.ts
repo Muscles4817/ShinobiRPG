@@ -53,7 +53,10 @@ export function electronBackendIn(scope: unknown): StorageBackend | null {
   return bridge ? backendOver(bridge) : null;
 }
 
+/** The desktop app's name among the shells. */
+export const ELECTRON_SHELL = 'electron';
+
 export const ELECTRON_BACKEND: NativeBackend = {
-  name: 'electron',
+  name: ELECTRON_SHELL,
   detect: () => electronBackendIn(globalThis),
 };

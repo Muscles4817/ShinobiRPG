@@ -1491,7 +1491,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   slots, writes atomic) and add a `NativeBackend` that detects the shell to `NATIVE_BACKENDS` in
   `platform/chooseStores.ts`. `openCachedStores` reads everything at boot and writes behind each
   save, so the game stays synchronous; a failed write is reported by the next save, and the
-  service worker is registered only outside a shell. The phone app's is
+  service worker is registered only outside a shell. Writes still waiting are finished as the
+  app goes away (`platform/keepWrites.ts`: hurried on when the page is hidden or the phone app
+  is paused, and the desktop window's close held until they are written). The phone app's is
   `platform/capacitorBackend.ts` (files in the app's data directory) with `phoneShell.ts`
   (status bar, Android back as Esc); `docs/mobile.md` says how to build it.
   The **App builds** workflow (`.github/workflows/app-builds.yml`) builds the Windows installer

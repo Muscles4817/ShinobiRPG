@@ -6,6 +6,7 @@ import type { Discipline } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import { currentLocation } from '../ops';
+import { placeInSentence } from '../placeName';
 import { bondOf, everyone, fullName, peopleHere, whereNow } from '../people/cast';
 import { personLook } from '../people/looks';
 import type { GameState } from '../state';
@@ -71,9 +72,9 @@ export function personFace(state: GameState, person: PersonDef): PersonFace {
 function whereLabel(state: GameState, ctx: GameContext, person: PersonDef): string {
   const placeId = whereNow(state, ctx, person);
   const place = placeId && currentLocation(state, ctx).places.find((p) => p.id === placeId);
-  // A place named "The Paper Lantern" is "At The Paper Lantern", not "At the The…".
   if (!place) return 'Away';
-  return place.name.startsWith('The ') ? `At ${place.name}` : `At the ${place.name}`;
+  // The place's own mid-sentence form ("At home", "At Market Street", "At the Mission Hall").
+  return `At ${placeInSentence(place)}`;
 }
 
 export function personCard(state: GameState, ctx: GameContext, person: PersonDef): PersonCard {

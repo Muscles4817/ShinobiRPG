@@ -5,6 +5,7 @@ export const SHOPPING_DISTRICT: PlaceDef = {
   id: 'shopping-district',
   kind: 'market',
   name: 'Shopping District',
+  inText: 'the Shopping District',
   icon: 'bowl',
   blurb: 'Ichiraku is open',
   stalls: [

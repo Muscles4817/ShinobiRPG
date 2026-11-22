@@ -180,7 +180,7 @@ export function techniqueIncoming(
   // Only a mind that reads the fight picks up on a technique leaned on.
   const familiar = readsInTheMoment(target) ? familiarScale(attacker.uses?.[t.id] ?? 0) : 1;
   // Signs made around a drawn blade come slower and give more away (`blades.ts`).
-  const full = handsFull(attacker, t.discipline, band);
+  const full = handsFull(attacker, t, band);
   return {
     form: 'technique',
     attacker,

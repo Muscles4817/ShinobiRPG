@@ -4,6 +4,8 @@ import { registerSW } from 'virtual:pwa-register';
 
 import { CAPACITOR_SHELL } from '@/platform/capacitorBackend';
 import { chooseStores } from '@/platform/chooseStores';
+import { ELECTRON_SHELL } from '@/platform/electronBackend';
+import { keepWritesOnLeave } from '@/platform/keepWrites';
 import { startPhoneShell } from '@/platform/phoneShell';
 import { App } from '@/ui/App';
 import '@/ui/theme/fonts.css';
@@ -61,7 +63,9 @@ const root = document.getElementById('root');
 if (!root) throw new Error('Missing #root element');
 
 async function boot(container: HTMLElement): Promise<void> {
-  const { stores, shell } = await chooseStores();
+  const { stores, shell, writes } = await chooseStores();
+  // A shell's saves are written behind the game: finish them before the app goes away.
+  if (writes) keepWritesOnLeave(writes, window, { holdClose: shell === ELECTRON_SHELL });
   createRoot(container).render(
     <StrictMode>
       <App store={stores.save} prefs={stores.prefs} edits={stores.edits} rescue={stores.rescue} />
@@ -69,7 +73,7 @@ async function boot(container: HTMLElement): Promise<void> {
   );
   // An app ships its files with it; only the web build caches itself for offline play.
   if (!shell) registerSW({ immediate: true });
-  if (shell === CAPACITOR_SHELL) void startPhoneShell();
+  if (shell === CAPACITOR_SHELL) void startPhoneShell(writes);
 }
 
 // If the device's files can't be opened at all, say so; a blank window says nothing.
