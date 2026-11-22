@@ -1,4 +1,4 @@
-import { splitNarration } from '../../rules/narration';
+import { textOf, linesOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { initialFighters, type PlanFighter, type Round } from './state';
 import { watchedBy } from './mimicry';
@@ -53,7 +53,7 @@ function round(perks: CombatantSetup['perks'] = ['insight', 'mimicry']): Round {
       ? { ...f, loadout: { close: [{ card: 'strike' }], mid: [{ card: 'throw' }], far: [] } }
       : f,
   );
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const copier = (r: Round) => r.fighters.find((f) => f.id === 'copier')!;
@@ -66,19 +66,19 @@ describe('mimicry', () => {
     expect(copier(after).techniques.map((t) => t.id)).toContain('bullet');
     expect(copier(after).copied).toEqual(['bullet']);
     expect(copier(after).loadout.mid.map((s) => s.card)).toEqual(['throw', 'jutsu:bullet']);
-    const told = splitNarration(after.lines.at(-1)!);
+    const told = linesOf(after.story).at(-1)!;
     expect(told.text).toMatch(/takes? in every seal of Bullet/);
-    expect(told.actorId).toBe('copier');
+    expect(told.actor).toBe('copier');
   });
 
   it('copies nothing without the perk, or while dazed', () => {
     const plain = round(['insight']);
-    expect(watchedBy(plain, user(plain), bullet).lines).toEqual([]);
+    expect(textOf(watchedBy(plain, user(plain), bullet).story)).toEqual([]);
     const r = round();
     const dazed = {
       ...r,
       fighters: r.fighters.map((f) => (f.id === 'copier' ? { ...f, stunned: 1 } : f)),
     };
-    expect(watchedBy(dazed, user(dazed), bullet).lines).toEqual([]);
+    expect(textOf(watchedBy(dazed, user(dazed), bullet).story)).toEqual([]);
   });
 });

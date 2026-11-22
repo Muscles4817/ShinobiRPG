@@ -1,12 +1,12 @@
 import type { CombatTechnique, RangeBand } from '../../contract';
 import { alive } from '../../rules/body';
 import { canCopy } from '../../rules/eyes';
-import { turnLine } from '../../rules/narration';
 import { RANGE_BANDS } from '../../rules/range';
 import { cardId, fitsBand, slotLimit } from './cards';
 import { isDazed } from './daze';
 import { inSight } from './senses';
-import { say, type Loadout, type PlanFighter, type Round } from './state';
+import { type Loadout, type PlanFighter, type Round } from './state';
+import { sayAs } from './toldPools';
 import { tell } from '../../rules/telling';
 
 /**
@@ -48,6 +48,6 @@ export function watchedBy(round: Round, user: PlanFighter, t: CombatTechnique): 
       what: t.name,
     });
     // The copy is the watcher's doing, even inside the user's turn.
-    return say({ ...r, fighters }, turnLine(line, f.id));
+    return sayAs({ ...r, fighters }, f.id, line);
   }, round);
 }

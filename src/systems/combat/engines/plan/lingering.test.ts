@@ -3,10 +3,9 @@ import { createRng } from '@/core';
 import { chakraCost } from '../../rules/body';
 import type { TechniqueEffect } from '@/systems/techniques';
 
-import { SLIPS } from '@/test/fightLines';
+import { linesOf, SLIPS, textOf } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique, RangeBand } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { useJutsu } from './jutsu';
 import { lingerAfter, lingeringStatuses } from './lingering';
 import { react } from './react';
@@ -53,7 +52,7 @@ function roundAt(range: RangeBand = 'close', slots: readonly string[] = []): Rou
   }).map((f): PlanFighter =>
     f.id === 'bandit' ? { ...f, loadout: { close: plainSlots(slots), mid: [], far: [] } } : f,
   );
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {} };
 }
 
 /** Uses the technique with each seed until it lands (the bandit doesn't see it coming). */
@@ -75,19 +74,16 @@ describe('verbs that leave something behind, in plan & watch', () => {
       { verb: 'knock', power: 6, to: 'far' },
     ]);
     expect(
-      landed(
-        roundAt('close'),
-        shove,
-        (r) => distanceBetween(r, 'hero', 'bandit') === 'far',
-      ).lines.join(' '),
+      textOf(
+        landed(roundAt('close'), shove, (r) => distanceBetween(r, 'hero', 'bandit') === 'far')
+          .story,
+      ).join(' '),
     ).toMatch(/thrown back to far range/);
     const pull = technique([{ verb: 'knock', power: 6, to: 'close' }]);
     expect(
-      landed(
-        roundAt('far'),
-        pull,
-        (r) => distanceBetween(r, 'hero', 'bandit') === 'close',
-      ).lines.join(' '),
+      textOf(
+        landed(roundAt('far'), pull, (r) => distanceBetween(r, 'hero', 'bandit') === 'close').story,
+      ).join(' '),
     ).toMatch(/dragged in close/);
   });
 
@@ -119,7 +115,7 @@ describe('verbs that leave something behind, in plan & watch', () => {
           { ...round, fighters },
           { attacker: hero!, target: target!, blow, rng: createRng(seed) },
         );
-        if (after.lines.some((l) => SLIPS.test(l))) n++;
+        if (linesOf(after.story).some((l) => SLIPS.test(l))) n++;
       }
       return n;
     };
@@ -158,8 +154,8 @@ describe('verbs that leave something behind, in plan & watch', () => {
       fighters: burning.fighters.map((f) => (f.id === 'bandit' ? { ...f, health: 1 } : f)),
     };
     const after = lingerAfter(nearlyDown, 1);
-    const said = after.lines.slice(nearlyDown.lines.length).map(splitNarration);
-    const harm = said.flatMap((l) => l.amounts.filter((a) => a.kind === 'harm'));
+    const said = linesOf(after.story).slice(linesOf(nearlyDown.story).length);
+    const harm = said.flatMap((l) => (l.amounts ?? []).filter((a) => a.kind === 'harm'));
     expect(harm.map((a) => a.amount)).toEqual([1]);
     expect(bandit(after).health).toBe(0);
   });
@@ -197,7 +193,7 @@ describe('verbs that leave something behind, in plan & watch', () => {
       blow,
       rng: createRng(2),
     });
-    expect(struck.lines.join(' ')).toMatch(/hero answers with Move/i);
+    expect(textOf(struck.story).join(' ')).toMatch(/hero answers with Move/i);
     expect(bandit(struck).health).toBeLessThan(100);
     expect(fighterIn(struck, hero!.id)!.riposte).toBeUndefined();
 
@@ -205,7 +201,7 @@ describe('verbs that leave something behind, in plan & watch', () => {
       { ...ready, range: 'mid' },
       { attacker: bandit(ready), target: fighterIn(ready, hero!.id)!, blow, rng: createRng(2) },
     );
-    expect(thrown.lines.join(' ')).not.toMatch(/answers with/i);
+    expect(textOf(thrown.story).join(' ')).not.toMatch(/answers with/i);
     expect(fighterIn(thrown, hero!.id)!.riposte).toBeDefined();
   });
 });

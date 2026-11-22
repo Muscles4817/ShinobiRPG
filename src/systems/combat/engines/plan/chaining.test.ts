@@ -1,9 +1,10 @@
+import { atHealth } from '@/test/planFighters';
 import { createRng } from '@/core';
-import { castsLine, chainBreaks, linksLine } from '@/test/fightLines';
+import { castsLine, chainBreaks, linksLine, linesOf } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { chainsOf, followThrough, opened } from './chaining';
-import { initialFighters, patch, type Round } from './state';
+import { initialFighters, type Round } from './state';
 
 const attributes = {
   strength: 14,
@@ -57,7 +58,7 @@ function roundOf(hero: Partial<CombatantSetup> = {}): Round {
     enemies: [setup('foe', { techniques: [] })],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function turnIn(round: Round) {
@@ -82,15 +83,15 @@ describe('chains in a fight', () => {
 
   it('follow through while the last link landed', () => {
     const before = roundOf();
-    const hurt = { ...before, fighters: patch(before.fighters, 'foe', { health: 90 }) };
+    const hurt = { ...before, fighters: atHealth(before.fighters, 'foe', 90) };
     const after = followThrough(before, hurt, turnIn(before), [heel]);
     expect(after.fighters[0]!.uses?.heel).toBe(1);
   });
 
   it('tell a link as carried on from the last, not as a fresh start', () => {
     const before = roundOf();
-    const hurt = { ...before, fighters: patch(before.fighters, 'foe', { health: 90 }) };
-    const lines = followThrough(before, hurt, turnIn(before), [heel]).lines;
+    const hurt = { ...before, fighters: atHealth(before.fighters, 'foe', 90) };
+    const lines = linesOf(followThrough(before, hurt, turnIn(before), [heel]).story);
     expect(lines.some((l) => linksLine(l, 'hero', 'Heel'))).toBe(true);
     expect(lines.some((l) => castsLine(l, 'hero', 'Heel'))).toBe(false);
   });
@@ -98,14 +99,13 @@ describe('chains in a fight', () => {
   it('break off when the last link missed, or its thrower was hurt in answer', () => {
     const before = roundOf();
     const missed = followThrough(before, before, turnIn(before), [heel]);
-    expect(missed.lines.at(-1)).toMatch(chainBreaks('missed'));
+    expect(chainBreaks('missed').test(linesOf(missed.story).at(-1)!)).toBe(true);
     const countered = {
       ...before,
-      fighters: patch(patch(before.fighters, 'foe', { health: 90 }), 'hero', { health: 80 }),
+      fighters: atHealth(atHealth(before.fighters, 'foe', 90), 'hero', 80),
     };
-    expect(followThrough(before, countered, turnIn(before), [heel]).lines.at(-1)).toMatch(
-      chainBreaks('countered'),
-    );
+    const broke = linesOf(followThrough(before, countered, turnIn(before), [heel]).story).at(-1);
+    expect(chainBreaks('countered').test(broke!)).toBe(true);
   });
 
   it('break off out of reach once a knock leaves the next move nothing to hit', () => {
@@ -113,9 +113,9 @@ describe('chains in a fight', () => {
     const knocked = {
       ...before,
       range: 'far' as const,
-      fighters: patch(before.fighters, 'foe', { health: 90 }),
+      fighters: atHealth(before.fighters, 'foe', 90),
     };
     const after = followThrough(before, knocked, turnIn(before), [heel]);
-    expect(after.lines.at(-1)).toMatch(chainBreaks('out-of-reach'));
+    expect(chainBreaks('out-of-reach').test(linesOf(after.story).at(-1)!)).toBe(true);
   });
 });

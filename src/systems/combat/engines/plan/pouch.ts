@@ -1,12 +1,12 @@
 import type { CombatItem } from '../../contract';
-import { itemBlocker, useItem } from '../../rules/items';
+import { itemBlocker, itemEffect } from '../../rules/items';
 import { volley } from './arms';
-import { felled } from './falls';
-import { shouldFlee } from '../../rules/kit';
 import { harmLine } from '../../rules/narration';
+import { changeHealth } from './health';
+import { taken, wound } from './wound';
 import type { Card } from './cards';
 import { opponentsOf, type Turn } from './senses';
-import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { fighterIn, say, type PlanFighter, type Round } from './state';
 import { tell } from '../../rules/telling';
 
 /**
@@ -56,23 +56,13 @@ export function toolInstinct(
   return ready.find((c): c is ToolCard => c.kind === 'item' && worthIt(self, c.item, moment));
 }
 
-/** A blast that leaves a coward badly hurt sends them running, like any other wound. */
-function fleeIfBroken(round: Round, id: string): Round {
-  const struck = fighterIn(round, id);
-  if (!struck || struck.health <= 0 || !shouldFlee(struck)) return round;
-  return say(
-    { ...round, fighters: patch(round.fighters, struck.id, { health: 0 }) },
-    tell('{t} turn{t.s} and run{t.s}.', { t: struck }),
-  );
-}
-
 /** Uses one of a tool from the pouch, writing the user and their foes back into the round. */
 export function useTool(round: Round, turn: Turn, item: CombatItem): Round {
   const { actor, target, rng } = turn;
   const foes = opponentsOf(round.fighters, actor);
   if (itemBlocker(actor, item, foes)) return round;
   if (item.effect === 'volley') return thrown(round, turn, item);
-  const used = useItem(
+  const used = itemEffect(
     { user: actor, item, foes, ...(target ? { targetId: target.id } : {}) },
     rng,
   );
@@ -81,12 +71,17 @@ export function useTool(round: Round, turn: Turn, item: CombatItem): Round {
   const fighters = round.fighters.map((f) =>
     f.id === actor.id ? user : (used.foes.find((foe) => foe.id === f.id) ?? f),
   );
-  const told = say({ ...round, fighters }, ...used.log);
-  const struck = used.foes.find((f) => f.id === target?.id);
-  const damage = struck && target ? target.health - struck.health : 0;
-  if (!struck || damage <= 0) return told;
-  const hit = say(told, harmLine(tell('{t} take{t.s} the hit.', { t: struck }), damage));
-  return struck.health <= 0 ? felled(hit, struck) : fleeIfBroken(hit, struck.id);
+  // A salve's mending is written as it is made, and shows with the line that tells it.
+  const mended = used.mended
+    ? changeHealth({ ...round, fighters }, actor.id, used.mended, { cause: 'heal', by: actor.id })
+    : { ...round, fighters };
+  const told = say(mended, ...used.log);
+  const struck = used.struck && fighterIn(told, used.struck.id);
+  if (!used.struck || !struck) return told;
+  // A tool's hit is a hit like any other (`wound.ts`): a clone pops, a hold breaks, a coward runs.
+  const damage = taken(struck, used.struck.damage);
+  const line = harmLine(tell('{t} take{t.s} the hit.', { t: struck }), damage);
+  return wound(told, { who: struck.id, damage, by: actor.id }, line);
 }
 
 /** A volley of shuriken: one handful spent, then thrown as steel (`arms.ts`). */

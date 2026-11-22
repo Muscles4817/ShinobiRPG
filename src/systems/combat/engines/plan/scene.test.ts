@@ -1,8 +1,7 @@
 import { createRng } from '@/core';
-import { hitsOn } from '@/test/fightLines';
+import { hitsOn, linesOf, told as toldLine } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatSetup } from '../../contract';
-import { splitNarration, voicesOf } from '../../rules/narration';
 import { createPlanEngine } from './engine';
 import { told, type Bank, type Moment } from './fresh';
 import { hitLine } from './hitVoice';
@@ -50,12 +49,12 @@ const MOMENTS: readonly Moment[] = Array.from({ length: 60 }, (_, i) => ({
   recent: [],
   tags: ['forest'],
 }));
-const text = (line: string) => splitNarration(line).text;
+const text = (line: string) => toldLine(line).text;
 
 /** A round in which `ryo` stands at `health` of a hundred, on `ground`, in exchange `number`. */
 function roundWith(health: number, number: number, extra: Partial<Round> = {}): Round {
   const ryo = { ...RYO, health, maxHealth: 100, traits: [] } as unknown as PlanFighter;
-  return { number, fighters: [ryo], range: 'mid', lines: [], seen: {}, intents: {}, ...extra };
+  return { number, fighters: [ryo], range: 'mid', story: [], seen: {}, intents: {}, ...extra };
 }
 
 /** A watched fight to its end; the player far stronger, so it ends quickly. */
@@ -79,7 +78,7 @@ function fightOut(setup: Partial<CombatSetup>, foe: CombatantSetup) {
     if (!next.ok) throw new Error(next.error);
     state = next.value;
   }
-  return engine.view(state).log;
+  return linesOf(engine.view(state).story);
 }
 
 describe('lines that know where they are', () => {
@@ -110,18 +109,25 @@ describe('lines that know where they are', () => {
 
   it('prefers a fresh line for the scene, and falls back on the general lines', () => {
     const lines = MOMENTS.map((m) => told(m, BANK, { a: RYO }));
-    const ofScene = lines.filter((l) => voicesOf(l)[0]?.startsWith('test-forest.'));
+    const ofScene = lines.filter((l) => toldLine(l).voices?.[0]?.startsWith('test-forest.'));
     expect(ofScene.length).toBeGreaterThan(lines.length / 2);
     expect(ofScene.length).toBeLessThan(lines.length);
     const both = BANK.scene?.forest?.map((l) => l.replace('{a}', 'Ryo')) ?? [];
-    const said = both.map((l, i) => `${l} ⟦v:test-forest.${i}⟧`);
+    const said = both.map((text, i) => ({
+      kind: 'told' as const,
+      text,
+      voices: [`test-forest.${i}`],
+    }));
     for (const m of MOMENTS) {
       expect(text(told({ ...m, recent: said }, BANK, { a: RYO }))).toBe('Ryo waits.');
     }
   });
 
   it('remembers a scene’s lines longer than the general ones', () => {
-    const said = ['Ryo waits among the trees. ⟦v:test-forest.0⟧', ...Array<string>(8).fill('…')];
+    const said = [
+      { kind: 'told' as const, text: 'Ryo waits among the trees.', voices: ['test-forest.0'] },
+      ...Array.from({ length: 8 }, () => ({ kind: 'told' as const, text: '…' })),
+    ];
     const lines = MOMENTS.map((m) => text(told({ ...m, earlier: said }, BANK, { a: RYO })));
     expect(lines).not.toContain('Ryo waits among the trees.');
   });
@@ -143,20 +149,20 @@ describe('lines that know where they are', () => {
       smashed: false,
       dodgeTried: false,
     });
-    expect(line).toMatch(hitsOn('Kai', 'bite'));
+    expect(hitsOn('Kai', 'bite').test(line)).toBe(true);
     expect(text(line)).toMatch(/mauls|tears through|savages/);
   });
 
   it('ends a spar on its feet, never in the dark', () => {
     for (const occasion of ['spar', 'teammate', 'rival', 'bout'] as const) {
       const log = fightOut({ occasion }, fighter('foe', { name: 'Kai', grammar: 'she' }));
-      expect(log.at(-1)).toMatch(new RegExp(`⟦v:won-${occasion}\\.`));
+      expect(log.at(-1)?.voices?.some((v) => v.startsWith(`won-${occasion}.`))).toBe(true);
     }
   });
 
   it('tells a fight on the ground it is fought on', () => {
     const wolf = fighter('wolf', { name: 'Wolf', called: 'the wolf', grammar: 'it', health: 60 });
-    const log = fightOut({ ground: 'forest' }, wolf).join('\n');
-    expect(log).toMatch(/⟦v:[a-z-]+-forest\.\d⟧/);
+    const voices = fightOut({ ground: 'forest' }, wolf).flatMap((l) => l.voices ?? []);
+    expect(voices.some((v) => /^[a-z-]+-forest\.\d$/.test(v))).toBe(true);
   });
 });

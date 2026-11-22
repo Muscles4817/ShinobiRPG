@@ -1,4 +1,4 @@
-import type { CombatantView, CombatView, RangeBand } from '@/systems/combat';
+import type { CombatantView, CombatEvent, CombatView, RangeBand } from '@/systems/combat';
 
 /**
  * A fight that has just ended, kept until you have watched it end. The engine's own state is
@@ -9,9 +9,10 @@ import type { CombatantView, CombatView, RangeBand } from '@/systems/combat';
 export interface CombatFinale {
   readonly round: number;
   readonly range: RangeBand | null;
-  readonly log: readonly string[];
-  /** Lines the engine had let go before `log` (see `CombatView.logOffset`). */
-  readonly logOffset: number;
+  /** The story as events (`CombatView.story`). */
+  readonly story: readonly CombatEvent[];
+  /** Events the engine had let go before `story` (see `CombatView.storyOffset`). */
+  readonly storyOffset: number;
   readonly combatants: readonly CombatantView[];
   /** A fight only watched (versus, an exam's finals): nobody on the stage is you. */
   readonly watched?: true;
@@ -21,8 +22,8 @@ export function finaleOf(view: CombatView): CombatFinale {
   return {
     round: view.round,
     range: view.range ?? null,
-    log: view.log,
-    logOffset: view.logOffset ?? 0,
+    story: view.story,
+    storyOffset: view.storyOffset ?? 0,
     combatants: view.combatants,
     ...(view.watched ? { watched: true as const } : {}),
   };
@@ -32,8 +33,8 @@ export function finaleOf(view: CombatView): CombatFinale {
 export function combatFinaleView(finale: CombatFinale): CombatView {
   return {
     round: finale.round,
-    log: finale.log,
-    logOffset: finale.logOffset,
+    story: finale.story,
+    storyOffset: finale.storyOffset,
     combatants: finale.combatants,
     options: [],
     ...(finale.range ? { range: finale.range } : {}),

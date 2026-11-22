@@ -23,7 +23,7 @@ const fighters: CombatantView[] = [
 const view: CombatView = {
   round: 1,
   combatants: fighters,
-  log: [],
+  story: [],
   options: [{ id: 'go', label: 'Begin the round', detail: '', kind: 'continue' }],
   range: 'close',
 };

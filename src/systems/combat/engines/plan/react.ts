@@ -202,7 +202,12 @@ function evade(round: Round, hit: Hit, has: Ready): Evasion {
   const line = missLine(momentOf(round, target.id), missWhy(hit, tried), slip);
   const cause = slipCauseBeside(slipCause(round, blowIncoming(hit)), tried);
   // Anyone slips some blows; a ready Dodge is shown reacting, any other slip as a miss.
-  const told = withCause(reactionLine(line, tried ? 'dodged' : 'missed'), cause);
+  const reacted = reactionLine(
+    line,
+    { by: target.id, on: attacker.id },
+    tried ? 'dodged' : 'missed',
+  );
+  const told = withCause(reacted, cause, attacker.id);
   // A ready Dodge may leap clear of the blow (`leap.ts`); an Evade or a plain slip stays put.
   const said = say(round, told);
   const weight = weightOf(blowIncoming(hit));
@@ -334,7 +339,8 @@ export function react(start: Round, struck: Hit): Round {
     }),
   ];
   const marked = smashed ? brokeGuard(shielded, target.id, attacker.id) : shielded;
-  const cut = threadsCutBy(wound(marked, target.id, damage, ...lines), attacker, target);
+  const wounded = wound(marked, { who: target.id, damage, by: attacker.id }, ...lines);
+  const cut = threadsCutBy(wounded, attacker, target);
   const worn = wearShroud(cut, target.id, hitTypeOf(blow), damage);
   const landed = confuse(worn, hit);
   return landed;

@@ -1,5 +1,5 @@
+import { linesOf, told } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { plannedPlay } from './priority';
 import { staged } from './staging';
 import { initialFighters, plainSlots, type PlanFighter, type Round } from './state';
@@ -51,7 +51,7 @@ function round(hero: Partial<PlanFighter>, foe: Partial<PlanFighter> = {}): Roun
     enemies: [setup('foe')],
     canFlee: true,
   }).map((f) => (f.id === 'hero' ? { ...f, ...hero } : { ...f, ...foe }));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const hero = (r: Round) => r.fighters.find((f) => f.id === 'hero')!;
@@ -75,8 +75,9 @@ describe('a turn off the player’s plan', () => {
 
   it('the screen is told on the turn’s first line, and only then', () => {
     const before = round({ loadout: empty });
-    const after = { ...before, lines: ['You swing.', 'It lands.'], offPlan: 'improvised' as const };
-    const [first, second] = staged(before, after, 'hero').lines.map(splitNarration);
+    const story = [told('You swing.'), told('It lands.')];
+    const after = { ...before, story, offPlan: 'improvised' as const };
+    const [first, second] = linesOf(staged(before, after, 'hero').story);
     expect(first?.offPlan).toBe('improvised');
     expect(second?.offPlan).toBeUndefined();
     expect(staged(before, after, 'hero')).not.toHaveProperty('offPlan');

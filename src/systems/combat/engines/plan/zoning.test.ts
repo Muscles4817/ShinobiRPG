@@ -1,7 +1,7 @@
 import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 
-import { GETS_THROUGH, holdsOff } from '@/test/fightLines';
+import { GETS_THROUGH, holdsOff, linesOf, anyIs } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { editReadiness, readinessOptions } from './readinessTable';
 import { readyDefences } from './readiness';
@@ -65,7 +65,7 @@ function atMid(acted: readonly string[] = [], hero: Partial<CombatantSetup> = {}
     enemies: [setup('caster', { techniques: [gust] })],
     canFlee: true,
   }).map((f) => (f.id === 'caster' ? { ...f, holdOff } : f));
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {}, acted };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {}, acted };
 }
 
 function stepIn(round: Round, seed: number): Round {
@@ -76,8 +76,10 @@ function stepIn(round: Round, seed: number): Round {
 describe('holding a foe off', () => {
   it('a step in meets the holder’s fire: held off and hit, or slipping through and closing in', () => {
     const results = Array.from({ length: 60 }, (_, i) => stepIn(atMid(), i + 1));
-    const held = results.filter((r) => r.lines.some((l) => holdsOff('caster', 'hero').test(l)));
-    const through = results.filter((r) => r.lines.some((l) => GETS_THROUGH.test(l)));
+    const held = results.filter((r) =>
+      linesOf(r.story).some((l) => holdsOff('caster', 'hero').test(l)),
+    );
+    const through = results.filter((r) => linesOf(r.story).some((l) => GETS_THROUGH.test(l)));
     expect(held.length).toBeGreaterThan(0);
     expect(through.length).toBeGreaterThan(0);
     for (const r of held) expect(distanceBetween(r, 'hero', 'caster')).toBe('mid');
@@ -89,9 +91,8 @@ describe('holding a foe off', () => {
   it('a holder who has already acted this exchange can’t', () => {
     for (let seed = 1; seed <= 20; seed++) {
       const after = stepIn(atMid(['caster']), seed);
-      expect(after.lines.join(' ')).not.toMatch(
-        new RegExp(`${holdsOff('caster', 'hero').source}|${GETS_THROUGH.source}`),
-      );
+      const lines = linesOf(after.story);
+      expect(anyIs(lines, holdsOff('caster', 'hero')) || anyIs(lines, GETS_THROUGH)).toBe(false);
     }
   });
 
@@ -145,7 +146,9 @@ describe('a big body closing in', () => {
     expect(closed({ size: 'large' })).toBeGreaterThan(closed({}));
     const walked = seeds
       .map((seed) => stepIn(atMid([], { size: 'large' }), seed))
-      .filter((r) => r.lines.some((l) => l.includes('⟦v:pushed-through')));
+      .filter((r) =>
+        linesOf(r.story).some((l) => l.voices?.some((v) => v.startsWith('pushed-through'))),
+      );
     expect(walked.length).toBeGreaterThan(0);
     for (const r of walked) expect(distanceBetween(r, 'hero', 'caster')).toBe('close');
   });

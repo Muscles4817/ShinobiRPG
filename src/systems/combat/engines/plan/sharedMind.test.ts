@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueDef } from '@/systems/techniques';
 
@@ -70,7 +71,7 @@ function keeperFight(): Round {
     ],
     canFlee: false,
   });
-  return { number: 3, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 3, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const who = (r: Round, id: string) => r.fighters.find((f) => f.id === id)!;
@@ -109,7 +110,7 @@ describe('a shared mind', () => {
     expect(decide(r.fighters)).toBe('victory');
     const after = mindsAfter(r);
     expect(who(after, 'mask-a').health).toBe(0);
-    expect(after.lines.join(' ')).toMatch(/drops where/);
+    expect(textOf(after.story).join(' ')).toMatch(/drops where/);
   });
 
   it('is beaten when every body falls, its source giving up the fight', () => {
@@ -118,7 +119,7 @@ describe('a shared mind', () => {
     expect(decide(r.fighters)).toBe('victory');
     const after = mindsAfter(r);
     expect(who(after, 'keeper').health).toBe(0);
-    expect(after.lines.join(' ')).toMatch(/gives up the fight/);
+    expect(textOf(after.story).join(' ')).toMatch(/gives up the fight/);
   });
 
   it('raises a body that fell, for chakra, giving a hidden raiser away a little', () => {
@@ -128,14 +129,14 @@ describe('a shared mind', () => {
     expect(who(after, 'mask-a').fellAt).toBeUndefined();
     expect(who(after, 'keeper').chakra).toBe(100 - raiseCost(who(r, 'keeper')));
     expect(who(after, 'keeper').exposure).toBe(1);
-    expect(after.lines.join(' ')).toMatch(/stands up again/);
+    expect(textOf(after.story).join(' ')).toMatch(/stands up again/);
   });
 
   it('can’t raise a body that fell under a seal', () => {
     const r = changed(keeperFight(), 'mask-a', { health: 0, fellAt: 3, sealed: 2 });
     const after = mindsAfter(r);
     expect(who(after, 'mask-a').health).toBe(0);
-    expect(after.lines.join(' ')).toMatch(/seal on mask-a holds/);
+    expect(textOf(after.story).join(' ')).toMatch(/seal on mask-a holds/);
   });
 
   it('takes in a body called to share its caller’s mind', () => {

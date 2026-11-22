@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
 import type { Clones } from '../../rules/verbs';
 import { clonesAfter } from './cloneUpkeep';
@@ -48,7 +49,7 @@ function withClones(clones: Clones, chakra = 60): Round {
     enemies: [setup('foe')],
     canFlee: true,
   }).map((f): PlanFighter => (f.id === 'maker' ? { ...f, clones, chakra } : f));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const maker = (r: Round) => r.fighters.find((f) => f.id === 'maker')!;
@@ -73,7 +74,7 @@ describe('keeping clones up', () => {
   it('clones the maker can no longer pay for fade', () => {
     const after = clonesAfter(withClones(solid({ kind: 'lightning' }), 3));
     expect(maker(after).clones?.count).toBe(3);
-    expect(after.lines.at(-1)).toMatch(/clones fade/);
+    expect(textOf(after.story).at(-1)).toMatch(/clones fade/);
   });
 
   it('an earth clone that burst heaves back up, never past what was made', () => {

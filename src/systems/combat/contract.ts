@@ -1,5 +1,5 @@
 import type { CombatInspection } from './inspectionContract';
-import type { CombatSide } from './sides';
+import type { CombatSide, RangeBand } from './sides';
 
 export type { CombatSide } from './sides';
 import type { Grammar, Result, Rng } from '@/core';
@@ -12,6 +12,7 @@ import type { CombatGround } from './groundContract';
 import type { CombatFighting } from './fightingContract';
 import type { CombatMind } from './mindContract';
 import type { CombatSwarm } from './swarmContract';
+import type { CombatEvent } from './storyContract';
 import type { CombatOrders, CombatStance, CombatUsage } from './teamContract';
 
 /**
@@ -76,8 +77,7 @@ export type CombatTechnique = Pick<
   readonly rank?: TechniqueDef['rank'];
 };
 
-/** How far apart the two sides stand. Engines decide what each band allows. */
-export type RangeBand = 'close' | 'mid' | 'far';
+export type { RangeBand } from './sides';
 
 /**
  * Where a fighter stands in their side's formation. The back row can't be struck up close
@@ -479,13 +479,16 @@ export interface CombatOption {
 export interface CombatView {
   readonly round: number;
   readonly combatants: readonly CombatantView[];
-  /** Narration, oldest first. */
-  readonly log: readonly string[];
   /**
-   * How many earlier lines the engine has let go (it keeps only the latest), so a line's place
-   * in the whole story is `logOffset` plus its index. Absent: none dropped.
+   * The fight's story as events, oldest first (`storyContract.ts`): its lines and every change
+   * between them, in the order they happened.
    */
-  readonly logOffset?: number;
+  readonly story: readonly CombatEvent[];
+  /**
+   * How many earlier events the engine has let go (it keeps only the latest), so an event's place
+   * in the whole story is `storyOffset` plus its index. Absent: none dropped.
+   */
+  readonly storyOffset?: number;
   /**
    * Everyone who has stood on the field this fight, gone or not: a clone that popped within the
    * lines being shown is named and sided from here (`plan/cast.ts`).

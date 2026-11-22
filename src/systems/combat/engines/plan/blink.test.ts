@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique, RangeBand } from '../../contract';
 import { afterBlink, blinkInstead, blinksReady, withTeleports } from './blink';
 import { distanceBetween } from './distance';
@@ -51,7 +52,7 @@ function fighters(teleport: boolean): readonly PlanFighter[] {
 }
 
 function at(fs: readonly PlanFighter[], band: RangeBand): Round {
-  return { number: 1, fighters: [...fs], range: band, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters: [...fs], range: band, story: [], seen: {}, intents: {} };
 }
 
 const hero = (r: Round) => r.fighters.find((f) => f.id === 'hero')!;
@@ -65,7 +66,7 @@ describe('the teleport', () => {
     const round = at(fighters(true), 'mid');
     const blinked = blinkInstead(round, hero(round), stepIn)!;
     expect(distanceBetween(blinked, 'hero', 'foe')).toBe('close');
-    expect(blinked.lines.some((l) => l.includes('vanish'))).toBe(true);
+    expect(textOf(blinked.story).some((l) => l.includes('vanish'))).toBe(true);
   });
 
   it('goes straight to the distance a fighter keeps, however far', () => {

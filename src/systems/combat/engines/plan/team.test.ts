@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng, type Rng } from '@/core';
 
 import type { CombatantSetup, CombatSetup, CombatTechnique } from '../../contract';
@@ -107,7 +108,7 @@ describe('plan & watch team: stances', () => {
     const kiba = { ...ally(state), stance: { kind: 'support' } as const };
     const support = { ...kiba, loadout: stanceLoadout(kiba, kiba.stance, state.fighters) };
     const fighters = state.fighters.map((f) => (f.id === 'kiba' ? support : f));
-    const round: Round = { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+    const round: Round = { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
     expect(plannedPlay(support, round).card).toEqual(findCard(support, 'jutsu:glare'));
     const held = fighters.map((f) => (f.side === 'enemy' ? { ...f, stunned: 1, openUntil: 2 } : f));
     expect(plannedPlay(support, { ...round, fighters: held }).card).toEqual(
@@ -193,7 +194,7 @@ describe('plan & watch team: the mark', () => {
       number: 1,
       fighters: [...marked.fighters],
       range: 'mid',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     };
@@ -215,7 +216,7 @@ describe('plan & watch team: cover', () => {
       number: 1,
       fighters: [...state.fighters],
       range: 'close',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     };
@@ -228,7 +229,7 @@ describe('plan & watch team: cover', () => {
     const turn = { actor: bandit(round), target: hero(round), rng: always };
     const aim = intercept(round, turn, { kind: 'strike' });
     expect(aim.target?.id).toBe('kiba');
-    expect(aim.round.lines.join(' ')).toContain('Kiba steps in front of hero.');
+    expect(textOf(aim.round.story).join(' ')).toContain('Kiba steps in front of hero.');
   });
 
   it('but not for anyone else, nor for an area technique', () => {

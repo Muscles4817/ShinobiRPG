@@ -1,6 +1,6 @@
 import { createRng, type Rng } from '@/core';
 
-import { castsLine } from '@/test/fightLines';
+import { castsLine, linesOf, textOf, told } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { FINISHER_BONUS } from '../../rules/team';
@@ -9,7 +9,6 @@ import { useJutsu } from './jutsu';
 import { plannedPlay } from './priority';
 import { resolveExchange } from './round';
 import { decode, initialFighters, type PlanFighter, type Round } from './state';
-import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 5,
@@ -67,7 +66,7 @@ function roundWith(hero: Partial<CombatantSetup>, kiba: Partial<CombatantSetup>)
     enemies: [fighter('bandit')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 function who(round: Round, id: string): PlanFighter {
@@ -84,7 +83,7 @@ const lost = (before: Round, after: Round) =>
   who(before, 'bandit').health - who(after, 'bandit').health;
 
 /** The log as the player reads it: the sentences, without the screen's markers. */
-const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
+const said = (log: readonly string[]) => log.map((line) => told(line).text);
 
 describe('plan & watch combos: elements', () => {
   it('wind then fire on one foe in one exchange: the fire lands harder', () => {
@@ -92,16 +91,16 @@ describe('plan & watch combos: elements', () => {
     const alone = cast(start, 'kiba', flame);
     const fanned = cast(start, 'hero', gust);
     const combo = cast(fanned, 'kiba', flame);
-    expect(combo.lines).toContain('The wind feeds the flames.');
+    expect(textOf(combo.story)).toContain('The wind feeds the flames.');
     expect(lost(fanned, combo)).toBeGreaterThan(lost(start, alone));
   });
 
   it('elements that don’t feed each other, or the same fighter twice, make no combo', () => {
     const start = roundWith({ techniques: [gust, flame] }, { techniques: [stone] });
     const twice = cast(cast(start, 'hero', gust), 'hero', flame);
-    expect(twice.lines).not.toContain('The wind feeds the flames.');
+    expect(textOf(twice.story)).not.toContain('The wind feeds the flames.');
     const apart = cast(cast(start, 'hero', gust), 'kiba', stone);
-    expect(apart.lines.some((l) => l.includes('!') && l.includes('feeds'))).toBe(false);
+    expect(textOf(apart.story).some((l) => l.includes('!') && l.includes('feeds'))).toBe(false);
   });
 });
 
@@ -140,8 +139,8 @@ describe('plan & watch combos: combination techniques', () => {
   it('both halves go off together, harder, and the partner pays and gives their turn', () => {
     const start = roundWith({ techniques: [snare] }, { techniques: [fall] });
     const both = cast(start, 'hero', snare);
-    expect(both.lines.join(' ')).toContain('Hero and kiba combine Snare and Fall.');
-    expect(both.lines.some((l) => castsLine(l, 'kiba', 'Fall'))).toBe(true);
+    expect(textOf(both.story).join(' ')).toContain('Hero and kiba combine Snare and Fall.');
+    expect(linesOf(both.story).some((l) => castsLine(l, 'kiba', 'Fall'))).toBe(true);
     expect(who(both, 'kiba').joined).toBe(true);
     expect(who(both, 'kiba').chakra).toBeLessThan(30);
     const single = cast(roundWith({ techniques: [flame] }, {}), 'hero', flame);
@@ -167,7 +166,7 @@ describe('plan & watch combos: combination techniques', () => {
       fighters: state.fighters.map((f) => (f.id === 'kiba' ? { ...f, joined: true } : f)),
     };
     const after = resolveExchange(joined, createRng(3));
-    expect(said(after.log)).toContain('Kiba gathers themself after the combination.');
+    expect(said(textOf(after.story))).toContain('Kiba gathers themself after the combination.');
     expect(after.fighters.find((f) => f.id === 'kiba')?.joined).toBe(false);
   });
 });

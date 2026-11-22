@@ -134,5 +134,5 @@ export function sealsBroken(round: Round, turn: Turn, t: CombatTechnique): Round
   const spent = pool === 'chakra' ? paying(actor, amount / 2) : {};
   const fighters = patch(round.fighters, actor.id, spent);
   const line = tell(CAME_APART, { a: actor, b: foe, what: t.name });
-  return say({ ...round, fighters }, causeLine(line, 'crowded'));
+  return say({ ...round, fighters }, causeLine(line, 'crowded', actor.id));
 }

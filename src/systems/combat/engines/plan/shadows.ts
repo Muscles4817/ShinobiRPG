@@ -13,6 +13,7 @@ import {
   SHADOW_BODIES_MAX,
 } from '../../rules/shadowClones';
 import { tell } from '../../rules/telling';
+import { setHealth } from './health';
 import { cloneCount, cloneKindFor, isWounding, type EffectUse } from '../../rules/verbs';
 import { EMPTY_LOADOUT, fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { seesTheRealBody } from '../../rules/eyes';
@@ -77,6 +78,19 @@ function copyOf(maker: PlanFighter, index: number, chakra: number): PlanFighter 
   };
 }
 
+/**
+ * The highest number among a maker's clones on the field: new ones are numbered past it, so a
+ * clone never shares an id with one still standing (counting them did, once one had left).
+ */
+function lastShadowIndex(round: Round, makerId: string): number {
+  const prefix = `${makerId}~shadow~`;
+  return round.fighters.reduce(
+    (most, f) =>
+      f.id.startsWith(prefix) ? Math.max(most, Number(f.id.slice(prefix.length))) : most,
+    0,
+  );
+}
+
 /** The maker's turn on a shadow clone technique: the split, the clones, and any crowd. */
 export function makeShadows(round: Round, actor: PlanFighter, use: EffectUse<'clone'>): Round {
   const maker = fighterIn(round, actor.id) ?? actor;
@@ -97,7 +111,7 @@ export function makeShadows(round: Round, actor: PlanFighter, use: EffectUse<'cl
     );
   }
   const share = shadowShare(maker.chakra - bodies * bodyCost(maker.maxChakra), bodies);
-  const made = round.fighters.filter((f) => f.shadowOf === maker.id).length;
+  const made = lastShadowIndex(round, maker.id);
   const clones = Array.from({ length: bodies }, (_, i) => copyOf(maker, made + i + 1, share));
   const crowd = Math.max(0, cloneCount(maker.maxChakra, use) - bodies);
   const decoys =
@@ -155,8 +169,8 @@ export function popLine(clone: PlanFighter): string {
 export function shadowsGone(round: Round, maker: PlanFighter): Round {
   const gone = shadowsOf(round, maker.id);
   if (gone.length === 0) return round;
-  const fighters = gone.reduce((all, c) => patch(all, c.id, { health: 0 }), round.fighters);
-  return say({ ...round, fighters }, tell('{a.poss} clones vanish with {a.them}.', { a: maker }));
+  const popped = gone.reduce((r, c) => setHealth(r, c.id, 0, { cause: 'popped' }), round);
+  return say(popped, tell('{a.poss} clones vanish with {a.them}.', { a: maker }));
 }
 
 /** As an exchange ends: popped clones leave the field. */

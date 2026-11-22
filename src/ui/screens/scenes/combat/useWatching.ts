@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import type { CombatantView } from '@/game';
 
 /**
- * Where watching a staged fight stands. The stage is set by what the fight's log holds, never by
+ * Where watching a staged fight stands. The stage is set by what the fight's story holds, never by
  * what you pressed: lines you haven't watched are staged from where you left off as soon as they
  * exist, and the stage holds once they have played until you go back to plan. A step still being
  * played (off the page's thread) has no lines yet, so nothing is staged, held or let go for it,
@@ -11,9 +11,9 @@ import type { CombatantView } from '@/game';
  */
 
 export interface Watching {
-  /** The log line the beats on the stage start at. */
+  /** The story event the beats on the stage start at (`storyEnd` places). */
   readonly from: number;
-  /** How far into the log you have watched. */
+  /** How far into the story you have watched. */
   readonly seen: number;
   /** The stage stays up after its beats until you go back to plan. */
   readonly holding: boolean;
@@ -21,13 +21,13 @@ export interface Watching {
   readonly before: readonly CombatantView[] | null;
 }
 
-/** Watching from the end of a log of `length` lines, with nothing on the stage. */
+/** Watching from the end of a story of `length` events, with nothing on the stage. */
 function caughtUp(length: number): Watching {
   return { from: length, seen: length, holding: false, before: null };
 }
 
 /**
- * Where watching should stand for a log of `length` lines, or null when it already does. Turn by
+ * Where watching should stand for a story of `length` events, or null when it already does. Turn by
  * turn (`staged` false) the log is the screen, so it keeps up and a finished fight stages only
  * its end. Staged, lines not yet watched are put on the stage from where you left off, and held.
  * A log shorter than what was watched is another fight's: start over at its end.

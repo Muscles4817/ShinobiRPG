@@ -9,6 +9,8 @@ import { healthNow } from './roundOpened';
 import { roundReads } from './roundReads';
 import { quietAfter } from './tiring';
 import { draftedForRound } from './whoPlans';
+import { dividerTold } from './staging';
+import { toldOn } from './toldPools';
 
 /**
  * The end of a round: a fight no one is winning ends in a stalemate (`tiring.ts`); otherwise
@@ -20,14 +22,16 @@ import { draftedForRound } from './whoPlans';
 export { ROUND_EXCHANGES } from './keepTryingShape';
 import { ROUND_EXCHANGES } from './keepTryingShape';
 
-const nextRound = (watching: boolean) => (watching ? ['— The next round begins —'] : []);
+const nextRound = (watching: boolean) =>
+  watching ? [dividerTold('— The next round begins —')] : [];
 
 /** When the round is over, back to the card table. */
 export function endOfRound(ended: PlanState): PlanState {
   if (ended.result || ended.exchange < ROUND_EXCHANGES) return ended;
   // A fight no one is winning ends in a stalemate (`tiring.ts`).
   const next = { ...ended, ...quietAfter(ended) };
-  if (next.result) return { ...next, log: [...next.log, closingLine(asRound(next), next.result)] };
+  if (next.result)
+    return { ...next, story: toldOn(next.story, closingLine(asRound(next), next.result)) };
   const watching = next.watching ?? false;
   const restanced = foesRestanced(next.fighters);
   const fighters = betweenRounds(restanced, next.reads, watching);
@@ -43,11 +47,11 @@ export function endOfRound(ended: PlanState): PlanState {
     // A foe that changes the defence it keeps says so (`learned.ts`).
     healthAtRound: healthNow(fighters),
     // What the player's fighter made of the round (`roundReads.ts`).
-    log: [
-      ...next.log,
+    story: toldOn(
+      next.story,
       ...adaptLines(restanced, fighters, playerOf(next)),
       ...roundReads(next),
       ...nextRound(watching),
-    ],
+    ),
   });
 }

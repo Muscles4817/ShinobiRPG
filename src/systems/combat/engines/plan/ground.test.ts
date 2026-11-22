@@ -2,7 +2,7 @@ import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 
 import type { CombatGround, CombatantSetup, CombatTechnique } from '../../contract';
-import { spots } from '@/test/fightLines';
+import { linesOf, spots, textOf } from '@/test/fightLines';
 
 import { createPlanEngine } from './engine';
 import { useJutsu } from './jutsu';
@@ -59,7 +59,7 @@ function on(
     enemies: [setup('bandit')],
     canFlee: true,
   });
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {}, ground };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {}, ground };
 }
 
 const SEEDS = 200;
@@ -69,7 +69,7 @@ describe('the ground in a fight', () => {
     const [hero, , bandit] = on('room').fighters;
     const after = step(on('room'), { actor: hero!, target: bandit, rng: createRng(1) }, 'back');
     expect(distanceBetween(after, 'hero', 'bandit')).toBe('mid');
-    expect(after.lines.join(' ')).toMatch(/wall behind them/);
+    expect(textOf(after.story).join(' ')).toMatch(/wall behind them/);
   });
 
   it('in a room, a wide technique catches your own side, softer', () => {
@@ -129,7 +129,7 @@ describe('the ground in a fight', () => {
         };
         const hero = hidden.fighters[0]!;
         const after = search(hidden, { actor: hero, target: undefined, rng: createRng(seed) });
-        if (after.lines.some((l) => spots('hero', 'bandit').test(l))) hits++;
+        if (linesOf(after.story).some((l) => spots('hero', 'bandit').test(l))) hits++;
       }
       return hits;
     };
@@ -154,6 +154,6 @@ describe('the ground in a fight', () => {
     expect(state.ground).toBe('room');
     // Rules are for planning: the prompt says them, the story doesn't.
     expect(engine.view(started).prompt).toMatch(/Four walls/);
-    expect(state.log.join(' ')).not.toMatch(/Four walls/);
+    expect(textOf(state.story).join(' ')).not.toMatch(/Four walls/);
   });
 });

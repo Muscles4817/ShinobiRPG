@@ -10,6 +10,7 @@ import {
   readScale,
   tellRating,
   type AttackForm,
+  type AvoidRoll,
 } from '../../rules/avoidance';
 import { FORESIGHT_SEES, FORESIGHT_SEES_THROUGH, FORESIGHT_SLIP, foreseen } from '../../rules/eyes';
 import { familiarScale } from '../../rules/familiarity';
@@ -55,7 +56,7 @@ import { DODGE_BY_WEIGHT, weightOf } from './weight';
  */
 
 /** A swift fighter slips this much more with a Dodge ready, half of it without. */
-const SWIFT_INSTINCT = 0.5;
+export const SWIFT_INSTINCT = 0.5;
 
 /** One attack on its way to one defender. */
 export interface Incoming {
@@ -109,43 +110,81 @@ export function avoidOdds(round: Round, incoming: Incoming): number {
     : odds;
 }
 
-function avoidRoll(round: Round, incoming: Incoming): number {
+/**
+ * Everything one avoid roll weighs, gathered once: the rules' roll, what scales it here (insects,
+ * dust, footing, the body), and the defender as they meet it. `causes.ts` reads why a slip
+ * happened from the same parts the odds came from.
+ */
+export interface AvoidParts {
+  readonly roll: AvoidRoll;
+  /** What scales the roll here, multiplied in this order: insects, dust, footing, the body. */
+  readonly scales: readonly [number, number, number, number];
+  readonly target: PlanFighter;
+  /** Their eyes see it coming (`foresight`): the slip is lifted by this much. */
+  readonly foresight: number | null;
+  /** How much more easily it was read for having been leaned on (in the roll's `read`). */
+  readonly familiar: number;
+}
+
+/** The parts of one avoid roll; null when nothing can slip it (dazed, held for a killing blow). */
+export function avoidParts(round: Round, incoming: Incoming): AvoidParts | null {
   // A still rider is carried clear by their mount, or not at all (`riding.ts`).
   const mount = carrierOf(round, incoming.target);
-  if (mount) return avoidRoll(round, { ...incoming, target: leapingClear(mount) });
-  const { attacker, form } = incoming;
+  if (mount) return avoidParts(round, { ...incoming, target: leapingClear(mount) });
+  const { attacker } = incoming;
   const target = dulled(round.field, incoming.target);
-  if (isDazed(target) || incoming.killing === 0) return 0;
-  const dodging = dodgesHere(round, target);
-  const evading = committedTo(target, 'evade');
-  const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
-  const read = readScale(readRating(target), tellRating(attacker, incoming.skill), form);
-  const seesAll = hasPerk(target, 'foresight');
-  const chance = avoidChance({
-    seesAll,
-    form,
-    rating: avoidRating(target, incoming.discipline),
-    arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
-    read: read * (incoming.familiar ?? 1),
-    dodging,
-    ...(dodging ? { dodgeScale: DODGE_BY_WEIGHT[weightOf(incoming)] } : {}),
-    evading,
-    ...(incoming.threat === undefined ? {} : { threat: incoming.threat }),
-    ...(incoming.paceSpeed === undefined ? {} : { paceSpeed: incoming.paceSpeed }),
-    bonus: swift,
-    ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
-    ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
-  });
+  if (isDazed(target) || incoming.killing === 0) return null;
+  const roll = rollOf(round, incoming, target);
   const insects =
     (incoming.swarm ?? 1) *
     settledSlips(round, attacker, target) *
     (isGathering(target) ? GATHER_OPEN : 1);
   const dust = blindedSlips(attacker);
   // A big body is a big target (`size.ts`).
-  const held =
-    chance * insects * dust * footingOf(round.ground, target) * bodyScale(target, incoming);
-  const scale = foresightScale(incoming);
-  return foreseen(held, target, { scale, ceiling: avoidCeiling(evading, seesAll) });
+  const scales = [
+    insects,
+    dust,
+    footingOf(round.ground, target),
+    bodyScale(target, incoming),
+  ] as const;
+  const foresight = roll.seesAll === true ? foresightScale(incoming) : null;
+  return { roll, scales, target, foresight, familiar: incoming.familiar ?? 1 };
+}
+
+/** The rules' roll for one attack on a defender as they meet it. */
+function rollOf(round: Round, incoming: Incoming, target: PlanFighter): AvoidRoll {
+  const { attacker, form } = incoming;
+  const dodging = dodgesHere(round, target);
+  const swift = hasTrait(target, 'swift') ? SWIFT_DODGE * (dodging ? 1 : SWIFT_INSTINCT) : 0;
+  const read = readScale(readRating(target), tellRating(attacker, incoming.skill), form);
+  return {
+    seesAll: hasPerk(target, 'foresight'),
+    form,
+    rating: avoidRating(target, incoming.discipline),
+    arrival: form === 'technique' ? incoming.skill : attacker.attributes.speed,
+    read: read * (incoming.familiar ?? 1),
+    dodging,
+    ...(dodging ? { dodgeScale: DODGE_BY_WEIGHT[weightOf(incoming)] } : {}),
+    evading: committedTo(target, 'evade'),
+    ...(incoming.threat === undefined ? {} : { threat: incoming.threat }),
+    ...(incoming.paceSpeed === undefined ? {} : { paceSpeed: incoming.paceSpeed }),
+    bonus: swift,
+    ...(incoming.accuracy ? { accuracy: incoming.accuracy } : {}),
+    ...(incoming.areaSize ? { areaSize: incoming.areaSize } : {}),
+  };
+}
+
+/** The chance an attack is slipped, from the roll's parts. */
+export function partsOdds({ roll, scales, target, foresight }: AvoidParts): number {
+  const [insects, dust, footing, body] = scales;
+  const held = avoidChance(roll) * insects * dust * footing * body;
+  const ceiling = avoidCeiling(roll.evading === true, roll.seesAll === true);
+  return foreseen(held, target, { scale: foresight ?? 1, ceiling });
+}
+
+function avoidRoll(round: Round, incoming: Incoming): number {
+  const parts = avoidParts(round, incoming);
+  return parts ? partsOdds(parts) : 0;
 }
 
 /** How the target's own body bears on a slip: held, big, or unable to see a killing blow. */

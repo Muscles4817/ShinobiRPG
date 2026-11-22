@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { openStep } from '../../rules/verbs';
 import { playable } from './cards';
@@ -69,7 +70,7 @@ function round(): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const use = (t: CombatTechnique) => ({ technique: t, effect: t.effects[0] as never });
@@ -80,7 +81,7 @@ describe('the wicks', () => {
     const lit = empowerSelf(round(), monk(round()), use(third));
     expect(openStep(monk(lit), 'wicks')).toBe(3);
     expect(prepStatuses(monk(lit))).toContain('Third wick open');
-    expect(lit.lines.at(-1)).toMatch(/lights the third wick/);
+    expect(textOf(lit.story).at(-1)).toMatch(/lights the third wick/);
     const deeper = empowerSelf(lit, monk(lit), use(sixth));
     expect(openStep(monk(deeper), 'wicks')).toBe(6);
   });
@@ -98,6 +99,6 @@ describe('the wicks', () => {
     const spent = { ...lit, fighters: lit.fighters.map((f) => ({ ...f, breath: 1 })) };
     const after = afterEmpowers(spent, 2);
     expect(monk(after).empowered).toBeUndefined();
-    expect(after.lines.join(' ')).toMatch(/wicks gutter out/);
+    expect(textOf(after.story).join(' ')).toMatch(/wicks gutter out/);
   });
 });

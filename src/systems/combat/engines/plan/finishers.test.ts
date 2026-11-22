@@ -59,7 +59,7 @@ function round(dazed: readonly string[] = []): Round {
     const withPlan = f.id === 'guy' ? { ...f, loadout } : f;
     return dazed.includes(f.id) ? { ...withPlan, stunned: 1 } : withPlan;
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const guy = (r: Round) => r.fighters.find((f) => f.id === 'guy')!;

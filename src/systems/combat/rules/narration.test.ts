@@ -1,86 +1,74 @@
 import {
-  forceLine,
   harmLine,
   healLine,
   namedLine,
   numberedNames,
-  offPlanLine,
-  poolsLine,
+  plainText,
+  readLine,
   reactionLine,
-  splitNarration,
   squareUpLine,
-  statusLine,
-  turnLine,
+  toldFrom,
+  voiceLine,
 } from './narration';
+import { causeLine } from './causes';
+import { isLegacyStory, storyOfLines } from './narrationLegacy';
 
 describe('fight narration', () => {
   it('keeps the amount out of the sentence', () => {
-    expect(splitNarration(harmLine('Goro lands a blow on Aoi.', 7))).toEqual({
+    expect(toldFrom(harmLine('Goro lands a blow on Aoi.', 7))).toEqual({
+      kind: 'told',
       text: 'Goro lands a blow on Aoi.',
       amounts: [{ kind: 'harm', amount: 7 }],
-      reactions: [],
     });
-    expect(splitNarration(healLine('Aoi recovers.', 12))).toEqual({
+    expect(toldFrom(healLine('Aoi recovers.', 12))).toEqual({
+      kind: 'told',
       text: 'Aoi recovers.',
       amounts: [{ kind: 'heal', amount: 12 }],
-      reactions: [],
     });
   });
 
-  it('passes plain lines (and older saves) through unchanged', () => {
-    expect(splitNarration('Aoi strikes, but Shun slips aside.')).toEqual({
+  it('tells a plain line as its words alone', () => {
+    expect(toldFrom('Aoi strikes, but Shun slips aside.')).toEqual({
+      kind: 'told',
       text: 'Aoi strikes, but Shun slips aside.',
-      amounts: [],
-      reactions: [],
     });
   });
 
-  it('says why a player’s turn went off their plan, out of the sentence', () => {
-    const line = turnLine(offPlanLine('You look around.', 'looking'), 'you');
-    expect(splitNarration(line)).toEqual({
-      text: 'You look around.',
-      amounts: [],
-      reactions: [],
-      actorId: 'you',
-      offPlan: 'looking',
-    });
-  });
-
-  it('keeps the defences that reacted out of the sentence', () => {
-    const line = harmLine(reactionLine('Goro hits Aoi.', 'dodge-missed', 'guarded'), 4);
-    expect(splitNarration(line)).toEqual({
+  it('says which defences reacted, whose they were and whose attack they met', () => {
+    const line = harmLine(
+      reactionLine('Goro hits Aoi.', { by: 'aoi', on: 'goro' }, 'dodge-missed', 'guarded'),
+      4,
+    );
+    expect(toldFrom(line)).toEqual({
+      kind: 'told',
       text: 'Goro hits Aoi.',
       amounts: [{ kind: 'harm', amount: 4 }],
-      reactions: ['dodge-missed', 'guarded'],
+      reactions: [
+        { reaction: 'dodge-missed', by: 'aoi', on: 'goro' },
+        { reaction: 'guarded', by: 'aoi', on: 'goro' },
+      ],
     });
-    expect(splitNarration(reactionLine('Aoi slips past.', 'dodged')).text).toBe('Aoi slips past.');
+    expect(toldFrom(reactionLine('Aoi slips past.', {}, 'dodged')).text).toBe('Aoi slips past.');
   });
 
-  it('says whose turn a line was written in, and where the fight stood', () => {
-    const line = harmLine(turnLine('Goro hits Aoi.', 'goro#0', 'close'), 6);
-    expect(splitNarration(line)).toEqual({
-      text: 'Goro hits Aoi.',
-      amounts: [{ kind: 'harm', amount: 6 }],
-      reactions: [],
-      actorId: 'goro#0',
-      range: 'close',
-    });
-    expect(splitNarration(turnLine('Aoi waits.', 'player'))).toEqual({
-      text: 'Aoi waits.',
-      amounts: [],
-      reactions: [],
-      actorId: 'player',
+  it('says why it went as it did, of whom, and what kind of thing it is', () => {
+    expect(toldFrom(causeLine('Goro keeps pace.', 'kept-pace', 'aoi')).cause).toEqual({
+      cause: 'kept-pace',
+      kind: 'step-failed',
+      subject: 'aoi',
     });
   });
 
-  it('says how big a turn was, out of the sentence, and keeps the first size given', () => {
-    const fire = { grade: 4, size: 'wide', element: 'fire' } as const;
-    const line = forceLine(turnLine(harmLine('A wall of flame.', 30), 'goran'), fire);
-    expect(splitNarration(line)).toMatchObject({ text: 'A wall of flame.', force: fire });
-    const plain = { grade: 0, size: null, element: null };
-    expect(splitNarration(forceLine('A punch.', plain)).force).toEqual(plain);
-    expect(splitNarration(forceLine(line, plain)).force).toEqual(fire);
-    expect(splitNarration('A punch.').force).toBeUndefined();
+  it('carries the fighters a line names, its words’ banks and a read, out of the sentence', () => {
+    const line = readLine(voiceLine(namedLine('You hit the thug.', ['player', 'thug#0']), 'hit.2'));
+    expect(toldFrom(line)).toEqual({
+      kind: 'told',
+      text: 'You hit the thug.',
+      named: ['player', 'thug#0'],
+      voices: ['hit.2'],
+      read: true,
+    });
+    expect(plainText(line)).toBe('You hit the thug.');
   });
 
   it('numbers fighters who share a name, in the order they stand', () => {
@@ -98,39 +86,49 @@ describe('fight narration', () => {
     const called = numberedNames([ghost, { ...ghost, id: 'h' }]).map((f) => f.called);
     expect(called).toEqual(['the first hungry ghost', 'the second hungry ghost']);
   });
+});
 
-  it('carries the fighters a line names, in order, out of the sentence', () => {
-    const line = turnLine(namedLine('You hit the thug.', ['player', 'thug#0']), 'player');
-    expect(splitNarration(line)).toMatchObject({
-      text: 'You hit the thug.',
-      named: ['player', 'thug#0'],
-    });
+describe('a story saved as lines', () => {
+  const saved = [
+    'Two bandits square up.',
+    '— First exchange — ⟦rs⟧ ⟦pl:player=health:100,chakra:50|foe=health:80⟧ ⟦st:player=|foe=Dazed⟧',
+    'You hit the bandit. ⟦n:player|foe⟧ ⟦r:guarded⟧ ⟦-12⟧ ⟦pl:foe=health:68⟧ ⟦by:player⟧ ⟦at:close⟧ ⟦fx:2:-:fire⟧',
+    'You throw a plain blow. ⟦op:improvised⟧ ⟦c:read-it⟧ ⟦pl:player=chakra:41⟧ ⟦by:player⟧',
+  ];
+
+  it('is read into the events it told, so a fight saved mid-way still plays', () => {
+    expect(isLegacyStory(saved)).toBe(true);
+    expect(storyOfLines(saved)).toEqual([
+      { kind: 'told', text: 'Two bandits square up.' },
+      { kind: 'stand', who: 'player', pools: { health: 100, chakra: 50 }, statuses: [] },
+      { kind: 'stand', who: 'foe', pools: { health: 80 }, statuses: [] },
+      { kind: 'status', who: 'player', statuses: [] },
+      { kind: 'status', who: 'foe', statuses: ['Dazed'] },
+      { kind: 'told', text: '— First exchange —', divider: true, opensRound: true },
+      { kind: 'health', who: 'foe', to: 68, cause: 'settled' },
+      {
+        kind: 'told',
+        text: 'You hit the bandit.',
+        named: ['player', 'foe'],
+        amounts: [{ kind: 'harm', amount: 12 }],
+        reactions: [{ reaction: 'guarded' }],
+        actor: 'player',
+        range: 'close',
+        force: { grade: 2, size: null, element: 'fire' },
+      },
+      { kind: 'pools', who: 'player', to: { chakra: 41 } },
+      {
+        kind: 'told',
+        text: 'You throw a plain blow.',
+        cause: { cause: 'read-it', kind: 'slipped' },
+        actor: 'player',
+        offPlan: 'improvised',
+      },
+    ]);
   });
 
-  it('carries where fighters’ pools stand out of the sentence', () => {
-    const line = poolsLine(turnLine('You weave the seals.', 'player'), {
-      player: { chakra: 41.6, breath: 12 },
-      'enemy:zabuza': { chakra: 120 },
-    });
-    expect(splitNarration(line)).toMatchObject({
-      text: 'You weave the seals.',
-      actorId: 'player',
-      pools: { player: { chakra: 42, breath: 12 }, 'enemy:zabuza': { chakra: 120 } },
-    });
-    expect(poolsLine('Nothing moved.', {})).toBe('Nothing moved.');
-    expect(poolsLine('Nothing moved.', { player: {} })).toBe('Nothing moved.');
-  });
-
-  it('carries fighters’ statuses out of the sentence, an empty list where all ended', () => {
-    const line = statusLine('Asuka reels. ⟦by:person:asuka⟧', {
-      player: ['Clones ×2', 'Marked'],
-      'person:asuka': [],
-    });
-    expect(splitNarration(line)).toMatchObject({
-      text: 'Asuka reels.',
-      statuses: { player: ['Clones ×2', 'Marked'], 'person:asuka': [] },
-    });
-    expect(statusLine('Nothing changed.', {})).toBe('Nothing changed.');
+  it('is told apart from a story of events', () => {
+    expect(isLegacyStory([{ kind: 'told', text: 'Hi.' }])).toBe(false);
   });
 });
 
@@ -143,13 +141,5 @@ describe('squareUpLine', () => {
     expect(squareUpLine([thug, thug, archer])).toBe(
       'Two bandit thugs and the bandit archer square up.',
     );
-  });
-
-  it('keeps the owner a line already has when a turn tags it', () => {
-    const theirs = turnLine('Kai fires.', 'kai');
-    expect(splitNarration(turnLine(theirs, 'aoi', 'mid'))).toMatchObject({
-      actorId: 'kai',
-      range: 'mid',
-    });
   });
 });

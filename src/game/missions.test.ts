@@ -104,7 +104,7 @@ describe('combat engine boundary', () => {
       view: () => ({
         round: 1,
         combatants: [],
-        log: [],
+        story: [],
         options: [{ id: 'win', label: 'Win', detail: '', kind: 'basic' }],
       }),
       outcome: (state) =>

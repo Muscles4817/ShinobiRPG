@@ -1,4 +1,4 @@
-import { splitNarration } from './narration';
+import { toldFrom } from './narration';
 import { tell } from './telling';
 
 const you = { id: 'player', name: 'Kaito', called: 'you', grammar: 'you' } as const;
@@ -11,7 +11,7 @@ const wraith = {
 } as const;
 const asuka = { id: 'asuka', name: 'Asuka', grammar: 'they' } as const;
 
-const text = (line: string) => splitNarration(line).text;
+const text = (line: string) => toldFrom(line).text;
 
 describe('telling a fight', () => {
   it('speaks to the player as you, and agrees the verb', () => {
@@ -43,7 +43,7 @@ describe('telling a fight', () => {
 
   it('marks whom the line named, in the order it named them', () => {
     const told = tell('{a.poss} strike hits {t}.', { t: wraith, a: you });
-    expect(splitNarration(told).named).toEqual(['player', 'wraith#0']);
+    expect(toldFrom(told).named).toEqual(['player', 'wraith#0']);
   });
 
   it('falls back to the name and "they" for a fighter set up before the story knew them', () => {

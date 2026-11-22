@@ -25,9 +25,9 @@
   —— The next round begins ——
   —— First exchange ——
   Steel flashes as Asuka looses Lantern Cut.
-  You were waiting for exactly that, and Asuka’s Lantern Cut finds nothing. [Missed] [Too quick for it]
+  You were waiting for exactly that, and Asuka’s Lantern Cut finds nothing. [Missed] [Got lucky]
   You explode forward with Gale Heel.
-  Asuka sees your Gale Heel coming, and it misses. [Missed] [Too quick for it]
+  Asuka sees your Gale Heel coming, and it misses. [Missed] [Got lucky]
   —— Second exchange ——
   Hurt and running short of time, you reach for Shadow Feint.
   Asuka is dazed, and the ground tilts under them.
@@ -132,7 +132,7 @@
   Tired now, Ibuki still goes to Palm Strike.
   You were waiting for exactly that, and Ibuki’s Palm Strike finds nothing. [Missed] [Too quick for it]
   Hurt and running short of time, you reach for Temple-Bell Palm. [Off plan: nothing slotted fit]
-  Ibuki slips your Temple-Bell Palm and makes a point of how easily. [Dodged]
+  Ibuki slips your Temple-Bell Palm and makes a point of how easily. [Dodged] [Too quick for it]
   —— Second exchange ——
   Ibuki melts back into the illusion.
   Ibuki has been keeping Lantern Mirage for this, and uses it now.
@@ -222,14 +222,14 @@
   —— Second exchange ——
   You dart in close.
   The storehouse wraith reaches for Whispering Dread again.
-  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed] [Read it coming]
+  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed] [Got lucky]
   —— Third exchange ——
   You explode forward with Gale Heel.
   Your Gale Heel rips into the storehouse wraith cleanly. [Guarded] [−7]
   Little of it bites on the storehouse wraith.
   The storehouse wraith is gone again, and the air where it stood is empty.
   The air around the storehouse wraith turns cold, and Whispering Dread comes with it.
-  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed] [Read it coming]
+  You catch the first sign of the storehouse wraith’s Whispering Dread and shake it off before it settles. [Missed] [Got lucky]
   —— Last exchange ——
   You find the storehouse wraith in a corner of the room. [Off plan: no one in sight]
   You are a shade too slow, and the storehouse wraith’s touch grazes you. [Guarded] [−1]
@@ -302,7 +302,7 @@
   The storehouse wraith’s cover takes the edge off it.
   The storehouse wraith fades out of sight again.
   The storehouse wraith scrapes together what chakra it can for Whispering Dread.
-  You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed] [Read it coming]
+  You see through the storehouse wraith’s Whispering Dread, and it never takes hold. [Missed] [Got lucky]
   —— Last exchange ——
   You spot the storehouse wraith. [Off plan: no one in sight]
   The storehouse wraith’s touch only just grazes you. [Guarded] [−1]

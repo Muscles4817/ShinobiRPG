@@ -1,4 +1,4 @@
-import { splitNarration, type InspectedFighter } from '@/systems/combat';
+import type { InspectedFighter } from '@/systems/combat';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
@@ -7,18 +7,17 @@ import type { FightRecord } from './state';
 /**
  * The fight record as a file to download and read elsewhere (by a person, or fed to Claude):
  * one JSON document with a short guide to itself, every fighter as they began and ended, the
- * decision log with each choice's reasons, every line of the story both as written and parsed
- * into its parts, and everyone as they stood after each step.
+ * decision log with each choice's reasons, every event of the story in order, and everyone as they stood after each step.
  */
 
 const FORMAT = 'shinobi-fight-record';
-const FORMAT_VERSION = 1;
+const FORMAT_VERSION = 2;
 
 const GUIDE = [
   'A record of one fight in Shinobi RPG, kept as it was fought.',
   'fighters: everyone who stood at the start or the end, with the engine’s whole record of them at each (stats as attributes, techniques, plan, conditions, pools).',
   'decisions: every choice each fighter made, in order, with the rule that chose it and its reasons (versus bouts are traced; other fights may have none).',
-  'story: every line in order. "raw" is the line as the engine wrote it, with its ⟦tags⟧; "event" is the same line parsed: who acted, amounts of harm or healing, reactions, pools and statuses after it.',
+  'story: every event in order, as the engine recorded it: "told" is a line of the story (whose turn, whom it names, amounts of harm or healing as chips, the defences that reacted and whose, why it went as it did); "stand" and "join" say where someone stands; "health", "pools" and "status" are changes as they happened (a health change says why, and by whom); "fall" and "leave" say who went down or left the field.',
   'steps: the fight screen after each step (each choice, or the opening): health, chakra, statuses, intents and distances.',
   'field: the rest of the fight’s state at the start and the end (distances, reads, the field, the ground).',
 ];
@@ -68,7 +67,7 @@ export function fightRecordDocument(state: GameState, ctx: GameContext): unknown
     fighters: fightersOf(record),
     decisions: (record.end ?? record.start)?.decisions ?? [],
     field: { atStart: record.start?.field ?? null, atEnd: record.end?.field ?? null },
-    story: record.lines.map((raw, n) => ({ n, raw, event: splitNarration(raw) })),
+    story: record.story.map((event, n) => ({ n, ...event })),
     steps: record.steps,
   };
 }

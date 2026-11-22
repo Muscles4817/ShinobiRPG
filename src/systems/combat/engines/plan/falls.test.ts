@@ -1,7 +1,8 @@
+import { linesOf } from '@/test/fightLines';
+import type { ToldEvent } from '../../storyContract';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatSetup } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { createPlanEngine } from './engine';
 
 const attributes = {
@@ -62,13 +63,11 @@ function wonFight() {
 describe('how a fight ends, in the story', () => {
   it('tells each foe going down, and closes the fight', () => {
     const { engine, state } = wonFight();
-    const { log } = engine.view(state);
-    const falls = log.filter((l) => l.includes('⟦v:fall-person.'));
-    expect(falls.map((l) => splitNarration(l).text.split(' ', 2).join(' '))).toEqual([
-      'The first',
-      'The second',
-    ]);
-    expect(log.at(-1)).toMatch(/⟦v:won\./);
+    const log = linesOf(engine.view(state).story);
+    const from = (l: ToldEvent, bank: string) => l.voices?.some((v) => v.startsWith(bank));
+    const falls = log.filter((l) => from(l, 'fall-person.'));
+    expect(falls.map((l) => l.text.split(' ', 2).join(' '))).toEqual(['The first', 'The second']);
+    expect(from(log.at(-1)!, 'won.')).toBe(true);
   });
 
   it('sums the fight up for its card, in words', () => {

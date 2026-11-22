@@ -3,7 +3,7 @@ import { numberWord, ordinalWord } from '@/core';
 import type { CombatResult } from '../../contract';
 import { alive } from '../../rules/body';
 import { tell } from '../../rules/telling';
-import { splitNarration } from '../../rules/narration';
+import { plainText } from '../../rules/narration';
 import { playerOf, type PlanFighter, type PlanState } from './state';
 import { ROUND_EXCHANGES } from './roundEnd';
 
@@ -125,5 +125,5 @@ export function fightSummary(state: PlanState, result: CombatResult): string {
         result === 'victory' ? foesFell(foes) : stillStanding(foes),
         alliesDown(state.fighters),
       ];
-  return sentences.flatMap((s) => (s === null ? [] : [splitNarration(s).text])).join(' ');
+  return sentences.flatMap((s) => (s === null ? [] : [plainText(s)])).join(' ');
 }

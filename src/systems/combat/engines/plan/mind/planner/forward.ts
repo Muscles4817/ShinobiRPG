@@ -45,8 +45,8 @@ function steered(state: PlanState, selfId: string, card: CardId | null): PlanSta
 
 /** A copy of the fight to simulate on: no story, no log of decisions. */
 export function silent(state: PlanState): PlanState {
-  const { decisions: _log, logDropped: _dropped, ...rest } = state;
-  return { ...rest, log: [] };
+  const { decisions: _log, storyDropped: _dropped, ...rest } = state;
+  return { ...rest, story: [] };
 }
 
 /** One real exchange on a silent copy, then the round's end and the foes' next intents. */

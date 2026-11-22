@@ -1,6 +1,6 @@
 import { createRng, type Rng } from '@/core';
 
-import { hitsOn } from '@/test/fightLines';
+import { hitsOn, textOf, anyIs, linesOf } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import type { CombatGear, CombatWeapon } from '../../gearContract';
@@ -91,7 +91,7 @@ function duel(gear: CombatGear, foe: Partial<CombatantSetup> = {}): [PlanFighter
 }
 
 function roundOf(fighters: PlanFighter[]): Round {
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function hit(gear: CombatGear, thrown = false, foe: Partial<CombatantSetup> = {}): Round {
@@ -144,7 +144,9 @@ describe('plan & watch weapons', () => {
     const [bare] = duel({});
     expect(cardLabel({ kind: 'strike' }, armed)).toBe('Cut');
     expect(cardLabel({ kind: 'strike' }, bare)).toBe('Strike');
-    expect(hit({ held: weapon('sword') }).lines.join(' ')).toMatch(hitsOn('foe', "hero's cut"));
+    expect(anyIs(linesOf(hit({ held: weapon('sword') }).story), hitsOn('foe', "hero's cut"))).toBe(
+      true,
+    );
   });
 
   it('senbon land softer than kunai, and may daze', () => {
@@ -152,7 +154,7 @@ describe('plan & watch weapons', () => {
     const needled = hit({ thrown: weapon('senbon') }, true);
     expect(100 - foeAfter(needled).health).toBeLessThan(kunai);
     expect(foeAfter(needled).stunned).toBe(1);
-    expect(needled.lines.join(' ')).toContain('reels');
+    expect(textOf(needled.story).join(' ')).toContain('reels');
   });
 
   it('knuckles go partly through a guard', () => {
@@ -179,7 +181,7 @@ describe('plan & watch weapons', () => {
     const hero = after.fighters.find((f) => f.id === 'hero')!;
     expect(foeAfter(after).chakra).toBeLessThan(40);
     expect(hero.chakra).toBeGreaterThan(40);
-    expect(after.lines.join(' ')).toContain('drinks');
+    expect(textOf(after.story).join(' ')).toContain('drinks');
   });
 
   it('armour takes the edge off a cut', () => {

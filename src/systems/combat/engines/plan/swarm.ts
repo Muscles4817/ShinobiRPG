@@ -184,7 +184,8 @@ function envenomed(round: Round, carrier: PlanFighter, host: PlanFighter | undef
   if (venom <= 0 || !now || now.health <= 0) return round;
   // Through `wound`, like any harm: a shadow clone pops, a channelled hold breaks, a coward runs.
   const hurt = taken(now, venom);
-  return wound(round, now.id, hurt, harmLine(tell('The venom works on {t}.', { t: now }), hurt));
+  const venomed = harmLine(tell('The venom works on {t}.', { t: now }), hurt);
+  return wound(round, { who: now.id, damage: hurt, ...(host ? { by: host.id } : {}) }, venomed);
 }
 
 /** A host's hive finds hidden foes on its own, the keener the strain and the fuller the hive. */

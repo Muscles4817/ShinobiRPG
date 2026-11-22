@@ -56,7 +56,7 @@ function roundOf(): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const use = { technique: shadowClone, effect: shadowClone.effects[0]! } as const;
@@ -85,14 +85,14 @@ describe('shadow clones', () => {
   it('pop at the first hit that lands, and leave the field as the exchange ends', () => {
     const round = cast(roundOf());
     const [clone] = shadowsOf(round, 'hero');
-    const hit = wound(round, clone!.id, 1);
+    const hit = wound(round, { who: clone!.id, damage: 1 });
     expect(shadowsOf(hit, 'hero')).toHaveLength(1);
     expect(shadowsAfter(hit).fighters.some((f) => f.id === clone!.id)).toBe(false);
   });
 
   it('go with their maker when the maker falls', () => {
     const round = cast(roundOf());
-    expect(shadowsOf(wound(round, 'hero', 999), 'hero')).toHaveLength(0);
+    expect(shadowsOf(wound(round, { who: 'hero', damage: 999 }), 'hero')).toHaveLength(0);
   });
 
   it('never stand more than a few at once', () => {

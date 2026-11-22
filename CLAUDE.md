@@ -107,10 +107,17 @@ ui ──► game ──► content ──► systems ──► core
    spar) is game state (`people.sparringWith`), never the engine's concern. The player's
    choice is a `CombatChoice` (option id + optional target); the view may add `range`,
    `prompt`, `meters` and per-combatant `intent` (a foe's telegraphed next move, and only that; a dazed foe's says it loses the turn) `known` (the cards you know they hold, said apart from it) and `distance` (a foe's from you, your side's from the foe each faces), and options say their `kind` so one fight
-   screen can lay out any engine. An engine may also `inspect` a fight (`CombatInspection`: each
+   screen can lay out any engine. The fight is **told as events** (`CombatView.story`,
+   `storyContract.ts`, `docs/design/event-stream-plan.md`): an ordered list of lines (`told`,
+   each with whose turn it was, whom it names, its chips, the defences that reacted and whose,
+   and why it went as it did, of whom) and the changes between them (`stand` where everyone stands
+   as a stretch opens, `join`, `health` with its cause and by whom, `pools`, `status`, `fall`,
+   `leave`), recorded where the values are set; folding them in order (`foldStory`) gives the
+   fight as it stands at every point, and every reader (the watch screen, the plan screen's strip
+   and advice, the log, sounds, the fight record) reads their fields, never the words. An engine may also `inspect` a fight (`CombatInspection`: each
    fighter as it holds them, the decision log of a traced fight, the rest of its state, as plain
    data) for debugging only; the game keeps the last fight whole as it is fought (`fightRecord/`,
-   `noteFight`, a happening after each action: every line in order, everyone after each step, the fight laid open
+   `noteFight`, a happening after each action: every event in order, everyone after each step, the fight laid open
    at its start and end), never in saves, and versus bouts are traced so it holds every choice
    with its reasons. After a bout it downloads as one JSON file (`fightRecordFile`).
 6. **The UI renders view models** (`src/game/views/`), not raw state. Activity lists are
@@ -236,7 +243,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     back as an opaque `CombatOutcome.plan`, is kept in `settings.combatPlans` by engine id, and is
     handed to that engine's next fight as `CombatSetup.plan` (`startFight`); the engine validates it. The newer engines share `systems/combat/rules/` (range
     bands and reach, the elemental cycle, damage and resist formulas, the common `Body`), so
-    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`, which reads foes: every card they hold, and a Search that mostly finds the hidden, `INSIGHT_SEARCH`, never a certainty; only eyes that see everything see the hidden outright, `seesTheHidden`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). Eyes that see it coming (`foresight`) slip more than anyone else can (`SEEING_AVOID_MAX`), read every attack clearly for Evade, keep up with a faster body a little longer (`SEEING_PACE`) and see through illusions most of all. Perks may be **veiled** (`CombatantSetup.veiled`, `PersonArsenal.veiled`: a transplanted eye under a headband, `rules/veil.ts`, `plan/veil.ts`): no use until uncovered, a moment's work as a turn begins (no turn spent, no slot), against a match, an illusionist or a fight turning, and paid in chakra every exchange (`EYE_UPKEEP`) until it closes again. **Set-ups** (`docs/design/defence-plan.md` 4.3): a `lethal` technique (a lightning blade) on a target who can't see its user (hidden) or can't move (dazed or held) goes through a guard and hits to kill (`rules/lethal.ts`, `LETHAL_SCALE`); held, it can't be slipped, and unseen it is slipped far less often (`UNSEEN_SLIP`); a hold cast from hiding is shaken off less often (`HIDDEN_HOLD_RESIST`); and a mind that reads the fight, with a conceal, a hold and a killing blow in its kit, fights a match by hide, hold, finish from the kit, no slot (`plan/setups.ts`). **The player's plan is theirs**: the kit never plays itself for the player (no set-up, ladder step or summoner's call they didn't slot; `kitPlay` in `plan/priority.ts`) unless they only watch, and their default plan slots those moves where they can see them (`plan/kitSlots.ts`); a turn of theirs that plays something they never slotted (a blow improvised, a look round with no one in sight) is stamped with why (`Play.offPlan`, `offPlanLine`). **Who plans the round** is the player's choice too (`plan/whoPlans.ts`, `plan/drafting.ts`, `docs/design/combat-ai-plan.md` Part 9): their list (every slot theirs; "Ask for a plan" fills the empty ones), plan then edit (the mind drafts each round around the slots they set, a reason on each drafted slot, any slot changed becoming theirs) or orders (an order to the draft and cards never to use, the list folded away); moving up keeps every slot as theirs, and the level, order, pins and forbids carry over with the plan (`planningMemory.ts`). A fight has a **ground**
+    styles differ in decisions, not maths. Bloodlines reach combat as perks, for you and anyone born to the clan alike (`insight`, which reads foes: every card they hold, and a Search that mostly finds the hidden, `INSIGHT_SEARCH`, never a certainty; only eyes that see everything see the hidden outright, `seesTheHidden`; an awakened bloodline's `kekkeiGenkai.perks` add `foresight`, which slips, counters and sees techniques coming more often and adapts between rounds as a foe does, and `mimicry`, which copies a technique watched into the kit and plan, and `all-seeing`, eyes that see everything at once but nothing ahead: no illusion takes hold of them, no clone fools them, their seals and drains close the chakra points more surely, and they have one blind spot a sharp foe finds after a few rounds, where no ready defence rises: `rules/eyes.ts`, `plan/blindSpot.ts`, `plan/mimicry.ts`). Eyes that see it coming (`foresight`) slip more than anyone else can (`SEEING_AVOID_MAX`), read every attack clearly for Evade, keep up with a faster body a little longer (`SEEING_PACE`) and see through illusions most of all. Perks may be **veiled** (`CombatantSetup.veiled`, `PersonArsenal.veiled`: a transplanted eye under a headband, `rules/veil.ts`, `plan/veil.ts`): no use until uncovered, a moment's work as a turn begins (no turn spent, no slot), against a match, an illusionist or a fight turning, and paid in chakra every exchange (`EYE_UPKEEP`) until it closes again. **Set-ups** (`docs/design/defence-plan.md` 4.3): a `lethal` technique (a lightning blade) on a target who can't see its user (hidden) or can't move (dazed or held) goes through a guard and hits to kill (`rules/lethal.ts`, `LETHAL_SCALE`); held, it can't be slipped, and unseen it is slipped far less often (`UNSEEN_SLIP`); a hold cast from hiding is shaken off less often (`HIDDEN_HOLD_RESIST`); and a mind that reads the fight, with a conceal, a hold and a killing blow in its kit, fights a match by hide, hold, finish from the kit, no slot (`plan/setups.ts`). **The player's plan is theirs**: the kit never plays itself for the player (no set-up, ladder step or summoner's call they didn't slot; `kitPlay` in `plan/priority.ts`) unless they only watch, and their default plan slots those moves where they can see them (`plan/kitSlots.ts`); a turn of theirs that plays something they never slotted (a blow improvised, a look round with no one in sight) is stamped with why (`Play.offPlan`, the told line's `offPlan`). **Who plans the round** is the player's choice too (`plan/whoPlans.ts`, `plan/drafting.ts`, `docs/design/combat-ai-plan.md` Part 9): their list (every slot theirs; "Ask for a plan" fills the empty ones), plan then edit (the mind drafts each round around the slots they set, a reason on each drafted slot, any slot changed becoming theirs) or orders (an order to the draft and cards never to use, the list folded away); moving up keeps every slot as theirs, and the level, order, pins and forbids carry over with the plan (`planningMemory.ts`). A fight has a **ground**
     (`CombatSetup.ground`, `rules/ground.ts`: arena, forest, town, room, lake, desert; arena when
     unset): the distances it has room for (a room has no far), cover for hiding, far attacks lost
     among trees or walls (or, in the desert's heat haze, by everyone), elements it feeds or
@@ -993,7 +1000,7 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
     `Sound` is made of and `loops.ts` how each `MusicMood` goes (bars of scale degrees, read by
     `score.ts`, varied by hash after the first time round, never `Math.random`). A
     fight's sounds grow with the turn behind them: the plan engine tags each turn's lines with
-    its **force** (`forceLine`, `plan/staging.ts`: the maker's grade in the art, an area's
+    its **force** (the told line's `force`, `plan/staging.ts`: the maker's grade in the art, an area's
     size, the element), `beatSound` passes it on, and `ui/audio/force.ts` layers an echo, a
     boom and a roll by grade, a swell by area and a colour by element over the plain recipe. Volumes
     (`AudioSettings`) belong to the device, not the save: a second `SaveStore` (`prefs`) holds
@@ -1118,7 +1125,9 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   `systems/combat/index.ts`, and add it to `defaultEngines()` in `game/context.ts`. It appears
   in the fight-style picker automatically (shown once more than one style is offered). No
   other code changes. Shelving an engine moves it to `shelvedEngines()` (if saves may be
-  mid-fight in it) and migrates saves that chose it. Narrate damage and healing
+  mid-fight in it) and migrates saves that chose it. The view tells the fight as events
+  (`CombatView.story`, `storyContract.ts`); an engine that tells in lines reads them into events
+  with the narration module. Narrate damage and healing
   with `harmLine`/`healLine` (`rules/narration.ts`) so the amount shows as a chip, never in the story.
   Name fighters only through `tell` (`rules/telling.ts`): a template's slots (`{a}`, `{a.poss}`,
   `{a.s}`, `{t.their}`…) are filled from each fighter's `called` and `grammar`
@@ -1128,12 +1137,26 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   repeats themself), weighs hits by the share of health they took (`plan/hitVoice.ts`), tells
   falls and the fight's close (`plan/falls.ts`) and sums the fight up for its card
   (`CombatOutcome.summary`). Rules and instructions go in the view's `prompt`, never the log.
-  A staged engine (one that offers plans, not a hand) tags each turn's lines with `turnLine` (whose
-  turn, and where the fight stands) and defences with `reactionLine`; the watch screen stages the
-  log from those (`game/views/fightReplay.ts`) between the plan screen's rounds. The first exchange's
-  divider opens a round (`roundStartLine`), and the plan screen says why the last round went as
-  it did from that round's lines (`game/views/roundWhy.ts`: turns off your plan, your attacks, who
-  hurt you, your defences, what it cost); a slip with no Dodge ready is stamped `missed`. A fight that ends
+  Plan & Watch tells its story through one writer (`say`, `plan/toldPools.ts`: what moved since
+  the last line is recorded before the line, each line read into its `told` event), and a
+  fighter's health through one (`plan/health.ts`: `setHealth` records who did it and why; a hit
+  goes through `wound`, which does everything a hit does: a clone pops, a hold breaks, threads
+  slip, a coward runs, the fallen go down). `patch` can't set health and a lint rule keeps it out
+  of object literals elsewhere in the engine; another keeps the narration module's markers (`⟦`)
+  out of every other file. A line written with `reactionLine` says whose defence met whose attack
+  (`{ by, on }`) and `causeLine` whom its cause is about (the subject: whose attack, step or hold),
+  its kind read once from `CAUSE_KIND`; a slip's cause comes from the avoid roll's own parts
+  (`plan/causes.ts`: the part that did most to make it likely). Staging (`plan/staging.ts`) sets
+  each turn's lines as its maker's (`actor`), where the fight stood and how big the turn was, and
+  the statuses it changed; each exchange opens with where everyone stands, and as it ends and as
+  an act hands back the story is brought level with the fight (`plan/storyLevel.ts`). The watch
+  screen's beats are a fold of the events (`game/views/fightReplay.ts`) between the plan screen's
+  rounds; the first exchange's divider opens a round (`opensRound`), and the plan screen says why
+  the last round went as it did from that round's events (`game/views/roundWhy.ts`: turns off
+  your plan, your attacks, who hurt you, your defences, what it cost, causes by kind for whom they
+  are about); a slip with no Dodge ready is stamped `missed`. The benches check after every act
+  that the story folds to the fight and that no health moves untold (`src/test/bench/storyCheck.ts`).
+  A fight that ends
   is kept as `combatFinale` (its last view) so the stage plays the final exchange before the
   result card; like a report, it never blocks play, and `leaveFight` closes it. Removing an engine or
   changing its id needs a migration for saves that are mid-fight in it or have it chosen.

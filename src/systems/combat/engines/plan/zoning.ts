@@ -1,10 +1,10 @@
+import { toldAs } from './toldPools';
 import type { RangeBand } from '../../contract';
 import { payFor } from './effort';
 import { alive } from '../../rules/body';
 import { homeBand } from '../../rules/kit';
 import { RANGE_BANDS } from '../../rules/range';
 import { effectsOf, isWounding, techniquePower } from '../../rules/verbs';
-import { turnLine } from '../../rules/narration';
 import { holdOffReason } from '../../rules/zoning';
 import { strike, volley } from './arms';
 import { cardId, findCard, fitsBand, kitCards, playable, type Card } from './cards';
@@ -102,8 +102,7 @@ interface Shot {
 
 /** The holder's lines from `from` on: the holder acts in the closer's turn. */
 function holdersLines(round: Round, from: number, holderId: string): Round {
-  const theirs = round.lines.slice(from).map((line) => turnLine(line, holderId));
-  return { ...round, lines: [...round.lines.slice(0, from), ...theirs] };
+  return { ...round, story: toldAs(round.story, from, holderId) };
 }
 
 /** The holder's attack meeting the closer, as any attack would (a volley already paid for). */
@@ -163,7 +162,7 @@ function aimed(round: Round, { start, marked, shot }: Aimed, turn: Turn): HeldOf
   const kept = stopped(told, fired, { holderId: holder.id, closerId: closer.id });
   const now = fighterIn(fired, closer.id) ?? closer;
   const end = kept
-    ? say(fired, causeLine(heldOffLine(moment, holder, now), 'held-off'))
+    ? say(fired, causeLine(heldOffLine(moment, holder, now), 'held-off', closer.id))
     : say(fired, pushedThroughLine(momentOf(fired, closer.id), now, holder));
   return { round: holdersLines(end, start, holder.id), outcome: kept ? 'stopped' : 'through' };
 }
@@ -184,5 +183,5 @@ export function holdOff(round: Round, turn: Turn): HeldOff {
   });
   if (screened) return { round: screened, outcome: 'through' };
   const shot = { holder, closer, card };
-  return aimed(marked, { start: round.lines.length, marked, shot }, turn);
+  return aimed(marked, { start: round.story.length, marked, shot }, turn);
 }

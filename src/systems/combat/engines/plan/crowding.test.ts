@@ -73,7 +73,7 @@ function closeRound({ attributes = {}, techniques = [bolt] }: Caster): Round {
     number: 1,
     fighters: withCloseQuarters(fighters.map(planless)),
     range: 'close',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
     watching: true,

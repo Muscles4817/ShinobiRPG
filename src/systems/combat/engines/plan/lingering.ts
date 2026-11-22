@@ -215,12 +215,13 @@ export function riposteFirst(round: Round, hit: Incoming): { round: Round; stopp
   const line = harmLine(
     reactionLine(
       tell('{t} answer{t.s} with {what}.', { t: target, what: ready.name }),
+      { by: target.id, on: attacker.id },
       'countered',
     ),
     damage,
   );
   const spent = relinger(round, target.id, { riposte: null });
-  const after = wound(spent, attacker.id, damage, line);
+  const after = wound(spent, { who: attacker.id, damage, by: target.id }, line);
   const standing = fighterIn(after, attacker.id);
   return { round: after, stopped: !standing || !alive(standing) };
 }
@@ -248,7 +249,7 @@ function lingerOn(round: Round, f: PlanFighter, exchange: number): Round {
   // What the burn or poison takes, never more than is left to take (`taken`).
   const hurt = taken(f, harm);
   const line = harmLine(tell(LINGERS[worst.harm], { t: f }), hurt);
-  return wound(kept, f.id, hurt, line);
+  return wound(kept, { who: f.id, damage: hurt }, line);
 }
 
 /** At the end of an exchange: harms linger and wear down, pins loosen, ripostes lapse. */

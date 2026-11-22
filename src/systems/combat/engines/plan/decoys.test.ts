@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup } from '../../contract';
@@ -44,7 +45,7 @@ function round(): Round {
     enemies: [setup('striker')],
     canFlee: true,
   }).map((f): PlanFighter => (f.id === 'maker' ? { ...f, clones } : f));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function ofKind(r: Round, kind: NonNullable<Clones['kind']>): Round {
@@ -69,21 +70,21 @@ function strike(raw: number, breaks: boolean, kind?: Clones['kind'], physical = 
       rng: createRng(i + 1),
     };
     return throughClones(r, hit);
-  }).find((d) => d.round.lines.length > 0)!;
+  }).find((d) => textOf(d.round.story).length > 0)!;
 }
 
 describe('a hit meeting clones', () => {
   it('a light hit is spent on the clone it strikes', () => {
     const met = strike(10, false);
     expect(met.absorbed).toBe(true);
-    expect(met.round.lines.at(-1)).toMatch(/strikes a clone of maker, which bursts/);
+    expect(textOf(met.round.story).at(-1)).toMatch(/strikes a clone of maker, which bursts/);
   });
 
   it('a heavy one bursts the clone on its way through and still reaches the maker', () => {
     const met = strike(70, true);
     expect(met.absorbed).toBe(false);
     expect(met.carried).toBe(CLONE_CARRY_SCALE);
-    expect(met.round.lines.at(-1)).toMatch(/tears straight through a clone of maker/);
+    expect(textOf(met.round.story).at(-1)).toMatch(/tears straight through a clone of maker/);
     expect(met.round.fighters.find((f) => f.id === 'maker')!.clones?.count).toBe(4);
   });
 
@@ -106,7 +107,7 @@ describe('a hit meeting clones', () => {
         breaks: false,
         rng: createRng(i + 1),
       };
-      return throughClones(r, hit).round.lines.join(' ');
+      return textOf(throughClones(r, hit).round.story).join(' ');
     });
     expect(lines.some((l) => l.includes('takes it and stands'))).toBe(true);
     expect(lines.some((l) => l.includes('which bursts'))).toBe(true);
@@ -115,9 +116,9 @@ describe('a hit meeting clones', () => {
   it('a lightning clone burst by a blow up close shocks the striker', () => {
     const met = strike(10, false, 'lightning', true);
     const striker = met.round.fighters.find((f) => f.id === 'striker')!;
-    expect(met.round.lines.join(' ')).toMatch(/lightning leaps into striker/);
+    expect(textOf(met.round.story).join(' ')).toMatch(/lightning leaps into striker/);
     expect(striker.health).toBeLessThan(100);
     const thrown = strike(10, false, 'lightning', false);
-    expect(thrown.round.lines.join(' ')).not.toMatch(/lightning leaps/);
+    expect(textOf(thrown.round.story).join(' ')).not.toMatch(/lightning leaps/);
   });
 });

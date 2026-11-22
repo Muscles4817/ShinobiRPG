@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { combatScene } from '@/game';
 import { serialize } from '@/game/persistence/save';
 import { act, fightOut } from '@/test/gameFixtures';
@@ -27,11 +28,11 @@ describe('the fight record', () => {
     const record = done.fightRecord!;
     const finale = done.combatFinale!;
     expect(record.open).toBe(false);
-    expect(record.lines[0]).toBe('Kakashi Hatake against Might Guy.');
-    // The whole story: what the engine let go, then the lines it still held at the end.
-    expect(record.lines.length).toBe(finale.logOffset + finale.log.length);
-    expect(record.lines.slice(-finale.log.length)).toEqual(finale.log);
-    expect(record.lines.some((l) => l.includes('unrecorded'))).toBe(false);
+    expect(textOf(record.story)[0]).toBe('Kakashi Hatake against Might Guy.');
+    // The whole story: what the engine let go, then the events it still held at the end.
+    expect(record.story.length).toBe(finale.storyOffset + finale.story.length);
+    expect(record.story.slice(-finale.story.length)).toEqual(finale.story);
+    expect(textOf(record.story).some((l) => l.includes('unrecorded'))).toBe(false);
   });
 
   it('keeps the lines the engine let go over a fight planned round by round', () => {
@@ -43,9 +44,9 @@ describe('the fight record', () => {
     if (!made.ok) throw new Error(made.error);
     const done = fightOut(made.value, naruto);
     const finale = done.combatFinale!;
-    expect(finale.logOffset).toBeGreaterThan(0);
-    expect(done.fightRecord?.lines.length).toBe(finale.logOffset + finale.log.length);
-    expect(done.fightRecord?.lines.some((l) => l.includes('unrecorded'))).toBe(false);
+    expect(finale.storyOffset).toBeGreaterThan(0);
+    expect(done.fightRecord?.story.length).toBe(finale.storyOffset + finale.story.length);
+    expect(textOf(done.fightRecord!.story).some((l) => l.includes('unrecorded'))).toBe(false);
   });
 
   it('lays every fighter open at the start and the end, with the choices and their reasons', () => {
@@ -66,14 +67,16 @@ describe('the fight record', () => {
     expect(once.fightRecord?.steps.map((s) => s.choice)).toEqual([null, option.id]);
   });
 
-  it('is one readable document: a guide, the fighters, the story parsed line by line', () => {
+  it('is one readable document: a guide, the fighters, the story event by event', () => {
     const done = fightOut(watchedBout(), naruto);
     const doc = fightRecordDocument(done, naruto) as Record<string, unknown>;
     expect(doc.format).toBe('shinobi-fight-record');
     expect(doc.guide).toEqual(expect.arrayContaining([expect.stringMatching(/decisions/)]));
-    const story = doc.story as { raw: string; event: { text: string } }[];
-    expect(story.length).toBe(done.fightRecord!.lines.length);
-    expect(story.some((l) => l.raw.includes('⟦') && !l.event.text.includes('⟦'))).toBe(true);
+    const story = doc.story as { n: number; kind: string; text?: string; by?: string }[];
+    expect(story.length).toBe(done.fightRecord!.story.length);
+    expect(story.map((e) => e.n)).toEqual(story.map((_, i) => i));
+    expect(story.some((e) => e.kind === 'told' && e.text !== undefined)).toBe(true);
+    expect(story.some((e) => e.kind === 'health' && e.by !== undefined)).toBe(true);
     const file = fightRecordFile(done, naruto)!;
     expect(file.name).toBe('fight-kakashi-vs-might-guy.json');
     expect(JSON.parse(file.text)).toEqual(JSON.parse(JSON.stringify(doc)));

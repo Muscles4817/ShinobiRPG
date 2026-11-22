@@ -1,11 +1,11 @@
 import type { Rng } from '@/core';
 
 import { alive, hasPerk } from '../../rules/body';
-import { turnLine } from '../../rules/narration';
 import { clonesLeft, drawFireChance } from '../../rules/verbs';
 import type { Card } from './cards';
 import { eyes } from './decoys';
-import { patch, say, type PlanFighter, type Round } from './state';
+import { patch, type PlanFighter, type Round } from './state';
+import { sayAs } from './toldPools';
 import { tell } from '../../rules/telling';
 import { seesTheRealBody } from '../../rules/eyes';
 
@@ -58,5 +58,5 @@ export function drawnByClones(round: Round, { holder, closer, card, rng }: Shot)
     { h: holder, c: closer, m: maker, what: shotName(card) },
   );
   // The shot is the holder's, told as theirs.
-  return say({ ...round, fighters }, turnLine(line, holder.id));
+  return sayAs({ ...round, fighters }, holder.id, line);
 }

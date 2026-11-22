@@ -117,7 +117,7 @@ export function recorder(ctx: GameContext): Recorder {
   function fightLines(state: GameState): void {
     const view = combatScene(state, ctx) ?? finishedFightScene(state);
     if (!view) return;
-    const log = combatLog(view.log);
+    const log = combatLog(view.story);
     for (const line of log.slice(logSeen)) {
       if (line.kind === 'round') say(`  —— ${line.text} ——`);
       else say(`  ${line.text} ${line.chips.map((c) => `[${c.label}]`).join(' ')}`.trimEnd());

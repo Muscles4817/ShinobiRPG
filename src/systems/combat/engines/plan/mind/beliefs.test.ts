@@ -34,7 +34,7 @@ function setup(id: string, attributes: Partial<CombatantSetup['attributes']>): C
 }
 
 function roundOf(fighters: readonly PlanFighter[], number = 1): Round {
-  return { number, fighters: [...fighters], range: 'close', lines: [], seen: {}, intents: {} };
+  return { number, fighters: [...fighters], range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function pair(mind: Partial<CombatantSetup['attributes']>, foe = {}): PlanFighter[] {

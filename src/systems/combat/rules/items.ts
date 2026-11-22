@@ -32,6 +32,16 @@ export interface ItemUse<B extends Body> {
   readonly log: readonly string[];
 }
 
+/**
+ * A tool's effect, with the health it moves said rather than made: the foe a blast struck and
+ * for how much, and what a salve mends. An engine with a writer of health (Plan & Watch's
+ * `health.ts`) applies those itself, so a hit from a tool does all a hit does.
+ */
+export interface ItemEffect<B extends Body> extends ItemUse<B> {
+  readonly struck?: { readonly id: string; readonly damage: number };
+  readonly mended?: number;
+}
+
 /** Tools that are attacks: an explosive tag, a volley of shuriken. */
 export function itemAttacks(effect: CombatItemEffect): boolean {
   return effect === 'blast' || effect === 'volley';
@@ -89,18 +99,15 @@ interface Use<B extends Body> {
   readonly targetId?: string;
 }
 
-function blast<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
+function blast<B extends Body>(use: Use<B>, rng: Rng): ItemEffect<B> {
   const target = use.foes.find((f) => f.id === use.targetId && f.health > 0 && !f.hidden);
   if (!target) return { user: use.user, foes: use.foes, log: ['The tag flies wide.'] };
   const damage =
     use.item.effect === 'volley'
       ? Math.max(1, Math.round(VOLLEY_POWER * variance(rng.next())))
       : blastDamage(target, rng.next());
-  const foes = use.foes.map((f) =>
-    f.id === target.id ? { ...f, health: Math.max(0, f.health - damage) } : f,
-  );
   const line = tell('The {what} bursts on {t}.', { what: use.item.name, t: target });
-  return { user: use.user, foes, log: [line] };
+  return { user: use.user, foes: use.foes, log: [line], struck: { id: target.id, damage } };
 }
 
 function selfEffect<B extends Body>(user: B, effect: CombatItemEffect): B {
@@ -109,10 +116,10 @@ function selfEffect<B extends Body>(user: B, effect: CombatItemEffect): B {
       return { ...user, hidden: true };
     case 'chakra':
       return { ...user, chakra: Math.min(user.maxChakra, user.chakra + CHAKRA_RESTORE) };
-    case 'heal':
-      return { ...user, health: Math.min(user.maxHealth, user.health + HEAL_RESTORE) };
     case 'clarity':
       return { ...user, confused: 0 };
+    // A salve's health is said, not made (`itemEffect`): the engine's writer mends it.
+    case 'heal':
     case 'flash':
     case 'blast':
     case 'volley':
@@ -128,13 +135,27 @@ const USE_LINE: Readonly<Record<Exclude<CombatItemEffect, 'blast' | 'volley'>, s
   clarity: '{a} grip{a.s} a charm until the fog in {a.their} head lifts.',
 };
 
-/** Uses one of the tool: spends it and applies its effect. Check `itemBlocker` first. */
-export function useItem<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
+/**
+ * Uses one of the tool: spends it and works its effect, saying the health it would move.
+ * Check `itemBlocker` first.
+ */
+export function itemEffect<B extends Body>(use: Use<B>, rng: Rng): ItemEffect<B> {
   const user = spend(use.user, use.item.id);
   const { effect } = use.item;
   if (effect === 'blast' || effect === 'volley') return blast({ ...use, user }, rng);
   const foes = effect === 'flash' ? use.foes.map((f) => ({ ...f, hidden: false })) : use.foes;
-  return { user: selfEffect(user, effect), foes, log: [tell(USE_LINE[effect], { a: user })] };
+  const log = [tell(USE_LINE[effect], { a: user })];
+  const mended = effect === 'heal' ? Math.min(HEAL_RESTORE, user.maxHealth - user.health) : 0;
+  return { user: selfEffect(user, effect), foes, log, ...(mended > 0 ? { mended } : {}) };
+}
+
+/** Uses one of the tool, its health moved at once: for engines that keep health themselves. */
+export function useItem<B extends Body>(use: Use<B>, rng: Rng): ItemUse<B> {
+  const { struck, mended, ...used } = itemEffect(use, rng);
+  const hurt = (f: B): B =>
+    f.id === struck?.id ? { ...f, health: Math.max(0, f.health - struck.damage) } : f;
+  const user = mended ? { ...used.user, health: used.user.health + mended } : used.user;
+  return { ...used, user, foes: used.foes.map(hurt) };
 }
 
 /**

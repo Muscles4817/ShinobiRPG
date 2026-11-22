@@ -44,7 +44,7 @@ function dodger(perks: CombatPerk[]): Round {
   }).map((f) =>
     f.id === 'eyes' ? { ...f, reactions: { close: 'dodge', mid: 'dodge', far: 'dodge' } } : f,
   );
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function slips(perks: CombatPerk[]): number {

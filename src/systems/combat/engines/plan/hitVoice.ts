@@ -226,5 +226,5 @@ export function hitLine(moment: Moment, hit: HitTold): string {
   const words = { what: hit.blow.what, verb: verb.word, again, guard };
   const text = tell(sentence.template, { a: hit.attacker, t: hit.target, ...words });
   const line = voiceLine(text, `${sentence.id}.${sentence.index}`, verb.mark);
-  return reactionLine(line, ...reactionsTo(hit));
+  return reactionLine(line, { by: hit.target.id, on: hit.attacker.id }, ...reactionsTo(hit));
 }

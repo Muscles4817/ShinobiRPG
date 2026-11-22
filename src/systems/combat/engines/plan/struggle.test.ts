@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng, type Rng } from '@/core';
 
 import type { CombatantSetup, CombatAttributes } from '../../contract';
@@ -57,7 +58,7 @@ function scene({ caught, mate = {}, foeMate = {} }: Scene): Round {
     enemies: [setup('foe'), setup('foe-mate', foeMate)],
     canFlee: true,
   }).map((f): PlanFighter => (f.id === caught ? { ...f, pinned: 3, grip: wire } : f));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const who = (r: Round, id: string) => r.fighters.find((f) => f.id === id)!;
@@ -67,7 +68,7 @@ describe('struggling free', () => {
     const after = struggleFree(scene({ caught: 'hero' }), sure);
     expect(who(after, 'hero').pinned).toBeUndefined();
     expect(who(after, 'hero').grip).toBeUndefined();
-    expect(after.lines.at(-1)).toMatch(/hero struggles free/i);
+    expect(textOf(after.story).at(-1)).toMatch(/hero struggles free/i);
   });
 
   it('a hold that holds stays on', () => {
@@ -109,7 +110,7 @@ describe('coming to a teammate’s aid', () => {
     expect(helped.kind).toBe('spent');
     if (helped.kind !== 'spent') return;
     expect(who(helped.round, 'hero').pinned).toBeUndefined();
-    expect(helped.round.lines.at(-1)).toMatch(/mate pulls hero free/i);
+    expect(textOf(helped.round.story).at(-1)).toMatch(/mate pulls hero free/i);
   });
 
   it('against a channelled hold, they go for its caster instead', () => {

@@ -2,7 +2,8 @@ import { alive } from '../../rules/body';
 import { tell } from '../../rules/telling';
 import { isSource, raiseCost, raisedHealth } from '../../rules/minds';
 import { mindmates } from './oneMind';
-import { paying, say, type PlanFighter, type Round } from './state';
+import { patch, paying, say, type PlanFighter, type Round } from './state';
+import { setHealth } from './health';
 
 /**
  * Bodies of one mind in a planned fight (`mindContract.ts`, `rules/minds.ts`). They think with
@@ -63,14 +64,17 @@ const BODIES_DROP_LINE = 'With {s} down, {b} drop{b.s} where {b.they} stand{b.s}
 const SOURCE_YIELDS_LINE = 'With nothing left to fight with, {s} give{s.s} up the fight.';
 
 function raised(round: Round, raiser: PlanFighter, body: PlanFighter): Round {
-  const { fellAt: _fell, ...up } = body;
-  const fighters = round.fighters.map((f) => {
-    if (f.id === body.id) return { ...up, health: raisedHealth(body), stunned: 0 };
+  const up = setHealth(round, body.id, raisedHealth(body), { cause: 'raised', by: raiser.id });
+  const fighters = up.fighters.map((f) => {
+    if (f.id === body.id) {
+      const { fellAt: _fell, ...standing } = f;
+      return { ...standing, stunned: 0 };
+    }
     if (f.id !== raiser.id) return f;
     const glimpsed = f.hidden ? { exposure: (f.exposure ?? 0) + 1 } : {};
     return { ...f, ...paying(f, raiseCost(f)), ...glimpsed };
   });
-  return say({ ...round, fighters }, tell(RAISED_LINE, { b: body }));
+  return say({ ...up, fighters }, tell(RAISED_LINE, { b: body }));
 }
 
 function canRaise(f: PlanFighter): boolean {
@@ -100,10 +104,11 @@ function putDown(round: Round): Round {
     const line = isSource(f)
       ? tell(SOURCE_YIELDS_LINE, { s: f })
       : tell(BODIES_DROP_LINE, { s: source ?? f, b: f });
-    const fighters = now.fighters.map((o) =>
-      o.id === f.id ? { ...o, health: 0, fellAt: now.number } : o,
-    );
-    return say({ ...now, fighters }, line);
+    const down = setHealth(now, f.id, 0, {
+      cause: 'put-down',
+      ...(source ? { by: source.id } : {}),
+    });
+    return say({ ...down, fighters: patch(down.fighters, f.id, { fellAt: now.number }) }, line);
   }, round);
 }
 

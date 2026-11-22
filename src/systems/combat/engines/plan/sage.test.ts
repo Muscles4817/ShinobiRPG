@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { TechniqueDef } from '@/systems/techniques';
 
 import type { CombatantSetup, CombatCall } from '../../contract';
@@ -162,7 +163,7 @@ function round(over: Partial<CombatantSetup> = {}, foe: Partial<CombatantSetup> 
     enemies: [setup('foe', { techniques: [BOLT], ...foe })],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const who = (r: Round, id: string) => r.fighters.find((f) => f.id === id)!;
@@ -188,7 +189,7 @@ describe('summons hurt in a fight', () => {
     const saved = summonsAfter(hurt(called, (f) => f.callId === 'boss', 120));
     expect(boss(saved)).toBeUndefined();
     expect(summonFatesOf(sage(saved))).toEqual({ boss: 'sent-home' });
-    expect(saved.lines.join(' ')).toMatch(/before .* lost/);
+    expect(textOf(saved.story).join(' ')).toMatch(/before .* lost/);
     const dull = round({ attributes: { ...attributes, intellect: 3 } });
     const kept = summonsAfter(
       hurt(callSummon(dull, sage(dull), 'boss'), (f) => f.callId === 'boss', 120),
@@ -252,7 +253,7 @@ describe('meditating into Sage Mode', () => {
       'sage',
     );
     expect(sage(struck).empowered).toBeUndefined();
-    expect(struck.lines.join(' ')).toMatch(/stillness breaks/);
+    expect(textOf(struck.story).join(' ')).toMatch(/stillness breaks/);
   });
 
   it('is carried clear by a mount, slipping far more than sitting open', () => {
@@ -272,7 +273,7 @@ describe('meditating into Sage Mode', () => {
     };
     const faded = afterEmpowers(alone, 6);
     expect(sage(faded).empowered).toBeUndefined();
-    expect(faded.lines.join(' ')).toMatch(/sage mode fades/);
+    expect(textOf(faded.story).join(' ')).toMatch(/sage mode fades/);
   });
 });
 

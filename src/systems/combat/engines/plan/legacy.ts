@@ -1,3 +1,4 @@
+import { toldOn } from './toldPools';
 import { withKit } from '../../rules/body';
 import { formed, preferredRow } from '../../rules/rows';
 import { upgradeTechnique } from '../../rules/verbs';
@@ -62,7 +63,7 @@ export function upgradeLegacy(state: PlanState): PlanState {
     range: raw.range,
     seen: {},
     intents: {},
-    log: [...raw.log, 'You rethink your plan.'],
+    story: toldOn(raw.story, 'You rethink your plan.'),
     result: raw.result,
     canFlee: raw.canFlee,
   };

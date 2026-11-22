@@ -59,7 +59,7 @@ function fight(ready: 'dodge' | 'dodge-clear' | 'guard'): PlanState {
     range: 'close',
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: false,
   };
@@ -69,7 +69,7 @@ const roundOf = (state: PlanState) => ({
   number: 1,
   fighters: [...state.fighters],
   range: 'close' as const,
-  lines: [],
+  story: [],
   seen: {},
   intents: {},
 });

@@ -56,7 +56,10 @@ export function shieldUp(round: Round, incoming: ShieldedHit, force: number): Sh
       ? tell(`{t.poss} ${word} rises on its own and takes {a.poss} ${incoming.what}.`, slots)
       : tell(`{t.poss} ${word} rises and takes some of it, but not all.`, slots);
   return {
-    round: say({ ...round, fighters }, reactionLine(line, 'shielded')),
+    round: say(
+      { ...round, fighters },
+      reactionLine(line, { by: target.id, on: attacker.id }, 'shielded'),
+    ),
     force: force - kept,
   };
 }

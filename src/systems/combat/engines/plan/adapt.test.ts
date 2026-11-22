@@ -99,7 +99,7 @@ function face(techniques: readonly CombatTechnique[], reads?: Reads): Round {
     number: 1,
     fighters,
     range: 'close',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
     ...(reads ? { reads } : {}),

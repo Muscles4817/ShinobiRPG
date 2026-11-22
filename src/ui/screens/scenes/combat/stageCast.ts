@@ -8,8 +8,9 @@ export function goneSince(view: CombatView, beat: FightBeat | undefined): Combat
   if (!beat) return [];
   const standing = new Set(view.combatants.map((c) => c.id));
   return (view.cast ?? []).flatMap((member) => {
-    // Once the story has them gone (a clone popped), they leave the stage.
-    if (standing.has(member.id) || !((beat.health[member.id] ?? 0) > 0)) return [];
+    // Once the story has them gone (a clone popped, a summons sent home), they leave the stage.
+    const gone = !beat.present.includes(member.id) || !((beat.health[member.id] ?? 0) > 0);
+    if (standing.has(member.id) || gone) return [];
     const body =
       view.combatants.find((c) => c.id === member.like) ??
       view.combatants.find((c) => c.side === member.side);

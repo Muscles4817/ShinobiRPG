@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
 import { breakHold, keepHolding, startHolding } from './holding';
 import { readyDefences } from './readiness';
@@ -43,7 +44,7 @@ function held(): Round {
       ? { ...f, pinned: 2, sealed: 2 }
       : { ...f, reactions: { close: 'dodge', mid: 'dodge', far: 'dodge' } },
   );
-  const round = { number: 1, fighters, range: 'mid' as const, lines: [], seen: {}, intents: {} };
+  const round = { number: 1, fighters, range: 'mid' as const, story: [], seen: {}, intents: {} };
   return startHolding(round, 'caster', 'caught');
 }
 
@@ -54,7 +55,7 @@ describe('channelled holds', () => {
     const r = held();
     const kept = keepHolding(r, who(r, 'caster'));
     expect(kept.spent).toBe(true);
-    expect(kept.round.lines.at(-1)).toMatch(/caster holds caught fast/i);
+    expect(textOf(kept.round.story).at(-1)).toMatch(/caster holds caught fast/i);
   });
 
   it('leave the holder no hands for a defence', () => {
@@ -63,11 +64,11 @@ describe('channelled holds', () => {
   });
 
   it('break when the holder is hurt, freeing the target of the hold and its seal', () => {
-    const hurt = wound(held(), 'caster', 10);
+    const hurt = wound(held(), { who: 'caster', damage: 10 });
     expect(who(hurt, 'caster').holding).toBeUndefined();
     expect(who(hurt, 'caught').pinned).toBeUndefined();
     expect(who(hurt, 'caught').sealed).toBe(0);
-    expect(hurt.lines.at(-1)).toMatch(/hold breaks/);
+    expect(textOf(hurt.story).at(-1)).toMatch(/hold breaks/);
   });
 
   it('let go when there is nothing left to hold', () => {

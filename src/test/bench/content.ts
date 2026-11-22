@@ -4,11 +4,12 @@ import { enemyCombatant, playerCombatant } from '@/game/combatants';
 import { findPerson } from '@/game/people/cast';
 import { companionCombatant } from '@/game/people/companions';
 import { stageFoes } from '@/systems/missions';
-import { createPlanEngine, type CombatSetup, type CombatantSetup } from '@/systems/combat';
+import { createPlanEngine, toldIn, type CombatSetup, type CombatantSetup } from '@/systems/combat';
 import type { Discipline } from '@/systems/techniques';
 import { ctx, draft, formTeam } from '@/test/gameFixtures';
 
 import { STALEMATE_EXCHANGES } from './runner';
+import { checkStory } from './storyCheck';
 import { benchMinds } from './minds';
 
 /**
@@ -93,11 +94,12 @@ export function contentBench(setup: CombatSetup, seeds = 60): ContentReport {
       const begin = engine.view(state).options.some((o) => o.id === 'begin');
       const next = engine.act(state, { optionId: begin ? 'begin' : 'next' }, rng);
       if (!next.ok) throw new Error(next.error);
+      checkStory(next.value, state);
       state = next.value;
       if (!begin) count += 1;
     }
-    const hits = engine.view(state).log.flatMap((l) => [...l.matchAll(/⟦-(\d+)⟧/g)]);
-    if (hits.some((m) => Number(m[1]) >= HEAVY_HIT)) heavy += 1;
+    const hits = toldIn(engine.view(state).story).flatMap((l) => l.amounts ?? []);
+    if (hits.some((a) => a.kind === 'harm' && a.amount >= HEAVY_HIT)) heavy += 1;
     if (engine.outcome(state)?.result === 'victory') wins += 1;
     exchanges += count;
   }

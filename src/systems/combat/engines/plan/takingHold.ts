@@ -112,5 +112,6 @@ export function shakenOff(
   // A Brace makes a pin, daze or knock far less likely to take (`rules/commitment.ts`).
   const braced = committedTo(target, 'brace') && isBracedAgainst(verb);
   if (!rng.chance(braced ? bracedResist(resist) : resist)) return null;
-  return say(round, causeLine(tell(shakenLine(use, verb), { t: target }), holdCause(braced)));
+  const shaken = tell(shakenLine(use, verb), { t: target });
+  return say(round, causeLine(shaken, holdCause(braced), actor.id));
 }

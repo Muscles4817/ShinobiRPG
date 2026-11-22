@@ -2,7 +2,7 @@ import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 import type { AreaSize } from '@/systems/techniques';
 
-import { GUARDED, SLIPS } from '@/test/fightLines';
+import { GUARDED, linesOf, SLIPS, textOf, anyIs } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { useJutsu } from './jutsu';
@@ -55,7 +55,7 @@ function facing(kept: string, bandit: Partial<CombatantSetup> = {}): Round {
     enemies: [setup('bandit', bandit)],
     canFlee: true,
   }).map((f) => (f.id === 'bandit' ? { ...f, reactions } : f));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function cast(round: Round, size: AreaSize, seed: number): Round {
@@ -69,7 +69,7 @@ describe('area techniques in a fight', () => {
   it('a plain Guard blunts a small one, not a wide one', () => {
     const guardedAt = (size: AreaSize) =>
       Array.from({ length: SEEDS }, (_, i) => cast(facing('guard'), size, i + 1)).filter((r) =>
-        r.lines.some((l) => GUARDED.test(l)),
+        linesOf(r.story).some((l) => GUARDED.test(l)),
       ).length;
     expect(guardedAt('small')).toBeGreaterThan(0);
     expect(guardedAt('wide')).toBe(0);
@@ -79,7 +79,7 @@ describe('area techniques in a fight', () => {
     const nimble = { attributes: { ...attributes, speed: 60 }, traits: ['swift' as const] };
     for (let seed = 1; seed <= SEEDS; seed++) {
       const after = cast(facing('dodge', nimble), 'vast', seed);
-      expect(after.lines.join(' ')).not.toMatch(SLIPS);
+      expect(anyIs(linesOf(after.story), SLIPS)).toBe(false);
     }
   });
 
@@ -103,7 +103,7 @@ describe('a small area leaves the fight where it stands', () => {
     for (let seed = 1; seed <= SEEDS; seed++) {
       const after = cast(round, 'small', seed);
       expect(distanceBetween(after, 'hero', 'bandit')).toBe('close');
-      expect(after.lines.some((l) => l.includes('throws everyone apart'))).toBe(false);
+      expect(textOf(after.story).some((l) => l.includes('throws everyone apart'))).toBe(false);
     }
   });
 });

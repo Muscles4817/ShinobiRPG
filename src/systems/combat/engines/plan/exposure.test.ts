@@ -56,7 +56,7 @@ function fighters(): PlanFighter[] {
 }
 
 function roundOf(all: PlanFighter[], number = 1): Round {
-  return { number, fighters: all, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number, fighters: all, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 /** Nothing comes up: no search finds, no trace, no dodge. */
@@ -89,7 +89,7 @@ describe('closing in on a hider', () => {
       range: 'mid',
       seen: {},
       intents: {},
-      log: [],
+      story: [],
       result: null,
       canFlee: true,
     };

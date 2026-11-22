@@ -1,14 +1,18 @@
 import type { CombatAttributes } from '../../contract';
+import type { CombatEvent, StoryPools, ToldEvent } from '../../storyContract';
 import { maxBreath } from '../../rules/breath';
-import { poolsLine } from '../../rules/narration';
+import { toldFrom } from '../../rules/narration';
 
 /**
- * Where fighters' health and pools stand, as the story tells them (`say` in `state.ts`): each line
- * carries what moved since the one before, so the screen folds them in order
- * (`views/fightReplay.ts`). Typed by shape, so `state.ts` can tell without importing back.
+ * The one writer of a planned fight's story (`storyContract.ts`). Lines are told with `say`,
+ * which first records what moved since the last telling (whose health and pools, who came onto
+ * the field or left it), so a change shows with the first line after it and the screen folds
+ * them in order (`storyFold.ts`). A writer that knows more about a change than that it happened
+ * (whose hit it was: `health.ts`) records it itself as it makes it, and `say` has nothing left
+ * to add for it. Typed by shape, so `state.ts` can re-export `say` without importing back.
  */
 
-export type Pools = Readonly<Record<string, Readonly<Record<string, number>>>>;
+export type Pools = Readonly<Record<string, StoryPools>>;
 
 interface Pooled {
   readonly id: string;
@@ -23,10 +27,13 @@ interface Pooled {
 
 /** A fighter's health and pools as the screen shows them. */
 export function poolsOf(f: Pooled): Record<string, number> {
-  return {
+  const always = {
     health: f.health,
     chakra: f.chakra,
     breath: f.breath ?? maxBreath(f.attributes),
+  };
+  return {
+    ...always,
     ...(f.will !== undefined ? { will: f.will } : {}),
     ...(f.swarm ? { hive: f.swarm.count } : {}),
     ...(f.dust ? { dust: f.dust.count } : {}),
@@ -37,46 +44,72 @@ export function poolsNow(fighters: readonly Pooled[]): Pools {
   return Object.fromEntries(fighters.map((f) => [f.id, poolsOf(f)]));
 }
 
-/** What moved between two tellings, by fighter; someone gone from the field is told at nothing. */
-export function poolsMovedSince(was: Pools | undefined, now: Pools): Pools {
-  const moved = Object.entries(now).flatMap(([id, theirs]): [string, Record<string, number>][] => {
-    const before = was?.[id];
-    const changed = Object.entries(theirs).filter(([pool, n]) => before?.[pool] !== n);
-    return changed.length > 0 ? [[id, Object.fromEntries(changed)]] : [];
-  });
-  const gone = Object.keys(was ?? {}).filter((id) => !(id in now) && (was?.[id]?.health ?? 0) > 0);
-  const left = gone.map((id): [string, Record<string, number>] => [id, { health: 0 }]);
-  return Object.fromEntries([...moved, ...left]);
+/** Health, then the other pools, as events for what moved between two tellings of one fighter. */
+export function poolsMoved(who: string, was: StoryPools, now: StoryPools): CombatEvent[] {
+  const events: CombatEvent[] = [];
+  const health = now.health;
+  if (health !== undefined && health !== was.health) {
+    events.push({ kind: 'health', who, to: health, cause: 'settled' });
+    if (health <= 0 && (was.health ?? 0) > 0) events.push({ kind: 'fall', who });
+  }
+  const moved = Object.entries(now).filter(([pool, n]) => pool !== 'health' && was[pool] !== n);
+  if (moved.length > 0) events.push({ kind: 'pools', who, to: Object.fromEntries(moved) });
+  return events;
 }
 
-interface Told {
-  readonly lines: readonly string[];
+/** What moved between two tellings, as events; someone gone from the field has left it. */
+export function changesSince(was: Pools | undefined, now: Pools): CombatEvent[] {
+  const events: CombatEvent[] = [];
+  for (const [who, theirs] of Object.entries(now)) {
+    const before = was?.[who];
+    if (before) events.push(...poolsMoved(who, before, theirs));
+    else events.push({ kind: 'join', who, pools: theirs, statuses: [] });
+  }
+  for (const who of Object.keys(was ?? {})) if (!(who in now)) events.push({ kind: 'leave', who });
+  return events;
+}
+
+interface Telling {
+  readonly story: readonly CombatEvent[];
   readonly fighters: readonly Pooled[];
   readonly toldPools?: Pools;
 }
 
 /**
- * The story so far brought level with the fighters as an exchange ends: everyone's pools in full
- * on its last line, so what is shown once it has played is the fight as it stands.
+ * Tells lines: what moved since the last telling first, then the lines, each read into the event
+ * it tells (`toldFrom`). Tell a change after making it.
  */
-export function toldInFull<R extends Told>(round: R): R {
-  const last = round.lines.at(-1);
-  if (last === undefined) return round;
+export function say<R extends Telling>(round: R, ...lines: string[]): R {
+  if (lines.length === 0) return round;
   const now = poolsNow(round.fighters);
-  const said = poolsLine(last, { ...poolsMovedSince(round.toldPools, now), ...now });
-  return { ...round, lines: [...round.lines.slice(0, -1), said], toldPools: now };
+  const changes = changesSince(round.toldPools, now);
+  return { ...round, story: [...round.story, ...changes, ...lines.map(toldFrom)], toldPools: now };
 }
 
 /**
- * Tells lines, the one writer of the story. The first line carries where the health and pools of
- * everyone they moved for stand now (`poolsLine`), since the line before: what is shown is folded
- * from what is told, in order (`views/fightReplay.ts`), so a change shows with the first line
- * after it. Tell a change after making it.
+ * Lines told between exchanges (a divider, a read, the fight's close), after a story: nothing has
+ * moved in a turn there, and what the act changed is said as it hands back (`storyLevel.ts`).
  */
-export function say<R extends Told>(round: R, ...lines: string[]): R {
-  const [first, ...rest] = lines;
-  if (first === undefined) return round;
-  const now = poolsNow(round.fighters);
-  const moved = poolsMovedSince(round.toldPools, now);
-  return { ...round, lines: [...round.lines, poolsLine(first, moved), ...rest], toldPools: now };
+export function toldOn(
+  story: readonly CombatEvent[],
+  ...lines: readonly (string | ToldEvent)[]
+): CombatEvent[] {
+  return [...story, ...lines.map((l) => (typeof l === 'string' ? toldFrom(l) : l))];
+}
+
+/** Tells lines as `actorId`'s, who acts inside someone else's turn (a holder firing, a copy). */
+export function sayAs<R extends Telling>(round: R, actorId: string, ...lines: string[]): R {
+  const told = say(round, ...lines);
+  return { ...told, story: toldAs(told.story, told.story.length - lines.length, actorId) };
+}
+
+/** Lines told from `from` on, as `actorId`'s; a line already given to someone keeps them. */
+export function toldAs(
+  story: readonly CombatEvent[],
+  from: number,
+  actorId: string,
+): CombatEvent[] {
+  return story.map((e, i) =>
+    i < from || e.kind !== 'told' || e.actor !== undefined ? e : { ...e, actor: actorId },
+  );
 }

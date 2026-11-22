@@ -64,7 +64,7 @@ function bout({ range, with: card, holder = {} }: Bout): Round {
     enemies: [setup('holder', { items: [SHURIKEN], techniques: [heavy], ...holder })],
     canFlee: true,
   }).map((f) => (f.id === 'holder' ? { ...f, holdOff } : f));
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {} };
 }
 
 function stepsIn(b: Bout): Round[] {

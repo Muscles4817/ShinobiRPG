@@ -52,7 +52,7 @@ function mid(overrides: Partial<PlanState> = {}): PlanState {
     range: 'close',
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: true,
     ...overrides,

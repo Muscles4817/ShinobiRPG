@@ -1,5 +1,5 @@
+import { told } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { adaptLines, learnedLine } from './learned';
 import { initialFighters, type PlanFighter, type PlanState } from './state';
 
@@ -58,7 +58,7 @@ function fight(foe: Partial<CombatantSetup> = {}, overrides: Partial<PlanState> 
     range: 'close',
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: false,
     ...overrides,
@@ -94,7 +94,7 @@ describe('a foe changing its defence between rounds', () => {
     const hero = s.fighters.find((f) => f.isPlayer)!;
     const before = { ...was(s), reactions: { close: 'guard', mid: null, far: null } };
     const [line] = adaptLines([before], [now(s)], hero);
-    expect(splitNarration(line!).text).toBe(
+    expect(told(line!).text).toBe(
       'Goro has seen enough of you, and keeps a Dodge ready up close now.',
     );
   });

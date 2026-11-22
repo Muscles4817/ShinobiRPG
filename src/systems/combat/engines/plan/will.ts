@@ -34,7 +34,7 @@ export function drainWill(
     withWill(round, target.id, 0),
     tell('{t.poss} mind gives out, and {t} drop{t.s} where {t} stand{t.s}.', { t: target }),
   );
-  return wound(broken, target.id, target.health);
+  return wound(broken, { who: target.id, damage: target.health, by: actor.id });
 }
 
 /** As an exchange ends: a little will comes back to everyone still standing. */

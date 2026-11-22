@@ -1,3 +1,4 @@
+import { textOf, linesOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
@@ -55,7 +56,7 @@ function fighters(foe: Partial<CombatantSetup['attributes']> = {}) {
 }
 
 function at(fs: readonly PlanFighter[], band: 'close' | 'mid'): Round {
-  return { number: 1, fighters: [...fs], range: band, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters: [...fs], range: band, story: [], seen: {}, intents: {} };
 }
 
 describe('hand signs up close', () => {
@@ -117,7 +118,10 @@ describe('hand signs up close', () => {
     const after = broken?.fighters.find((f) => f.id === 'foe');
     expect(after?.chakra).toBeLessThan(caster.chakra);
     expect(after?.chakra).toBeGreaterThan(caster.chakra - 20);
-    expect(broken?.lines.at(-1)).toContain('⟦c:crowded⟧');
+    expect(linesOf(broken!.story).at(-1)?.cause).toMatchObject({
+      cause: 'crowded',
+      subject: 'foe',
+    });
   });
 });
 
@@ -136,7 +140,7 @@ describe('rushing in', () => {
     const arrived: Round = { ...before, distances: { 'foe|hero': 'close' } };
     expect(distanceBetween(arrived, 'hero', 'foe')).toBe('close');
     const turn = { actor: hero, target: foe, rng: createRng(3) };
-    const told = rushedIn(before, arrived, turn).lines;
+    const told = textOf(rushedIn(before, arrived, turn).story);
     expect(told.length).toBeGreaterThan(0);
     // A fighter with no grammar reads as "they", and the verb after it agrees.
     expect(told[0]).toContain('as they land.');

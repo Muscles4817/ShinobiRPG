@@ -1,6 +1,6 @@
+import { linesOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
-import { splitNarration } from '../../rules/narration';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { defaultLoadout } from './defaults';
 import { plannedPlay } from './priority';
@@ -78,7 +78,7 @@ function atMid(holds: boolean): Round {
       return holds ? { ...f, holdOff: { close: null, mid: 'jutsu:storm', far: null } } : f;
     return { ...f, keepAt: 'close', loadout: defaultLoadout(f, []) };
   });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 describe('closing in', () => {
@@ -115,9 +115,9 @@ describe('closing in', () => {
       return charge(round, turn, { kind: 'jutsu', technique: entry });
     }).find((c) => c.stopped);
     expect(stopped).toBeDefined();
-    const lines = stopped!.round.lines.map(splitNarration);
+    const lines = linesOf(stopped!.round.story);
     expect(lines[0]?.text).toMatch(/Flying Kick/);
-    expect(lines.slice(1).every((l) => l.actorId === 'caster')).toBe(true);
+    expect(lines.slice(1).every((l) => l.actor === 'caster')).toBe(true);
     expect(lines.some((l) => /too wide to slip|no gap in/.test(l.text))).toBe(true);
     // A flying kick is a body move: it spends breath, not chakra (`rules/breath.ts`).
     expect(stopped!.round.fighters[0]!.breath).toBeDefined();

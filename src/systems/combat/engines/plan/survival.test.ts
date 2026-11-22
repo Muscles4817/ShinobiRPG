@@ -78,7 +78,7 @@ function fight(me: Partial<CombatantSetup> = {}, them: Partial<CombatantSetup> =
     enemies: [setup('guy', { techniques: [life, view, wonder, kick], ...them })],
     canFlee: false,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const fighter = (r: Round, id: string): PlanFighter => r.fighters.find((f) => f.id === id)!;
@@ -133,7 +133,7 @@ describe('the worst killer', () => {
             empowerSelf(at, fighter(at, id), { technique: t, effect: t.effects[0] as never }),
           r,
         ),
-      { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} },
+      { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} },
     );
     expect(threatFrom(fighter(opened, 'me'), fighter(opened, 'lesser'), {})).toBeDefined();
     expect(killerOf(fighter(opened, 'me'), opened)?.foe.id).toBe('greater');

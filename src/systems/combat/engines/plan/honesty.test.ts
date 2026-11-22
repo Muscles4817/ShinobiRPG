@@ -1,7 +1,7 @@
+import { linesOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { createPlanEngine } from './engine';
 import { step } from './steps';
 import { initialFighters, type Round } from './state';
@@ -93,11 +93,11 @@ describe('a step that can go no further', () => {
       enemies: [setup('foe')],
       canFlee: true,
     });
-    const round: Round = { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+    const round: Round = { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
     const hero = fighters.find((f) => f.id === 'hero')!;
     const after = step(round, { actor: hero, target: fighters[1], rng: createRng(1) }, 'in');
     expect(after.range).toBe('close');
-    expect(after.lines.map((l) => splitNarration(l).text)).toEqual([
+    expect(linesOf(after.story).map((l) => l.text)).toEqual([
       'Hero presses in, but there is no closer to get.',
     ]);
   });

@@ -146,7 +146,7 @@ describe('chakra exhaustion', () => {
 describe('a fight’s toll', () => {
   const foes = (health: number): CombatView => ({
     round: 3,
-    log: [],
+    story: [],
     options: [],
     combatants: [
       {

@@ -24,6 +24,7 @@ import { felled } from './falls';
 import { endLine, openingLine, shutLine } from './ladderWords';
 import { shadowsGone } from './shadows';
 import { fighterIn, say, type PlanFighter, type Round } from './state';
+import { setHealth, withHealth } from './health';
 import { tell } from '../../rules/telling';
 
 /**
@@ -80,23 +81,19 @@ function shut(f: PlanFighter, opened: LadderStep): PlanFighter {
   const breath = Math.min(breathOf(base), maxBreath(attributes));
   const health = stepToll(opened).collapses ? 0 : base.health;
   const laddersShut = [...(base.laddersShut ?? []), opened.ladder];
-  return {
-    ...base,
-    attributes,
-    breath,
+  return withHealth(
+    { ...base, attributes, breath, laddersShut, stunned: base.stunned + GIVE_OUT_TURNS },
     health,
-    laddersShut,
-    stunned: base.stunned + GIVE_OUT_TURNS,
-  };
+  );
 }
 
 /** What one exchange of an empower in force takes: its health price, and a ladder's wind. */
 function paid(f: PlanFighter): PlanFighter {
   const health = healthAfterPrice(f);
   const opened = f.empowered?.opened;
-  if (!opened) return { ...f, health };
+  if (!opened) return withHealth(f, health);
   const breath = Math.max(0, breathOf(f) - stepBreathPrice(opened, maxBreath(f.attributes)));
-  return { ...f, health, breath };
+  return withHealth({ ...f, breath }, health);
 }
 
 /** Whether an open ladder step gives out: the Gates when the body does; Sage Mode never. */
@@ -122,13 +119,15 @@ function tick(round: Round, id: string, exchange: number): Round {
   const spent = givesOut(after) ? opened : undefined;
   const over = spent !== undefined || (!renewed(f) && empowerEnds(f, exchange));
   const next = spent ? shut(after, spent) : over ? ended(after) : heldOn(after, exchange);
-  const fighters = round.fighters.map((g) => (g.id === id ? next : g));
+  // The price is paid through the one writer of health, the rest of the body as it ends.
+  const priced = setHealth(round, id, next.health, { cause: 'price' });
+  const fighters = priced.fighters.map((g) => (g.id === id ? next : g));
   const price = f.health - after.health;
   const lines = [
     ...(price > 0 ? [harmLine(tell('The strain tells on {a.poss} body.', { a: f }), price)] : []),
     ...(spent ? [shutLine(f, spent, stepToll(spent).collapses)] : over ? [endLine(f)] : []),
   ];
-  const told = say({ ...round, fighters }, ...lines);
+  const told = say({ ...priced, fighters }, ...lines);
   // Collapsed past the seventh gate: down like any fall, their clones with them.
   return alive(next) ? told : shadowsGone(felled(told, next), next);
 }

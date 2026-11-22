@@ -104,7 +104,7 @@ function outlasts(intellect: number, seed: number, thinking = false): boolean {
     number: plan.round,
     fighters: [...plan.fighters],
     range: 'close',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
   };
@@ -163,7 +163,7 @@ describe('a killer since a fighter settled on its move', () => {
       canFlee: false,
       watch: true,
     });
-    const table: Round = { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+    const table: Round = { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
     const opened = GATES.reduce((at, t) => {
       const guy = at.fighters.find((f) => f.id === 'guy')!;
       return empowerSelf(at, guy, { technique: t, effect: t.effects[0] as never });

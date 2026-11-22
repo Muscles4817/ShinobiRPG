@@ -70,7 +70,7 @@ export function blinkInstead(round: Round, actor: PlanFighter, card: Card): Roun
     ),
     distances: withMoves(round, movesFor(round, actor, foe, to)),
   };
-  return say(moved, causeLine(tell(BLINK_LINES[to], { a: actor, b: foe }), 'teleport'));
+  return say(moved, causeLine(tell(BLINK_LINES[to], { a: actor, b: foe }), 'teleport', actor.id));
 }
 
 /** The fighter as they stand after a blink. */

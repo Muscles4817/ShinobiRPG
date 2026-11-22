@@ -1,5 +1,5 @@
+import { told } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { healthNow } from './roundOpened';
 import { roundReads } from './roundReads';
 import { initialFighters, type PlanFighter, type PlanState } from './state';
@@ -48,7 +48,7 @@ function table(you: Partial<CombatantSetup['attributes']> = {}): PlanState {
     range: 'mid',
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: false,
     healthAtRound: healthNow(fighters),
@@ -59,7 +59,7 @@ const change = (state: PlanState, id: string, to: Partial<PlanFighter>): PlanSta
   ...state,
   fighters: state.fighters.map((f) => (f.id === id ? { ...f, ...to } : f)),
 });
-const said = (state: PlanState) => roundReads(state).map((l) => splitNarration(l).text);
+const said = (state: PlanState) => roundReads(state).map((l) => told(l).text);
 
 describe('reads after a round', () => {
   it('a quiet round tells nothing', () => {
@@ -71,7 +71,7 @@ describe('reads after a round', () => {
     expect(said(keen)).toEqual(["Gōran wasn't ready for that, and it hurt."]);
     const dull = change(table({ perception: 2 }), 'Gōran', { health: 60 });
     expect(said(dull)).toEqual(['That looked like it hurt Gōran.']);
-    expect(roundReads(keen).every((l) => splitNarration(l).read === true)).toBe(true);
+    expect(roundReads(keen).every((l) => told(l).read === true)).toBe(true);
   });
 
   it('the worse of it going to you shows', () => {

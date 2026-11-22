@@ -74,7 +74,7 @@ function table({
     range: 'mid',
     seen: {},
     intents: { Gōran: intent },
-    log: [],
+    story: [],
     result: null,
     canFlee: false,
   };

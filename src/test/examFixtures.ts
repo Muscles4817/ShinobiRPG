@@ -90,7 +90,7 @@ function viewOf(state: CombatState, script: Script): CombatView {
       ...data.setup.allies.map(ally),
       ...data.setup.enemies.map((c) => ({ ...ally(c), side: 'enemy' as const, health: 0 })),
     ],
-    log: [],
+    story: [],
     options: data.done
       ? []
       : [{ id: 'end', label: 'End it', detail: '', kind: 'continue' as const }],

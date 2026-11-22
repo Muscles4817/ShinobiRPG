@@ -25,13 +25,12 @@ function watched(r: Recorder, title: string, start: CombatState, seed: number): 
   let told = 0;
   const tell = () => {
     const view = engine.view(state);
-    const log = combatLog(view.log);
-    const from = Math.max(0, told - (view.logOffset ?? 0));
-    for (const line of log.slice(from)) {
+    const from = Math.max(0, told - (view.storyOffset ?? 0));
+    for (const line of combatLog(view.story.slice(from))) {
       if (line.kind === 'round') r.say(`  —— ${line.text} ——`);
       else r.say(`  ${line.text} ${line.chips.map((c) => `[${c.label}]`).join(' ')}`.trimEnd());
     }
-    told = (view.logOffset ?? 0) + log.length;
+    told = (view.storyOffset ?? 0) + view.story.length;
   };
   tell();
   for (let i = 0; i < MAX_EXCHANGES && !engine.outcome(state); i++) {

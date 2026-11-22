@@ -1,3 +1,4 @@
+import { setHealth } from './health';
 import { joinedBeside } from './distance';
 import { alive } from '../../rules/body';
 import { drivenAttributes } from '../../rules/puppets';
@@ -78,13 +79,13 @@ function summoned(round: Round, caller: Fighter, call: CombatCall): Fighter {
  * A called body on the field beside its caller, and the caller marked as keeping it out: what a
  * summoning does, and what a fight opens with for a body that is `present` (`present.ts`).
  */
-export function placed(round: Round, caller: Fighter, call: CombatCall, blood = 0): Round {
+export function placed(round: Round, caller: Fighter, call: CombatCall): Round {
   const body = summoned(round, caller, call);
   const out = [...(caller.summonsOut ?? []), call.id];
   // A puppeteer steps back behind what they unsealed and works it from there.
   const row = call.puppet ? { row: 'back' as const } : {};
   const fighters = round.fighters.map((f) =>
-    f.id === caller.id ? { ...f, health: f.health - blood, summonsOut: out, ...row } : f,
+    f.id === caller.id ? { ...f, summonsOut: out, ...row } : f,
   );
   // A body of its caller's mind thinks as sharply as they do (`oneMind.ts`).
   return {
@@ -106,10 +107,7 @@ export function callSummon(round: Round, actor: PlanFighter, callId: string): Ro
   const blood = Math.min(call.bloodPrice ?? 0, Math.max(0, caller.health - BLOOD_FLOOR));
   // The blood is paid, then the body comes: each told as it happens.
   const paid = harmLine(tell('{a} pay{a.s} in blood.', { a: actor }), blood);
-  const bled = {
-    ...round,
-    fighters: patch(round.fighters, caller.id, { health: caller.health - blood }),
-  };
+  const bled = setHealth(round, caller.id, caller.health - blood, { cause: 'price' });
   const after = blood > 0 ? say(bled, paid) : round;
   const answered = placed(after, fighterIn(after, caller.id) ?? caller, call);
   const body = answered.fighters[answered.fighters.length - 1] ?? caller;
@@ -236,7 +234,14 @@ function spared(round: Round, callerId: string): Round {
   if (!smallest || out.length < 2) return round;
   if (caller.chakra >= upkeepOut(round, caller) * UPKEEP_HORIZON) return round;
   const gone = leaves(round, smallest, { fate: 'sent-home', lost: false });
-  return say({ ...gone, lines: round.lines }, tell(SPARED_LINE, { a: caller, s: smallest }));
+  // Sent home quietly: only the line that says why is told.
+  const { toldPools: _told, ...left } = gone;
+  const quiet = {
+    ...left,
+    story: round.story,
+    ...(round.toldPools ? { toldPools: round.toldPools } : {}),
+  };
+  return say(quiet, tell(SPARED_LINE, { a: caller, s: smallest }));
 }
 
 /** At the end of an exchange: each summon out goes home, or its caller pays to keep it. */

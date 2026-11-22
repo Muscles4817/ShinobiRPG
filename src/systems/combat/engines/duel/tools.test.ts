@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type {
@@ -8,7 +9,6 @@ import type {
   CombatState,
   CombatTrait,
 } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { createDuelEngine } from './engine';
 
 const attributes = {
@@ -126,7 +126,7 @@ describe('duel engine: fight tools', () => {
     const strong = fighter('bandit', { attributes: { ...attributes, strength: 30, taijutsu: 30 } });
     let state = act(duel(hero([tool('smoke')]), strong), { optionId: 'item:smoke' });
     expect(combatant(state, 'hero').statuses).toContain('Hidden');
-    expect(engine.view(state).log).toContain('bandit loses sight of you.');
+    expect(textOf(engine.view(state).story)).toContain('bandit loses sight of you.');
     expect(combatant(state, 'hero').health).toBe(50);
     expect(option(state, 'item:smoke')?.disabledReason).toBe('You are already hidden.');
     state = act(state, { optionId: 'strike' }, 3);
@@ -145,7 +145,7 @@ describe('duel engine: fight tools', () => {
     );
     const next = act(state, { optionId: 'item:smoke' });
     expect(combatant(next, 'hero').health).toBe(50);
-    expect(engine.view(next).log).not.toContain('bandit loses sight of you.');
+    expect(textOf(engine.view(next).story)).not.toContain('bandit loses sight of you.');
   });
 
   it('using a tool clears confusion and never misfires', () => {
@@ -154,7 +154,7 @@ describe('duel engine: fight tools', () => {
     );
     for (let seed = 1; seed <= 10; seed++) {
       const next = act(dazed, { optionId: 'item:clarity' }, seed);
-      const told = engine.view(next).log.map((l) => splitNarration(l).text);
+      const told = textOf(engine.view(next).story);
       expect(told).toContain('Hero grips a charm until the fog in their head lifts.');
       expect(combatant(next, 'hero').statuses).not.toContain('Confused');
     }
@@ -195,7 +195,7 @@ describe('duel engine: fight tools', () => {
     });
     const coward = fighter('coward', { traits: ['coward'], health: 60, maxHealth: 100 });
     const fled = act(duel(hero([tool('blast')]), coward), { optionId: 'item:blast' });
-    expect(engine.view(fled).log).toContain('coward flees!');
+    expect(textOf(engine.view(fled).story)).toContain('coward flees!');
     expect(engine.outcome(fled)?.result).toBe('victory');
   });
 });

@@ -42,7 +42,7 @@ function facing(targetWill: number): Round {
     number: 1,
     fighters: [itachi!, target!],
     range: 'close',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
   };

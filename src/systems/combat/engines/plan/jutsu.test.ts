@@ -1,10 +1,21 @@
 import { createRng } from '@/core';
 
-import { GUARDED, SEES_IT_COMING, SLIPS, dazes, hitsOn } from '@/test/fightLines';
+import {
+  anyIs,
+  dazes,
+  GUARDED,
+  hitsOn,
+  linesOf,
+  matches,
+  wantedName,
+  SEES_IT_COMING,
+  SLIPS,
+  textOf,
+  type Wanted,
+} from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { chakraCost } from '../../rules/body';
-import { splitNarration } from '../../rules/narration';
 import { UNSTABLE_MISFIRE } from '../../rules/unstable';
 import { chooseCard } from './choose';
 import { useJutsu } from './jutsu';
@@ -73,7 +84,7 @@ function roundWith(target: Partial<CombatantSetup> = {}, loadout?: PlanFighter['
     number: 1,
     fighters,
     range: 'close',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
   };
@@ -104,13 +115,13 @@ function readyWith(target: Partial<CombatantSetup>, kept: string): Round {
 const chakraCrush: CombatTechnique = { ...crush, id: 'chakra-crush', discipline: 'ninjutsu' };
 
 /** Uses Crush with each seed in turn until the narration matches. */
-function crushUntil(round: Round, wanted: RegExp, technique = crush): Round {
+function crushUntil(round: Round, wanted: Wanted, technique = crush): Round {
   for (let seed = 1; seed < 200; seed++) {
     const [actor, target] = round.fighters;
     const after = useJutsu(round, { actor: actor!, target, rng: createRng(seed) }, technique);
-    if (after.lines.some((l) => wanted.test(l))) return after;
+    if (linesOf(after.story).some((l) => matches(l, wanted))) return after;
   }
-  throw new Error(`no seed narrates ${wanted.source}`);
+  throw new Error(`no seed narrates ${wantedName(wanted)}`);
 }
 
 describe('plan & watch techniques', () => {
@@ -119,9 +130,9 @@ describe('plan & watch techniques', () => {
     const bandit = fighterIn(after, 'bandit');
     expect(bandit?.health).toBeLessThan(80);
     expect(bandit?.stunned).toBe(1);
-    const hitAt = after.lines.findIndex((l) => hitsOn('bandit').test(l));
+    const hitAt = linesOf(after.story).findIndex((l) => hitsOn('bandit').test(l));
     expect(hitAt).toBeGreaterThan(-1);
-    expect(hitAt).toBeLessThan(after.lines.findIndex((l) => dazes('bandit').test(l)));
+    expect(hitAt).toBeLessThan(linesOf(after.story).findIndex((l) => dazes('bandit').test(l)));
   });
 
   it('a daze leaves the target open until the dazer has had another turn', () => {
@@ -181,9 +192,10 @@ describe('plan & watch techniques', () => {
           { actor: hero!, target: bandit, rng: createRng(seed) },
           jab,
         );
-        const told = after.lines.join(' ');
-        expect(told).not.toMatch(SLIPS);
-        if (kept === 'guard' && hitsOn('bandit').test(told)) expect(told).toMatch(GUARDED);
+        const lines = linesOf(after.story);
+        expect(anyIs(lines, SLIPS)).toBe(false);
+        const hits = lines.filter((l) => kept === 'guard' && hitsOn('bandit').test(l));
+        expect(hits.every((l) => GUARDED.test(l))).toBe(true);
       }
     }
   });
@@ -193,9 +205,9 @@ describe('plan & watch techniques', () => {
       const round = readyWith({}, kept);
       const [hero, bandit] = round.fighters;
       return Array.from({ length: 40 }, (_, seed) =>
-        useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, jab).lines.map(
-          (l) => splitNarration(l).reactions,
-        ),
+        linesOf(
+          useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, jab).story,
+        ).map((l) => (l.reactions ?? []).map((r) => r.reaction)),
       ).flat();
     };
     expect(stamps('dodge')).toContainEqual(['dodged']);
@@ -228,7 +240,7 @@ describe('plan & watch techniques', () => {
         const round = roundWith({ attributes: { ...attributes, stamina } });
         const [hero, bandit] = round.fighters;
         return useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed + 1) }, crush);
-      }).filter((r) => r.lines.some((l) => /keeps \w+ head/.test(l))).length;
+      }).filter((r) => textOf(r.story).some((l) => /keeps \w+ head/.test(l))).length;
     const hardy = crushUntil(
       roundWith({ attributes: { ...attributes, stamina: 60 } }),
       /keeps \w+ head/,
@@ -244,7 +256,7 @@ describe('plan & watch techniques', () => {
     const dodging = { close: plainSlots(['dodge']), mid: [], far: [] };
     const after = crushUntil(roundWith(nimble, dodging), SLIPS);
     expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
-    expect(after.lines.join(' ')).not.toMatch(/dazed/);
+    expect(textOf(after.story).join(' ')).not.toMatch(/dazed/);
   });
 
   it('an unstable technique costs more and sometimes comes apart, chakra spent', () => {
@@ -257,7 +269,7 @@ describe('plan & watch techniques', () => {
     for (let seed = 1; seed <= SEEDS; seed++) {
       const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, shaky);
       expect(fighterIn(after, 'hero')?.chakra).toBe(100 - chakraCost(hero!, shaky));
-      if (after.lines.some((l) => l.includes('comes apart'))) {
+      if (textOf(after.story).some((l) => l.includes('comes apart'))) {
         misfires++;
         expect(fighterIn(after, 'bandit')).toMatchObject({ health: 80, stunned: 0 });
       }
@@ -266,7 +278,7 @@ describe('plan & watch techniques', () => {
     expect(misfires / SEEDS).toBeLessThan(UNSTABLE_MISFIRE + 0.06);
     for (let seed = 1; seed <= 50; seed++) {
       const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, crush);
-      expect(after.lines.join(' ')).not.toMatch(/comes apart/);
+      expect(textOf(after.story).join(' ')).not.toMatch(/comes apart/);
     }
   });
 });
@@ -295,7 +307,7 @@ describe('cast armour in a planned fight', () => {
       { actor: hero, target: undefined, rng: createRng(2) },
       sandShell,
     );
-    expect(again.lines.join(' ')).toContain('already armoured');
+    expect(textOf(again.story).join(' ')).toContain('already armoured');
   });
 
   it('turns a blow that would have hurt more', () => {
@@ -325,7 +337,7 @@ describe('cast armour in a planned fight', () => {
     };
     const fallen = shroudsAfter(dry);
     expect(fighterIn(fallen, 'hero')?.shroud).toBeUndefined();
-    expect(fallen.lines.join(' ')).toContain('sand armour runs off');
+    expect(textOf(fallen.story).join(' ')).toContain('sand armour runs off');
   });
 });
 
@@ -346,8 +358,8 @@ describe('healing', () => {
       { actor: hurt, target: hurt, rng: createRng(1) },
       mend,
     );
-    const told = after.lines.map((l) => splitNarration(l).text).join(' ');
-    expect(told).toContain('Mending Glow closes the worst of');
-    expect(told).not.toContain('breath');
+    const said = textOf(after.story).join(' ');
+    expect(said).toContain('Mending Glow closes the worst of');
+    expect(said).not.toContain('breath');
   });
 });

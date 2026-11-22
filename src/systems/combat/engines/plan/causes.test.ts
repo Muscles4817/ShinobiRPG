@@ -1,5 +1,5 @@
+import { told } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import type { Incoming } from './avoid';
 import { holdCause, slipCause, slipCauseBeside, stepCause, withCause } from './causes';
 import { initialFighters, type PlanFighter, type Round } from './state';
@@ -42,7 +42,7 @@ function round(hero: Partial<CombatantSetup> = {}, foe: Partial<CombatantSetup> 
     enemies: [setup('foe', foe)],
     canFlee: false,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const of = (r: Round, id: string): PlanFighter => r.fighters.find((f) => f.id === id)!;
@@ -70,6 +70,20 @@ describe('why an attack was slipped', () => {
     expect(slipCause(dull, tech(dull))).toBe('slipped');
   });
 
+  // Bug #16: the cause was worked out again after the roll, eyes that see it coming first, so a
+  // seer slipping a blow on a ready Dodge was told as foreseen. It comes from the roll's parts.
+  it('names the part of the roll that did most, not the first gift the defender has', () => {
+    const seer = round({ perks: ['foresight'] });
+    const dodging = {
+      ...seer,
+      fighters: seer.fighters.map((f) =>
+        f.id === 'hero' ? { ...f, reactions: { close: 'dodge', mid: 'dodge', far: 'dodge' } } : f,
+      ),
+    };
+    expect(slipCause(seer, blow(seer))).toBe('foresaw');
+    expect(slipCause(dodging, blow(dodging))).toBe('dodge-ready');
+  });
+
   it('a ready Dodge is left to the Dodged stamp', () => {
     expect(slipCauseBeside('dodge-ready', true)).toBeNull();
     expect(slipCauseBeside('dodge-ready', false)).toBe('dodge-ready');
@@ -88,11 +102,11 @@ describe('holds and steps', () => {
     expect(stepCause(of(r, 'foe'), of(r, 'hero'))).toBe('cut-off');
   });
 
-  it('rides on the line as a marker the screen reads back', () => {
-    expect(splitNarration(withCause('They slip it.', 'read-it'))).toMatchObject({
+  it('rides on the line, with whom it is about, as the event says it', () => {
+    expect(told(withCause('They slip it.', 'read-it', 'foe'))).toMatchObject({
       text: 'They slip it.',
-      cause: 'read-it',
+      cause: { cause: 'read-it', kind: 'slipped', subject: 'foe' },
     });
-    expect(withCause('They slip it.', null)).toBe('They slip it.');
+    expect(withCause('They slip it.', null, 'foe')).toBe('They slip it.');
   });
 });

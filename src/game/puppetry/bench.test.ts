@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { act, ctx, fightOut, intoFight, newGame, veteran } from '@/test/gameFixtures';
 import { benchView, blockerFor } from '@/game';
 import { slotsUntilNextMorning } from '@/systems/time';
@@ -114,7 +115,7 @@ describe('a built puppet in a fight', () => {
     state = act(state, { type: 'missionContinue' });
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
     const done = fightOut(intoFight(state));
-    expect(done.combatFinale?.log.join(' ')).toMatch(/Kite unfolds/);
+    expect(textOf(done.combatFinale?.story ?? []).join(' ')).toMatch(/Kite unfolds/);
   });
 });
 

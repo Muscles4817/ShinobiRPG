@@ -1,4 +1,5 @@
 import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
+import { divider, health, reacting, said, stand } from '@/test/story';
 
 import type { CombatView } from '@/systems/combat';
 
@@ -52,14 +53,21 @@ describe('why the last round went as it did', () => {
         { id: 'goro', name: 'Goro', side: 'enemy', ...fighter },
       ],
       options: [],
-      log: [
-        '— First exchange — ⟦rs⟧',
-        'Aoi hits Goro. ⟦by:aoi⟧ ⟦-9⟧',
-        '— First exchange — ⟦rs⟧',
-        'Aoi swings at Goro. ⟦op:improvised⟧ ⟦by:aoi⟧ ⟦-3⟧',
-        'Aoi looks around. ⟦op:looking⟧ ⟦by:aoi⟧',
-        'Goro slips past Aoi’s strike. ⟦by:aoi⟧ ⟦r:missed⟧',
-        'Goro hits Aoi. ⟦by:goro⟧ ⟦r:guarded⟧ ⟦-4⟧',
+      story: [
+        stand('aoi', { health: 100 }),
+        stand('goro', { health: 100 }),
+        divider(),
+        health('goro', 91, 'aoi'),
+        said('Aoi hits Goro.', 'aoi'),
+        divider(),
+        health('goro', 88, 'aoi'),
+        said('Aoi swings at Goro.', 'aoi', { offPlan: 'improvised' }),
+        said('Aoi looks around.', 'aoi', { offPlan: 'looking' }),
+        said('Goro slips past Aoi’s strike.', 'aoi', {
+          reactions: [reacting('missed', 'goro', 'aoi')],
+        }),
+        health('aoi', 96, 'goro'),
+        said('Goro hits Aoi.', 'goro', { reactions: [reacting('guarded', 'aoi', 'goro')] }),
       ],
     };
     expect(roundWhy(view)).toEqual([
@@ -90,7 +98,7 @@ describe('why the last round went as it did', () => {
         { id: 'ryu', name: 'Ryu', side: 'enemy', ...fighter, health: 0, distance: 'far' },
       ],
       options: [],
-      log: ['— First exchange — ⟦rs⟧', 'Goro hits Aoi. ⟦by:goro⟧ ⟦-4⟧'],
+      story: [divider(), health('aoi', 96, 'goro'), said('Goro hits Aoi.', 'goro')],
     };
     expect(roundWhy(view)).toContainEqual({
       text: 'Kept a distance of their own',

@@ -67,7 +67,7 @@ function round(): Round {
   }).map((f): PlanFighter =>
     f.isPlayer ? { ...f, loadout: { close: plainSlots(PLAN), mid: [], far: [] } } : f,
   );
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 describe('a turn traced', () => {

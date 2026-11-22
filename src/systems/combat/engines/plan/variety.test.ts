@@ -64,7 +64,7 @@ function round(foeIntellect: number, turns: number, watching = false): Round {
     number: 3,
     fighters,
     range: 'mid',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
     ...(watching ? { watching: true as const } : {}),

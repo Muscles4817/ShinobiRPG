@@ -56,7 +56,7 @@ function roundOf(hero: Partial<CombatantSetup> = {}, foe: Partial<CombatantSetup
     enemies: [setup('foe', { techniques: [], ...foe })],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function strikeOf(round: Round, actor = round.fighters[0]!): string {
