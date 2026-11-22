@@ -25,6 +25,7 @@ import type { Wallet } from '@/systems/wallet';
 import type { Board } from './boardState';
 import type { ContentEdits } from './edits/state';
 import type { Daybook, DayEndMode } from './daybook/state';
+import type { Fact } from './facts/types';
 import type { Rival } from './rival/state';
 import type { CombatFinale } from './combatFinale';
 import type { FightRecord } from './fightRecord/state';
@@ -101,6 +102,8 @@ export interface GameState {
   readonly told: Told;
   /** The day's record: where you stood at dawn, and the last day that ended (`daybook/`). */
   readonly daybook: Daybook;
+  /** What happened lately, as it happened (`facts/`): read by the day's sheet and your sensei. */
+  readonly facts: readonly Fact[];
   /** Your rival from the year (`rival/`), once your team is settled; null before. */
   readonly rival: Rival | null;
   /** Bonded creatures by owner (yours under `PLAYER_OWNER`), and a stray being won over. */
@@ -271,6 +274,8 @@ export interface Character {
   readonly soaked?: true;
   /** Injuries you carry; each heals on its own morning. */
   readonly injuries: readonly Injury[];
+  /** How many wounds you have ever taken: the last injury's `instance` (`wounds.ts`). */
+  readonly woundsTaken: number;
   /**
    * Progress on chakra control exercises, out of 100, by exercise id (`game/exercises.ts`).
    * Absent: none begun (saves from before exercises). A mastered one is also a breakthrough.

@@ -3,6 +3,7 @@ import { RANK_LABELS } from '@/systems/standing';
 
 import type { GameContext } from '../context';
 import type { DayEnd } from '../daybook/state';
+import { factsOf } from '../facts/record';
 import type { DayGrowth } from './dayEndGrowth';
 import type { DayHurt, DayPerson } from './dayEndRows';
 
@@ -28,7 +29,7 @@ function rankClauses(ended: DayEnd, ctx: GameContext): string[] {
   return [
     ...(ended.rank ? [`you were made ${RANK_LABELS[ended.rank].toLowerCase()}`] : []),
     ...(learned.length > 0 ? [`you learned ${listed(learned)}`] : []),
-    ...ended.jobs.map((title) => `you saw ${title} through`),
+    ...factsOf(ended.happened, 'jobDone').map((job) => `you saw ${job.title} through`),
   ];
 }
 
@@ -39,7 +40,7 @@ function workClauses(parts: DiaryParts, ended: DayEnd): string[] {
   const more = grew.length > WORK_NAMED ? ', among other things' : '';
   return [
     ...up.map((g) => `your ${g.name.toLowerCase()} reached ${g.grade}`),
-    ...(ended.injuries.length > 0 ? ['you came home hurt'] : []),
+    ...(factsOf(ended.happened, 'injuryAdded').length > 0 ? ['you came home hurt'] : []),
     ...(grew.length > 0 ? [`you worked on your ${named}${more}`] : []),
   ];
 }

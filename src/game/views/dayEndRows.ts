@@ -8,6 +8,7 @@ import { hungerLevel } from '@/systems/vitals';
 
 import type { GameContext } from '../context';
 import type { DayEnd, Find } from '../daybook/state';
+import { factsOf } from '../facts/record';
 import { growthRows } from './dayEndGrowth';
 import { entryOf } from '../fieldBook/keys';
 import { findPerson } from '../people/cast';
@@ -120,7 +121,11 @@ export function momentRows(ended: DayEnd, state: GameState, ctx: GameContext): D
       title: `Your ${g.name.toLowerCase()} reached ${g.tier}`,
       tag: null,
     }));
-  const jobs = ended.jobs.map((title) => ({ seal: '良', title: `${title}, done`, tag: null }));
+  const jobs = factsOf(ended.happened, 'jobDone').map((job) => ({
+    seal: '良',
+    title: `${job.title}, done`,
+    tag: null,
+  }));
   return [
     ...rank,
     ...learned,
@@ -136,9 +141,9 @@ function nights(n: number): string {
 }
 
 export function hurtRows(ended: DayEnd, state: GameState, ctx: GameContext): DayHurt[] {
-  const wounds = ended.injuries.flatMap((id) => {
-    const def = ctx.content.injuries.get(id);
-    const carried = state.character.injuries.find((i) => i.injuryId === id);
+  const wounds = factsOf(ended.happened, 'injuryAdded').flatMap((wound) => {
+    const def = ctx.content.injuries.get(wound.injuryId);
+    const carried = state.character.injuries.find((i) => i.instance === wound.instance);
     if (!def || !carried) return [];
     return [
       { seal: '傷', title: def.name, note: nights(Math.max(1, carried.until - state.time.day)) },

@@ -64,10 +64,10 @@ function postChance(def: MissionDef, who: Reader, ctx: GameContext): number {
   return DAILY_POST_CHANCE * postingShare(jobOf(ctx, def), assigneeOf(who.standing));
 }
 
-function postingFor(board: Board, def: MissionDef, day: number): Posting {
+function postingFor(board: Board, missionId: string, day: number): Posting {
   const span = MAX_DAYS_UP - MIN_DAYS_UP + 1;
-  const daysUp = MIN_DAYS_UP + Math.floor(hashUnit(board.seed, day, def.id, 'length') * span);
-  return { missionId: def.id, postedDay: day, expiresDay: day + daysUp - 1 };
+  const daysUp = MIN_DAYS_UP + Math.floor(hashUnit(board.seed, day, missionId, 'length') * span);
+  return { missionId, postedDay: day, expiresDay: day + daysUp - 1 };
 }
 
 /** Missions in the order of a key worked out once each (a hash is too dear for a comparator). */
@@ -78,10 +78,15 @@ function byHash(missions: readonly MissionDef[], key: (m: MissionDef) => number)
     .map(({ m }) => m);
 }
 
-/** Postings for one new day: expired ones come down, new ones go up. */
-function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Board {
-  const kept = board.postings.filter((p) => p.expiresDay >= day);
-  const candidates = ctx.content.missions.all.filter(
+/** The postings still up on `day`. */
+function keptOn(board: Board, day: number): readonly Posting[] {
+  return board.postings.filter((p) => p.expiresDay >= day);
+}
+
+/** Jobs that could go up on `day` beside what is still up. */
+function candidatesOn(board: Board, day: number, ctx: GameContext, who: Reader): MissionDef[] {
+  const kept = keptOn(board, day);
+  return ctx.content.missions.all.filter(
     (m) =>
       !m.standing &&
       !inArc(ctx, m) &&
@@ -89,18 +94,66 @@ function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Boar
       trusted(m, who, ctx) &&
       !kept.some((p) => p.missionId === m.id),
   );
+}
+
+/** Jobs to make up a thin board with, in the day's own order. */
+function fillersOn(board: Board, day: number, candidates: readonly MissionDef[]): MissionDef[] {
+  return byHash(candidates, (m) => hashUnit(board.seed, day, m.id, 'fill'));
+}
+
+/** The new jobs that go up on `day`, decided from the board and the reader as they stand. */
+function chooseNew(board: Board, day: number, ctx: GameContext, who: Reader): string[] {
+  const kept = keptOn(board, day);
+  const candidates = candidatesOn(board, day, ctx, who);
   // Shuffled by the hash, so the cap on postings favours no job for where it sits in the pack.
   const fresh = byHash(
     candidates.filter((m) => hashUnit(board.seed, day, m.id) < postChance(m, who, ctx)),
     (m) => hashUnit(board.seed, day, m.id, 'order'),
   );
-  const fillers = byHash(
+  const fillers = fillersOn(
+    board,
+    day,
     candidates.filter((m) => !fresh.includes(m)),
-    (m) => hashUnit(board.seed, day, m.id, 'fill'),
   );
   const shortfall = Math.max(0, MIN_POSTINGS - kept.length - fresh.length);
-  const added = [...fresh, ...fillers.slice(0, shortfall)].map((m) => postingFor(board, m, day));
-  return { ...board, refreshedDay: day, postings: [...kept, ...added].slice(0, MAX_POSTINGS) };
+  const room = Math.max(0, MAX_POSTINGS - kept.length);
+  return [...fresh, ...fillers.slice(0, shortfall)].slice(0, room).map((m) => m.id);
+}
+
+/** A board left thin by jobs taken since its new ones were decided, made up from the fillers. */
+function toppedUp(board: Board, day: number, ctx: GameContext, who: Reader): Board {
+  const shortfall = MIN_POSTINGS - board.postings.length;
+  if (shortfall <= 0) return board;
+  const posted = new Set(board.postings.map((p) => p.missionId));
+  const fillers = fillersOn(board, day, candidatesOn(board, day, ctx, who)).filter(
+    (m) => !posted.has(m.id),
+  );
+  const added = fillers.slice(0, shortfall).map((m) => postingFor(board, m.id, day));
+  return { ...board, postings: [...board.postings, ...added] };
+}
+
+/**
+ * Postings for one new day: expired ones come down, and the jobs decided the day before go up
+ * (the gossip has been telling of them since, `newPostingsTomorrow`), so what is said and what
+ * is posted agree whatever you did in between. Then the next day's are decided.
+ */
+function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Board {
+  const kept = keptOn(board, day);
+  const decided =
+    board.upcoming?.day === day ? board.upcoming.missionIds : chooseNew(board, day, ctx, who);
+  const added = decided
+    .filter((id) => !kept.some((p) => p.missionId === id))
+    .map((id) => postingFor(board, id, day));
+  const posted = toppedUp(
+    { ...board, refreshedDay: day, postings: [...kept, ...added] },
+    day,
+    ctx,
+    who,
+  );
+  return {
+    ...posted,
+    upcoming: { day: day + 1, missionIds: chooseNew(posted, day + 1, ctx, who) },
+  };
 }
 
 /** The board as of today, catching up on any days that passed since it was last updated. */
@@ -199,9 +252,11 @@ export function takeJob(state: GameState, ctx: GameContext, def: MissionDef): Bo
   return { ...board, postings: board.postings.filter((p) => p.missionId !== def.id) };
 }
 
-/** Jobs that will go up tomorrow (if nothing changes before then), for the village gossip. */
-export function newPostingsTomorrow(state: GameState, ctx: GameContext): string[] {
+/** Jobs that will go up tomorrow, for the village gossip: decided already, so they will. */
+export function newPostingsTomorrow(state: GameState, ctx: GameContext): readonly string[] {
   const tomorrow = state.time.day + 1;
-  const next = postDay(boardFor(state, ctx), tomorrow, ctx, readerOf(state));
-  return next.postings.filter((p) => p.postedDay === tomorrow).map((p) => p.missionId);
+  const board = boardFor(state, ctx);
+  return board.upcoming?.day === tomorrow
+    ? board.upcoming.missionIds
+    : chooseNew(board, tomorrow, ctx, readerOf(state));
 }

@@ -10,6 +10,7 @@ import {
 import { STAT_INFO, type StatId } from '@/systems/stats';
 
 import type { GameContext } from './context';
+import { recordFact } from './facts/record';
 import { chip, log } from './ops';
 import type { GameState } from './state';
 
@@ -50,16 +51,25 @@ export interface WoundNote {
   readonly heading?: string;
 }
 
-/** Adds an injury, shortened by stamina, with a journal line headed by its name or the note's. */
+/**
+ * Adds an injury, shortened by stamina, with a journal line headed by its name or the note's,
+ * and the fact of it: the one place a wound is given its number and written down.
+ */
 export function inflict(state: GameState, wound: Wound, note: WoundNote): GameState {
   const { character, time } = state;
   const lasts = recoveryDays(wound.days ?? wound.def.days, character.stats.stamina);
+  const instance = character.woundsTaken + 1;
   const injury: Injury = {
+    instance,
     injuryId: wound.def.id,
     until: time.day + lasts,
     ...(wound.strain ? { strain: wound.strain } : {}),
   };
-  const hurt = { ...state, character: { ...character, injuries: [...character.injuries, injury] } };
+  const injuries = [...character.injuries, injury];
+  const hurt = recordFact(
+    { ...state, character: { ...character, injuries, woundsTaken: instance } },
+    { kind: 'injuryAdded', day: time.day, instance, injuryId: injury.injuryId },
+  );
   return log(hurt, {
     heading: note.heading ?? wound.def.name,
     text: note.text,

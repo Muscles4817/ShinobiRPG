@@ -47,8 +47,8 @@ describe('what a meal does for the rest of the day', () => {
         character: {
           ...state.character,
           injuries: [
-            { injuryId: 'cracked-ribs', until: state.time.day + 3 },
-            { injuryId: 'cracked-ribs', until: state.time.day + 1 },
+            { instance: 1, injuryId: 'cracked-ribs', until: state.time.day + 3 },
+            { instance: 2, injuryId: 'cracked-ribs', until: state.time.day + 1 },
           ],
         },
       };

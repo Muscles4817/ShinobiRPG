@@ -1,6 +1,6 @@
 import { ctx, formTeam, freshGame, act, veteran } from '@/test/gameFixtures';
 
-import { availability, boardFor } from './board';
+import { availability, boardFor, newPostingsTomorrow } from './board';
 import { blockerFor } from './dispatch';
 import { deserialize, serialize } from './persistence/save';
 import type { GameState } from './state';
@@ -103,5 +103,23 @@ describe('the jobs board', () => {
     if (!loaded.ok) throw new Error(loaded.error);
     expect(titles(loaded.value)).toContain('lantern-patrol');
     expect(deserialize(serialize(loaded.value))).toEqual(loaded);
+  });
+});
+
+describe('the gossip about tomorrow’s jobs', () => {
+  it('comes true, whatever you finish today', () => {
+    // Finishing jobs today moves your record, which changes who the board would trust: the
+    // jobs said to be going up tomorrow were decided before, and go up all the same.
+    let missed = 0;
+    for (let day = 2; day <= 40; day++) {
+      const start = onDay(day, veteran(onDay(1), 2));
+      const today = { ...start, board: boardFor(start, ctx) };
+      const said = newPostingsTomorrow(today, ctx);
+      const record = { ...today.standing, missionsCompleted: 12 };
+      const tomorrow = { ...today, standing: record, time: { day: day + 1, slot: 0 } };
+      const posted = boardFor(tomorrow, ctx).postings.map((p) => p.missionId);
+      missed += said.filter((id) => !posted.includes(id)).length;
+    }
+    expect(missed).toBe(0);
   });
 });

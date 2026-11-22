@@ -18,8 +18,21 @@ export interface Board {
   readonly intel: readonly string[];
   /** Jobs you have finished at least once (a teacher may ask for one). */
   readonly completed: readonly string[];
+  /**
+   * The new jobs decided for the day after the board was last brought up to date: the gossip
+   * tells of them, and they go up that day whatever happens before (null before any is decided).
+   */
+  readonly upcoming: { readonly day: number; readonly missionIds: readonly string[] } | null;
 }
 
 export function newBoard(seed: number): Board {
-  return { seed, refreshedDay: 0, postings: [], lastTaken: {}, intel: [], completed: [] };
+  return {
+    seed,
+    refreshedDay: 0,
+    postings: [],
+    lastTaken: {},
+    intel: [],
+    completed: [],
+    upcoming: null,
+  };
 }

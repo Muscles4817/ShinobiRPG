@@ -21,8 +21,8 @@ describe('injury recovery', () => {
 
   it('heals on the morning of its last day', () => {
     const injuries = [
-      { injuryId: 'a', until: 5 },
-      { injuryId: 'b', until: 7 },
+      { instance: 1, injuryId: 'a', until: 5 },
+      { instance: 2, injuryId: 'b', until: 7 },
     ];
     const { hurting, healed } = healedBy(injuries, 5);
     expect(hurting.map((i) => i.injuryId)).toEqual(['b']);
@@ -30,10 +30,10 @@ describe('injury recovery', () => {
   });
 
   it('treatment halves the days left, once', () => {
-    const treated = treat({ injuryId: 'a', until: 11 }, 3);
-    expect(treated).toEqual({ injuryId: 'a', until: 7, treated: true });
+    const treated = treat({ instance: 1, injuryId: 'a', until: 11 }, 3);
+    expect(treated).toEqual({ instance: 1, injuryId: 'a', until: 7, treated: true });
     expect(treat(treated, 3)).toBe(treated);
-    expect(treat({ injuryId: 'b', until: 4 }, 3).until).toBe(4);
+    expect(treat({ instance: 2, injuryId: 'b', until: 4 }, 3).until).toBe(4);
   });
 });
 

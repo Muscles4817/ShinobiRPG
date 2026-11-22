@@ -10,6 +10,8 @@ import type { StatId } from '@/systems/stats';
 
 /** An injury you carry. It heals on the morning of day `until`. */
 export interface Injury {
+  /** This injury's own number, unique among every wound taken; kept however its days change. */
+  readonly instance: number;
   readonly injuryId: string;
   readonly until: number;
   /** A medic has already treated it; treatment works once per injury. */

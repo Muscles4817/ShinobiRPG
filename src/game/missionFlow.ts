@@ -13,9 +13,9 @@ import { earn } from '@/systems/wallet';
 
 import type { GameContext } from './context';
 import { workedFor } from './clients';
-import { jobDoneHeading } from './daybook/jobs';
 import { crewDebrief, debriefLines, gradeOf, helpedOf } from './debrief';
 import { forestCleared, forestLost } from './exam/forest';
+import { recordFact } from './facts/record';
 import { afterFieldWork } from './exam/routes';
 import { jobAsWalked } from './jobRoads';
 import { arrive, journeyMission } from './journeys';
@@ -102,8 +102,16 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     rites: gifts.rites,
     dustScrolls: gifts.dustScrolls,
   };
-  const logged = log(afterFieldWork(pickDone(next, ctx, def), ctx, def, state.mission), {
-    heading: jobDoneHeading(def.title),
+  const grade = gradeOf(state.mission);
+  const done = recordFact(afterFieldWork(pickDone(next, ctx, def), ctx, def, state.mission), {
+    kind: 'jobDone',
+    day: state.time.day,
+    missionId: def.id,
+    title: def.title,
+    grade,
+  });
+  const logged = log(done, {
+    heading: `${def.title} complete`,
     text: ending ?? `${def.client} thanks you.`,
     tone: 'success',
     chips: [
@@ -127,7 +135,7 @@ export function afterStage(before: GameState, ctx: GameContext): GameState {
     ...gifts.report,
     road: debriefLines(state.mission.ledger),
     crew: crewDebrief(next, ctx, state.mission),
-    grade: gradeOf(state.mission),
+    grade,
   });
 }
 

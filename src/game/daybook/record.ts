@@ -2,11 +2,13 @@ import type { GameAction, GameActionType } from '../actions/types';
 import type { GameState } from '../state';
 import { closeDay } from './close';
 import { openDay } from './open';
+import { factsFrom } from '../facts/record';
 
 /**
  * Keeps the day's record as actions happen (called from `dispatch`). When an action carries
  * time into a new morning, the day that ended is closed and kept for the end-of-day sheet, and
- * a new one opens. A day that ends on the road (or a trip walked in one go), mid-job or
+ * a new one opens; the facts of the days before it are let go, since they have been told and
+ * your sensei has settled them (`settleMentor` runs as the time passes, before this). A day that ends on the road (or a trip walked in one go), mid-job or
  * mid-exam is not kept: the job's
  * debrief and the trip home tell those days, and the record starts again from there.
  */
@@ -36,5 +38,7 @@ export function noteDayEnd(before: GameState, after: GameState, action: GameActi
     !arrivedFromTheRoad(before, after) &&
     (after.settings.dayEnd ?? 'full') !== 'off';
   const ended = keep ? closeDay(start, after, SLEEPING.includes(action.type)) : after.daybook.ended;
-  return { ...after, daybook: { start: openDay(after), ended } };
+  // The days before this one are closed and settled: their facts have told all they had to.
+  const opened = { ...after, facts: factsFrom(after.facts, after.time.day) };
+  return { ...opened, daybook: { start: openDay(opened), ended } };
 }

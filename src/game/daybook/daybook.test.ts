@@ -9,6 +9,8 @@ import { dayEndView } from '../views/dayEnd';
 import { ryoChip } from '../ops';
 import { marketView } from '../views/market';
 import { purseLines } from './purse';
+import { factsOf } from '../facts/record';
+import { inflict } from '../wounds';
 
 /** The same day, at night. */
 function atNight(state: GameState): GameState {
@@ -93,6 +95,29 @@ describe('the day’s record', () => {
     expect(going.time.day).toBeGreaterThan(start.time.day);
     expect(going.daybook.ended).toBeNull();
     expect(going.daybook.start?.day).toBe(going.time.day);
+  });
+});
+
+describe('wounds on the day’s sheet', () => {
+  const ribs = ctx.content.injuries.require('cracked-ribs');
+
+  /** Hardy (the talent that mends a night sooner each night) and hurt today. */
+  function hardyAndHurt(): GameState {
+    const game = newGame();
+    const talentIds = [...game.character.talentIds, 'iron-constitution'];
+    const hardy = { ...game, character: { ...game.character, talentIds } };
+    return inflict(hardy, { def: ribs, days: 10 }, { text: 'It cracks.' });
+  }
+
+  it('tells a wound on the day it was taken, and never again as its days shorten', () => {
+    const first = act(hardyAndHurt(), { type: 'sleep' });
+    expect(dayEndView(first, ctx)!.hurts.map((h) => h.title)).toEqual(['Cracked ribs']);
+    // Each night mends it sooner (its days change): it is the same wound, not a new one.
+    const second = act(act(first, { type: 'dismissDay' }), { type: 'sleep' });
+    expect(second.character.injuries).toHaveLength(1);
+    expect(factsOf(second.daybook.ended!.happened, 'injuryAdded')).toEqual([]);
+    expect(dayEndView(second, ctx)!.hurts.map((h) => h.title)).not.toContain('Cracked ribs');
+    expect(dayEndView(second, ctx)!.title).not.toMatch(/hurt/);
   });
 });
 

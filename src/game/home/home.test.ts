@@ -145,9 +145,31 @@ describe('gifts and keepsakes', () => {
       ...game,
       people: { ...game.people, bonds: { ...game.people.bonds, [id]: bondWith(points) } },
     });
-    const gifted = giftsGiven(withBond(50), withBond(60), ctx);
+    expect(giftsGiven(withBond(50), ctx)).toEqual(withBond(50));
+    const gifted = giftsGiven(withBond(60), ctx);
     expect(gifted.housing.furniture).toContain('silk-futon');
-    expect(giftsGiven(withBond(60), withBond(62), ctx)).toEqual(withBond(62));
+    expect(gifted.housing.givers).toEqual([id]);
+    expect(gifted.facts.at(-1)).toMatchObject({ kind: 'giftGiven', personId: id, handed: true });
+    expect(giftsGiven(gifted, ctx)).toEqual(gifted);
+  });
+
+  it('a friend gives once, however the bond dips and climbs back', () => {
+    // A disliked word costs bond points: a close friend can fall back to friends and recover.
+    const game = newGame();
+    const id = game.people.team!.teammateIds[0]!;
+    const at = (state: GameState, points: number): GameState => ({
+      ...state,
+      people: { ...state.people, bonds: { ...state.people.bonds, [id]: bondWith(points) } },
+    });
+    // Each step is a bond moving within an action, as a talk or a disliked reply moves it.
+    const moved = (state: GameState, points: number) => happenAfter(state, at(state, points));
+    const gifted = moved(at(game, 50), 60);
+    expect(gifted.housing.givers).toEqual([id]);
+    const back = moved(moved(gifted, 50), 60);
+    expect(back.housing.furniture).toEqual(gifted.housing.furniture);
+    expect(back.journal.entries.filter((e) => e.heading?.startsWith('A gift from'))).toHaveLength(
+      1,
+    );
   });
 
   it('is left at your door while you are away, and found when you are next home', () => {
@@ -158,7 +180,7 @@ describe('gifts and keepsakes', () => {
       locationId: 'port-shiomachi',
       people: { ...game.people, bonds: { ...game.people.bonds, [id]: bondWith(points) } },
     });
-    const left = giftsGiven(away(50), away(60), ctx);
+    const left = giftsGiven(away(60), ctx);
     expect(left.housing.furniture).toContain('silk-futon');
     expect(left.housing.doorstep).toEqual([{ furnishingId: 'silk-futon', fromId: id }]);
     expect(left.journal).toEqual(away(60).journal);

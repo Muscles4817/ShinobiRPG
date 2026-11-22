@@ -29,7 +29,11 @@ const ribs = ctx.content.injuries.require('cracked-ribs');
 describe('carrying an injury', () => {
   it('slows training and weakens your stats in fights', () => {
     const state = newGame();
-    const injured = hurt(state, { injuryId: 'cracked-ribs', until: state.time.day + 3 });
+    const injured = hurt(state, {
+      instance: 1,
+      injuryId: 'cracked-ribs',
+      until: state.time.day + 3,
+    });
     expect(trainingScale(injured.character, ctx).speed).toBeLessThan(
       trainingScale(state.character, ctx).speed ?? 1,
     );
@@ -39,7 +43,11 @@ describe('carrying an injury', () => {
 
   it('heals on its morning, with a journal line', () => {
     const state = newGame();
-    const injured = hurt(state, { injuryId: 'cracked-ribs', until: state.time.day + 1 });
+    const injured = hurt(state, {
+      instance: 1,
+      injuryId: 'cracked-ribs',
+      until: state.time.day + 1,
+    });
     const slept = act(injured, { type: 'sleep' });
     expect(slept.character.injuries).toEqual([]);
     const headings = slept.journal.entries.map((e) => e.heading);
@@ -48,7 +56,11 @@ describe('carrying an injury', () => {
 
   it('stays until its day comes', () => {
     const state = newGame();
-    const injured = hurt(state, { injuryId: 'cracked-ribs', until: state.time.day + 2 });
+    const injured = hurt(state, {
+      instance: 1,
+      injuryId: 'cracked-ribs',
+      until: state.time.day + 2,
+    });
     expect(act(injured, { type: 'sleep' }).character.injuries).toHaveLength(1);
   });
 
@@ -64,7 +76,11 @@ describe('carrying an injury', () => {
 
   it('shows on the Shinobi screen with where it hurts and the days left', () => {
     const state = newGame();
-    const injured = hurt(state, { injuryId: 'cracked-ribs', until: state.time.day + 3 });
+    const injured = hurt(state, {
+      instance: 1,
+      injuryId: 'cracked-ribs',
+      until: state.time.day + 3,
+    });
     const [line] = shinobiView(injured, ctx).condition.injuries;
     expect(line).toMatchObject({ name: 'Cracked ribs', where: 'Ribs', left: '3 days left' });
     expect(line?.effects.length).toBeGreaterThan(0);
@@ -75,7 +91,11 @@ describe('carrying an injury', () => {
 describe('the hospital', () => {
   it('treats injuries even at full health, halving the days left, once', () => {
     const state = newGame();
-    const injured = hurt(state, { injuryId: 'cracked-ribs', until: state.time.day + 6 });
+    const injured = hurt(state, {
+      instance: 1,
+      injuryId: 'cracked-ribs',
+      until: state.time.day + 6,
+    });
     const before = hospitalView(injured, ctx)!;
     expect(before.cost).toBeGreaterThan(hospitalView(state, ctx)!.cost);
     expect(before.injuries).toHaveLength(1);

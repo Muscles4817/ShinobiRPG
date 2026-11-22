@@ -20,6 +20,14 @@ import { waysOf } from './generate';
 /** The last slot your sensei will meet you in: they train you by day. */
 const LAST_MEETING_SLOT: TimeSlot = 'evening';
 
+/** The slots a meeting (or a team day) from `from` is on for: until the last they meet in. */
+export function meetingSlots(from: TimeSlot): number[] {
+  const last = TIME_SLOTS.indexOf(LAST_MEETING_SLOT);
+  return TIME_SLOTS.map((_, slot) => slot).filter(
+    (s) => s >= TIME_SLOTS.indexOf(from) && s <= last,
+  );
+}
+
 export type Meeting =
   | { readonly kind: 'lesson'; readonly day: number; readonly from: TimeSlot }
   | {
