@@ -45,6 +45,45 @@ slower than them. What it is **made of** decides everything else:
   lever, not a weaker body.
 - An attack of the element that overpowers a clone's element destroys it whatever its toughness.
 
+### Balance: full bodies, traded turn for turn (leaning, not final ?)
+
+Leaning towards: **elemental clones are full bodies with the maker's stats**, fighters with a turn
+of their own acting by taijutsu, not a weaker crowd. They are balanced by the exchange of turns
+and by toughness, never by a weaker body. Open to change.
+
+- **One clone per technique** for the elemental kinds (no multi-clone versions). Making one costs
+  the maker a turn and chakra.
+- **A fragile clone costs the defender a turn**: any hit or a landed Counter pops it, however
+  light. A turn for a turn is a fair trade, and it plays as a real fight would: three wind clones
+  keep a defender dodging, running and countering for a few exchanges while the maker gathers
+  chakra or sets something up. Clones **buy time**.
+- **The tough kinds are the risk** (earth, then water): cheap on their ground, standing hits,
+  rebuilding and grabbing, one could cost the maker one turn and the defender three. So:
+  - **Toughness stops only light hits.** An earth clone shrugs off a jab; a real blow breaks it
+    (a force threshold like `stopsCloser` in `rules/size.ts`). Water takes a little more than
+    the fragile kinds; neither is a wall.
+  - **Rebuilding costs chakra** each time, so a maker who leans on it drains their own tank.
+- **The cap by chakra control** stays as a backstop, not the main lever.
+- **Clones don't tire (?)**: an elemental clone has no breath to run out of. Kept on purpose: a
+  maker can send clones to run a defender out of breath while gathering chakra at a distance,
+  answered by killing them fast with counters or going past them to the maker. This leans on
+  the breath economy (`rules/breath.ts`) and the planned rework of gathering chakra in fights.
+
+### Defending should be easier than attacking (to check ?)
+
+The intuition (from real fighting: a fighter who only defends wins most exchanges): someone who
+only defends (running, dodging, blocking, never countering) should hold out against a better
+attacker for a while, forcing them to take big swings and expose themselves; breath is what ends
+it. The game partly does this (Evade and Brace are strong; breath is the clock; the defence bench
+holds that a turtle loses to an equal, slowly). It may clash with two deliberate rules: **each
+grade of difference is decisive**, and **pace** (`rules/pace.ts`: a far faster attacker can't be
+slipped at all). A jōnin purely defending against an elite jōnin, a grade up, may fall faster than
+the intuition expects.
+
+**Measure before changing**: a bench of pure defence against one grade up, checking how many
+exchanges it lasts and whether the attacker has to commit (Evade, gather, breath spent) to finish.
+Then decide whether anything moves.
+
 | Kind      | Cost                                                     | Holds up                                              | Grabs     | When it breaks                                                                                | Rank (proposed)              |
 | --------- | -------------------------------------------------------- | ----------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------- | ---------------------------- |
 | Illusion  | free                                                     | nothing to hit                                        | no        | gone; a shot passes through                                                                   | E                            |
@@ -95,8 +134,9 @@ slower than them. What it is **made of** decides everything else:
 
 - `CLONE_RULES` loses `blow` as a scale of the body; elemental clones become bodies with the
   maker's stats acting with taijutsu only (today only shadow clones are fighters). This is the
-  big engine change; check whether they become fighters like shadow clones or stay a crowd with
-  full-strength blows.
+  big engine change: they become fighters like shadow clones (leaning, see Balance), one per
+  technique, fragile kinds popping at any hit, tough kinds stopping only light hits, rebuilds
+  paid in chakra.
 - A cost by ground (a cost multiplier per kind per ground), read wherever clone cost is reckoned.
 - Burst effects: drenched (new condition, read by the water-lightning combo), burn, daze, a knock.
 - Grab: a pin from a clone, broken when the clone is hit.
@@ -137,8 +177,10 @@ finder's kinds (`techniqueKinds`) already sort by family.
 
 ## Open questions
 
-- Do elemental clones become full fighters (own turns, like shadow clones) or stay a crowd that
-  strikes at the maker's full strength? Performance and the plan screen both matter.
+- Elemental clones as full fighters with the maker's stats: leaning yes (see Balance above), to
+  be confirmed. Performance and the plan screen both matter with more bodies.
+- Clones that don't tire: keep, or give them a breath of their own?
+- Pure defence against a grade up: does it last long enough? (the defence bench above)
 - The clone cap: by chakra control alone, or also by the kind?
 - Does ground cost apply to all elemental techniques (Part 2) or only to clones?
 - Weather in fights (rain, storms) as a source for water and lightning.
