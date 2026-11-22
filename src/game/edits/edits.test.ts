@@ -1,7 +1,9 @@
 import { CONTENT_PACKS } from '@/content';
 import { enemyStatLine } from '@/game/enemyStats';
 import { deserialize, serialize } from '@/game/persistence/save';
-import { versusRoster } from '@/game/versus/roster';
+import { sandboxOf } from '@/game/versus/profile';
+import { contenderOf, versusRoster } from '@/game/versus/roster';
+import { setupOf } from '@/game/versus/sides';
 import { draft } from '@/test/gameFixtures';
 
 import { contextForPack } from '../context';
@@ -104,6 +106,22 @@ describe('the fighter editor', () => {
     const offered = editor.choices.map((t) => naruto.content.techniques.require(t.id));
     expect(offered.every((t) => t.clan === undefined)).toBe(true);
     expect(offered.some((t) => t.effects.some((e) => e.verb === 'summon'))).toBe(false);
+  });
+
+  it('marks a technique unused exactly when a bout leaves it out, for everyone in every pack', () => {
+    // One rule for both: Kakashi's water and earth arts were marked beyond him by a copy of the
+    // rule that held his single nature against them, while every bout let him use them.
+    for (const pack of CONTENT_PACKS) {
+      const ctx = contextForPack(pack.id, NO_EDITS)!;
+      const sandbox = sandboxOf(ctx);
+      for (const fighter of versusRoster(ctx).filter((f) => f.id.startsWith('person:'))) {
+        const contender = contenderOf(ctx, fighter.id)!;
+        const fought = new Set(setupOf(contender, sandbox, ctx, '').techniques.map((t) => t.id));
+        const editor = fighterEditor(ctx, fighter.id)!;
+        const wrong = editor.techniques.filter((t) => t.ready !== fought.has(t.id));
+        expect(wrong.map((t) => `${fighter.name}: ${t.name}`)).toEqual([]);
+      }
+    }
   });
 });
 

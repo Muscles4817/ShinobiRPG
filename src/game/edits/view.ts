@@ -9,7 +9,7 @@ import {
   type StatId,
   type Stats,
 } from '@/systems/stats';
-import { canPerform, type Element, type TechniqueDef } from '@/systems/techniques';
+import type { Element, TechniqueDef } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import type { Discipline } from '../views/common';
@@ -17,6 +17,7 @@ import { versusRoster, type VersusFighter } from '../versus/roster';
 import { MADE_PREFIX } from './made/ids';
 import { originalFighter, type FighterOriginal } from './originals';
 import { techniqueKinds, type TechniqueKind } from '../finder';
+import { personPerforms } from '../people/capable';
 
 /**
  * The editor's view of a fighter: each stat beside the pack's value, what they fight with
@@ -67,13 +68,9 @@ function offerable(def: TechniqueDef, original: FighterOriginal): boolean {
 }
 
 function techniqueOf(def: TechniqueDef, original: FighterOriginal, stats: Stats): EditorTechnique {
-  const performer = {
-    stats,
-    clanId: original.clanId ?? '',
-    ...(original.nature ? { nature: original.nature } : {}),
-  };
-  // A foe fights with what it is written with; only people grow into their techniques.
-  const ready = original.ref.kind === 'enemy' || canPerform(def, performer);
+  // A foe fights with what it is written with; a person grows into theirs by the same rule their
+  // fights use (`personPerforms`), so what is marked unused here is what a bout leaves out.
+  const ready = original.ref.kind === 'enemy' || personPerforms(def, stats, original.clanId);
   const { id, name, discipline, rank } = def;
   const element = def.element ?? null;
   const made = id.startsWith(MADE_PREFIX);

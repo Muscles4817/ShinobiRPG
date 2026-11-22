@@ -1,5 +1,6 @@
 import type { PersonDef } from '@/content';
-import { canPerform } from '@/systems/techniques';
+import type { Stats } from '@/systems/stats';
+import { canPerform, type TechniqueDef } from '@/systems/techniques';
 
 import type { GameContext } from '../context';
 import type { GameState } from '../state';
@@ -15,6 +16,18 @@ import { personStats } from './progress';
 
 const CLANLESS = 'none';
 
+/**
+ * The one rule for whether a person with these stats can do a technique: what their fights,
+ * their lessons and the editor all ask. No nature is passed, so a nature need is waived.
+ */
+export function personPerforms(
+  def: TechniqueDef,
+  stats: Stats,
+  clanId: string | null | undefined,
+): boolean {
+  return canPerform(def, { stats, clanId: clanId ?? CLANLESS });
+}
+
 export function canDoNow(
   person: PersonDef,
   state: GameState,
@@ -22,7 +35,7 @@ export function canDoNow(
   id: string,
 ): boolean {
   const def = ctx.content.techniques.require(id);
-  return canPerform(def, { stats: personStats(person, state), clanId: person.clanId ?? CLANLESS });
+  return personPerforms(def, personStats(person, state), person.clanId);
 }
 
 /** The techniques among `ids` this person can do now, in the same order. */

@@ -1,6 +1,5 @@
 import { CONTENT_PACKS, type PersonDef } from '@/content';
 import type { Stats } from '@/systems/stats';
-import type { Element } from '@/systems/techniques';
 
 import { enemyStatLine } from '../enemyStats';
 import type { GameContext } from '../context';
@@ -19,7 +18,6 @@ export interface FighterOriginal {
   readonly techniqueIds: readonly string[];
   /** A person's clan, for the clan techniques they may take; null for a foe. */
   readonly clanId: string | null;
-  readonly nature?: Element;
 }
 
 /** What someone without an arsenal is given to fight with (the academy's kit and their art's). */
@@ -29,13 +27,11 @@ function kitOf(person: PersonDef, ctx: GameContext): readonly string[] {
 }
 
 function originalPerson(person: PersonDef, ctx: GameContext, ref: FighterRef): FighterOriginal {
-  const nature = person.sensei?.nature;
   return {
     ref,
     stats: person.stats,
     techniqueIds: person.arsenal?.techniqueIds ?? kitOf(person, ctx),
     clanId: person.clanId ?? null,
-    ...(nature ? { nature } : {}),
   };
 }
 
@@ -47,14 +43,7 @@ export function originalFighter(ctx: GameContext, key: string): FighterOriginal 
   if (ref.kind === 'enemy') {
     const def = pack.enemies.find((e) => e.id === ref.id);
     if (!def) return null;
-    const nature = def.nature;
-    return {
-      ref,
-      stats: enemyStatLine(def),
-      techniqueIds: def.techniqueIds,
-      clanId: null,
-      ...(nature ? { nature } : {}),
-    };
+    return { ref, stats: enemyStatLine(def), techniqueIds: def.techniqueIds, clanId: null };
   }
   const person = [...pack.people, ...(pack.duelists ?? [])].find((p) => p.id === ref.id);
   return person && person.rank !== 'civilian' ? originalPerson(person, ctx, ref) : null;
