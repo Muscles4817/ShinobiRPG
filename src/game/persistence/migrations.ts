@@ -41,6 +41,7 @@ import { v70ToV71, v71ToV72 } from './puppetMigration';
 import { v72ToV73 } from './purseMigration';
 import { v73ToV74 } from './promotionDayMigration';
 import { v74ToV75 } from './factsMigration';
+import { v75ToV76 } from './storyMigration';
 // Technique ranks (4.1) follow teaching (3.3): its step moves up one version.
 import { v19ToV20 as v20ToV21 } from './rankMigration';
 import { v19ToV20 } from './teachingMigration';
@@ -53,13 +54,10 @@ import { v19ToV20 } from './teachingMigration';
 type RawState = Record<string, unknown>;
 export type Migration = (state: RawState) => RawState;
 
-function asRecord(value: unknown): RawState {
-  return typeof value === 'object' && value !== null ? (value as RawState) : {};
-}
+const asRecord = (value: unknown): RawState =>
+  typeof value === 'object' && value !== null ? (value as RawState) : {};
 
-function asArray(value: unknown): unknown[] {
-  return Array.isArray(value) ? (value as unknown[]) : [];
-}
+const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 
 /**
  * v1 → v2: content packs, locations, housing and result cards arrive.
@@ -382,4 +380,5 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   72: v72ToV73,
   73: v73ToV74,
   74: v74ToV75,
+  75: v75ToV76,
 };

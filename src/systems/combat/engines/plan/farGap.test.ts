@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
 
-import { holdsOff } from '@/test/fightLines';
+import { holdsOff, linesOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique, RangeBand } from '../../contract';
 import { distanceBetween } from './distance';
 import { farGapScale } from './farGap';
@@ -55,7 +55,7 @@ function at(range: RangeBand, holds = false): Round {
     enemies: [setup('caster', { techniques: [gust] })],
     canFlee: true,
   }).map((f) => (f.id === 'caster' && holds ? { ...f, holdOff } : f));
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {} };
 }
 
 function made(range: RangeBand, direction: 'in' | 'back'): number {
@@ -86,9 +86,11 @@ describe('the far gap', () => {
     const lines = Array.from({ length: 100 }, (_, i) => {
       const round = at('far', true);
       const [hero, caster] = round.fighters;
-      return step(round, { actor: hero!, target: caster, rng: createRng(i + 1) }, 'in').lines;
+      return linesOf(
+        step(round, { actor: hero!, target: caster, rng: createRng(i + 1) }, 'in').story,
+      );
     }).flat();
     expect(lines.some((l) => holdsOff('caster', 'hero').test(l))).toBe(true);
-    expect(lines.some((l) => l.includes('time for another'))).toBe(false);
+    expect(lines.some((l) => l.text.includes('time for another'))).toBe(false);
   });
 });

@@ -13,7 +13,7 @@ const PROMPT =
 
 /** An exchange about to be played at a distance, for asking what a fighter plays. */
 function roundAt(fighters: PlanFighter[], range: Round['range']): Round {
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {} };
 }
 
 const attributes = {

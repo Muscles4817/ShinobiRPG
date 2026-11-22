@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
 
-import { SLIPS, searchesInVain, spots } from '@/test/fightLines';
+import { linesOf, searchesInVain, SLIPS, spots, textOf, told } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique, CombatTrait } from '../../contract';
 import { DISPEL_CHAKRA } from '../../rules/conditions';
@@ -22,7 +22,6 @@ import {
   type PlanState,
   type Round,
 } from './state';
-import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 5,
@@ -65,7 +64,7 @@ const NO_CARDS: Loadout = { close: [], mid: [], far: [] };
 
 /** An exchange about to be played at a distance, for asking what a fighter plays. */
 function roundAt(fighters: PlanFighter[], range: Round['range']): Round {
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {} };
 }
 const STRIKE: Blow = { raw: 5, what: 'strike', dodgeable: true, physical: true, kind: 'blow' };
 
@@ -89,7 +88,7 @@ function stateOf(fighters: PlanFighter[], range: PlanState['range'] = 'mid'): Pl
     range,
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: true,
   };
@@ -102,7 +101,7 @@ function hitOn(defender: PlanFighter, blow: Blow, seed = 1): Round {
     number: 1,
     fighters: [hero!, defender],
     range: 'close',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
   };
@@ -115,7 +114,7 @@ function damageTo(defender: PlanFighter, kind: 'blow' | 'jutsu'): number {
 }
 
 /** The log as the player reads it: the sentences, without the screen's markers. */
-const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
+const said = (log: readonly string[]) => log.map((line) => told(line).text);
 
 describe('plan & watch kits: reach', () => {
   it('an archer never attacks up close and backs away instead', () => {
@@ -164,7 +163,10 @@ describe('plan & watch kits: hits', () => {
     const [, coward] = pair(['coward']);
     const after = hitOn({ ...coward!, health: 18 }, STRIKE);
     expect(after.fighters[1]?.health).toBe(0);
-    expect(splitNarration(after.lines.at(-1) ?? '').text).toBe('Foe turns and runs.');
+    expect(told(textOf(after.story).at(-1) ?? '').text).toBe('Foe turns and runs.');
+    // Run off, not down: the story says the health it left with, and no fall.
+    expect(after.story).toContainEqual(expect.objectContaining({ kind: 'health', cause: 'fled' }));
+    expect(after.story.some((e) => e.kind === 'fall')).toBe(false);
     expect(decide(after.fighters)).toBe('victory');
   });
 
@@ -173,7 +175,7 @@ describe('plan & watch kits: hits', () => {
     const [, plain] = pair([]);
     const slips = (f: PlanFighter) =>
       Array.from({ length: 200 }, (_, seed) => hitOn(f, STRIKE, seed)).filter((r) =>
-        SLIPS.test(r.lines[0] ?? ''),
+        SLIPS.test(linesOf(r.story)[0] ?? ''),
       ).length;
     expect(slips(plain!)).toBeGreaterThan(0);
     expect(slips(swift!)).toBeGreaterThan(slips(plain!) * 1.5);
@@ -188,9 +190,11 @@ describe('plan & watch kits: illusions', () => {
     const armed = { ...hero!, loadout: NO_CARDS };
     const after = resolveExchange(stateOf([armed, ghost!], 'close'), createRng(3));
     expect(
-      after.log.some((l) => searchesInVain('hero').test(l) || spots('hero', 'foe').test(l)),
+      linesOf(after.story).some(
+        (l) => searchesInVain('hero').test(l) || spots('hero', 'foe').test(l),
+      ),
     ).toBe(true);
-    expect(after.log.some((l) => l.includes("hero's strike"))).toBe(false);
+    expect(textOf(after.story).some((l) => l.includes("hero's strike"))).toBe(false);
     expect(after.fighters[1]?.health).toBe(ghost!.health);
   });
 
@@ -198,7 +202,7 @@ describe('plan & watch kits: illusions', () => {
     const [hero, ghost] = pair(['illusionist'], { perks: ['insight'] });
     const seeker = { ...hero!, loadout: { ...NO_CARDS, mid: plainSlots(['search', 'throw']) } };
     const after = resolveExchange(stateOf([seeker, ghost!]), createRng(3));
-    expect(after.log.some((l) => spots('hero', 'foe').test(l))).toBe(true);
+    expect(linesOf(after.story).some((l) => spots('hero', 'foe').test(l))).toBe(true);
     expect(after.fighters[1]?.hidden).toBe(false);
   });
 
@@ -212,7 +216,7 @@ describe('plan & watch kits: illusions', () => {
     const after = resolveExchange(stateOf([caster, dazedGhost]), createRng(3));
     const player = after.fighters[0]!;
     // Any of the Dispel's lines (`sceneVoice.ts`): they're picked fresh.
-    expect(said(after.log).join('\n')).toMatch(/seal|push the illusions back/);
+    expect(said(textOf(after.story)).join('\n')).toMatch(/seal|push the illusions back/);
     expect(player.chakra).toBe(30 - DISPEL_CHAKRA + 2);
     expect(player.confused).toBe(0);
   });
@@ -221,7 +225,7 @@ describe('plan & watch kits: illusions', () => {
     const [hero, foe] = pair([]);
     const dazed = { ...hero!, confused: 2, loadout: { ...NO_CARDS, mid: plainSlots(['throw']) } };
     const logs = Array.from({ length: 20 }, (_, seed) =>
-      resolveExchange(stateOf([dazed, foe!]), createRng(seed)).log.join('\n'),
+      textOf(resolveExchange(stateOf([dazed, foe!]), createRng(seed)).story).join('\n'),
     );
     const wide = 'Hero’s senses lie to them, and the attack goes wide.';
     expect(logs.some((l) => l.includes(wide))).toBe(true);

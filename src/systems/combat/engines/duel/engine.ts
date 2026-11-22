@@ -10,6 +10,7 @@ import type {
 } from '../../contract';
 import { conditionStatuses, targetable } from '../../rules/body';
 import { itemsLeft } from '../../rules/items';
+import { storyOfLines } from '../../rules/narrationLegacy';
 import { options, parseChoice } from './options';
 import { resolveRound } from './round';
 import { decode, DUEL_ENGINE_ID, encode, initialDuel, playerOf, type Fighter } from './state';
@@ -69,7 +70,7 @@ export function createDuelEngine(): CombatEngine {
       return {
         round: duel.round,
         combatants: duel.fighters.map(toView),
-        log: duel.log,
+        story: storyOfLines(duel.log),
         options: options(duel),
       };
     },

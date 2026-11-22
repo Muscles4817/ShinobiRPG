@@ -47,6 +47,7 @@ import {
   type DeckState,
 } from './state';
 import { squareUpLine } from '../../rules/narration';
+import { storyOfLines } from '../../rules/narrationLegacy';
 
 /**
  * Deck fights: your techniques are cards. Draw five, spend three actions a turn, read what
@@ -211,7 +212,7 @@ export function createDeckEngine(): CombatEngine {
       return {
         round: deck.round,
         combatants: deck.fighters.map((f) => viewOf(f, statuses(f), intentLine(deck, f))),
-        log: deck.log,
+        story: storyOfLines(deck.log),
         options: options(deck),
         range: deck.range,
         prompt: `${RANGE_LABEL[deck.range]} range, ${deck.drawPile.length} cards to draw`,

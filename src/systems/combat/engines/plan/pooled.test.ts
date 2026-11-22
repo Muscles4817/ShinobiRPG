@@ -45,7 +45,7 @@ describe('pooled bodies', () => {
       number: 1,
       fighters: [caller!, spent],
       range: 'mid',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     };

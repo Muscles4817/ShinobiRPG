@@ -1,4 +1,5 @@
-import { castAfter, trimmedLog } from './cast';
+import { textOf } from '@/test/fightLines';
+import { castAfter, trimmedStory } from './cast';
 import { LOG_LIMIT, initialFighters, type PlanState } from './state';
 
 /** Everyone who stood on the field is remembered, and a stretch being watched is never cut. */
@@ -49,12 +50,17 @@ describe('the cast', () => {
     expect(later).toHaveLength(3);
   });
 
-  it('trims the log only to its length, counting what it let go', () => {
-    const log = Array.from({ length: LOG_LIMIT + 5 }, (_, i) => `line ${i}`);
-    const state = { log } as unknown as PlanState; // only the log matters here
-    const trimmed = trimmedLog(state);
-    expect(trimmed.log).toHaveLength(LOG_LIMIT);
-    expect(trimmed.logDropped).toBe(5);
-    expect(trimmed.log[0]).toBe('line 5');
+  it('trims the story only to its length in lines, counting what it let go', () => {
+    const story = Array.from({ length: LOG_LIMIT + 5 }, (_, i) => [
+      { kind: 'health' as const, who: 'hero', to: i, cause: 'settled' as const },
+      { kind: 'told' as const, text: `line ${i}` },
+    ]).flat();
+    const state = { story } as unknown as PlanState; // only the story matters here
+    const trimmed = trimmedStory(state);
+    expect(textOf(trimmed.story)).toHaveLength(LOG_LIMIT);
+    // What was told with the first line kept is kept with it.
+    expect(trimmed.story[0]).toMatchObject({ kind: 'health', to: 5 });
+    expect(trimmed.storyDropped).toBe(10);
+    expect(textOf(trimmed.story)[0]).toBe('line 5');
   });
 });

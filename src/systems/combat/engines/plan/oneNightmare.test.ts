@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { stillFree, sunkIn } from './oneNightmare';
 import { initialFighters, type PlanFighter, type Round } from './state';
@@ -58,7 +59,7 @@ function table(): {
     canFlee: false,
   }).map((f) => (f.id === 'clone' ? { ...f, shadowOf: 'maker' } : f));
   const at = (id: string) => fighters.find((f) => f.id === id)!;
-  const round: Round = { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  const round: Round = { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
   return { round, maker: at('maker'), clone: at('clone'), other: at('other'), foe: at('foe') };
 }
 
@@ -68,7 +69,7 @@ describe('one mind, one nightmare', () => {
     const sunk = sunkIn(round, maker, { t: nightmare, reached: [foe] });
     const again = stillFree(sunk, clone, { t: nightmare, targets: [foe] });
     expect(again.targets).toEqual([]);
-    expect(again.round.lines.at(-1)).toContain('already lost in');
+    expect(textOf(again.round.story).at(-1)).toContain('already lost in');
   });
 
   it('another mind’s illusion, or anything that isn’t an illusion, still takes', () => {

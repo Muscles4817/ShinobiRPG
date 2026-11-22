@@ -14,6 +14,8 @@ import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
 import { holdOff } from './zoning';
 import { blockedStepLine, chargeLine, momentOf, stepLine } from './voice';
 import { tell } from '../../rules/telling';
+import { toldOn } from './toldPools';
+import type { CombatEvent } from '../../storyContract';
 import { bandOf, distanceBetween, sameSpacing, withMoves } from './distance';
 import { movesFor } from './pairMoves';
 import { causeLine } from '../../rules/causes';
@@ -54,7 +56,7 @@ function arrive(
   };
   return keptUp.reduce((r, id) => {
     const foe = fighterIn(r, id);
-    return foe ? say(r, causeLine(tell(KEPT_UP, { a: actor, b: foe }), 'kept-pace')) : r;
+    return foe ? say(r, causeLine(tell(KEPT_UP, { a: actor, b: foe }), 'kept-pace', actor.id)) : r;
   }, stepped);
 }
 
@@ -81,14 +83,14 @@ function stride(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const to = direction === 'in' ? stepIn(at) : stepBack(at);
   if (withinGround(round.ground, to) !== to) {
     const line = '{a} back{a.s} away, but there’s a wall behind {a.them}.';
-    return say(round, causeLine(tell(line, { a: actor }), 'no-room'));
+    return say(round, causeLine(tell(line, { a: actor }), 'no-room', actor.id));
   }
   // The roll is made even with no foe to stop them (a sure step), as it always was.
   const made = rng.chance(foe ? stepChance(round, actor, foe, direction) : 1);
   if (!foe) return arrive(round, turn, to);
   if (!made) {
     const blocked = blockedStepLine(momentOf(round, actor.id), actor, to, foe);
-    return say(round, causeLine(blocked, stepCause(actor, foe)));
+    return say(round, causeLine(blocked, stepCause(actor, foe), actor.id));
   }
   return arrive(round, turn, to, direction === 'back' ? keepingPace(round, turn, to) : []);
 }
@@ -96,7 +98,8 @@ function stride(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
 export function step(round: Round, turn: Turn, direction: 'in' | 'back'): Round {
   const { actor } = turn;
   if (isPinned(actor)) {
-    return say(round, causeLine(tell('{a} strain{a.s} against the hold.', { a: actor }), 'held'));
+    const strains = tell('{a} strain{a.s} against the hold.', { a: actor });
+    return say(round, causeLine(strains, 'held', actor.id));
   }
   const at = from(round, turn);
   const to = direction === 'in' ? stepIn(at) : stepBack(at);
@@ -141,7 +144,7 @@ export interface Charged {
   readonly round: Round;
   readonly stopped: boolean;
   /** Getting through a hold-off, told once the charge itself has been. */
-  readonly after: readonly string[];
+  readonly after: readonly CombatEvent[];
 }
 
 /**
@@ -157,16 +160,16 @@ export function charge(start: Round, turn: Turn, card: Card): Charged {
   // A guarded entry takes the shot through its guard and rolls on (`TechniqueDef.guarded`).
   const rollsOn = card.kind === 'jutsu' && card.technique.guarded && stillUp(met.round, turn);
   if (met.outcome !== 'stopped' || card.kind !== 'jutsu' || rollsOn) {
-    const after = met.round.lines.slice(round.lines.length);
-    return { round: { ...met.round, lines: round.lines }, stopped: false, after };
+    const after = met.round.story.slice(round.story.length);
+    return { round: { ...met.round, story: round.story }, stopped: false, after };
   }
   // Stopped, the charge is told before the fire that met it, and its chakra is spent.
   const { actor } = turn;
   const told = chargeLine(momentOf(round, actor.id), actor, card.technique.name);
-  const lines = [...round.lines, told, ...met.round.lines.slice(round.lines.length)];
+  const story = [...toldOn(round.story, told), ...met.round.story.slice(round.story.length)];
   const paid = payFor(fighterIn(met.round, actor.id) ?? actor, card.technique);
   const fighters = patch(met.round.fighters, actor.id, paid);
-  return { round: { ...met.round, lines, fighters }, stopped: true, after: [] };
+  return { round: { ...met.round, story, fighters }, stopped: true, after: [] };
 }
 
 /** A step that moved the fight springs any foe's trap waiting where it now stands. */
@@ -175,4 +178,13 @@ export function afterStep(before: Round, after: Round, turn: Turn, card: Card): 
   const sprung = springTraps(after, turn.actor.id, turn.rng, true);
   // A rusher who got in strikes as they land, once any trap there has sprung (`closeQuarters.ts`).
   return card.kind === 'step' && card.direction === 'in' ? rushedIn(before, sprung, turn) : sprung;
+}
+
+/** What a charge saved for after its technique is announced (slipping through the fire). */
+export function afterTheCast(played: Round, { round, after }: Charged): Round {
+  if (after.length === 0) return played;
+  // Just after the first line the play told: the technique announced.
+  const first = played.story.findIndex((e, i) => i >= round.story.length && e.kind === 'told');
+  const at = first < 0 ? played.story.length : first + 1;
+  return { ...played, story: [...played.story.slice(0, at), ...after, ...played.story.slice(at)] };
 }

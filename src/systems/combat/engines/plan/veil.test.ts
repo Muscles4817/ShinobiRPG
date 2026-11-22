@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
 import { avoidCeiling, SEEING_AVOID_MAX } from '../../rules/avoidance';
 import { EYE_UPKEEP } from '../../rules/veil';
@@ -51,7 +52,7 @@ function round(foe: Partial<CombatantSetup> = {}): Round {
     enemies: [setup('foe', foe)],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const eyed = (r: Round): PlanFighter => r.fighters.find((f) => f.id === 'kakashi')!;
@@ -77,7 +78,7 @@ describe('a veiled eye', () => {
     const shut = veilsAfter(dry);
     expect(eyed(shut).perks).not.toContain('foresight');
     expect(eyed(shut).veiled).toEqual(['foresight', 'mimicry']);
-    expect(shut.lines.join(' ')).toMatch(/eye closes again/);
+    expect(textOf(shut.story).join(' ')).toMatch(/eye closes again/);
   });
 
   it('is uncovered against a match or an illusionist, kept covered against a foe it outclasses', () => {
@@ -93,7 +94,7 @@ describe('a veiled eye', () => {
     const even = round();
     const begun = uncoverWhenWorth(even, 'kakashi');
     expect(eyed(begun).perks).toContain('foresight');
-    expect(begun.lines.join(' ')).toMatch(/eye/);
+    expect(textOf(begun.story).join(' ')).toMatch(/eye/);
     const easy = round({ attributes: weak });
     expect(uncoverWhenWorth(easy, 'kakashi')).toBe(easy);
   });

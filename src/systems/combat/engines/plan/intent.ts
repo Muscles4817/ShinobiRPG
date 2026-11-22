@@ -54,7 +54,7 @@ export function asRound(table: Table): Round {
     fighters: [...table.fighters],
     range: table.range,
     ...(table.distances ? { distances: table.distances } : {}),
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
     ...(table.reads ? { reads: table.reads } : {}),

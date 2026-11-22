@@ -36,7 +36,7 @@ function field(range: RangeBand, pairs: Readonly<Record<string, RangeBand>> = {}
     enemies: [setup('sword', { row: 'front' }), setup('caster', { row: 'back' })],
     canFlee: true,
   });
-  return { number: 1, fighters, range, distances: pairs, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, distances: pairs, story: [], seen: {}, intents: {} };
 }
 
 const who = (round: Round, id: string): PlanFighter => round.fighters.find((f) => f.id === id)!;

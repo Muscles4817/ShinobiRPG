@@ -1,4 +1,6 @@
+import { toldIn, type CombatEvent } from '@/systems/combat';
 import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
+import { divider, health, said, stand } from '@/test/story';
 
 import type { GameState } from '../state';
 import { fightReplay, storyEnd } from './fightReplay';
@@ -10,10 +12,15 @@ function begun(): GameState {
   return act(sparring, { type: 'combatAct', optionId: 'begin' });
 }
 
+function told(story: readonly CombatEvent[]) {
+  const base = combatScene(begun(), ctx)!;
+  return { ...base, story, storyOffset: 0 };
+}
+
 describe('the watch screen’s beats', () => {
   it('stage each line of an exchange: who acted, at whom, where, and everyone’s health', () => {
     const before = begun();
-    const seen = combatScene(before, ctx)!.log.length;
+    const seen = storyEnd(combatScene(before, ctx)!);
     const after = act(before, { type: 'combatAct', optionId: 'next' });
     const view = combatScene(after, ctx)!;
     const beats = fightReplay(view, seen);
@@ -28,15 +35,18 @@ describe('the watch screen’s beats', () => {
   });
 
   it('puts a hit on the fighter it names, and moves health on the line that tells it', () => {
-    const base = combatScene(begun(), ctx)!;
-    const view = {
-      ...base,
-      log: [
-        '— First exchange — ⟦at:mid⟧ ⟦pl:player=health:100|person:kaen=health:100⟧',
-        "Kaen's Pebble Volley hits Kaito. ⟦-12⟧ ⟦pl:player=health:88⟧ ⟦by:person:kaen⟧ ⟦at:mid⟧",
-        'Kaito counters! ⟦r:countered⟧ ⟦-5⟧ ⟦pl:person:kaen=health:95⟧ ⟦by:person:kaen⟧',
-      ],
-    };
+    const view = told([
+      stand('player', { health: 100 }),
+      stand('person:kaen', { health: 100 }),
+      divider(),
+      health('player', 88, 'person:kaen'),
+      said("Kaen's Pebble Volley hits Kaito.", 'person:kaen', {
+        named: ['person:kaen', 'player'],
+        range: 'mid',
+      }),
+      health('person:kaen', 95, 'player'),
+      said('Kaito counters!', 'person:kaen', { named: ['player', 'person:kaen'] }),
+    ]);
     const beats = fightReplay(view, 0);
     expect(beats[1]).toMatchObject({ actorId: 'person:kaen', targetId: 'player', range: 'mid' });
     expect(beats.map((b) => b.health)).toEqual([
@@ -46,53 +56,33 @@ describe('the watch screen’s beats', () => {
     ]);
   });
 
-  it('moves pools beat by beat from the lines that say where they stand', () => {
-    const base = combatScene(begun(), ctx)!;
-    const view = {
-      ...base,
-      log: [
-        '— First exchange — ⟦pl:player=chakra:50,breath:30|person:kaen=chakra:40,breath:20⟧',
-        "Kaen's Pebble Volley flies. ⟦by:person:kaen⟧ ⟦pl:person:kaen=chakra:32⟧",
-        'Kaito drives in a kick. ⟦by:player⟧ ⟦pl:player=breath:24⟧',
-      ],
-    };
-    const pools = fightReplay(view, 0).map((b) => b.pools);
-    expect(pools).toEqual([
+  it('moves pools and statuses beat by beat, as the events say', () => {
+    const view = told([
+      stand('player', { chakra: 50, breath: 30 }, ['Clones ×2']),
+      stand('person:kaen', { chakra: 40, breath: 20 }),
+      divider(),
+      { kind: 'pools', who: 'person:kaen', to: { chakra: 32 } },
+      { kind: 'status', who: 'player', statuses: ['Dazed', 'Clones ×1'] },
+      said("Kaen's blow dazes Kaito.", 'person:kaen'),
+      { kind: 'pools', who: 'player', to: { breath: 24 } },
+      said('Kaito drives in a kick.', 'player'),
+    ]);
+    const beats = fightReplay(view, 0);
+    expect(beats.map((b) => b.pools)).toEqual([
       { player: { chakra: 50, breath: 30 }, 'person:kaen': { chakra: 40, breath: 20 } },
       { player: { chakra: 50, breath: 30 }, 'person:kaen': { chakra: 32, breath: 20 } },
       { player: { chakra: 50, breath: 24 }, 'person:kaen': { chakra: 32, breath: 20 } },
     ]);
-  });
-
-  it('reads the chakra-only marker a fight saved mid-way may still carry', () => {
-    const base = combatScene(begun(), ctx)!;
-    const view = { ...base, log: ['— First exchange — ⟦ck:player=50|person:kaen=40⟧'] };
-    expect(fightReplay(view, 0)[0]).toMatchObject({
-      text: 'First exchange',
-      pools: { player: { chakra: 50 }, 'person:kaen': { chakra: 40 } },
-    });
-  });
-
-  it('changes statuses beat by beat, keeping each fighter’s until a line says otherwise', () => {
-    const base = combatScene(begun(), ctx)!;
-    const view = {
-      ...base,
-      log: [
-        '— First exchange — ⟦st:player=Clones ×2|person:kaen=⟧',
-        "Kaen's blow dazes Kaito. ⟦by:person:kaen⟧ ⟦st:player=Dazed;Clones ×1⟧",
-        'Kaen readies a trap. ⟦by:person:kaen⟧ ⟦st:person:kaen=Trap set⟧',
-      ],
-    };
-    expect(fightReplay(view, 0).map((b) => b.statuses)).toEqual([
-      { player: ['Clones ×2'], 'person:kaen': [] },
-      { player: ['Dazed', 'Clones ×1'], 'person:kaen': [] },
-      { player: ['Dazed', 'Clones ×1'], 'person:kaen': ['Trap set'] },
+    expect(beats.map((b) => b.statuses.player)).toEqual([
+      ['Clones ×2'],
+      ['Dazed', 'Clones ×1'],
+      ['Dazed', 'Clones ×1'],
     ]);
   });
 
   it('says everyone’s chakra, breath and health at each exchange of a real fight', () => {
     const before = begun();
-    const seen = combatScene(before, ctx)!.log.length;
+    const seen = storyEnd(combatScene(before, ctx)!);
     const after = act(before, { type: 'combatAct', optionId: 'next' });
     const view = combatScene(after, ctx)!;
     const beats = fightReplay(view, seen);
@@ -107,43 +97,56 @@ describe('the watch screen’s beats', () => {
   });
 
   it('shows a hit when the line that dealt it plays, never before', () => {
-    const base = combatScene(begun(), ctx)!;
-    // The fight as it ends: Kaen hurt by a hit and a burn whose lines the walk back can't place.
-    const hurt = base.combatants.map((c) => (c.id === 'person:kaen' ? { ...c, health: 50 } : c));
-    const view = {
-      ...base,
-      combatants: hurt,
-      log: [
-        '— First exchange — ⟦pl:player=health:100|person:kaen=health:100⟧',
-        'Kaito readies a guard. ⟦by:player⟧',
-        "Kaito's Ember Breath catches them all. ⟦-30⟧ ⟦by:player⟧ ⟦pl:person:kaen=health:70⟧",
-        'The burn bites. ⟦-20⟧',
-        '— Second exchange — ⟦pl:player=health:100|person:kaen=health:50⟧',
-      ],
-    };
+    const view = told([
+      stand('player', { health: 100 }),
+      stand('person:kaen', { health: 100 }),
+      divider(),
+      said('Kaito readies a guard.', 'player'),
+      health('person:kaen', 70, 'player'),
+      said("Kaito's Ember Breath catches them all.", 'player'),
+      health('person:kaen', 50),
+      said('The burn bites.'),
+      stand('player', { health: 100 }),
+      stand('person:kaen', { health: 50 }),
+      divider('— Second exchange —', false),
+    ]);
     const kaen = fightReplay(view, 0).map((b) => b.health['person:kaen']);
-    expect(kaen).toEqual([100, 100, 70, 70, 50]);
+    expect(kaen).toEqual([100, 100, 70, 50, 50]);
   });
 
-  it('brings a fighter called mid-round on stage only from the line that brought them', () => {
-    const base = combatScene(begun(), ctx)!;
-    const view = {
-      ...base,
-      log: [
-        '— First exchange — ⟦pl:player=health:100|person:kaen=health:100⟧',
-        'Kaito steps in. ⟦by:player⟧',
-        'Kaito splits into shadow clones. ⟦by:player⟧ ⟦pl:clone-1=chakra:20,health:100⟧',
-      ],
-    };
+  it('brings a fighter called mid-round on stage from the event that brought them', () => {
+    const view = told([
+      stand('player', { health: 100 }),
+      stand('person:kaen', { health: 100 }),
+      divider(),
+      said('Kaito steps in.', 'player'),
+      { kind: 'join', who: 'clone-1', pools: { chakra: 20, health: 100 }, statuses: [] },
+      said('Kaito splits into shadow clones.', 'player'),
+      { kind: 'leave', who: 'clone-1' },
+      said('The clone bursts.'),
+    ]);
     const present = fightReplay(view, 0).map((b) => [...b.present].sort());
     expect(present).toEqual([
       ['person:kaen', 'player'],
       ['person:kaen', 'player'],
       ['clone-1', 'person:kaen', 'player'],
+      ['person:kaen', 'player'],
     ]);
   });
 
-  it('keeps its place in a long fight, after the engine lets its oldest lines go', () => {
+  it('starts a stretch from where the story before it left everyone', () => {
+    const story = [
+      stand('player', { health: 100 }),
+      divider(),
+      health('player', 60, 'person:kaen'),
+      said('Kaen hits Kaito.', 'person:kaen'),
+      said('Kaito staggers.', 'player'),
+    ];
+    const [first] = fightReplay(told(story), 4);
+    expect(first).toMatchObject({ text: 'Kaito staggers.', health: { player: 60 } });
+  });
+
+  it('keeps its place in a long fight, after the engine lets its oldest events go', () => {
     let state = begun();
     let end = storyEnd(combatScene(state, ctx)!);
     let dropped = false;
@@ -155,8 +158,9 @@ describe('the watch screen’s beats', () => {
       if (!view) break;
       // Playing on after a mid-round call tells nothing new until the next exchange.
       if (next!.id === 'next') expect(storyEnd(view)).toBeGreaterThan(end);
-      expect(fightReplay(view, end)).toHaveLength(storyEnd(view) - end);
-      dropped ||= (view.logOffset ?? 0) > 0;
+      const start = Math.max(0, end - (view.storyOffset ?? 0));
+      expect(fightReplay(view, end)).toHaveLength(toldIn(view.story.slice(start)).length);
+      dropped ||= (view.storyOffset ?? 0) > 0;
       end = storyEnd(view);
     }
     expect(dropped).toBe(true);

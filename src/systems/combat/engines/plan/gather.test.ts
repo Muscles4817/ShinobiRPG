@@ -54,7 +54,7 @@ function roundOf(): Round {
   });
   const dry = patch(fighters, 'foe', { chakra: 5, breath: 4 });
   const ready = patch(dry, 'foe', { reactions: { close: 'dodge', mid: 'dodge', far: 'dodge' } });
-  return { number: 1, fighters: ready, range: 'far', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters: ready, range: 'far', story: [], seen: {}, intents: {} };
 }
 
 function gathered(round: Round): Round {

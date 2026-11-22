@@ -48,7 +48,7 @@ function round(change: (f: PlanFighter) => PlanFighter = (f) => f): Round {
     enemies: [setup('foe')],
     canFlee: false,
   }).map(change);
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const hero = (r: Round) => r.fighters.find((f) => f.isPlayer)!;

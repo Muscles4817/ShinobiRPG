@@ -74,7 +74,7 @@ function round(change: Partial<PlanFighter> = {}, foe: Partial<PlanFighter> = {}
     enemies: [setup('guy')],
     canFlee: true,
   }).map((f) => (f.id === 'kakashi' ? played({ ...f, ...change }) : { ...f, ...foe }));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const one = (r: Round, id: string) => r.fighters.find((f) => f.id === id)!;

@@ -1,4 +1,5 @@
 import type { RoundOpened } from './roundOpened';
+import type { CombatEvent, ToldEvent } from '../../storyContract';
 import type {
   CombatCastMember,
   CombatGround,
@@ -225,9 +226,10 @@ export interface PlanState extends RoundOpened {
   readonly seen: Readonly<Record<string, readonly CardId[]>>;
   /** The card each foe has announced for the next exchange (see `intent.ts`). */
   readonly intents: Readonly<Record<string, CardId>>;
-  readonly log: readonly string[];
-  /** Lines let go from the front of `log` to keep it to `LOG_LIMIT` (absent: none). */
-  readonly logDropped?: number;
+  /** The story so far, as events (`storyContract.ts`), trimmed as an act begins (`cast.ts`). */
+  readonly story: readonly CombatEvent[];
+  /** Events let go from the front of `story` as it was trimmed (absent: none). */
+  readonly storyDropped?: number;
   /** Everyone who has stood on the field this fight (`cast.ts`). */
   readonly cast?: readonly CombatCastMember[];
   readonly result: CombatResult | null;
@@ -275,7 +277,8 @@ export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'>, Excha
   readonly fighters: PlanFighter[];
   readonly range: RangeBand;
   readonly distances?: Distances;
-  readonly lines: readonly string[];
+  /** The exchange's story so far, as events, opening with where everyone stood. */
+  readonly story: readonly CombatEvent[];
   readonly seen: PlanState['seen'];
   readonly intents: PlanState['intents'];
   readonly field?: ActiveField;
@@ -297,7 +300,9 @@ export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'>, Excha
   /** The turn just taken was the player's and played off their plan, and why (`staging.ts`). */
   readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */
-  readonly recent?: readonly string[];
+  readonly recent?: readonly ToldEvent[];
+  /** Everyone who has stood on the field this fight (`cast.ts`), so a clone's id isn't reused. */
+  readonly cast?: PlanState['cast'];
   /** Where everyone's health and pools stood as of the last line told (`say`); unset: none told. */
   readonly toldPools?: Pools;
 }
@@ -367,7 +372,6 @@ export function patch(
   change: Partial<
     Pick<
       PlanFighter,
-      | 'health'
       | 'chakra'
       | 'stunned'
       | 'sealed'

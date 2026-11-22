@@ -91,7 +91,7 @@ describe('targeting', () => {
     }).map((f) =>
       f.isPlayer ? { ...f, loadout: { close: plainSlots(['jutsu:jab']), mid: [], far: [] } } : f,
     );
-    const round: Round = { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+    const round: Round = { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
     expect(plannedPlay(find(fighters, 'hero'), round).target?.id).toBe('hurt');
   });
 });

@@ -59,7 +59,7 @@ function fight(ready: 'dodge' | 'dodge-clear' | 'guard'): PlanState {
     range: 'close',
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: false,
   };
@@ -69,7 +69,7 @@ const roundOf = (state: PlanState) => ({
   number: 1,
   fighters: [...state.fighters],
   range: 'close' as const,
-  lines: [],
+  story: [],
   seen: {},
   intents: {},
 });
@@ -95,6 +95,18 @@ describe('Dodge clear', () => {
       ).filter((r) => distanceBetween(r, 'foe', 'hero') === 'close').length;
     expect(kept('heavy')).toBe(0);
     expect(kept('light')).toBeGreaterThan(10);
+  });
+
+  // Bug #15: told in the attacker's turn, a followed leap is the dodger's step that failed.
+  it('a leap followed is told as the dodger’s failed step, not the follower’s', () => {
+    const state = fight('dodge-clear');
+    const [hero, foe] = state.fighters;
+    const causes = Array.from({ length: 60 }, (_, i) =>
+      leapClear(roundOf(state), foe!, { attacker: hero!, weight: 'light', rng: createRng(i + 1) }),
+    ).flatMap((r) => r.story.flatMap((e) => (e.kind === 'told' && e.cause ? [e.cause] : [])));
+    expect(causes.length).toBeGreaterThan(0);
+    for (const c of causes)
+      expect(c).toEqual({ cause: 'kept-pace', kind: 'step-failed', subject: 'foe' });
   });
 
   it('a plain Dodge stays in range; a Guard nobody moves', () => {

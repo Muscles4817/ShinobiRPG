@@ -39,6 +39,7 @@ import { opponentsOf, type Turn } from './senses';
 import { conceal, sense } from './sight';
 import { canDaze, dazeIn } from './daze';
 import { fighterIn, patch, say, type PlanFighter, type Round } from './state';
+import { setHealth } from './health';
 import { callSummon } from './summons';
 import { settleOn, swarmSpent } from './swarm';
 import { dustSpent } from './dust';
@@ -114,7 +115,7 @@ function confuse(round: Round, { actor, target }: Aimed, use: EffectUse<'confuse
 
 function heal(round: Round, actor: PlanFighter, use: EffectUse<'heal'>): Round {
   const health = Math.min(actor.maxHealth, actor.health + healAmount(actor, use));
-  const healed = { ...round, fighters: patch(round.fighters, actor.id, { health }) };
+  const healed = setHealth(round, actor.id, health, { cause: 'heal', by: actor.id });
   // Nothing to mend (a gate that also heals, opened unhurt): nothing to tell.
   if (health === actor.health) return healed;
   return say(
@@ -306,13 +307,15 @@ function toldSlip(round: Round, { actor, foe, t, rng }: Slipped & { readonly rng
   const slip = { target: foe, attacker: actor, what: t.name, came: approachOf(t) };
   const cause = slipCauseOf(round, { actor, foe, t });
   if (!dodgesHere(round, foe)) {
-    const seen = reactionLine(seenLine(moment, slip, t.discipline === 'genjutsu'), 'missed');
-    return say(round, withCause(seen, cause));
+    const seenIt = seenLine(moment, slip, t.discipline === 'genjutsu');
+    const seen = reactionLine(seenIt, { by: foe.id, on: actor.id }, 'missed');
+    return say(round, withCause(seen, cause, actor.id));
   }
   const why = hasPerk(foe, 'foresight') ? 'foreseen' : 'dodged';
   const noted = noteDefence(round, foe.id, distanceBetween(round, actor.id, foe.id), 'dodge');
   const told = missLine(moment, why, slip);
-  const said = say(noted, withCause(reactionLine(told, 'dodged'), slipCauseBeside(cause, true)));
+  const dodged = reactionLine(told, { by: foe.id, on: actor.id }, 'dodged');
+  const said = say(noted, withCause(dodged, slipCauseBeside(cause, true), actor.id));
   // A ready Dodge may leap clear of what it slipped (`leap.ts`); an illusion seen through isn't.
   if (t.discipline === 'genjutsu') return said;
   const incoming = techniqueIncoming(actor, foe, t, round);

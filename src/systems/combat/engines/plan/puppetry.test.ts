@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueDef } from '@/systems/techniques';
 
@@ -105,7 +106,7 @@ function round(control = 16, calls = [puppet('crow'), puppet('ant')]): Round {
     enemies: [setup('foe', { techniques: [ILLUSION, SWARM], swarm: HIVE })],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const master = (r: Round) => fighterIn(r, 'master')!;
@@ -140,14 +141,16 @@ describe('a puppet on its master’s threads', () => {
     const dazed = { ...up, fighters: patch(up.fighters, 'master', { stunned: 1 }) };
     expect(hangsSlack(dazed, crow(dazed))).toBe(true);
     expect(readyDefences(crow(dazed), dazed)).toEqual([]);
-    expect(slackTurn(dazed, crow(dazed))?.lines.join(' ')).toMatch(/crow hangs slack on/i);
+    expect(textOf(slackTurn(dazed, crow(dazed))!.story).join(' ')).toMatch(/crow hangs slack on/i);
     expect(slackTurn(up, crow(up))).toBeNull();
   });
 
   it('slips when its master takes a hard hit, until their next turn', () => {
-    const hit = wound(unsealed(), 'master', 30);
+    const hit = wound(unsealed(), { who: 'master', damage: 30 });
     expect(hangsSlack(hit, crow(hit))).toBe(true);
-    expect(hangsSlack(wound(unsealed(), 'master', 10), crow(unsealed()))).toBe(false);
+    expect(hangsSlack(wound(unsealed(), { who: 'master', damage: 10 }), crow(unsealed()))).toBe(
+      false,
+    );
     const retaken = threadsRetaken(hit, 'master');
     expect(hangsSlack(retaken, crow(retaken))).toBe(false);
   });
@@ -157,7 +160,7 @@ describe('a puppet on its master’s threads', () => {
     const settled = settleOn(up, 'foe', [crow(up)], SWARM);
     expect(master(settled).settled?.hostId).toBe('foe');
     expect(crow(settled).settled).toBeUndefined();
-    expect(settled.lines.join(' ')).toMatch(/up crow’s threads/i);
+    expect(textOf(settled.story).join(' ')).toMatch(/up crow’s threads/i);
   });
 
   it('has no mind for an illusion to fool', () => {
@@ -186,7 +189,7 @@ describe('eyes that see the threads', () => {
     expect(hangsSlack(threadsCutBy(up, foe(up), crow(up)), crow(up))).toBe(false);
     const cut = threadsCutBy(up, seer(up), crow(up));
     expect(hangsSlack(cut, crow(cut))).toBe(true);
-    expect(cut.lines.join(' ')).toMatch(/sees the threads/);
+    expect(textOf(cut.story).join(' ')).toMatch(/sees the threads/);
   });
 
   it('leave a slack puppet no wall: a blow reaches the master behind it', () => {
@@ -207,7 +210,7 @@ describe('eyes that see the threads', () => {
     expect(rethreading(cut, master(cut))).toBeNull();
     const later = { ...cut, number: cut.number + 1 };
     const retied = lostTurn(later, master(later));
-    expect(retied?.lines.join(' ')).toMatch(/casts fresh threads to crow/i);
+    expect(textOf(retied!.story).join(' ')).toMatch(/casts fresh threads to crow/i);
     expect(hangsSlack(retied!, crow(retied!))).toBe(true);
     const next = threadsTaken(retied!);
     expect(hangsSlack(next, crow(next))).toBe(false);

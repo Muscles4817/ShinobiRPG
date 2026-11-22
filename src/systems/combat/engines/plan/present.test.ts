@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueDef } from '@/systems/techniques';
 
@@ -67,7 +68,7 @@ function round(): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 describe('bodies present from the start', () => {
@@ -82,7 +83,7 @@ describe('bodies present from the start', () => {
     const caller = opened.fighters.find((f) => f.id === 'caller')!;
     expect(caller.summonsOut).toEqual(['path']);
     expect(caller.health).toBe(100);
-    expect(opened.lines.join(' ')).toMatch(/A path stands with caller/);
+    expect(textOf(opened.story).join(' ')).toMatch(/A path stands with caller/);
   });
 
   it('are on the field as the engine opens the fight', () => {

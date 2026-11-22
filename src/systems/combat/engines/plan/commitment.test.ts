@@ -53,7 +53,7 @@ function roundOf(): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function committed(round: Round, kind: 'evade' | 'brace'): Round {

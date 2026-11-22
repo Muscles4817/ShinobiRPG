@@ -84,7 +84,7 @@ describe('foes as a team', () => {
       number: 1,
       fighters: fighters.map((f) => (f.id === 'hero' ? { ...f, health: 30 } : f)),
       range: 'close',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
       foeMark: 'ally',

@@ -26,7 +26,11 @@ import { announced } from './decisionLog';
 import { upgradeLegacy, withIntents, withKits, withRows, withSlots } from './legacy';
 import { openFight } from './opening';
 import { presentAtStart } from './present';
-import { trimmedLog } from './cast';
+import { trimmedStory } from './cast';
+import { withStory } from './legacyStory';
+import { levelled, standingNow } from './storyLevel';
+import { dividerTold } from './staging';
+import { poolsNow, toldOn } from './toldPools';
 import { withCloseQuarters } from './closeQuarters';
 import { withTeleports } from './blink';
 import { withinGround } from '../../rules/ground';
@@ -70,7 +74,12 @@ const WATCHED_ROUNDS_MAX = 20;
 const FIGHT_BEGINS = '— The fight begins —';
 
 function read(state: CombatState): PlanState {
-  return withRows(withIntents(withSlots(upgradeLegacy(withKits(decode(state))))));
+  return withRows(withIntents(withSlots(upgradeLegacy(withKits(withStory(decode(state)))))));
+}
+
+/** The fight's story brought level with the fight as it stands, as an act hands back. */
+function told(state: PlanState): PlanState {
+  return { ...state, story: levelled(state.story, state) };
 }
 
 /** How each fighter on the player's side but the player ends the fight. */
@@ -136,14 +145,14 @@ function flee(state: PlanState, rng: Rng): PlanState {
   if (rng.chance(fleeChance(state))) {
     return {
       ...state,
-      log: [...state.log, 'You vanish in a swirl of leaves and get clean away.'],
+      story: toldOn(state.story, 'You vanish in a swirl of leaves and get clean away.'),
       result: 'escaped',
     };
   }
   const failed = {
     ...state,
     phase: 'fight' as const,
-    log: [...state.log, 'You try to slip away, but they cut you off.'],
+    story: toldOn(state.story, 'You try to slip away, but they cut you off.'),
   };
   return exchange(failed, rng);
 }
@@ -165,7 +174,7 @@ function act(state: PlanState, optionId: string, rng: Rng): Result<PlanState> {
       const divider = state.bout === 1 ? FIGHT_BEGINS : '— The next round begins —';
       // Each round's slot trace starts afresh (`slotTrace.ts`).
       const { slotTrace: _last, ...fresh } = resumed;
-      return ok({ ...fresh, phase: 'fight', log: [...state.log, divider] });
+      return ok({ ...fresh, phase: 'fight', story: toldOn(state.story, dividerTold(divider)) });
     }
     case 'flee':
       return ok(flee(state, rng));
@@ -213,11 +222,11 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
       const { fighters, lines, field } = opened;
       const range = withinGround(setup.ground, opened.range);
       // Bodies already standing beside their callers join before anyone moves (`present.ts`).
-      const present = presentAtStart(
-        asRound({ fighters: plannedFighters(fighters, setup.plan), range, exchange: 0, round: 1 }),
-      );
+      const opening = plannedFighters(fighters, setup.plan);
+      const table = asRound({ fighters: opening, range, exchange: 0, round: 1 });
+      const present = presentAtStart({ ...table, toldPools: poolsNow(opening) });
       const planned = present.fighters;
-      const table = {
+      const laid = {
         fighters: planned,
         ...foeMarkFor(planned),
         range,
@@ -226,7 +235,7 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
         ...(field ? { field } : {}),
       };
       // Everyone settles what they mean to do before the first exchange (`mind/`, in shadow).
-      const aimed = objectivesAfter(asRound(table)).fighters;
+      const aimed = objectivesAfter(asRound(laid)).fighters;
       const firstMover = setup.opening?.firstMover;
       const watching = setup.watch ?? false;
       const intro = setup.intro ?? squareUpLine(setup.enemies);
@@ -240,13 +249,11 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
         seen: {},
         ...foeMarkFor(planned),
         intents: {},
-        log: [
-          intro,
-          ...lines,
-          ...present.lines,
+        story: toldOn(
+          [...standingNow(table), ...toldOn([], intro, ...lines), ...present.story],
           ...openingReads(aimed, setup.ground),
-          ...(watching ? [FIGHT_BEGINS] : []),
-        ],
+          ...(watching ? [dividerTold(FIGHT_BEGINS)] : []),
+        ),
         healthAtRound: healthNow(aimed),
         ...(setup.ground ? { ground: setup.ground } : {}),
         ...(setup.occasion ? { occasion: setup.occasion } : {}),
@@ -258,14 +265,14 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
         ...(setup.trace ? { decisions: [] } : {}),
       };
       const ready = draftedForRound(state);
-      return encode(announced(ready, foresee(ready, rng)));
+      return encode(told(announced(ready, foresee(ready, rng))));
     },
 
     act(state: CombatState, choice: CombatChoice, rng): Result<CombatState> {
-      const plan = trimmedLog(read(state));
+      const plan = trimmedStory(read(state));
       if (plan.result) return err('The fight is already over.');
       const next = act(plan, choice.optionId, rng);
-      return next.ok ? ok(encode(next.value)) : next;
+      return next.ok ? ok(encode(told(next.value))) : next;
     },
 
     view(state): CombatView {
@@ -275,8 +282,8 @@ export function createPlanEngine({ instinct = false }: { instinct?: boolean } = 
       return {
         round: plan.bout,
         combatants: plan.fighters.map((f) => combatantView(plan, f, insight)),
-        log: plan.log,
-        ...(plan.logDropped ? { logOffset: plan.logDropped } : {}),
+        story: plan.story,
+        ...(plan.storyDropped ? { storyOffset: plan.storyDropped } : {}),
         ...(plan.cast ? { cast: plan.cast } : {}),
         ...previewOf(plan),
         options: options(plan),

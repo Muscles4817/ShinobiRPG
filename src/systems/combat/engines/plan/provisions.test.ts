@@ -1,3 +1,5 @@
+import { atHealth } from '@/test/planFighters';
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueEffect } from '@/systems/techniques';
 
@@ -6,7 +8,7 @@ import { SECOND_WIND_HEAL, STEADY_THROUGH_EXCHANGE } from '../../rules/provision
 import { useJutsu } from './jutsu';
 import { secondWinds } from './provisions';
 import { canDaze } from './daze';
-import { fighterIn, initialFighters, patch, type Round } from './state';
+import { fighterIn, initialFighters, type Round } from './state';
 
 const attributes = {
   strength: 10,
@@ -44,7 +46,7 @@ function roundWith(provisions: readonly CombatProvision[]): Round {
     enemies: [setup('bandit', provisions)],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const bandit = (round: Round) => fighterIn(round, 'bandit')!;
@@ -86,13 +88,16 @@ describe('provisions in Plan & Watch', () => {
 
   it('a second wind comes once, to the badly hurt', () => {
     const start = roundWith(['second-wind']);
-    const hurt = { ...start, fighters: patch(start.fighters, 'bandit', { health: 20 }) };
+    const hurt = { ...start, fighters: atHealth(start.fighters, 'bandit', 20) };
     const winded = secondWinds(hurt);
     expect(bandit(winded).health).toBe(20 + SECOND_WIND_HEAL);
-    expect(winded.lines.at(-1)).toContain('finds a second wind');
-    const again = { ...winded, fighters: patch(winded.fighters, 'bandit', { health: 10 }) };
+    expect(textOf(winded.story).at(-1)).toContain('finds a second wind');
+    expect(winded.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', who: 'bandit', cause: 'heal' }),
+    );
+    const again = { ...winded, fighters: atHealth(winded.fighters, 'bandit', 10) };
     expect(bandit(secondWinds(again)).health).toBe(10);
     const healthy = secondWinds(start);
-    expect(healthy.lines).toEqual([]);
+    expect(textOf(healthy.story)).toEqual([]);
   });
 });

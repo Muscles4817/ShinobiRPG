@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
@@ -89,7 +90,7 @@ describe('holding your ground against a blast', () => {
       number: 1,
       fighters: [...fs],
       range: 'mid',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     } satisfies Round;
@@ -108,7 +109,7 @@ describe('holding your ground against a blast', () => {
       number: 1,
       fighters: [...fs],
       range: 'mid',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     } satisfies Round;
@@ -118,7 +119,7 @@ describe('holding your ground against a blast', () => {
       const out = whoIsThrown(round, turn, { t: gale(20), caught: [hero(fs)] });
       if (out.thrown.length === 0) {
         held += 1;
-        expect(out.round.lines.some((l) => l.includes('feet.'))).toBe(true);
+        expect(textOf(out.round.story).some((l) => l.includes('feet.'))).toBe(true);
       }
     }
     expect(held).toBeGreaterThan(0);

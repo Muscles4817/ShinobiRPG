@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { TechniqueDef } from '@/systems/techniques';
 
 import type { CombatantSetup } from '../../contract';
@@ -49,7 +50,7 @@ function setup(id: string, over: Partial<CombatantSetup> = {}): CombatantSetup {
 
 function round(enemies: readonly CombatantSetup[] = [setup('foe')]): Round {
   const fighters = initialFighters({ player: setup('caster'), allies: [], enemies, canFlee: true });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const who = (r: Round, id: string) => fighterIn(r, id)!;
@@ -105,7 +106,7 @@ describe('a held illusion', () => {
     const after = illusionsAfter(broke);
     expect(who(after, 'foe')).toMatchObject({ confused: 0 });
     expect(who(after, 'foe').illusion).toBeUndefined();
-    expect(after.lines.join(' ')).toMatch(/lets go/);
+    expect(textOf(after.story).join(' ')).toMatch(/lets go/);
   });
 
   it('is shaken loose from one body of a shared mind by another', () => {
@@ -113,6 +114,6 @@ describe('a held illusion', () => {
     const r = caught(round([setup('foe', { mind }), setup('mate', { mind })]));
     const after = illusionsAfter(r);
     expect(who(after, 'foe').confused).toBe(0);
-    expect(after.lines.join(' ')).toMatch(/shakes foe out of the illusion/);
+    expect(textOf(after.story).join(' ')).toMatch(/shakes foe out of the illusion/);
   });
 });

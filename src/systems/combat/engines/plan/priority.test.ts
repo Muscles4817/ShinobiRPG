@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { PlainVerb } from '@/systems/techniques';
 
@@ -69,7 +70,7 @@ function table(mid: readonly Slot[], foes = [fighter('foe')]): PlanFighter[] {
 }
 
 function roundOf(fighters: PlanFighter[], intents: Round['intents'] = {}): Round {
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents };
 }
 
 function played(fighters: PlanFighter[], intents: Round['intents'] = {}) {
@@ -322,7 +323,7 @@ describe('plan & watch priorities: the engine', () => {
     expect(midOf(saved)).toEqual(['throw']);
     const begun = act(saved, 'begin');
     expect(midOf(begun)).toEqual([{ card: 'throw' }]);
-    expect(engine.view(act(begun, 'next')).log.length).toBeGreaterThan(0);
+    expect(textOf(engine.view(act(begun, 'next')).story).length).toBeGreaterThan(0);
   });
 
   it('plays the same fight for the same seed', () => {
@@ -335,7 +336,7 @@ describe('plan & watch priorities: the engine', () => {
         if (!next.ok) throw new Error(next.error);
         state = next.value;
       }
-      return engine.view(state).log;
+      return textOf(engine.view(state).story);
     };
     expect(whole(9)).toEqual(whole(9));
   });

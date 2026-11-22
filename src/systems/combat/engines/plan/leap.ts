@@ -61,7 +61,9 @@ export function leapClear(round: Round, dodger: PlanFighter, slipped: Slipped): 
   };
   // Asked even when it can't be followed, so the fight's rolls stay as they were.
   const kept = slipped.rng.chance(followChance(dodger, slipped));
-  if (kept) return say(paid, causeLine(tell(FOLLOWED, { a: dodger, t: attacker }), 'kept-pace'));
+  // The leap is the dodger's step back, and it failed: the attacker kept pace with it.
+  const followed = causeLine(tell(FOLLOWED, { a: dodger, t: attacker }), 'kept-pace', dodger.id);
+  if (kept) return say(paid, followed);
   return pairsMoved(
     paid,
     [{ a: dodger.id, b: attacker.id, to }],

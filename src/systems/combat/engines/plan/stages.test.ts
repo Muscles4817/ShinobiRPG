@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { closingOn, stagesAfter } from './stages';
 import { initialFighters, type PlanFighter, type Round } from './state';
@@ -51,7 +52,7 @@ function cast(pinned: boolean): Round {
     number: 1,
     fighters: [caster!, held],
     range: 'mid',
-    lines: [],
+    story: [],
     seen: {},
     intents: {},
   };
@@ -79,6 +80,6 @@ describe('two-stage techniques', () => {
     const second = stagesAfter(free);
     expect(foe(second).health).toBe(100);
     expect(foe(second).closing).toBeUndefined();
-    expect(second.lines.some((l) => l.includes('free before it closes'))).toBe(true);
+    expect(textOf(second.story).some((l) => l.includes('free before it closes'))).toBe(true);
   });
 });

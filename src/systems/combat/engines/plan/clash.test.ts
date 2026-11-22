@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
 
-import { hitsOn } from '@/test/fightLines';
+import { hitsOn, linesOf, textOf, type Wanted, matches, wantedName } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { useJutsu } from './jutsu';
@@ -74,20 +74,20 @@ function facing(
     number: 1,
     fighters,
     range: 'mid',
-    lines: [],
+    story: [],
     seen: {},
     intents: intends ? { bandit: `jutsu:${answer.id}` } : {},
   };
 }
 
 /** The hero throws a technique at the bandit, with each seed until the narration matches. */
-function throwUntil(round: Round, t: CombatTechnique, wanted: RegExp): Round {
+function throwUntil(round: Round, t: CombatTechnique, wanted: Wanted): Round {
   for (let seed = 1; seed < 200; seed++) {
     const [hero, bandit] = round.fighters;
     const after = useJutsu(round, { actor: hero!, target: bandit, rng: createRng(seed) }, t);
-    if (after.lines.some((l) => wanted.test(l))) return after;
+    if (linesOf(after.story).some((l) => matches(l, wanted))) return after;
   }
-  throw new Error(`no seed narrates ${wanted.source}`);
+  throw new Error(`no seed narrates ${wantedName(wanted)}`);
 }
 
 describe('clashes', () => {
@@ -117,7 +117,7 @@ describe('clashes', () => {
 
   it('no clash without an elemental attack about to come back', () => {
     const after = throwUntil(facing(waterBullet, false), fireball, hitsOn('bandit'));
-    expect(after.lines.join(' ')).not.toMatch(/meets it/);
+    expect(textOf(after.story).join(' ')).not.toMatch(/meets it/);
   });
 });
 

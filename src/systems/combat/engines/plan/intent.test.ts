@@ -173,7 +173,7 @@ describe('keeping to what was announced', () => {
       number: 1,
       fighters,
       range: 'mid',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
       ...mist,

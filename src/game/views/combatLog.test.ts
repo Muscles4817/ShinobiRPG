@@ -1,3 +1,6 @@
+import type { ToldEvent } from '@/systems/combat';
+import { linesOf } from '@/test/fightLines';
+import { divider, reacting, said } from '@/test/story';
 import { act, classicCtx, ctx, newGame, withAllStats } from '@/test/gameFixtures';
 
 import type { GameContext } from '../context';
@@ -14,17 +17,17 @@ const STYLES: readonly (readonly [string, GameContext])[] = [
 /** About a fresh genin partner's level, so the spar lasts long enough to trade blows. */
 const SPARRING_STATS = 7;
 
-/** Every log line the fight screen showed over a whole spar, picking sensibly each turn. */
-function sparLog(style: string, context: GameContext): string[] {
+/** Every line the fight screen showed over a whole spar, picking sensibly each turn. */
+function sparLog(style: string, context: GameContext): ToldEvent[] {
   let state: GameState = withAllStats(newGame({}, context), SPARRING_STATS);
   if (style !== state.settings.combatStyle) {
     state = act(state, { type: 'setCombatStyle', style }, context);
   }
   state = act(state, { type: 'spar', personId: 'kaen' }, context);
-  const seen = new Set<string>();
+  const seen = new Map<string, ToldEvent>();
   for (let i = 0; i < 300 && state.combat; i++) {
     const view = combatScene(state, context)!;
-    view.log.forEach((line) => seen.add(line));
+    linesOf(view.story).forEach((line) => seen.set(JSON.stringify(line), line));
     const options = view.options.filter((o) => !o.disabledReason);
     const pick =
       options.find((o) => o.id === 'begin' || o.id === 'round') ??
@@ -34,16 +37,22 @@ function sparLog(style: string, context: GameContext): string[] {
       options[0]!;
     state = act(state, { type: 'combatAct', optionId: pick.id }, context);
   }
-  return [...seen];
+  return [...seen.values()];
 }
 
 describe('combat log view', () => {
   it('sets round markers apart', () => {
-    expect(combatLog(['— Round 2 —'])).toEqual([{ kind: 'round', text: 'Round 2' }]);
+    expect(combatLog([divider('— Round 2 —', false)])).toEqual([
+      { kind: 'round', text: 'Round 2' },
+    ]);
   });
 
   it('stamps the defences that reacted beside the damage', () => {
-    expect(combatLog(['Goro hits Aoi through a guard. ⟦r:guarded⟧ ⟦-4⟧'])).toEqual([
+    const hit = said('Goro hits Aoi through a guard.', 'goro', {
+      reactions: [reacting('guarded', 'aoi', 'goro')],
+      amounts: [{ kind: 'harm', amount: 4 }],
+    });
+    expect(combatLog([hit])).toEqual([
       {
         kind: 'story',
         text: 'Goro hits Aoi through a guard.',
@@ -56,7 +65,12 @@ describe('combat log view', () => {
   });
 
   it('stamps a turn of the player’s that played off their plan, with why', () => {
-    const [line] = combatLog(['You throw a plain blow. ⟦op:improvised⟧ ⟦-3⟧']);
+    const [line] = combatLog([
+      said('You throw a plain blow.', 'player', {
+        offPlan: 'improvised',
+        amounts: [{ kind: 'harm', amount: 3 }],
+      }),
+    ]);
     expect(line).toEqual({
       kind: 'story',
       text: 'You throw a plain blow.',
@@ -80,7 +94,12 @@ describe('combat log view', () => {
 
 describe('a cause on the line', () => {
   it('shows as a stamp beside the reaction, in words', () => {
-    const [line] = combatLog(['Jin slips it. ⟦r:missed⟧ ⟦c:read-it⟧']);
+    const [line] = combatLog([
+      said('Jin slips it.', 'aoi', {
+        reactions: [reacting('missed', 'jin', 'aoi')],
+        cause: { cause: 'read-it', kind: 'slipped', subject: 'aoi' },
+      }),
+    ]);
     expect(line).toEqual({
       kind: 'story',
       text: 'Jin slips it.',

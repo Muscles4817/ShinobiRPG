@@ -88,7 +88,7 @@ describe('judgement by intellect', () => {
         number: 1,
         fighters,
         range: 'close',
-        lines: [],
+        story: [],
         seen: {},
         intents: {},
         reads: guarding,

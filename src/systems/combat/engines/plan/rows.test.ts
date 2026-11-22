@@ -77,7 +77,7 @@ function withSlots(f: PlanFighter, band: keyof Loadout, slots: Slot[]): PlanFigh
 }
 
 function roundOf(fighters: PlanFighter[], range: Round['range'], intents = {}): Round {
-  return { number: 1, fighters, range, lines: [], seen: {}, intents };
+  return { number: 1, fighters, range, story: [], seen: {}, intents };
 }
 
 function hurt(f: PlanFighter, health: number): PlanFighter {

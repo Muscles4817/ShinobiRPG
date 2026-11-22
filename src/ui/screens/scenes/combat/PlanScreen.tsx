@@ -54,7 +54,7 @@ const RECENT_LINES = 5;
 
 /** The story's last lines, as the log tells them. */
 function LastLines({ view }: { readonly view: CombatView }) {
-  const lines = combatLog(withoutReads(view.log).slice(-RECENT_LINES));
+  const lines = combatLog(withoutReads(view.story).slice(-RECENT_LINES));
   return (
     <>
       {lines.map((line, i) =>
@@ -95,7 +95,7 @@ function Noticed({ view }: { readonly view: CombatView }) {
 function HowItWent({ view }: { readonly view: CombatView }) {
   const why = view.round > 1 ? roundWhy(view) : [];
   const advice = view.round > 1 ? roundAdvice(view) : null;
-  if (view.log.length === 0) return null;
+  if (view.story.length === 0) return null;
   if (why.length === 0) {
     return (
       <details className="how-it-went" open>

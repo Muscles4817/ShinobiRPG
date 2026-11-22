@@ -48,7 +48,7 @@ function odds(caster: Partial<CombatantSetup>, range: RangeBand): number {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  const round: Round = { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  const round: Round = { number: 1, fighters, range, story: [], seen: {}, intents: {} };
   const [actor, target] = fighters;
   const incoming = techniqueIncoming(actor!, target!, bolt, round);
   return incoming ? avoidOdds(round, incoming) : 0;

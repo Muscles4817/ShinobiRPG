@@ -7,7 +7,7 @@ import { alive } from '../../rules/body';
 import { reachLead } from '../../rules/blades';
 import { searchChance } from '../../rules/conditions';
 import { revealOnAttack } from '../../rules/items';
-import { afterStep, charge, type Charged } from './steps';
+import { afterStep, afterTheCast, charge } from './steps';
 import { keepHolding } from './holding';
 import { lostTurn } from './lostTurn';
 import { threadsRetaken } from './puppets';
@@ -64,7 +64,10 @@ import {
   type Round,
 } from './state';
 import { tracedLine } from './sceneVoice';
-import { poolsNow, toldInFull } from './toldPools';
+import { poolsNow, toldOn } from './toldPools';
+import { levelled } from './storyLevel';
+import { recentTold } from '../../storyFold';
+import { carriedIn } from './carriedIn';
 import { closingLine } from './falls';
 import { tell } from '../../rules/telling';
 import { keepsOffField, mindsAfter, stillFighting } from './sharedMind';
@@ -180,13 +183,6 @@ function attempt(round: Round, turn: Turn, card: Card): Round {
   return cloneFollowUp(revealed(played, turn), turn, card);
 }
 
-/** Lines a charge saved for after its technique is announced (slipping through the fire). */
-function afterTheCast(played: Round, { round, after }: Charged): Round {
-  if (after.length === 0) return played;
-  const at = round.lines.length + 1;
-  return { ...played, lines: [...played.lines.slice(0, at), ...after, ...played.lines.slice(at)] };
-}
-
 /**
  * What a fighter plays: the player and their teammates their cards in priority order, foes (and
  * anyone thinking ahead) what they announced or on instinct; but a teammate caught in a hold comes first (`struggle.ts`), whether that means
@@ -287,22 +283,6 @@ function stagedTurn(round: Round, id: string, rng: Rng): Round {
   return staged(round, tracedTurn(round, turn(round, id, rng), id), id);
 }
 
-/** What an exchange carries in from the fight as it stands: reads, the field, the ground, marks. */
-function carriedIn(state: PlanState): Partial<Round> {
-  return {
-    ...(state.reads ? { reads: state.reads } : {}),
-    ...(state.field ? { field: state.field } : {}),
-    ...(state.ground ? { ground: state.ground } : {}),
-    ...(state.occasion ? { occasion: state.occasion } : {}),
-    ...(state.mark ? { mark: state.mark } : {}),
-    ...(state.foeMark ? { foeMark: state.foeMark } : {}),
-    ...(state.watching ? { watching: true as const } : {}),
-    ...(state.toTheLast ? { toTheLast: true as const } : {}),
-    ...(state.slotTrace ? { slotTrace: state.slotTrace } : {}),
-    ...(state.decisions ? { decisions: [] } : {}),
-  };
-}
-
 /** Resolves one exchange. */
 export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   // Whoever moved first (the fight's opening) acts first in the first exchange.
@@ -326,8 +306,8 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     fighters: blinksReady(state.fighters, state.exchange === 0),
     range: state.range,
     ...(state.distances ? { distances: state.distances } : {}),
-    lines: [],
-    recent: state.log.slice(-SCENE_MEMORY),
+    story: [],
+    recent: recentTold(state.story, SCENE_MEMORY),
     seen: state.seen,
     intents: state.intents,
     ...carriedIn(state),
@@ -335,7 +315,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   const name = EXCHANGE_NAMES[state.exchange] ?? 'Another';
   const opened: Round = {
     ...start,
-    lines: [exchangeDivider(name, start, state.exchange === 0)],
+    story: exchangeDivider(name, start, state.exchange === 0),
     toldPools: poolsNow(start.fighters),
   };
   // Fallen bodies of a mind are raised before summons are reckoned (`sharedMind.ts`).
@@ -360,7 +340,14 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   }));
   const { field: _old, ...rest } = state;
   const closing = result ? [closingLine(end, result)] : fading;
-  const story = [...state.log, ...toldInFull(end).lines, ...closing];
+  const after = {
+    fighters,
+    ...(field ? { field } : {}),
+    ...(end.mark ? { mark: end.mark } : {}),
+    ...(end.foeMark ? { foeMark: end.foeMark } : {}),
+  };
+  // Brought level first, so the closing line (or a field fading) shows the fight as it stands.
+  const story = toldOn(levelled([...state.story, ...end.story], after), ...closing);
   return {
     ...rest,
     round: result ? state.round : state.round + 1,
@@ -371,7 +358,7 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
     seen: end.seen,
     ...(end.reads ? { reads: end.reads } : {}),
     // Trimmed only as an act begins, so a stretch watched is never cut short (`cast.ts`).
-    log: story,
+    story,
     cast: castAfter(state.cast, [...start.fighters, ...played.fighters]),
     result,
     ...(field ? { field } : {}),

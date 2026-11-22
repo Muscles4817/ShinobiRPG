@@ -79,7 +79,7 @@ function answered(round: Round, waits: CounterWaits, c: Coming, said: string): R
   if (scale <= 0 || !attacker || !alive(attacker)) return say(round, said);
   const raw = strikeDamage(c.target, attacker, c.rng.next()) * scale;
   const damage = taken(attacker, Math.max(1, Math.round(raw)));
-  return wound(round, attacker.id, damage, harmLine(said, damage));
+  return wound(round, { who: attacker.id, damage, by: c.target.id }, harmLine(said, damage));
 }
 
 /** Plays a waiting counter against this attack, or leaves the round as it was. */
@@ -102,11 +102,15 @@ export function counterOn(round: Round, c: Coming): Countered {
   const band = distanceBetween(round, c.attacker.id, c.target.id);
   const seen = noteDefence({ ...round, fighters: spent }, c.target.id, band, 'counter');
   const said = line(seen, outcome, waits, c);
+  // The counterer reacted, to the attacker's blow: said so, whose turn ever it is told in.
+  const defending = { by: c.target.id, on: c.attacker.id };
   switch (outcome) {
-    case 'clean':
-      return { round: answered(seen, waits, c, reactionLine(said, 'countered')), stopped: true };
+    case 'clean': {
+      const answer = reactionLine(said, defending, 'countered');
+      return { round: answered(seen, waits, c, answer), stopped: true };
+    }
     case 'late':
-      return { round: say(seen, reactionLine(said, 'guarded')), stopped: true };
+      return { round: say(seen, reactionLine(said, defending, 'turned-aside')), stopped: true };
     case 'missed':
       return { round: say(seen, said), stopped: false };
   }

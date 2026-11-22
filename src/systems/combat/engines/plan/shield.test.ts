@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng, type Rng } from '@/core';
 
 import type { CombatantSetup } from '../../contract';
@@ -59,7 +60,7 @@ function round(host: Partial<CombatantSetup>, speed = 10): Round {
     enemies: [setup('foe', { attributes: { ...attributes, speed } })],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const SHIELDED = { dust: SAND, perks: ['shield'] as const };
@@ -83,7 +84,7 @@ describe('the shield in a planned fight', () => {
     const met = shieldUp(r, incoming(r), 10);
     expect(met.force).toBe(0);
     expect(host(met.round).dust!.count).toBe(190);
-    expect(met.round.lines.join(' ')).toMatch(/sand rises/);
+    expect(textOf(met.round.story).join(' ')).toMatch(/sand rises/);
   });
 
   it('lets a big hit through with what is left over', () => {

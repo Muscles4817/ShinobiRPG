@@ -8,7 +8,7 @@ import type { PlanState } from './state';
  * nothing; it is for a fight record's download, never for play.
  */
 export function inspectPlan(plan: PlanState): CombatInspection {
-  const { fighters, decisions, log: _log, logDropped: _dropped, ...field } = plan;
+  const { fighters, decisions, story: _story, storyDropped: _dropped, ...field } = plan;
   return {
     round: plan.bout,
     fighters: fighters.map((f) => ({ id: f.id, name: f.name, side: f.side, detail: f })),

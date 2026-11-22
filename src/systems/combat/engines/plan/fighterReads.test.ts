@@ -1,5 +1,5 @@
 import type { CombatantSetup } from '../../contract';
-import { splitNarration } from '../../rules/narration';
+import { toldFrom } from '../../rules/narration';
 import { openingReads } from './fighterReads';
 import { initialFighters } from './state';
 
@@ -49,8 +49,8 @@ describe('reads as the fight opens', () => {
   it('notices the blade first, and every read is marked as one', () => {
     const lines = openingReads(fighters({}, { gear: sword }), undefined);
     expect(lines.length).toBeGreaterThan(0);
-    expect(lines.every((l) => splitNarration(l).read === true)).toBe(true);
-    expect(splitNarration(lines[0]!).text).toContain('sword');
+    expect(lines.every((l) => toldFrom(l).read === true)).toBe(true);
+    expect(toldFrom(lines[0]!).text).toContain('sword');
   });
 
   it('a keener eye notices more, and says it plainly', () => {
@@ -58,12 +58,12 @@ describe('reads as the fight opens', () => {
     const dull = openingReads(fighters({ attributes: { ...base, perception: 2 } }, foe), 'lake');
     const keen = openingReads(fighters({ attributes: { ...base, perception: 40 } }, foe), 'lake');
     expect(keen.length).toBeGreaterThan(dull.length);
-    const said = keen.map((l) => splitNarration(l).text);
+    const said = keen.map((l) => toldFrom(l).text);
     expect(said.some((t) => t.includes('armoured'))).toBe(true);
     expect(said.some((t) => t.includes('big'))).toBe(true);
     expect(said.some((t) => t.includes('footing'))).toBe(true);
     expect(said.some((t) => t.includes('quicker than you'))).toBe(true);
-    expect(splitNarration(dull[0]!).text).toBe('Gōran has a sword in hand.');
+    expect(toldFrom(dull[0]!).text).toBe('Gōran has a sword in hand.');
   });
 
   it('says nothing of a foe with nothing to notice, or one in hiding', () => {

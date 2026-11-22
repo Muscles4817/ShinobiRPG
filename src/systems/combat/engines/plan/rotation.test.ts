@@ -60,7 +60,7 @@ function round(spinner: Partial<CombatantSetup>): Round {
   const ready = fighters.map((f) =>
     f.id === 'neji' ? { ...f, reactions: defaultReactions(f) } : f,
   );
-  return { number: 1, fighters: ready, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters: ready, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const neji = (r: Round) => fighterIn(r, 'neji')!;

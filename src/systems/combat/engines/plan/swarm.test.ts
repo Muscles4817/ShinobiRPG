@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueDef } from '@/systems/techniques';
 
@@ -82,7 +83,7 @@ function round(swarm: CombatSwarm = HIVE): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const host = (r: Round) => fighterIn(r, 'host')!;
@@ -161,6 +162,6 @@ describe('a hive in a planned fight', () => {
     const shaken = { ...settled, fighters: withFoe(settled, { health: 30, traits: ['coward'] }) };
     const after = swarmsAfter(shaken, createRng(1));
     expect(foe(after).health).toBe(0);
-    expect(after.lines.some((l) => l.includes('run'))).toBe(true);
+    expect(textOf(after.story).some((l) => l.includes('run'))).toBe(true);
   });
 });

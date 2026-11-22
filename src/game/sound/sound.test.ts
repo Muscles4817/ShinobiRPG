@@ -1,3 +1,4 @@
+import { linesOf } from '@/test/fightLines';
 import { act, ctx, fightOut, intoFight, newGame } from '@/test/gameFixtures';
 
 import type { FightBeat } from '../views/fightReplay';
@@ -75,8 +76,8 @@ describe('sounds', () => {
     state = act(state, { type: 'missionContinue' });
     state = act(state, { type: 'missionChoose', approachIndex: 0 });
     const done = fightOut(intoFight(state));
-    const log = done.combatFinale?.log ?? [];
-    expect(log.some((line) => /⟦fx:\d:[a-z-]+:[a-z-]+⟧/.test(line))).toBe(true);
+    const lines = linesOf(done.combatFinale?.story ?? []);
+    expect(lines.some((line) => line.force !== undefined)).toBe(true);
   });
 });
 

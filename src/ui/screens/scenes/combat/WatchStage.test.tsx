@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { combatScene, fightReplay, SEEN_IN_FULL } from '@/game';
 import { act, ctx, newGame, withAllStats } from '@/test/gameFixtures';
+import { divider, said, stand } from '@/test/story';
 
 import { WatchScreen } from './WatchScreen';
 
@@ -22,11 +23,15 @@ describe('the watch screen’s stage (smoke test)', () => {
     const view = {
       ...base,
       combatants: [...base.combatants, clone],
-      log: [
-        '— First exchange — ⟦pl:player=health:100|person:kaen=health:100⟧',
-        'You step in. ⟦by:player⟧',
-        'You split into shadow clones. ⟦by:player⟧ ⟦pl:clone-1=chakra:20,health:100⟧',
+      story: [
+        stand('player', { health: 100 }),
+        stand('person:kaen', { health: 100 }),
+        divider(),
+        said('You step in.', 'player'),
+        { kind: 'join' as const, who: 'clone-1', pools: { chakra: 20, health: 100 }, statuses: [] },
+        said('You split into shadow clones.', 'player'),
       ],
+      storyOffset: 0,
     };
     const user = userEvent.setup();
     render(

@@ -1,7 +1,7 @@
 import { distanceBetween } from './distance';
 import { createRng } from '@/core';
 
-import { castsLine, SWAPS } from '@/test/fightLines';
+import { castsLine, linesOf, SWAPS, textOf } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { raiseField } from '../../rules/verbs';
@@ -73,7 +73,7 @@ function roundOf(foe: Partial<CombatantSetup> = {}, range: Round['range'] = 'clo
     enemies: [setup('foe', { techniques: [], ...foe })],
     canFlee: true,
   });
-  return { number: 1, fighters, range, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range, story: [], seen: {}, intents: {} };
 }
 
 function stateOf(round: Round): PlanState {
@@ -86,7 +86,7 @@ function stateOf(round: Round): PlanState {
     range: round.range,
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: true,
     ...(round.field ? { field: round.field } : {}),
@@ -122,7 +122,7 @@ describe('plan & watch verbs: field', () => {
       fog,
     );
     expect(after.field).toMatchObject({ id: 'mist', side: 'player' });
-    expect(after.lines).toContain('A thick mist rolls across the field.');
+    expect(textOf(after.story)).toContain('A thick mist rolls across the field.');
     const view = createPlanEngine().view(encode(stateOf(after)));
     expect(view.meters).toContainEqual({ id: 'field', label: 'Your mist', value: 4, max: 4 });
     expect(view.combatants.find((c) => c.id === 'foe')?.statuses).toContain('Blinded');
@@ -161,13 +161,13 @@ describe('plan & watch verbs: field', () => {
       for (let i = 0; i < 4 && !state.result; i++) state = resolveExchange(state, rng);
       return state;
     });
-    const lines = fought.flatMap((s) => s.log);
+    const lines = fought.flatMap((s) => textOf(s.story));
     expect(
       lines.filter((l) => l.startsWith('Foe strikes at a shape in the mist')).length,
     ).toBeGreaterThan(0);
     expect(lines.some((l) => l.startsWith('Hero strikes at a shape'))).toBe(false);
     for (const state of fought) {
-      expect(state.log).toContain('The mist thins and lifts.');
+      expect(textOf(state.story)).toContain('The mist thins and lifts.');
       expect(state.field).toBeUndefined();
     }
   });
@@ -177,7 +177,7 @@ describe('plan & watch verbs: field', () => {
     let state = stateOf(withCards(roundOf(), 'hero', cards));
     const rng = createRng(2);
     for (let i = 0; i < 3 && !state.result; i++) state = resolveExchange(state, rng);
-    expect(state.log.filter((l) => castsLine(l, 'hero', 'fog'))).toHaveLength(1);
+    expect(linesOf(state.story).filter((l) => castsLine(l, 'hero', 'fog'))).toHaveLength(1);
   });
 
   it('can be in place when the fight opens', () => {
@@ -193,7 +193,7 @@ describe('plan & watch verbs: field', () => {
       createRng(1),
     );
     const view = engine.view(state);
-    expect(view.log).toContain('A thick mist rolls across the field.');
+    expect(textOf(view.story)).toContain('A thick mist rolls across the field.');
     expect(view.meters?.[0]?.label).toBe('Their mist');
     expect(view.combatants.find((c) => c.id === 'hero')?.statuses).toContain('Blinded');
   });
@@ -255,7 +255,7 @@ describe('plan & watch verbs: substitute', () => {
     const first = hit(round);
     expect(hero(first).health).toBe(100);
     expect(hero(first).chakra).toBeLessThan(60);
-    expect(first.lines.some((l) => SWAPS.test(l))).toBe(true);
+    expect(linesOf(first.story).some((l) => SWAPS.test(l))).toBe(true);
     const second = hit({ ...first, number: 2 });
     expect(hero(second).health).toBeLessThan(100);
     const nextRound = { ...second, fighters: substitutionsReady(second.fighters) };

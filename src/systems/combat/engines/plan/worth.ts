@@ -38,7 +38,7 @@ const COST_WEIGHT = 0.5;
 
 /** The fight as a reckoning sees it: who is where, nothing more. */
 function sketch(fighters: readonly PlanFighter[], band: RangeBand): Round {
-  return { number: 1, fighters: [...fighters], range: band, lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters: [...fighters], range: band, story: [], seen: {}, intents: {} };
 }
 
 /** Whether an effect takes health. */

@@ -56,7 +56,7 @@ function roundOf(): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const use = { technique: shadowClone, effect: shadowClone.effects[0]! } as const;
@@ -85,14 +85,34 @@ describe('shadow clones', () => {
   it('pop at the first hit that lands, and leave the field as the exchange ends', () => {
     const round = cast(roundOf());
     const [clone] = shadowsOf(round, 'hero');
-    const hit = wound(round, clone!.id, 1);
+    const hit = wound(round, { who: clone!.id, damage: 1 });
     expect(shadowsOf(hit, 'hero')).toHaveLength(1);
     expect(shadowsAfter(hit).fighters.some((f) => f.id === clone!.id)).toBe(false);
   });
 
   it('go with their maker when the maker falls', () => {
     const round = cast(roundOf());
-    expect(shadowsOf(wound(round, 'hero', 999), 'hero')).toHaveLength(0);
+    expect(shadowsOf(wound(round, { who: 'hero', damage: 999 }), 'hero')).toHaveLength(0);
+  });
+
+  it('are numbered past every clone still standing, so none shares an id', () => {
+    const round = cast(roundOf());
+    const [first] = shadowsOf(round, 'hero');
+    // The first pops and leaves; the next clones must not take the id of the one still up.
+    const left = shadowsAfter(wound(round, { who: first!.id, damage: 1 }));
+    const again = cast(left);
+    const ids = again.fighters.map((f) => f.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('never take the id of a clone that has left the field', () => {
+    const gone = ['hero~shadow~1', 'hero~shadow~2'].map((id) => ({
+      id,
+      name: id,
+      side: 'player' as const,
+    }));
+    const again = cast({ ...roundOf(), cast: gone });
+    expect(shadowsOf(again, 'hero').map((c) => c.id)).toEqual(['hero~shadow~3', 'hero~shadow~4']);
   });
 
   it('never stand more than a few at once', () => {

@@ -82,7 +82,7 @@ export function spunAway(round: Round, touch: Swap): Round | null {
   if (target.chakra < cost) return null;
   const turned = { ...round, fighters: patch(round.fighters, target.id, paying(target, cost)) };
   const line = tell(SPUN, { t: target, a: touch.attacker, what: touch.what });
-  return say(turned, reactionLine(line, 'swapped'));
+  return say(turned, reactionLine(line, { by: target.id, on: touch.attacker.id }, 'swapped'));
 }
 
 /** A substitution among the defences ready to react. */
@@ -132,7 +132,8 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): S
   if (spinning) {
     const turned = { ...round, fighters: patch(round.fighters, target.id, paying(target, cost)) };
     const line = tell(SPUN, { t: target, a: attacker, what: swap.what });
-    return { round: say(turned, reactionLine(line, 'swapped')), escaped: true };
+    const spun = reactionLine(line, { by: target.id, on: attacker.id }, 'swapped');
+    return { round: say(turned, spun), escaped: true };
   }
   const wall = matchup(card.technique.element, swap.element);
   const fighters = patch(round.fighters, target.id, {
@@ -157,5 +158,6 @@ export function substituted(round: Round, ready: readonly Card[], swap: Swap): S
   });
   const line = told ?? swapLine(moment, walled);
   if (wall === 'weak') return { round: say(paid, line), escaped: false };
-  return { round: say(paid, reactionLine(line, 'swapped')), escaped: true };
+  const swapped = reactionLine(line, { by: target.id, on: attacker.id }, 'swapped');
+  return { round: say(paid, swapped), escaped: true };
 }

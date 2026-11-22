@@ -1,6 +1,7 @@
 import { healLine } from '../../rules/narration';
 import { SECOND_WIND_HEAL, secondWindDue } from '../../rules/provisions';
 import { patch, say, type Round } from './state';
+import { setHealth } from './health';
 import { tell } from '../../rules/telling';
 
 /**
@@ -12,11 +13,9 @@ export function secondWinds(round: Round): Round {
   return round.fighters.reduce((now, f) => {
     if (!secondWindDue(f, f.secondWindSpent ?? false)) return now;
     const healed = Math.min(SECOND_WIND_HEAL, f.maxHealth - f.health);
-    const fighters = patch(now.fighters, f.id, {
-      health: f.health + healed,
-      secondWindSpent: true,
-    });
+    const mended = setHealth(now, f.id, f.health + healed, { cause: 'heal' });
+    const fighters = patch(mended.fighters, f.id, { secondWindSpent: true });
     const line = healLine(tell('{a} find{a.s} a second wind.', { a: f }), healed);
-    return say({ ...now, fighters }, line);
+    return say({ ...mended, fighters }, line);
   }, round);
 }

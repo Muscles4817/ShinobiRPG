@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatSetup, CombatState, CombatTechnique } from '../../contract';
@@ -62,8 +63,8 @@ function act(state: CombatState, optionId: string, seed = 3): CombatState {
 describe('a fight only watched', () => {
   it('opens on the fight itself, with nothing to plan and no way to flee', () => {
     const view = engine.view(engine.start(WATCHED, createRng(1)));
-    expect(view.log[0]).toBe('hero against rival.');
-    expect(view.log.at(-1)).toBe('— The fight begins —');
+    expect(textOf(view.story)[0]).toBe('hero against rival.');
+    expect(textOf(view.story).at(-1)).toBe('— The fight begins —');
     expect(view.options.map((o) => o.id)).toEqual(['next', 'round', 'finish']);
     expect(view.options.every((o) => o.kind === 'continue')).toBe(true);
     expect(view.watched).toBe(true);
@@ -75,7 +76,7 @@ describe('a fight only watched', () => {
     expect(plan.result ?? plan.phase).not.toBe('loadout');
     if (!plan.result) {
       expect(plan.bout).toBe(2);
-      expect(plan.log.at(-1)).toBe('— The next round begins —');
+      expect(textOf(plan.story).at(-1)).toBe('— The next round begins —');
       expect(engine.view(after).options.map((o) => o.id)).toEqual(['next', 'round', 'finish']);
     }
   });

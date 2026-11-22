@@ -1,4 +1,4 @@
-import type { CombatInspection, CombatState, CombatView } from '@/systems/combat';
+import type { CombatEvent, CombatInspection, CombatState, CombatView } from '@/systems/combat';
 
 import { combatFinaleView } from '../combatFinale';
 import type { GameContext } from '../context';
@@ -10,7 +10,7 @@ import type { FightRecord } from './state';
  * Keeping the fight record as a fight is fought (`noteFight`, called by `dispatch` after every
  * action). A record opens at the first fight state it sees, before or after the action, since
  * versus starts its bout outside `dispatch`; each step adds the lines the engine wrote since
- * (read by their place in the whole story, `logOffset`) and everyone as they stand; and the fight
+ * (read by their place in the whole story, `storyOffset`) and everyone as they stand; and the fight
  * laid open at its end is handed over by the act that ended it (`fightEnd`), since its state is
  * gone once the result is settled.
  */
@@ -27,12 +27,13 @@ function inspectionOf(
   return engineFor({ ...state, combat }, ctx).inspect?.(combat) ?? null;
 }
 
-/** The lines of a view the record hasn't got yet, with a note where some went unseen. */
-function newLines(record: FightRecord, view: CombatView): readonly string[] {
-  const offset = view.logOffset ?? 0;
-  const have = record.lines.length;
-  if (have >= offset) return view.log.slice(have - offset);
-  return [`[${offset - have} lines went by unrecorded]`, ...view.log];
+/** The events of a view the record hasn't got yet, with a note where some went unseen. */
+function newEvents(record: FightRecord, view: CombatView): readonly CombatEvent[] {
+  const offset = view.storyOffset ?? 0;
+  const have = record.story.length;
+  if (have >= offset) return view.story.slice(have - offset);
+  const gap: CombatEvent = { kind: 'told', text: `[${offset - have} events went by unrecorded]` };
+  return [gap, ...view.story];
 }
 
 function stepped(record: FightRecord, view: CombatView, choice: string | null): FightRecord {
@@ -45,7 +46,7 @@ function stepped(record: FightRecord, view: CombatView, choice: string | null): 
   };
   return {
     ...record,
-    lines: [...record.lines, ...newLines(record, view)],
+    story: [...record.story, ...newEvents(record, view)],
     steps: [...record.steps, step],
   };
 }
@@ -57,7 +58,7 @@ function opened(state: GameState, combat: CombatState, ctx: GameContext): FightR
     began: state.time,
     start: inspectionOf(state, combat, ctx),
     end: null,
-    lines: [],
+    story: [],
     steps: [],
     result: null,
   };

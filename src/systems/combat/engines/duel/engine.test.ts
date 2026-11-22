@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatEngine, CombatState } from '../../contract';
@@ -133,7 +134,7 @@ describe('duel engine', () => {
     expect(engine.view(state).combatants.map((c) => c.side)).toEqual(['player', 'player', 'enemy']);
     const end = fightUntilOver(engine, state, 'guard');
     expect(engine.outcome(end)?.result).toBe('victory');
-    expect(engine.view(end).log.some((l) => l.startsWith('ally '))).toBe(true);
+    expect(textOf(engine.view(end).story).some((l) => l.startsWith('ally '))).toBe(true);
   });
 
   it('names a group of enemies as a list', () => {
@@ -146,7 +147,7 @@ describe('duel engine', () => {
       },
       createRng(1),
     );
-    expect(engine.view(state).log[0]).toBe('A, B and C stand against you!');
+    expect(textOf(engine.view(state).story)[0]).toBe('A, B and C stand against you!');
   });
 
   it('enemies spread their attacks across your team', () => {

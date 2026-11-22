@@ -1,6 +1,16 @@
 import { createRng } from '@/core';
 
-import { A_HIT, SEES_IT_COMING, SMASHED, castsLine, hitsOn } from '@/test/fightLines';
+import {
+  A_HIT,
+  castsLine,
+  hitsOn,
+  linesOf,
+  SEES_IT_COMING,
+  SMASHED,
+  type Wanted,
+  matches,
+  wantedName,
+} from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique, CombatTrait } from '../../contract';
 import { createPlanEngine } from './engine';
@@ -77,18 +87,18 @@ function roundOf({ hero = {}, foes = [{}], foeCards = NO_CARDS }: Cast = {}): Ro
     enemies: foes.map((f, i) => setup(`foe${i + 1}`, { techniques: [], ...f })),
     canFlee: true,
   }).map((f) => (f.isPlayer ? f : { ...f, loadout: foeCards }));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 /** Uses a technique with each seed in turn until the narration matches. */
-function useUntil(round: Round, t: CombatTechnique, wanted: RegExp, target = 'foe1'): Round {
+function useUntil(round: Round, t: CombatTechnique, wanted: Wanted, target = 'foe1'): Round {
   const actor = fighterIn(round, 'hero')!;
   for (let seed = 1; seed < 300; seed++) {
     const turn = { actor, target: fighterIn(round, target), rng: createRng(seed) };
     const after = useJutsu(round, turn, t);
-    if (after.lines.some((l) => wanted.test(l))) return after;
+    if (linesOf(after.story).some((l) => matches(l, wanted))) return after;
   }
-  throw new Error(`no seed narrates ${wanted.source}`);
+  throw new Error(`no seed narrates ${wantedName(wanted)}`);
 }
 
 const health = (round: Round, id: string) => fighterIn(round, id)?.health ?? 0;
@@ -101,8 +111,12 @@ describe('plan & watch verbs: area', () => {
     const round = roundOf({ foes });
     expect(fighterIn(round, 'foe3')?.hidden).toBe(true);
     const after = useUntil(round, sweep, hitsOn('foe3', 'sweep'));
-    const hitLines = after.lines.filter((l) => l.startsWith('Hero’s sweep ') && A_HIT.test(l));
-    expect(hitLines.length + after.lines.filter((l) => SEES_IT_COMING.test(l)).length).toBe(3);
+    const hitLines = linesOf(after.story).filter(
+      (l) => l.text.startsWith('Hero’s sweep ') && A_HIT.test(l),
+    );
+    expect(
+      hitLines.length + linesOf(after.story).filter((l) => SEES_IT_COMING.test(l)).length,
+    ).toBe(3);
     expect(health(after, 'foe3')).toBeLessThan(80);
   });
 
@@ -115,7 +129,7 @@ describe('plan & watch verbs: area', () => {
     const fighters = [hero, fighterIn(round, 'foe1')!];
     const state = stateOf({ ...round, range: 'mid', fighters });
     const after = resolveExchange(state, createRng(2));
-    expect(after.log.some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
+    expect(linesOf(after.story).some((l) => castsLine(l, 'hero', 'sweep'))).toBe(true);
   });
 });
 
@@ -223,7 +237,7 @@ function stateOf(round: Round): PlanState {
     range: round.range,
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: true,
   };

@@ -1,7 +1,7 @@
+import { linesOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
-import { splitNarration } from '../../rules/narration';
 import { cloneStepBonus, drawFireChance, type Clones } from '../../rules/verbs';
 import { drawnByClones } from './screening';
 import { initialFighters, type PlanFighter, type Round } from './state';
@@ -65,7 +65,7 @@ function round(): Round {
     enemies: [setup('holder')],
     canFlee: true,
   }).map((f): PlanFighter => (f.id === 'friend' ? { ...f, clones: clones(3) } : f));
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 function screen(technique: CombatTechnique): Round[] {
@@ -82,9 +82,9 @@ describe('clones screening a charge', () => {
     const drawn = screen(bolt);
     expect(drawn.length).toBeGreaterThan(0);
     expect(drawn.length).toBeLessThan(40);
-    const line = splitNarration(drawn[0]!.lines.at(-1)!);
+    const line = linesOf(drawn[0]!.story).at(-1)!;
     expect(line.text).toMatch(/Bolt tears into friend’s clones, and runner is through/);
-    expect(line.actorId).toBe('holder');
+    expect(line.actor).toBe('holder');
   });
 
   it('a single shot bursts one clone; an area bursts them all', () => {

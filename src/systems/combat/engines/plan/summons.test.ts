@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueDef } from '@/systems/techniques';
 
@@ -75,7 +76,7 @@ function round(chakra = 60): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const who = (r: Round, id: string) => r.fighters.find((f) => f.id === id);
@@ -88,7 +89,10 @@ describe('summons', () => {
     const called = callSummon(round(), caller(round()), 'toad');
     expect(toad(called)).toMatchObject({ name: 'A great toad', side: 'player', row: 'front' });
     expect(caller(called).health).toBe(90);
-    expect(called.lines.join(' ')).toMatch(/answers the call/);
+    expect(called.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', to: 90, cause: 'price' }),
+    );
+    expect(textOf(called.story).join(' ')).toMatch(/answers the call/);
   });
 
   it('can’t be called twice while it is out, or by someone who holds no such call', () => {
@@ -149,12 +153,12 @@ describe('summons', () => {
     const unsealed = callSummon(withPuppet, caller(withPuppet), 'crow');
     expect(toad(unsealed)).toMatchObject({ row: 'front', puppet: true });
     expect(caller(unsealed)).toMatchObject({ row: 'back', health: 100 });
-    expect(unsealed.lines.join(' ')).toMatch(/unfolds out of it/);
+    expect(textOf(unsealed.story).join(' ')).toMatch(/unfolds out of it/);
     const broken = {
       ...unsealed,
       fighters: unsealed.fighters.map((f): PlanFighter => (f.summoner ? { ...f, health: 0 } : f)),
     };
-    expect(summonsAfter(broken).lines.join(' ')).toMatch(/clatters apart/);
+    expect(textOf(summonsAfter(broken).story).join(' ')).toMatch(/clatters apart/);
   });
 
   it('is called by a default plan, fights, and is reported in the outcome', () => {

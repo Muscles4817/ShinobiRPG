@@ -1,4 +1,4 @@
-import { splitNarration } from '../../rules/narration';
+import { told, linesOf } from '@/test/fightLines';
 import type { CombatantSetup } from '../../contract';
 import { combatantView } from './combatantView';
 import { pairKey } from './distance';
@@ -44,7 +44,7 @@ const plan: PlanState = {
   distances,
   seen: {},
   intents: {},
-  log: [],
+  story: [],
   result: null,
   canFlee: true,
 };
@@ -70,14 +70,14 @@ describe('each fighter’s distance on the screen', () => {
       fighters,
       range: 'mid',
       distances,
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     };
     const at = (aimedAt: string) =>
-      splitNarration(
-        staged(before, { ...before, lines: ['The hero throws.'], aimedAt }, 'hero').lines[0]!,
-      ).range;
+      linesOf(
+        staged(before, { ...before, story: [told('The hero throws.')], aimedAt }, 'hero').story,
+      )[0]!.range;
     expect(at('caster')).toBe('mid');
     expect(at('sword')).toBe('close');
     // Helping a teammate is told from the foe they face.

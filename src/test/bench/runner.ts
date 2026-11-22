@@ -11,6 +11,7 @@ import {
 
 import { toSetup, type FighterSpec } from './fighters';
 import { benchMinds } from './minds';
+import { checkStory } from './storyCheck';
 
 /**
  * Runs bench fights headless through the Plan & Watch engine, only via the `CombatEngine`
@@ -54,6 +55,8 @@ export interface BenchReport {
 function step(engine: CombatEngine, state: CombatState, optionId: string, rng: Rng) {
   const next = engine.act(state, { optionId }, rng);
   if (!next.ok) throw new Error(`Bench option ${optionId} refused: ${next.error}`);
+  // Every bench fight holds its story to the fight as it goes (`storyCheck.ts`).
+  checkStory(next.value, state);
   return next.value;
 }
 

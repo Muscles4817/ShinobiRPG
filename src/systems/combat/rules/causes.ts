@@ -1,44 +1,25 @@
 /**
- * Why something didn't happen, carried on the line that tells it (audit P1.1): why an attack
- * was slipped, why a hold didn't take, why a step failed. The engine works the reason out from
- * the same things its roll used and tags the line; the screen shows it as a stamp, in words,
- * never odds. A line carries at most one cause.
+ * Why something didn't happen, written on the line that tells it (audit P1.1): why an attack was
+ * slipped, why a hold didn't take, why a step failed, and whom it is about (the `subject`: whose
+ * attack, hold or step). The engine says it from the roll that decided it; the screen shows it as
+ * a stamp, in words, never odds. A line carries at most one cause. Part of the narration module
+ * (`narration.ts`): only it reads what a line carries.
  */
 
-export const NARRATION_CAUSES = [
-  // A teleport: a change of distance that took no turn.
-  'teleport',
-  // An attack slipped.
-  'saw-through',
-  'foresaw',
-  'evading',
-  'dodge-ready',
-  'familiar',
-  'wild',
-  'quicker',
-  'read-it',
-  'slipped',
-  // A hold, daze, seal or drain that reached but didn't take.
-  'braced',
-  'resisted',
-  // A step that failed.
-  'held',
-  'no-room',
-  'outpaced',
-  'cut-off',
-  'kept-pace',
-  'held-off',
-  // A hold-off with time for a second shot: the long way in from far.
-  // A technique that came apart before it was cast.
-  'crowded',
-] as const;
-export type NarrationCause = (typeof NARRATION_CAUSES)[number];
+import {
+  CAUSE_KIND,
+  NARRATION_CAUSES,
+  type NarrationCause,
+  type ToldCause,
+} from '../storyContract';
 
-export const CAUSE_MARKER = /\s*⟦c:([a-z-]+)⟧/;
+export { CAUSE_KIND, NARRATION_CAUSES, type NarrationCause } from '../storyContract';
 
-/** A line, with why it went as it did. */
-export function causeLine(text: string, cause: NarrationCause): string {
-  return `${text} ⟦c:${cause}⟧`;
+const CAUSE_MARKER = /\s*⟦c:([a-z-]+)(?:\|([^⟧]*))?⟧/;
+
+/** A line, with why it went as it did and for whom. */
+export function causeLine(text: string, cause: NarrationCause, subject: string): string {
+  return `${text} ⟦c:${cause}|${subject}⟧`;
 }
 
 function isCause(word: string | undefined): word is NarrationCause {
@@ -46,7 +27,10 @@ function isCause(word: string | undefined): word is NarrationCause {
 }
 
 /** The cause a line carries, if any. */
-export function causeIn(line: string): { readonly cause?: NarrationCause } {
-  const cause = CAUSE_MARKER.exec(line)?.[1];
-  return isCause(cause) ? { cause } : {};
+export function causeIn(line: string): { readonly cause?: ToldCause } {
+  const found = CAUSE_MARKER.exec(line);
+  const cause = found?.[1];
+  if (!isCause(cause)) return {};
+  const subject = found?.[2];
+  return { cause: { cause, kind: CAUSE_KIND[cause], ...(subject ? { subject } : {}) } };
 }

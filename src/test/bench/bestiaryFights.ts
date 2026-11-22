@@ -9,6 +9,7 @@ import { ARCHETYPE_IDS, archetype } from './archetypes';
 import { toSetup, type Scale } from './fighters';
 import { STALEMATE_EXCHANGES } from './runner';
 import { benchMinds } from './minds';
+import { checkStory } from './storyCheck';
 
 /**
  * Bestiary fights: a foe and its retinue against every bench archetype at a scale, for the
@@ -68,6 +69,7 @@ export function beatenAt(def: EnemyDef, scale: Scale, seeds: number): number {
         const begin = engine.view(state).options.some((o) => o.id === 'begin');
         const next = engine.act(state, { optionId: begin ? 'begin' : 'next' }, rng);
         if (!next.ok) throw new Error(next.error);
+        checkStory(next.value, state);
         state = next.value;
         if (!begin) n += 1;
       }

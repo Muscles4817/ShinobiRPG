@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 import type { TechniqueDef } from '@/systems/techniques';
 
@@ -101,7 +102,7 @@ function round(): Round {
     enemies: [setup('foe', { techniques: [BOLT] })],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const keeper = (r: Round) => r.fighters.find((f) => f.id === 'keeper')!;
@@ -123,13 +124,13 @@ describe('the kiln calm', () => {
     expect(keeper(second).meditating).toMatchObject({ techniqueId: 'kiln-calm' });
     const open = meditationEnds(second, 'keeper');
     expect(keeper(open).empowered?.opened).toEqual({ ladder: 'kiln', step: 1 });
-    expect(open.lines.join(' ')).toMatch(/glows like the mouth of a kiln/);
+    expect(textOf(open.story).join(' ')).toMatch(/glows like the mouth of a kiln/);
   });
 
   it('runs out after a few exchanges, with nothing perched to keep it', () => {
     const open = meditationEnds(sitStill(step(round())), 'keeper');
     const faded = afterEmpowers(open, 8);
     expect(keeper(faded).empowered).toBeUndefined();
-    expect(faded.lines.join(' ')).toMatch(/kiln calm cools/);
+    expect(textOf(faded.story).join(' ')).toMatch(/kiln calm cools/);
   });
 });

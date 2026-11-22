@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { maxBreath } from '../../rules/breath';
 import { canOpen, openStep } from '../../rules/verbs';
@@ -75,7 +76,7 @@ function round(): Round {
     enemies: [setup('foe')],
     canFlee: true,
   });
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 const use = (t: CombatTechnique) => ({ technique: t, effect: t.effects[0] as never });
@@ -93,7 +94,7 @@ describe('the gates', () => {
     expect(prepStatuses(guy(third))).toContain('Third gate open');
     const seventh = empowerSelf(third, guy(third), use(wonder));
     expect(openStep(guy(seventh), 'gates')).toBe(7);
-    expect(seventh.lines.at(-1)).toMatch(/forces open the seventh gate/);
+    expect(textOf(seventh.story).at(-1)).toMatch(/forces open the seventh gate/);
   });
 
   it('keeps a gate art shut until its gate is open', () => {
@@ -124,7 +125,7 @@ describe('the gates', () => {
     expect(guy(after).stunned).toBeGreaterThan(0);
     expect(guy(after).attributes.stamina).toBeLessThan(attributes.stamina);
     expect(guy(after).attributes.speed).toBe(attributes.speed);
-    expect(after.lines.join(' ')).toMatch(/gates slam shut/);
+    expect(textOf(after.story).join(' ')).toMatch(/gates slam shut/);
     expect(canOpen(guy(after), life)).toBe(false);
   });
 
@@ -134,8 +135,12 @@ describe('the gates', () => {
     const seventh = empowerSelf(third, guy(third), use(wonder));
     const after = afterEmpowers(withGuy(seventh, { health: 25 }), 2);
     expect(guy(after).health).toBe(0);
+    expect(after.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', to: 0, cause: 'price' }),
+    );
+    expect(after.story).toContainEqual(expect.objectContaining({ kind: 'fall' }));
     expect(guy(after).fellAt).toBe(after.number);
-    expect(after.lines.join(' ')).toMatch(/body gives out under/);
+    expect(textOf(after.story).join(' ')).toMatch(/body gives out under/);
   });
 
   it('a fighter the game plays slots no openings: the kit climbs a band at a time', () => {

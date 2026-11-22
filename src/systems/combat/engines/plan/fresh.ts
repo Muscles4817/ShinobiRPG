@@ -1,6 +1,8 @@
 import { freshIndex, hashString } from '@/core';
 
-import { namedOf, voiceLine, voicesOf } from '../../rules/narration';
+import { voiceLine } from '../../rules/narration';
+import type { ToldEvent } from '../../storyContract';
+import { toldIn } from '../../storyFold';
 import { tell, type Cast, type Told } from '../../rules/telling';
 import { sceneTags, type SceneTag } from './scene';
 import type { Round } from './state';
@@ -33,17 +35,18 @@ const SCENE_PICKS = 3;
 /** A moment in the log: where the pick hashes from, the lines just said, and where it is. */
 export interface Moment {
   readonly key: string;
-  readonly recent: readonly string[];
+  readonly recent: readonly ToldEvent[];
   readonly tags?: readonly SceneTag[];
   /** The longer memory for scene lines (`SCENE_MEMORY`); the recent lines when absent. */
-  readonly earlier?: readonly string[];
+  readonly earlier?: readonly ToldEvent[];
 }
 
 /** A moment in the log, the same each time for this place in this fight. */
 export function momentOf(round: Round, who: string): Moment {
-  const said = [...(round.recent ?? []), ...round.lines].slice(-SCENE_MEMORY);
+  const lines = toldIn(round.story);
+  const said = [...(round.recent ?? []), ...lines].slice(-SCENE_MEMORY);
   return {
-    key: `${round.number}:${round.lines.length}:${who}`,
+    key: `${round.number}:${lines.length}:${who}`,
     recent: said.slice(-RECENT_LINES),
     tags: sceneTags(round, who),
     earlier: said,
@@ -94,14 +97,18 @@ function repeated(moment: Moment, bank: Bank, cast: Cast): boolean {
   // Once told as a repeat (or in a scene's words), it is the same beat.
   const ids = [`${bank.id}.`, `${bank.id}-`];
   return moment.recent.some((line) => {
-    const from = voicesOf(line).some((v) => ids.some((id) => v.startsWith(id)));
-    return from && namedOf(line)[0] === who.id && (what === null || line.includes(what));
+    const from = (line.voices ?? []).some((v) => ids.some((id) => v.startsWith(id)));
+    return from && line.named?.[0] === who.id && (what === null || line.text.includes(what));
   });
 }
 
 /** The templates named in the moment's recent lines ("search.2"), oldest first. */
 function recentVoices(moment: Moment): string[] {
   return moment.recent.flatMap(voicesOf);
+}
+
+function voicesOf(line: ToldEvent): readonly string[] {
+  return line.voices ?? [];
 }
 
 /** Templates of this bank among those voices, by index, oldest first. */

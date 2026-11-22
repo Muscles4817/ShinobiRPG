@@ -49,7 +49,8 @@ export function whoIsThrown(
   const thrown = caught.filter((f) => {
     if (!turn.rng.chance(holdChance(turn.actor, f, t))) return true;
     const cause = committedTo(f, 'brace') ? 'braced' : 'resisted';
-    told = say(told, causeLine(tell('{t} keep{t.s} {t.their} feet.', { t: f }), cause));
+    const kept = causeLine(tell('{t} keep{t.s} {t.their} feet.', { t: f }), cause, turn.actor.id);
+    told = say(told, kept);
     return false;
   });
   return { round: told, thrown };

@@ -1,6 +1,7 @@
-import type { CombatView, NarrationCause, NarrationReaction } from '@/systems/combat';
+import type { CauseKind, CombatView, NarrationCause, NarrationReaction } from '@/systems/combat';
 
-import { lastRound, read, type Line } from './roundWhy';
+import { lastRound, type RoundRead } from './roundEvents';
+import { causesFor, reactionsIn, yourAttacksMet } from './roundWhy';
 
 /**
  * One thing to try next round (audit P1.3), or nothing: drawn only from what the engine's own
@@ -11,39 +12,44 @@ import { lastRound, read, type Line } from './roundWhy';
  * the plan engine's `adapt.ts`): a guard-breaker or a flurry on a Guard, an illusion or a sure
  * technique on a Dodge, an illusion on a substitution. A suggestion that might be wrong is worse
  * than none, so it takes the same thing happening twice (once for a Counter, which hurts).
+ * Whose defence met whose attack, and whom a cause is about, are the events' own fields.
  */
 
 /** How often something must happen in a round before it is worth a word. */
 export const ADVICE_AFTER = 2;
 
+/** Failed steps that say the step itself is the problem: outrun, cut off, held off, walled in. */
+const STOPPED_STEPS: readonly NarrationCause[] = ['outpaced', 'cut-off', 'held-off', 'no-room'];
+
 interface Rule {
-  readonly when: (lines: readonly Line[], you: string) => boolean;
+  readonly when: (round: RoundRead, you: string) => boolean;
   readonly advice: string;
 }
 
-const yours = (lines: readonly Line[], you: string) => lines.filter((l) => l.said.actorId === you);
-
-/** Your attacks met this defence of theirs this many times. */
+/** Your attacks met this defence of a foe's this many times. */
 function met(reaction: NarrationReaction, times = ADVICE_AFTER) {
-  return (lines: readonly Line[], you: string) =>
-    yours(lines, you).filter((l) => l.target !== you && l.said.reactions.includes(reaction))
-      .length >= times;
+  return (round: RoundRead, you: string) =>
+    yourAttacksMet(round, you).filter((r) => r.reaction === reaction).length >= times;
 }
 
-/** Your lines carried one of these causes this many times. */
-function caused(causes: readonly NarrationCause[]) {
-  return (lines: readonly Line[], you: string) =>
-    yours(lines, you).filter((l) => l.said.cause !== undefined && causes.includes(l.said.cause))
-      .length >= ADVICE_AFTER;
+/** Causes of this kind (or only these causes of it) were about you this many times. */
+function caused(kind: CauseKind, only?: readonly NarrationCause[]) {
+  return (round: RoundRead, you: string) => {
+    const causes = causesFor(round, you).get(kind) ?? [];
+    return causes.filter((c) => !only || only.includes(c)).length >= ADVICE_AFTER;
+  };
 }
 
-/** A Counter's answer is told on the line as the counterer's: count the answers that hit you. */
-function countered(lines: readonly Line[], you: string): boolean {
-  return lines.some((l) => l.target === you && l.said.reactions.includes('countered'));
+/** A foe's Counter answered an attack of yours. */
+function countered(round: RoundRead, you: string): boolean {
+  return reactionsIn(round.told).some(
+    (r) => r.reaction === 'countered' && r.on === you && r.by !== you,
+  );
 }
 
-function offPlan(lines: readonly Line[], you: string): boolean {
-  return yours(lines, you).filter((l) => l.said.offPlan === 'improvised').length >= ADVICE_AFTER;
+function offPlan(round: RoundRead, you: string): boolean {
+  const improvised = round.told.filter((t) => t.actor === you && t.offPlan === 'improvised');
+  return improvised.length >= ADVICE_AFTER;
 }
 
 const RULES: readonly Rule[] = [
@@ -56,11 +62,12 @@ const RULES: readonly Rule[] = [
     advice: 'Nothing you slotted fit here. Slot a card that works from this distance.',
   },
   {
-    when: caused(['outpaced', 'cut-off', 'held-off']),
+    // Steps the foes stopped or the ground did; held fast or followed, a step isn't the problem.
+    when: caused('step-failed', STOPPED_STEPS),
     advice: 'Your steps keep failing. Fight from where you stand, or slot what reaches from here.',
   },
   {
-    when: caused(['familiar']),
+    when: caused('slipped', ['familiar']),
     advice: 'They have read a move you keep using. Change it up.',
   },
   {
@@ -80,7 +87,7 @@ const RULES: readonly Rule[] = [
 /** The one suggestion for the round just played, or null. */
 export function roundAdvice(view: CombatView): string | null {
   const you = view.combatants.find((c) => c.side === 'player');
-  if (!you) return null;
-  const lines = lastRound(view.log).map((said) => read(said, view.combatants));
-  return RULES.find((rule) => rule.when(lines, you.id))?.advice ?? null;
+  const round = lastRound(view.story);
+  if (!you || !round) return null;
+  return RULES.find((rule) => rule.when(round, you.id))?.advice ?? null;
 }

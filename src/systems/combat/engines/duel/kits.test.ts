@@ -1,3 +1,4 @@
+import { linesOf, textOf } from '@/test/fightLines';
 import { createRng } from '@/core';
 
 import type {
@@ -93,9 +94,11 @@ describe('duel engine: combat kits', () => {
 
   it('an unaimed blow with nobody in reach closes in instead', () => {
     const next = act(duel(fighter('hero'), archer()), { optionId: 'strike' });
-    expect(engine.view(next).log.some((l) => /hero (closes in|tries to close in)/.test(l))).toBe(
-      true,
-    );
+    expect(
+      linesOf(engine.view(next).story).some((l) =>
+        /hero (closes in|tries to close in)/.test(l.text),
+      ),
+    ).toBe(true);
     expect(combatant(next, 'archer').health).toBe(50);
   });
 
@@ -113,9 +116,11 @@ describe('duel engine: combat kits', () => {
     const engaged = edit(duel(fighter('hero'), archer()), (f) => ({ ...f, distant: false }));
     const next = act(engaged, { optionId: 'guard' });
     expect(combatant(next, 'hero').health).toBe(50);
-    expect(engine.view(next).log.some((l) => /archer (darts back|tries to back off)/.test(l))).toBe(
-      true,
-    );
+    expect(
+      linesOf(engine.view(next).story).some((l) =>
+        /archer (darts back|tries to back off)/.test(l.text),
+      ),
+    ).toBe(true);
   });
 
   it('a brawler standing back closes in rather than attacking', () => {
@@ -125,9 +130,11 @@ describe('duel engine: combat kits', () => {
     );
     const next = act(apart, { optionId: 'guard' });
     expect(combatant(next, 'hero').health).toBe(50);
-    expect(engine.view(next).log.some((l) => /brawler (closes in|tries to close in)/.test(l))).toBe(
-      true,
-    );
+    expect(
+      linesOf(engine.view(next).story).some((l) =>
+        /brawler (closes in|tries to close in)/.test(l.text),
+      ),
+    ).toBe(true);
   });
 
   it('armour blunts blows but not jutsu', () => {
@@ -185,7 +192,7 @@ describe('duel engine: combat kits', () => {
       state = act(state, { optionId: 'strike' }, i + 1);
     }
     expect(engine.outcome(state)?.result).toBe('victory');
-    expect(engine.view(state).log).toContain('coward flees!');
+    expect(textOf(engine.view(state).story)).toContain('coward flees!');
   });
 
   it('reads a fight saved before combat kits and tools existed', () => {

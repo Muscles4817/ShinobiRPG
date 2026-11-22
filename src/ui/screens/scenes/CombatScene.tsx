@@ -72,7 +72,8 @@ function FightScreen({ ctx, state, perform, view }: ScreenProps & { readonly vie
   const [chosen, setChosen] = useState<string | null>(null);
   const pulses = useHealthPulses(view.combatants);
   // Lines keep their place in the whole log as their key, so only new ones mount (and rise in).
-  const firstShown = Math.max(0, view.log.length - SHOWN_LINES);
+  const told = combatLog(view.story);
+  const firstShown = Math.max(0, told.length - SHOWN_LINES);
   const enemies = view.combatants.filter((c) => c.side === 'enemy');
   const living = enemies.filter((e) => e.health > 0 && e.targetable !== false);
   const targetId = living.find((e) => e.id === chosen)?.id ?? living[0]?.id ?? null;
@@ -103,7 +104,7 @@ function FightScreen({ ctx, state, perform, view }: ScreenProps & { readonly vie
       />
       {view.range && <RangeStrip range={view.range} />}
       <main className="page feed combat-log scene-feed" aria-live="polite">
-        {combatLog(view.log.slice(-SHOWN_LINES)).map((line, i) =>
+        {told.slice(-SHOWN_LINES).map((line, i) =>
           line.kind === 'round' ? (
             <p key={firstShown + i} className="divider">
               {line.text}

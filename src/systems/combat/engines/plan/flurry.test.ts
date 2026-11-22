@@ -1,7 +1,7 @@
 import { createRng } from '@/core';
 import type { Accuracy } from '@/systems/techniques';
 
-import { GUARDED, SLIPS, hitsOn } from '@/test/fightLines';
+import { GUARDED, hitsOn, linesOf, SLIPS } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { useJutsu } from './jutsu';
@@ -55,7 +55,7 @@ function roundWith(slots: readonly string[] = []): Round {
   }).map((f): PlanFighter =>
     f.id === 'bandit' ? { ...f, loadout: { close: plainSlots(slots), mid: [], far: [] } } : f,
   );
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function use(round: Round, t: CombatTechnique, seed: number): Round {
@@ -73,7 +73,7 @@ describe('flurries, reach and accuracy in plan & watch', () => {
       const three = use(roundWith(), kick(3), seed);
       // A foe may slip the whole technique; once it reaches them, each later blow may be
       // slipped on its own.
-      landed.add(three.lines.filter((l) => hitsOn('bandit', 'Kick').test(l)).length);
+      landed.add(linesOf(three.story).filter((l) => hitsOn('bandit', 'Kick').test(l)).length);
       single += 100 - fighterIn(one, 'bandit')!.health;
       flurry += 100 - fighterIn(three, 'bandit')!.health;
     }
@@ -86,7 +86,7 @@ describe('flurries, reach and accuracy in plan & watch', () => {
 
   it('a guard meets only the first blow of a flurry', () => {
     const after = use(roundWith(['guard']), kick(3), 1);
-    const guarded = after.lines.filter((l) => GUARDED.test(l));
+    const guarded = linesOf(after.story).filter((l) => GUARDED.test(l));
     expect(guarded).toHaveLength(1);
   });
 
@@ -105,7 +105,7 @@ describe('flurries, reach and accuracy in plan & watch', () => {
       let n = 0;
       for (let seed = 1; seed <= 300; seed++) {
         const after = use(roundWith(['dodge']), kick(undefined, accuracy), seed);
-        if (after.lines.some((l) => SLIPS.test(l))) n++;
+        if (linesOf(after.story).some((l) => SLIPS.test(l))) n++;
       }
       return n;
     };

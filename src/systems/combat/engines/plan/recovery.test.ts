@@ -49,7 +49,7 @@ describe('recovery', () => {
       number: 1,
       fighters: [{ ...f!, ...(resting ? { recovering: resting } : {}) }],
       range: 'close',
-      lines: [],
+      story: [],
       seen: {},
       intents: {},
     };

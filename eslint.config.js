@@ -9,6 +9,32 @@ const BANNED_SYNTAX = [
   { selector: 'TSEnumDeclaration', message: 'Use a string-literal union instead of enum.' },
 ];
 
+/** Who may turn lines into events: the story's one writer, old saves and shelved engines. */
+const STORY_IMPORTS = [
+  {
+    group: ['**/rules/narration'],
+    importNames: ['toldFrom'],
+    message: 'Tell lines through `say` (plan/toldPools.ts), the one writer of the story.',
+  },
+  {
+    group: ['**/rules/narrationLegacy', '@/systems/combat'],
+    importNames: ['storyOfLines'],
+    message: 'Only old saves and shelved engines read lines into events.',
+  },
+];
+
+/** What a fight's line carries beside its words is read only by the narration module. */
+const STORY_MARKERS = [
+  {
+    selector: 'Literal[value=/⟦/]',
+    message: 'Read a fight’s events (storyContract.ts), never markers in its words.',
+  },
+  {
+    selector: 'TemplateElement[value.raw=/⟦/]',
+    message: 'Read a fight’s events (storyContract.ts), never markers in its words.',
+  },
+];
+
 export default tseslint.config(
   {
     ignores: [
@@ -66,6 +92,38 @@ export default tseslint.config(
     },
   },
   {
+    // A fight is told as events (`systems/combat/storyContract.ts`): what a line carries beside
+    // its words is the narration module's own business, and a reader reads the event's fields.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/systems/combat/rules/narration.ts',
+      'src/systems/combat/rules/causes.ts',
+      'src/systems/combat/rules/narrationLegacy.ts',
+      'src/systems/combat/rules/narration*.test.ts',
+      'src/game/persistence/storyMigration.test.ts',
+      'src/systems/combat/engines/plan/legacyStory.test.ts',
+    ],
+    rules: {
+      'no-restricted-syntax': ['error', ...BANNED_SYNTAX, ...STORY_MARKERS],
+      'no-restricted-imports': ['error', { patterns: STORY_IMPORTS }],
+    },
+  },
+  {
+    // The one writer of the story, and those allowed to read old lines into events.
+    files: [
+      'src/systems/combat/engines/plan/toldPools.ts',
+      'src/systems/combat/engines/plan/legacyStory.ts',
+      'src/systems/combat/index.ts',
+      'src/systems/combat/engines/deck/engine.ts',
+      'src/systems/combat/engines/duel/engine.ts',
+      'src/game/persistence/storyMigration.ts',
+      // Tests read a line builder's output as the story's writer would.
+      'src/test/**',
+      '**/*.test.{ts,tsx}',
+    ],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+  {
     // A verb runs only after its check: `dispatch` does both, and one verb running another goes
     // through `performChecked` (game/actions/compose.ts), never a bare `.perform(`.
     files: ['src/game/**/*.ts'],
@@ -74,9 +132,59 @@ export default tseslint.config(
       'no-restricted-syntax': [
         'error',
         ...BANNED_SYNTAX,
+        ...STORY_MARKERS,
         {
           selector: "CallExpression[callee.property.name='perform']",
           message: 'Run another verb with performChecked (game/actions/compose.ts).',
+        },
+      ],
+    },
+  },
+  {
+    // One writer of a fighter's health (`plan/health.ts`), so every change is recorded where it
+    // is made and a hit does all a hit does (`plan/wound.ts`).
+    files: ['src/systems/combat/engines/plan/**/*.ts'],
+    ignores: [
+      'src/systems/combat/engines/plan/health.ts',
+      'src/systems/combat/engines/plan/sizing.ts',
+      '**/*.test.ts',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...BANNED_SYNTAX,
+        ...STORY_MARKERS,
+        {
+          selector: "ObjectExpression:has(> SpreadElement) > Property[key.name='health']",
+          message: 'Set a fighter’s health through plan/health.ts (setHealth, or wound for a hit).',
+        },
+      ],
+    },
+  },
+  {
+    // `withHealth` sets health without recording it: only a hit's own writer and the empower's
+    // body (whose change `setHealth` then records) may use it.
+    files: ['src/systems/combat/engines/plan/**/*.ts'],
+    ignores: [
+      'src/systems/combat/engines/plan/health.ts',
+      'src/systems/combat/engines/plan/wound.ts',
+      'src/systems/combat/engines/plan/empower.ts',
+      'src/systems/combat/engines/plan/toldPools.ts',
+      'src/systems/combat/engines/plan/legacyStory.ts',
+      '**/*.test.ts',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            ...STORY_IMPORTS,
+            {
+              group: ['./health', '**/plan/health'],
+              importNames: ['withHealth'],
+              message: 'Set health with setHealth (or wound), which records the change.',
+            },
+          ],
         },
       ],
     },

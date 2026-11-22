@@ -104,8 +104,8 @@ function exchangeTally(before: PlanState, after: PlanState): Tally {
   const took =
     streak !== undefined && (streak.card !== was.streak?.card || streak.turns !== was.streak.turns);
   if (!took) return { ...NOTHING, exchanges: 1, lost: 1 };
-  const fresh = after.log.slice(before.log.length);
-  const offPlan = fresh.some((l) => l.includes('⟦op:') && l.includes(`⟦by:${now.id}⟧`));
+  const fresh = after.story.slice(before.story.length);
+  const offPlan = fresh.some((e) => e.kind === 'told' && e.offPlan && e.actor === now.id);
   const failedStep = streak.card.startsWith('step-') && bandOf(before, was) === bandOf(after, now);
   return {
     exchanges: 1,

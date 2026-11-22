@@ -1,6 +1,6 @@
 import { ELEMENTS } from '@/systems/techniques';
 
-import { splitNarration } from '../../rules/narration';
+import { toldFrom } from '../../rules/narration';
 import { APPROACHES } from '../../rules/tags';
 import { tell, type Told } from '../../rules/telling';
 import { DODGES, SLIPS, SWAPS } from './defenceLines';
@@ -23,7 +23,7 @@ function filled(template: string, t: Told, a: Told): string {
     jutsu: 'Substitution',
     wall: 'Mud Wall',
   });
-  return splitNarration(line).text;
+  return toldFrom(line).text;
 }
 
 function checkBank(lines: readonly string[]): void {

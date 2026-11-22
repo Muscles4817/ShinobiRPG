@@ -1,6 +1,6 @@
 import { createRng } from '@/core';
 
-import { hitsOn } from '@/test/fightLines';
+import { hitsOn, linesOf, textOf, told, type Wanted, matches, wantedName } from '@/test/fightLines';
 
 import type { CombatantSetup, CombatTechnique } from '../../contract';
 import { chooseCard } from './choose';
@@ -22,7 +22,6 @@ import {
   type Round,
 } from './state';
 import { springTraps } from './traps';
-import { splitNarration } from '../../rules/narration';
 
 const attributes = {
   strength: 10,
@@ -100,7 +99,7 @@ function roundOf(hero: Partial<CombatantSetup> = {}, foe: Partial<CombatantSetup
     enemies: [setup('foe', { techniques: [], ...foe })],
     canFlee: true,
   }).map((f) => ({ ...f, loadout: NO_CARDS }));
-  return { number: 1, fighters, range: 'close', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'close', story: [], seen: {}, intents: {} };
 }
 
 function stateOf(round: Round): PlanState {
@@ -113,7 +112,7 @@ function stateOf(round: Round): PlanState {
     range: round.range,
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: true,
   };
@@ -132,16 +131,16 @@ const hero = (round: Round) => fighterIn(round, 'hero')!;
 const foe = (round: Round) => fighterIn(round, 'foe')!;
 
 /** Runs `act` with each seed in turn until the narration matches. */
-function until(wanted: RegExp, act: (seed: number) => Round): Round {
+function until(wanted: Wanted, act: (seed: number) => Round): Round {
   for (let seed = 1; seed < 300; seed++) {
     const after = act(seed);
-    if (after.lines.some((l) => wanted.test(l))) return after;
+    if (linesOf(after.story).some((l) => matches(l, wanted))) return after;
   }
-  throw new Error(`no seed narrates ${wanted.source}`);
+  throw new Error(`no seed narrates ${wantedName(wanted)}`);
 }
 
 /** The log as the player reads it: the sentences, without the screen's markers. */
-const said = (log: readonly string[]) => log.map((line) => splitNarration(line).text);
+const said = (log: readonly string[]) => log.map((line) => told(line).text);
 
 describe('plan & watch verbs: empower', () => {
   it('raises the boosted stats at once, takes its price each exchange, then ends', () => {
@@ -150,7 +149,10 @@ describe('plan & watch verbs: empower', () => {
     expect(hero(empowered).attributes.speed).toBe(10);
     const paid = afterEmpowers(empowered, 1);
     expect(hero(paid).health).toBeLessThan(80);
-    expect(paid.lines.some((l) => l.includes('The strain tells'))).toBe(true);
+    expect(paid.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', who: 'hero', cause: 'price' }),
+    );
+    expect(textOf(paid.story).some((l) => l.includes('The strain tells'))).toBe(true);
     const until = hero(empowered).empowered!.until!;
     const over = afterEmpowers(paid, until);
     expect(hero(over).empowered).toBeUndefined();
@@ -276,11 +278,13 @@ describe('plan & watch verbs: trap', () => {
     });
     const rng = createRng(4);
     const first = resolveExchange(stateOf(round), rng);
-    expect(said(first.log)).toContain('Hero sets a trap at close range.');
+    expect(said(textOf(first.story))).toContain('Hero sets a trap at close range.');
     const second = resolveExchange(first, rng);
-    const fresh = second.log.slice(first.log.length);
+    const fresh = linesOf(second.story).slice(linesOf(first.story).length);
     expect(
-      fresh.some((l) => hitsOn('foe', "hero's trap").test(l) || l.includes('spots hero’s trap')),
+      fresh.some(
+        (l) => hitsOn('foe', "hero's trap").test(l) || l.text.includes('spots hero’s trap'),
+      ),
     ).toBe(true);
   });
 });

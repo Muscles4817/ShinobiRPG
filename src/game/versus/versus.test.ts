@@ -1,3 +1,4 @@
+import { textOf } from '@/test/fightLines';
 import { combatScene, combatScouting, type GameState } from '@/game';
 import { act, fightOut } from '@/test/gameFixtures';
 
@@ -57,7 +58,7 @@ describe('versus bouts', () => {
     });
     if (!made.ok) throw new Error(made.error);
     const view = combatScene(made.value, naruto)!;
-    expect(view.log[0]).toBe('Kakashi Hatake against Might Guy.');
+    expect(textOf(view.story)[0]).toBe('Kakashi Hatake against Might Guy.');
     expect(view.options.some((o) => o.kind === 'plan' || o.kind === 'escape')).toBe(false);
     const done = fightOut(made.value, naruto);
     const report = done.reports[0];
@@ -97,7 +98,7 @@ describe('versus bouts', () => {
     if (!made.ok) throw new Error(made.error);
     const view = combatScene(made.value, naruto)!;
     expect(view.prompt).toMatch(/Open water/);
-    expect(view.log.join(' ')).not.toMatch(/Open water/);
+    expect(textOf(view.story).join(' ')).not.toMatch(/Open water/);
   });
 
   it('can face a foe from the pack, or play as one', () => {
@@ -184,7 +185,7 @@ describe('versus bouts', () => {
     const done = fightOut(watched.value, naruto);
     expect(done.reports[0]?.kind).toBe('fight');
     // The whole story (the fight record): Crow unfolds out of its scroll and fights.
-    const story = done.fightRecord?.lines.join(' ') ?? '';
+    const story = textOf(done.fightRecord?.story ?? []).join(' ');
     expect(story).toMatch(/Crow unfolds out of it/);
     expect(story).toMatch(/Crow looses Hidden Blades/);
   });
@@ -196,10 +197,10 @@ describe('versus bouts', () => {
     let state = watched.value;
     const told: string[] = [];
     for (let i = 0; i < 40 && state.combat; i++) {
-      told.push(...combatScene(state, naruto)!.log);
+      told.push(...textOf(combatScene(state, naruto)!.story));
       state = act(state, { type: 'combatAct', optionId: 'round' }, naruto);
     }
-    return [...told, ...(state.combatFinale?.log ?? [])].join(' ');
+    return [...told, ...textOf(state.combatFinale?.story ?? [])].join(' ');
   }
 
   it('fields a summoner with the toads, who calls them and meditates into Sage Mode', () => {
@@ -290,7 +291,7 @@ describe('rules in every bout', () => {
       let state: GameState = made.value;
       for (let i = 0; i < 200 && state.combat; i++) {
         const view = combatScene(state, naruto)!;
-        found += view.log.filter((line) => line.includes(marker)).length;
+        found += textOf(view.story).filter((line) => line.includes(marker)).length;
         const next = view.options.find((o) => !o.disabledReason && o.id !== 'flee');
         if (!next) break;
         state = act(state, { type: 'combatAct', optionId: next.id }, naruto);

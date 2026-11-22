@@ -1,6 +1,7 @@
 import { createRng } from '@/core';
 
-import { searchesInVain, spots } from '@/test/fightLines';
+import { linesOf, searchesInVain, spots, textOf } from '@/test/fightLines';
+import { atHealth } from '@/test/planFighters';
 
 import type { CombatantSetup, CombatItem, CombatItemEffect, CombatTrait } from '../../contract';
 import { cardsFor } from './cards';
@@ -80,14 +81,14 @@ function stateOf(fighters: PlanFighter[], exchange = 0): PlanState {
     range: 'mid',
     seen: {},
     intents: {},
-    log: [],
+    story: [],
     result: null,
     canFlee: true,
   };
 }
 
 function roundOf(fighters: PlanFighter[]): Round {
-  return { number: 1, fighters, range: 'mid', lines: [], seen: {}, intents: {} };
+  return { number: 1, fighters, range: 'mid', story: [], seen: {}, intents: {} };
 }
 
 const heroOf = (s: Pick<PlanState, 'fighters'>) => s.fighters.find((f) => f.id === 'hero')!;
@@ -201,7 +202,7 @@ describe('plan & watch tools: when they are played', () => {
     const next = resolveExchange(stateOf([hero!, { ...foe!, health: 1, maxHealth: 1 }]), rng);
     const after = heroOf(next);
     expect(after.items[0]?.count).toBe(1);
-    expect(next.log.some((l) => l.includes('presses salve'))).toBe(true);
+    expect(textOf(next.story).some((l) => l.includes('presses salve'))).toBe(true);
     expect(after.health).toBeGreaterThan(10);
   });
 
@@ -212,7 +213,7 @@ describe('plan & watch tools: when they are played', () => {
     for (let seed = 1; seed <= 10; seed++) {
       const confused = { ...hero!, confused: 3 };
       const next = resolveExchange(stateOf([confused, foe!]), createRng(seed));
-      expect(next.log.some((l) => l.includes('goes wide'))).toBe(false);
+      expect(textOf(next.story).some((l) => l.includes('goes wide'))).toBe(false);
       expect(heroOf(next).items[0]?.count).toBe(1);
     }
   });
@@ -228,9 +229,11 @@ describe('plan & watch tools: smoke and flash', () => {
     const first = resolveExchange(stateOf([hero!, foe!]), createRng(1));
     expect(heroOf(first).hidden).toBe(true);
     expect(heroOf(first).health).toBe(50);
-    expect(first.log.some((l) => searchesInVain('foe').test(l))).toBe(true);
+    expect(linesOf(first.story).some((l) => searchesInVain('foe').test(l))).toBe(true);
     const second = resolveExchange(first, createRng(4));
-    expect(second.log.some((l) => l.includes('hero') && l.includes('kunai'))).toBe(true);
+    expect(
+      linesOf(second.story).some((l) => l.named?.includes('hero') && l.text.includes('kunai')),
+    ).toBe(true);
     expect(heroOf(second).hidden).toBe(false);
     expect(heroOf(second).items[0]?.count).toBe(1);
   });
@@ -260,7 +263,9 @@ describe('plan & watch tools: explosive tags', () => {
     const [hero, foe] = pair([tool('blast')], ['item:blast'], { foeTraits: ['illusionist'] });
     const next = resolveExchange(stateOf([hero!, foe!]), createRng(1));
     expect(
-      next.log.some((l) => searchesInVain('hero').test(l) || spots('hero', 'foe').test(l)),
+      linesOf(next.story).some(
+        (l) => searchesInVain('hero').test(l) || spots('hero', 'foe').test(l),
+      ),
     ).toBe(true);
     expect(heroOf(next).items[0]?.count).toBe(2);
   });
@@ -280,6 +285,48 @@ describe('plan & watch tools: explosive tags', () => {
     const next = resolveExchange(stateOf([hero!, { ...foe!, health: 1 }]), createRng(1));
     expect(next.result).toBe('victory');
     expect(heroOf(next).items[0]?.count).toBe(1);
+  });
+});
+
+// Bug #6: a tool's hit cut health directly, so it did none of what a hit does.
+describe('plan & watch tools: a tag’s hit is a hit like any other', () => {
+  const blastAt = (fighters: PlanFighter[], targetId: string) => {
+    const hero = fighters.find((f) => f.id === 'hero')!;
+    const target = fighters.find((f) => f.id === targetId)!;
+    const turn = { actor: hero, target, rng: createRng(5) };
+    return useTool(roundOf(fighters), turn, hero.items[0]!);
+  };
+
+  it('pops a shadow clone it lands on, as the hit of the hero who threw it', () => {
+    const [hero, foe] = pair([tool('blast')], []);
+    const clone: PlanFighter = { ...foe!, id: 'foe~shadow~1', shadowOf: 'foe' };
+    const after = blastAt([hero!, foe!, clone], clone.id);
+    expect(after.fighters.find((f) => f.id === clone.id)?.health).toBe(0);
+    expect(textOf(after.story).join(' ')).toMatch(/bursts in a puff of smoke/);
+    expect(after.story).toContainEqual(
+      expect.objectContaining({
+        kind: 'health',
+        who: clone.id,
+        to: 0,
+        cause: 'popped',
+        by: 'hero',
+      }),
+    );
+  });
+
+  it('breaks a channelled hold when it hurts the holder', () => {
+    const [hero, foe] = pair([tool('blast')], []);
+    const after = blastAt([hero!, { ...foe!, holding: 'hero' }], 'foe');
+    expect(foeOf(after).holding).toBeUndefined();
+  });
+
+  it('takes a maker’s clones down with them when it fells them', () => {
+    const [hero, foe] = pair([tool('blast')], []);
+    const clone: PlanFighter = { ...foe!, id: 'foe~shadow~1', shadowOf: 'foe' };
+    const after = blastAt([hero!, atHealth([foe!], 'foe', 1)[0]!, clone], 'foe');
+    expect(foeOf(after).health).toBe(0);
+    expect(after.fighters.find((f) => f.id === clone.id)?.health).toBe(0);
+    expect(after.story).toContainEqual(expect.objectContaining({ kind: 'fall', who: 'foe' }));
   });
 });
 
