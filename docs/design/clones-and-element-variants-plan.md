@@ -82,7 +82,8 @@ the intuition expects.
 
 **Measure before changing**: a bench of pure defence against one grade up, checking how many
 exchanges it lasts and whether the attacker has to commit (Evade, gather, breath spent) to finish.
-Then decide whether anything moves.
+Then decide whether anything moves. **Taken further in `docs/design/grade-gaps-plan.md`** (speed as
+born, outpacing only from S, a grade meaning the same at every level).
 
 | Kind      | Cost                                                     | Holds up                                              | Grabs     | When it breaks                                                                                | Rank (proposed)              |
 | --------- | -------------------------------------------------------- | ----------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------- | ---------------------------- |
