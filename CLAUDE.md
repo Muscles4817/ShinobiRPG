@@ -1611,9 +1611,18 @@ teachingFactor.ts`). A `TeacherProfile` on the `PersonDef` sets quirk, steering 
   screen side by side, wrap them in a `Pane` (`ui/layout/Pane.tsx`): `display: contents` on a
   phone, a column on desktop. Sheets (a person, your companion, a notice, the stove) open as a
   drawer from the right, and Esc closes them (`useCloseOnEscape`). Keys on desktop go through
-  `useKeys` (`ui/layout/`, which leaves fields, modifiers and a focused control alone): number
+  `useKeys` (`ui/layout/`, which leaves fields, modifiers and a focused control alone), and keys
+  reach only what is on top: the game decides what is laid over play (`overlayOnScreen`: a
+  report, or the day's sheet, waiting on a fight's or trip's last moments), and every layer under
+  it, or under a drawer, is a `KeyLayer` that isn't live, which suspends its `useKeys` and
+  `useCloseOnEscape`. A story scene keeps its frame at every width (`SceneBox`), so crossing the
+  breakpoint never remounts it. Number
   keys take a scene's choices (`useChoiceKeys`, with a `KeyHint`) and Enter the primary one, and
-  a fight's watch screen plays on Space, steps on the arrows and skips on S. Pointing at
+  a fight's watch screen plays on Space, steps on the arrows and skips on S. What the watch
+  screen stages follows the log, never a press (`useWatching`: lines are staged once they exist,
+  so a step still out on its worker can't skip its round, and the stage offers no way on while it
+  is), and a beat flashes and sounds from its own data (`healthMoves`) and only going on, never
+  stepping back. Pointing at
   something on desktop previews it in the panel beside it (`useHoverPreview`: a Jutsu card in the
   detail panel, a fighter's read on the plan screen, and in its place a card's technique as the Jutsu tab
   reads it: `fightTechnique` through `CombatOption.techniqueId`, shown by `JutsuDetail`); a click still picks. Scenes still take the
