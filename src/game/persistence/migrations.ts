@@ -54,13 +54,10 @@ import { v19ToV20 } from './teachingMigration';
 type RawState = Record<string, unknown>;
 export type Migration = (state: RawState) => RawState;
 
-function asRecord(value: unknown): RawState {
-  return typeof value === 'object' && value !== null ? (value as RawState) : {};
-}
+const asRecord = (value: unknown): RawState =>
+  typeof value === 'object' && value !== null ? (value as RawState) : {};
 
-function asArray(value: unknown): unknown[] {
-  return Array.isArray(value) ? (value as unknown[]) : [];
-}
+const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 
 /**
  * v1 → v2: content packs, locations, housing and result cards arrive.
