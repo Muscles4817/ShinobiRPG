@@ -120,7 +120,7 @@ export const CANON_KITS_1: Readonly<Record<string, readonly string[]>> = {
     'water-dragon-bullet',
     'yin-healing-wound-destruction',
   ],
-  kakashi: ['purple-electricity', 'multiple-shadow-clone', 'water-bullet'],
+  kakashi: ['purple-electricity', 'water-bullet'],
   kakuzu: ['searing-migraine', 'false-darkness', 'strange-mask-exploding-flame', 'pressure-damage'],
   kiba: ['beast-human-clone', 'booby-trap', 'four-legs', 'shadow-clone'],
   kidomaru: [
