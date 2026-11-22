@@ -70,7 +70,11 @@ export function PickSheet({
 }) {
   const label = slotLabel(slot);
   return (
-    <KeyLayer>
+    <KeyLayer
+      onEscape={() => {
+        setup.openSlot(null);
+      }}
+    >
       <div className="versus-sheet" role="dialog" aria-modal="true" aria-label={label}>
         <header className="versus-sheet-head">
           <h2>{label}</h2>
