@@ -1,4 +1,5 @@
 import { hashUnit } from '@/core';
+import type { PersonDef } from '@/content';
 
 import type { GameContext } from '../context';
 import { findPerson } from '../people/cast';
@@ -12,12 +13,16 @@ import { courseEdge } from './race';
 import { clampHeat, type Contest, type Rival } from './state';
 
 /**
- * Keeps the rivalry going as actions happen (called from `dispatch`): chooses the rival once the
- * team is settled, scores the race to each grade, and as each day turns lets a standing
+ * Keeps the rivalry going as actions happen (happenings after each action, `happenings/`): chooses
+ * the rival once the team is settled, scores the race to each grade, and as each day turns lets a standing
  * challenge lapse or makes a new one, for a reason (one of you just reached a grade first) or
  * now and then, never more often than `CHALLENGE_GAP`; on a quiet day they may needle you
  * instead. They challenge you on the ground that suits them: a race when the course favours
  * them, otherwise a spar or a race as the day falls.
+ *
+ * The day's turn needs the two of you in one town (the happening's `with` need): while you are
+ * apart (another town, a job, a journey, an exam) nothing is made, and a challenge left standing
+ * simply lapses (`rivalApart`), at no cost, since you never turned it down.
  */
 
 const CHALLENGE_GAP = 3;
@@ -89,21 +94,39 @@ function dayTurned(rival: Rival, firstsBefore: Rival, state: GameState, ctx: Gam
   return made.challenge ? made : provoked(made, state);
 }
 
-function away(state: GameState): boolean {
-  return state.mission !== null || state.exams.run !== null;
+/** The rival after `change`, written back only if it changed. */
+function withRival(state: GameState, change: (rival: Rival) => Rival): GameState {
+  if (!state.rival) return state;
+  const next = change(state.rival);
+  return next === state.rival ? state : { ...state, rival: next };
 }
 
-export function noteRival(before: GameState, after: GameState, ctx: GameContext): GameState {
-  if (!after.rival) {
-    const settled =
-      after.people.team?.senseiId && after.character.natureKnown && !after.mentor.opening;
-    const rival = settled ? chooseRival(after, ctx) : null;
-    return rival ? { ...after, rival } : after;
-  }
-  const rival = scored(after.rival, after, ctx);
-  const turned =
-    after.time.day !== before.time.day && !away(after)
-      ? dayTurned(rival, before.rival ?? rival, after, ctx)
-      : rival;
-  return turned === after.rival ? after : { ...after, rival: turned };
+/** Once your team is settled (and your nature read, and your sensei met), a rival is chosen. */
+export function rivalChosen(state: GameState, ctx: GameContext): GameState {
+  if (state.rival) return state;
+  const settled =
+    state.people.team?.senseiId && state.character.natureKnown && !state.mentor.opening;
+  const rival = settled ? chooseRival(state, ctx) : null;
+  return rival ? { ...state, rival } : state;
+}
+
+/** Who reached each grade first, scored as it happens, wherever you both are. */
+export function rivalScored(state: GameState, ctx: GameContext): GameState {
+  return withRival(state, (rival) => scored(rival, state, ctx));
+}
+
+/** As a day turns, with the two of you in one town: a challenge lapses or is made. */
+export function rivalDayTurned(before: GameState, state: GameState, ctx: GameContext): GameState {
+  if (state.time.day === before.time.day) return state;
+  return withRival(state, (rival) => dayTurned(rival, before.rival ?? rival, state, ctx));
+}
+
+/** While you are apart a challenge can't stand: it lapses, and you never turned it down. */
+export function rivalApart(state: GameState): GameState {
+  return withRival(state, (rival) => (rival.challenge ? { ...rival, challenge: null } : rival));
+}
+
+/** Your rival, for the happenings that need the two of you in one town. */
+export function rivalPerson(state: GameState, ctx: GameContext): PersonDef | undefined {
+  return state.rival ? findPerson(state, ctx, state.rival.personId) : undefined;
 }

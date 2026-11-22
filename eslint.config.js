@@ -3,6 +3,12 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+/** Syntax banned everywhere. */
+const BANNED_SYNTAX = [
+  { selector: 'ExportDefaultDeclaration', message: 'Use named exports.' },
+  { selector: 'TSEnumDeclaration', message: 'Use a string-literal union instead of enum.' },
+];
+
 export default tseslint.config(
   {
     ignores: [
@@ -50,16 +56,28 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      'no-restricted-syntax': [
-        'error',
-        { selector: 'ExportDefaultDeclaration', message: 'Use named exports.' },
-        { selector: 'TSEnumDeclaration', message: 'Use a string-literal union instead of enum.' },
-      ],
+      'no-restricted-syntax': ['error', ...BANNED_SYNTAX],
       // Game logic must be deterministic: use the seeded Rng from @/core.
       'no-restricted-properties': [
         'error',
         { object: 'Math', property: 'random', message: 'Use the seeded Rng from @/core.' },
         { object: 'Date', property: 'now', message: 'Game logic must not read wall-clock time.' },
+      ],
+    },
+  },
+  {
+    // A verb runs only after its check: `dispatch` does both, and one verb running another goes
+    // through `performChecked` (game/actions/compose.ts), never a bare `.perform(`.
+    files: ['src/game/**/*.ts'],
+    ignores: ['src/game/dispatch.ts', 'src/game/actions/compose.ts', '**/*.test.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...BANNED_SYNTAX,
+        {
+          selector: "CallExpression[callee.property.name='perform']",
+          message: 'Run another verb with performChecked (game/actions/compose.ts).',
+        },
       ],
     },
   },

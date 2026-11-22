@@ -4,7 +4,7 @@ import type { BackdropId, LocationDef } from '@/content';
 import type { Danger } from '@/systems/missions';
 import type { Journey } from '@/systems/travel';
 
-import { examClash } from '../awayNotes';
+import { dateClash } from '../awayNotes';
 import type { GameContext } from '../context';
 import { journeyMission, journeyTo, plannedJourneyTo, shortcutTo } from '../journeys';
 import { leaveLine } from '../leave';
@@ -59,7 +59,7 @@ function warningsFor(
 ): string[] {
   const food = rationDays(state, ctx);
   const plan = { from: state.locationId, to: destination.id, legs: journey.legs, quick: false };
-  const clash = examClash(state, ctx, journeyMission(plan, ctx));
+  const clash = dateClash(state, ctx, journeyMission(plan, ctx));
   return [
     ...(food < journey.days
       ? [

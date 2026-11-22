@@ -31,6 +31,7 @@ import {
 import { withAttendance } from '../sensei/state';
 import type { GameState } from '../state';
 import type { GameContext } from '../context';
+import { atHomeVillage } from '../homeVillage';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -50,7 +51,7 @@ function meetingBlocker(state: GameState, ctx: GameContext, meeting: Meeting): s
   if (sessionKept(state, meeting)) return 'You’ve had today’s session.';
   if (!meetingOpen(state, meeting)) return `Your sensei comes for you from ${meeting.from}.`;
   const place = placeHere(state, ctx, 'training');
-  const home = state.locationId === ctx.content.startLocationId;
+  const home = atHomeVillage(state, ctx);
   return place && home ? null : 'Your sensei meets you at the training ground at home.';
 }
 

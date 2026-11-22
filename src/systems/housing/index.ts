@@ -10,6 +10,7 @@ export {
   buyHouse,
   UNFURNISHED,
   type HomeRef,
+  type DoorstepGift,
   type Housing,
   type Planting,
 } from './housing';

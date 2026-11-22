@@ -4,19 +4,15 @@ import { STAT_INFO, type StatDelta, type StatId } from '@/systems/stats';
 import { advanceSlots } from '@/systems/time';
 import { adjustVitals, MAX_HEALTH, passTime, type VitalsDelta } from '@/systems/vitals';
 
-import { boardFor } from './board';
+import { sequenceTime } from './happenings/run';
+import { TIME_PASSING } from './happenings/timePassing';
 import type { GameContext } from './context';
-import { healInjuries } from './injuries';
-import { peopleGrown } from './people/progress';
-import { companionsDayPassed } from './companions/routine';
-import { settleMentor } from './sensei/settle';
-import { settleHunt } from './hunt';
 import { characterModifiers } from './profile';
 import { snackAt } from './snacks';
 import type { GameState } from './state';
 import { chakraBody } from './hives/hive';
-import { hiveDayPassed } from './hives/keeping';
-import { dustDayPassed } from './dust/keeping';
+
+export { busyReason } from './busy';
 
 /**
  * Small state-transition helpers shared by action handlers. Each returns a new state;
@@ -44,27 +40,9 @@ export function spendTime(state: GameState, slots: number, ctx: GameContext): Ga
       ...(soaked && !newDay ? { soaked } : {}),
     },
   };
-  const healed = newDay ? healInjuries(passed, ctx) : passed;
-  // A companion is caught up whenever time passes, so a body behind its age never lingers.
-  const grown = companionsDayPassed(
-    newDay ? { ...healed, people: peopleGrown(healed, ctx) } : healed,
-    ctx,
-  );
-  // A long stretch (an S-rank job's eight slots) can cross more than one night: what happens
-  // once a day happens once for each of them.
+  // What passing time brings (healing, peers, the board…) is the declared list, in its order.
   const days = time.day - state.time.day;
-  const bred = eachDay(grown, days, (s) => dustDayPassed(hiveDayPassed(s, ctx), ctx));
-  const mentored = eachDay(newDay ? settleMentor(bred, ctx) : bred, days, (s) =>
-    settleHunt(s, ctx),
-  );
-  return { ...mentored, board: boardFor(mentored, ctx) };
-}
-
-/** `step` applied once for each of `days` days that ended. */
-function eachDay(state: GameState, days: number, step: (s: GameState) => GameState): GameState {
-  let now = state;
-  for (let day = 0; day < days; day++) now = step(now);
-  return now;
+  return sequenceTime(TIME_PASSING, { ctx, before: state, now: passed, days });
 }
 
 export function adjust(state: GameState, delta: VitalsDelta): GameState {
@@ -120,27 +98,6 @@ export function statChips(delta: StatDelta, tone: ChipTone = 'gain'): JournalChi
   return (Object.entries(delta) as [StatId, number][]).flatMap(([id, value]) =>
     amountChip(STAT_INFO[id].label, value, tone),
   );
-}
-
-/** What a run in progress keeps you to: a trip, a venture or a job. */
-function awayOn(run: NonNullable<GameState['mission']>): string {
-  if (run.journey) return 'You are on the road.';
-  return run.venture ? 'You are out in the wild.' : 'You are on a mission.';
-}
-
-/** Reason the character can't start a new activity, or null if they're free. */
-export function busyReason(state: GameState): string | null {
-  if (state.combat) return 'You are in the middle of a fight.';
-  if (state.mission) return awayOn(state.mission);
-  if (state.exams.run) return 'You are sitting an exam.';
-  if (state.exams.ceremony) return 'Your promotion ceremony is waiting.';
-  if (state.people.conversation) return 'You are in the middle of a conversation.';
-  if (!state.people.team?.senseiId) return 'Your team has not been assigned yet.';
-  if (state.rival?.beat) return 'Your rival is waiting for an answer.';
-  if (state.rival?.race) return 'You’re in the middle of a race.';
-  if (!state.character.natureKnown) return 'Your sensei is waiting with the chakra paper.';
-  if (state.mentor.opening) return 'Your sensei is waiting to see what you can do.';
-  return null;
 }
 
 export function healthFraction(state: GameState): number {

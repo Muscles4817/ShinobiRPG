@@ -2,7 +2,7 @@ import { fillSlots } from '@/core';
 
 import type { GameContext } from '../context';
 import { placeHere, busyReason, firstBlocker, healthFraction, log, chip } from '../ops';
-import { findPerson } from '../people/cast';
+import { findPerson, whereNow } from '../people/cast';
 import { personSlots } from '../people/pronouns';
 import { toneReaction } from '../people/together';
 import { hardWorkEnergy } from '../profile';
@@ -15,6 +15,7 @@ import { heard, repliesFor } from '../rival/replies';
 import { clampHeat, heatStage, HEAT_STAGES, type Rival } from '../rival/state';
 import type { GameState } from '../state';
 import { spar, SPAR_ENERGY } from './spar';
+import { performChecked } from './compose';
 import type { ActionHandler, ActionOf } from './types';
 
 /**
@@ -36,11 +37,17 @@ export function rivalSlots(state: GameState, ctx: GameContext): Readonly<Record<
   return personSlots('name', person ?? ANY_RIVAL);
 }
 
-/** Why you can't settle it with them right now, if you can't. */
+/**
+ * Why you can't settle it with them right now, if you can't: a race or a spar alike (a spar also
+ * asks everything a spar does, `sparBlocker`).
+ */
 export function contestBlocker(state: GameState, ctx: GameContext): string | null {
   const energy = hardWorkEnergy(state.character, ctx, SPAR_ENERGY);
+  const person = state.rival ? findPerson(state, ctx, state.rival.personId) : undefined;
   return firstBlocker(
     busyReason(state),
+    (!person || whereNow(state, ctx, person) === null) &&
+      fillSlots('{name} {name.is}n’t around right now.', rivalSlots(state, ctx)),
     weakFromHunger(state),
     laidUp(state, ctx),
     !placeHere(state, ctx, 'training') &&
@@ -48,6 +55,12 @@ export function contestBlocker(state: GameState, ctx: GameContext): string | nul
     state.character.vitals.energy < energy && `Needs ${energy} energy. Nap or eat first.`,
     healthFraction(state) < MIN_HEALTH_TO_CONTEST && 'You are too hurt for that. Rest first.',
   );
+}
+
+/** Why a spar with your rival can't start: the spar's own rules, since a contest runs one. */
+export function sparBlocker(state: GameState, ctx: GameContext): string | null {
+  const personId = state.rival?.personId;
+  return personId ? spar.check(state, { type: 'spar', personId }, ctx) : null;
 }
 
 /** The rival after your answer: the heat, whether it rattled them, and any challenge it drew. */
@@ -114,8 +127,12 @@ export const answerRival: ActionHandler<ActionOf<'answerRival'>> = {
 
 export const acceptChallenge: ActionHandler<ActionOf<'acceptChallenge'>> = {
   check(state, _action, ctx) {
-    if (!state.rival?.challenge) return 'Nobody has challenged you.';
-    return contestBlocker(state, ctx);
+    const challenge = state.rival?.challenge;
+    if (!challenge) return 'Nobody has challenged you.';
+    return firstBlocker(
+      contestBlocker(state, ctx),
+      challenge.contest === 'spar' && sparBlocker(state, ctx),
+    );
   },
   perform(state, _action, ctx, rng) {
     const rival = state.rival;
@@ -123,7 +140,11 @@ export const acceptChallenge: ActionHandler<ActionOf<'acceptChallenge'>> = {
     if (!rival || !contest) return state;
     if (contest === 'race') return startRace(state, ctx, 'pride', rng);
     const taken = { ...state, rival: { ...rival, challenge: null, sparStakes: null } };
-    return spar.perform(taken, { type: 'spar', personId: rival.personId }, ctx, rng);
+    return performChecked(
+      spar,
+      { type: 'spar', personId: rival.personId },
+      { state: taken, ctx, rng },
+    );
   },
 };
 

@@ -13,6 +13,7 @@ import { gradeOf } from '../debrief';
 import { waysOf } from '../sensei/generate';
 import type { GameState } from '../state';
 import { examAnnounced } from './calendar';
+import { awardPromotion, promotionPending } from './promotionDay';
 import { nominationBlocker } from './entry';
 import { readinessGap, readinessStandard } from './readiness';
 import type { Ceremony } from './state';
@@ -35,7 +36,7 @@ export const SENSEI_RECOMMENDATION_REGARD = 80;
 function raisable(state: GameState, ctx: GameContext): boolean {
   return (
     state.standing.rank === 'genin' &&
-    state.exams.ceremony === null &&
+    !promotionPending(state) &&
     state.exams.run === null &&
     readinessGap(readinessLine(state, ctx), readinessStandard(state, ctx)) === null
   );
@@ -92,5 +93,5 @@ export function afterLessonRecommendation(
   sensei: PersonDef,
 ): GameState {
   if (!raisable(state, ctx) || !senseiWouldRecommend(state, ctx, sensei)) return state;
-  return withCeremony(state, { rank: 'chunin', route: 'sensei' });
+  return awardPromotion(state, ctx, { rank: 'chunin', route: 'sensei' });
 }

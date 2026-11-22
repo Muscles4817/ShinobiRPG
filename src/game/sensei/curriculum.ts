@@ -230,8 +230,8 @@ const BEFORE: Partial<Record<GameAction['type'], readonly CurriculumBeatId[]>> =
 function beatFor(state: GameState, ctx: GameContext, ids: readonly CurriculumBeatId[]) {
   const { mentor } = state;
   const sensei = mentorOf(state, ctx);
-  const home = state.locationId === ctx.content.startLocationId && state.mission === null;
-  if (mentor.curriculum === 'skipped' || mentor.opening || !sensei || !home) return null;
+  // Being at home and off duty is the happenings' needs (`happenings/`), not asked here.
+  if (mentor.curriculum === 'skipped' || mentor.opening || !sensei) return null;
   if (!waysOf(sensei)) return null;
   const id = ids.find((beat) => !mentor.beats.includes(beat) && TIMELY[beat](state, sensei));
   return id ? (ctx.content.curriculum.get(id) ?? null) : null;

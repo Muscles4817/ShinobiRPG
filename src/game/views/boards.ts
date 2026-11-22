@@ -2,7 +2,7 @@ import { counted } from '@/core';
 import { stageFoes, type MissionDef } from '@/systems/missions';
 
 import { INTEL_FEE } from '../actions/intel';
-import { awayFor, examClash } from '../awayNotes';
+import { awayFor, dateClash } from '../awayNotes';
 import { availability, crewFor, type Availability } from '../board';
 import { asksForYou } from '../clients';
 import type { GameContext } from '../context';
@@ -51,8 +51,8 @@ export interface Notice extends Choice {
   } | null;
   /** How long it keeps you away ("3 days away"), or null for a job done within a day. */
   readonly away: string | null;
-  /** An exam it would make you miss, or null. */
-  readonly examClash: string | null;
+  /** A promotion or exam it would make you miss, or null. */
+  readonly dateClash: string | null;
   /** A client you've worked for before, who asks for you by name. */
   readonly returning: boolean;
   /** Who the village sends with you; null when you go alone. */
@@ -188,7 +188,7 @@ export function missionBoardView(state: GameState, ctx: GameContext): MissionBoa
         picked: sensei && pick === id ? `${sensei.name}’s pick for the team` : null,
         returning: asksForYou(state, m),
         away: awayFor(state, ctx, m),
-        examClash: examClash(state, ctx, m)?.text ?? null,
+        dateClash: dateClash(state, ctx, m)?.text ?? null,
         standing: on.kind === 'standing',
         posted: postedLine(on),
         arcNote: arcNote(state, ctx, id),

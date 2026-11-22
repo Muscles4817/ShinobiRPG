@@ -27,6 +27,7 @@ describe('new game', () => {
       placed: { bed: 'straw-futon' },
       beds: [],
       guestId: null,
+      doorstep: [],
     });
   });
 

@@ -11,6 +11,7 @@ import { leaveBlocker, spendLeave } from '../leave';
 import { busyReason, firstBlocker } from '../ops';
 import type { GameState } from '../state';
 import { companionBlocker } from '../trips';
+import { performChecked } from './compose';
 import { missionContinue } from './mission';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -23,7 +24,7 @@ export function walkOn(state: GameState, ctx: GameContext, rng: Rng): GameState 
   // Whatever waits on your choice (a road event, a stop, foes in the way) halts you.
   const onward = { type: 'missionContinue' } as const;
   while (now.mission?.journey?.quick === true && missionContinue.check(now, onward, ctx) === null) {
-    now = missionContinue.perform(now, onward, ctx, rng);
+    now = performChecked(missionContinue, onward, { state: now, ctx, rng });
   }
   return now;
 }

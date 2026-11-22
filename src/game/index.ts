@@ -209,6 +209,7 @@ export {
   type ExamVerdict,
 } from './views/exam';
 export { examNotice, type ExamEntry, type ExamNotice, type ExamTeammate } from './views/examNotice';
+export { promotionNotice, type PromotionNotice } from './views/promotionNotice';
 export { promotionScene, type PromotionScene } from './views/promotion';
 export type { Unlock } from './exam/unlocks';
 export {

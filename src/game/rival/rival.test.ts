@@ -1,7 +1,8 @@
-import { act, ctx, fightOut, newGame } from '@/test/gameFixtures';
+import { act, ctx, fightOut, newGame, happenAfter } from '@/test/gameFixtures';
 import { createStats } from '@/systems/stats';
 
 import { createNewGame } from '../creation';
+import { dispatch } from '../dispatch';
 import { closeDay } from '../daybook/close';
 import { openDay } from '../daybook/open';
 import { draft, formTeam } from '@/test/gameFixtures';
@@ -12,7 +13,6 @@ import { rivalryView } from '../views/rivalry';
 import { newFirsts } from './grades';
 import { rivalLine } from './lines';
 import { TELL } from './raceLines';
-import { noteRival } from './record';
 import { RIVAL_SHAPES, type Rival } from './state';
 
 const SEEDS = Array.from({ length: 40 }, (_, i) => i * 104729 + 7);
@@ -92,7 +92,7 @@ describe('challenges', () => {
       ...withRival(game, { firsts: { 'taijutsu:2': 'them' } }),
       time: { day: 2, slot: 0 },
     };
-    const next = noteRival(before, after, ctx).rival!;
+    const next = happenAfter(before, after).rival!;
     expect(next.challenge?.day).toBe(2);
   });
 
@@ -102,9 +102,54 @@ describe('challenges', () => {
       challenge: { day: 1, line: 'Spar.', contest: 'spar' },
     });
     const later = { ...game, time: { day: 3, slot: 0 } };
-    const next = noteRival(game, later, ctx).rival!;
+    const next = happenAfter(game, later).rival!;
     expect(next.challenge).toBeNull();
     expect(next.heat).toBeLessThan(50);
+  });
+});
+
+describe('only when you are in one town', () => {
+  const AWAY = 'port-shiomachi';
+
+  it('are never made, nor do they needle you, while you are in another town', () => {
+    const game = withRival(newGame(), { lastChallengeDay: -10, challenge: null, beat: null });
+    const before = { ...withRival(game, { firsts: {} }), locationId: AWAY };
+    for (let day = 2; day < 30; day++) {
+      const after = {
+        ...withRival(game, { firsts: { 'taijutsu:2': 'them' } }),
+        locationId: AWAY,
+        time: { day, slot: 0 },
+      };
+      const next = happenAfter(before, after).rival!;
+      expect(next.challenge).toBeNull();
+      expect(next.beat).toBeNull();
+    }
+  });
+
+  it('lapse without a cost when you leave town, since you never turned them down', () => {
+    const game = withRival(newGame(), {
+      heat: 50,
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
+    const next = happenAfter(game, { ...game, locationId: AWAY }).rival!;
+    expect(next.challenge).toBeNull();
+    expect(next.heat).toBe(50);
+  });
+
+  it('can’t be taken up or put to them from another town', () => {
+    const challenged = withRival(newGame(), {
+      challenge: { day: 1, line: 'Spar.', contest: 'spar' },
+    });
+    const away = { ...challenged, locationId: AWAY };
+    expect(dispatch(away, { type: 'acceptChallenge' }, ctx).ok).toBe(false);
+    const putToThem = withRival(away, { challenge: null });
+    const put = dispatch(
+      putToThem,
+      { type: 'challengeRival', contest: 'spar', stakes: 'pride' },
+      ctx,
+    );
+    expect(put.ok).toBe(false);
+    expect(rivalChallengeView(away, ctx)?.accept.blocker).toMatch(/isn’t around/);
   });
 });
 

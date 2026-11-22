@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { headerView, missionBoardView } from '@/game';
 
 import { ExamNotice } from './ExamNotice';
+import { PromotionNotice } from './PromotionNotice';
 import { ArcCard } from './ArcCard';
 import { NoticeSheet } from './NoticeSheet';
 
@@ -30,6 +31,7 @@ export function MissionHallPage({ ctx, state, perform, onBack }: PlaceProps) {
         backLabel={header.location}
       />
       <main className="board">
+        <PromotionNotice ctx={ctx} state={state} perform={perform} />
         <ExamNotice ctx={ctx} state={state} perform={perform} />
         {view.arcs.map((arc) => (
           <ArcCard

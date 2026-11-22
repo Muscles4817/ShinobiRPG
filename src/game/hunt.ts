@@ -155,10 +155,9 @@ export function heatAfterTrip(state: GameState): GameState {
 
 /**
  * A day settled: closer for a night in a town that hunts you, cooler for one out of its reach.
- * Days on the road or on a job are counted by the trip or not at all.
+ * Days on the road or on a job are counted by the trip or not at all (the happening's need).
  */
 export function settleHunt(state: GameState, ctx: GameContext): GameState {
-  if (state.mission) return state;
   const here = huntingTowns(state, ctx).some(({ town }) => town.id === state.locationId);
   const now = state.hunt.heat;
   const heat = here ? Math.min(MOST_HEAT, now + NIGHT_HEAT) : Math.max(0, now - COOLING);

@@ -31,7 +31,7 @@ export function bondOf(state: GameState, personId: string): Bond {
 
 /** Whether they live in the village (not a town elsewhere): crews, teams and dinners at home. */
 export function isVillager(state: GameState, person: PersonDef, ctx: GameContext): boolean {
-  return (person.homeLocationId ?? ctx.content.startLocationId) === homeVillageId(state, ctx);
+  return homeOf(person, ctx) === homeVillageId(state, ctx);
 }
 
 /** Where a friend travelling with you is found: the inn here, or wherever you can find them. */
@@ -53,10 +53,25 @@ function stayingWithYou(state: GameState, ctx: GameContext, person: PersonDef): 
   return slot === 'evening' || slot === 'night';
 }
 
+/**
+ * Whether you are in the town this person lives in and free to meet them (not out on a job,
+ * a journey or an exam). Anything that has them come to you, or you go to them, asks this.
+ */
+export function inTownWith(state: GameState, ctx: GameContext, person: PersonDef): boolean {
+  return (
+    state.mission === null && state.exams.run === null && state.locationId === homeOf(person, ctx)
+  );
+}
+
+/** The town a person lives in. */
+function homeOf(person: PersonDef, ctx: GameContext): string {
+  return person.homeLocationId ?? ctx.content.startLocationId;
+}
+
 export function whereNow(state: GameState, ctx: GameContext, person: PersonDef): string | null {
   if (person.id === state.people.companionId && !state.mission) return lodging(state, ctx);
   if (stayingWithYou(state, ctx, person)) return state.housing.placeId;
-  if (state.locationId !== (person.homeLocationId ?? ctx.content.startLocationId)) return null;
+  if (state.locationId !== homeOf(person, ctx)) return null;
   return person.schedule[slotName(state.time)];
 }
 

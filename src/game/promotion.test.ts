@@ -1,4 +1,4 @@
-import { examDay, scriptedCtx } from '@/test/examFixtures';
+import { examDay, onTheDay, scriptedCtx } from '@/test/examFixtures';
 import { act, ctx, lastEntry } from '@/test/gameFixtures';
 
 import { availability } from './board';
@@ -168,10 +168,13 @@ describe('a jōnin’s nomination', () => {
     const state = chunin();
     const stats = { ...state.character.stats, taijutsu: 21 };
     const standing = { ...state.standing, seniorMissionsCompleted: 5, reputation: 90 };
-    const earned = act(
+    const set = act(
       { ...state, standing, character: { ...state.character, stats } },
       { type: 'sleep' },
     );
+    expect(set.exams.ceremony).toBeNull();
+    expect(set.exams.promotionDay?.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
+    const earned = onTheDay(set);
     expect(earned.exams.ceremony).toEqual({ rank: 'jonin', route: 'nomination' });
     expect(promotionScene(earned, ctx)).toMatchObject({
       record: ['5 B- and A-rank jobs', 'Taijutsu at B', '90 reputation'],

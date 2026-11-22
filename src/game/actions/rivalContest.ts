@@ -5,7 +5,8 @@ import { findPerson } from '../people/cast';
 import { personSlots } from '../people/pronouns';
 import { PURSE, runRaceLeg as runLeg, startRace } from '../rival/contest';
 import { TAKEN_UP } from '../rival/lines';
-import { contestBlocker, rivalSlots } from './rival';
+import { performChecked } from './compose';
+import { contestBlocker, rivalSlots, sparBlocker } from './rival';
 import { spar } from './spar';
 import type { ActionHandler, ActionOf } from './types';
 
@@ -26,6 +27,7 @@ export const challengeRival: ActionHandler<ActionOf<'challengeRival'>> = {
         fillSlots('You’ve already had it out with {name.them} today.', slots),
       action.stakes === 'purse' && state.wallet.ryo < PURSE && `A purse needs ${PURSE} ryo.`,
       contestBlocker(state, ctx),
+      action.contest === 'spar' && sparBlocker(state, ctx),
     );
   },
   perform(state, action, ctx, rng) {
@@ -42,7 +44,7 @@ export const challengeRival: ActionHandler<ActionOf<'challengeRival'>> = {
     );
     if (action.contest === 'race') return startRace(put, ctx, action.stakes, rng);
     const staked = put.rival ? { ...put, rival: { ...put.rival, sparStakes: action.stakes } } : put;
-    return spar.perform(staked, { type: 'spar', personId: person.id }, ctx, rng);
+    return performChecked(spar, { type: 'spar', personId: person.id }, { state: staked, ctx, rng });
   },
 };
 
