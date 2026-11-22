@@ -34,6 +34,7 @@ describe('the watch screen’s stage (smoke test)', () => {
         view={view}
         beats={fightReplay(view, 0)}
         fresh
+        waiting={false}
         reads={{}}
         onPick={() => undefined}
         onWatched={() => undefined}

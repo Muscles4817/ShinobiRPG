@@ -20,7 +20,7 @@ import {
   TheyTeach,
   WhatTheyreLike,
 } from './PersonSections';
-import { useCloseOnEscape } from './useCloseOnEscape';
+import { SheetBackdrop } from './SheetBackdrop';
 
 interface PersonSheetProps {
   readonly ctx: GameContext;
@@ -190,12 +190,11 @@ export function PersonPage({ p, rivalry, perform, onClose, className }: PersonPa
 
 /** Someone's page in a drawer over whatever tab you are on. */
 export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSheetProps) {
-  useCloseOnEscape(onClose);
   const p = personSheet(state, ctx, personId);
   const rivalry = rivalryView(state, ctx, personId);
   if (!p) return null;
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
+    <SheetBackdrop onClose={onClose}>
       <PersonPage
         p={p}
         rivalry={rivalry}
@@ -203,6 +202,6 @@ export function PersonSheet({ ctx, state, personId, perform, onClose }: PersonSh
         onClose={onClose}
         className="sheet person-sheet paper-sheet enter"
       />
-    </div>
+    </SheetBackdrop>
   );
 }

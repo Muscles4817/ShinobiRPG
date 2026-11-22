@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 
+import { useKeysLive } from './KeyLayer';
+
 /**
  * Keyboard shortcuts for the desktop layout: a key (as `KeyboardEvent.key`, ' ' for Space)
  * mapped to what it does. Keys typed into a field, pressed with a modifier (the browser's own
  * shortcuts), or Enter and Space on a focused control (which already press it) are left alone.
+ * Keys bound under something laid over play are suspended until it goes (`KeyLayer`).
  */
 
 export type KeyBindings = Readonly<Record<string, (() => void) | undefined>>;
@@ -21,10 +24,11 @@ function forThePage(event: KeyboardEvent): boolean {
   return !(presses && CONTROLS.includes(target.tagName));
 }
 
-/** Listens for the bound keys while `enabled`. */
+/** Listens for the bound keys while `enabled` and nothing is laid over them. */
 export function useKeys(bindings: KeyBindings, enabled: boolean): void {
+  const live = useKeysLive();
   useEffect(() => {
-    if (!enabled) return undefined;
+    if (!enabled || !live) return undefined;
     const onKey = (event: KeyboardEvent) => {
       const run = bindings[event.key];
       if (!run || !forThePage(event)) return;
@@ -35,5 +39,5 @@ export function useKeys(bindings: KeyBindings, enabled: boolean): void {
     return () => {
       window.removeEventListener('keydown', onKey);
     };
-  }, [bindings, enabled]);
+  }, [bindings, enabled, live]);
 }

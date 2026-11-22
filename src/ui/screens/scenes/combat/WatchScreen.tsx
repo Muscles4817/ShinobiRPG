@@ -9,8 +9,9 @@ import { shortName } from './shortNames';
 import { fightMeters, Gauges, type SightOf } from './Gauges';
 import { useBeatSounds } from './useBeatSounds';
 import { usePlayback } from './usePlayback';
+import { NextSteps, PlaybackBar } from './WatchControls';
 import { KeyNote, useWatchKeys } from './watchKeys';
-import { useHealthPulses } from './useHealthPulses';
+import { beatPulses, type HealthPulse } from './useHealthPulses';
 
 type OnPick = (option: CombatOption) => void;
 
@@ -19,6 +20,8 @@ interface WatchScreenProps {
   readonly beats: readonly FightBeat[];
   /** These beats haven't been watched yet: play them. */
   readonly fresh: boolean;
+  /** A step you asked for is still being played: no way on until its lines arrive. */
+  readonly waiting: boolean;
   readonly reads: Readonly<Record<string, ScoutingRead>>;
   readonly onPick: OnPick;
   /** The last beat has played (or been skipped to). */
@@ -83,100 +86,6 @@ function ActingOrder({
         );
       })}
     </p>
-  );
-}
-
-/**
- * What comes next once the beats have played: leaving a finished fight, the card table, the
- * next exchange, or flight.
- */
-function NextSteps({
-  view,
-  onPick,
-  onPlan,
-  onLeave,
-}: Pick<WatchScreenProps, 'view' | 'onPick' | 'onPlan' | 'onLeave'>) {
-  const only = onLeave ?? onPlan;
-  if (only) {
-    return (
-      <nav className="choices watch-next" aria-label="What next">
-        <button type="button" className="choice primary" onClick={only}>
-          {onLeave ? 'Continue' : view.called ? 'Change your plan' : 'Plan the next round'}
-        </button>
-      </nav>
-    );
-  }
-  const steps = view.options.filter((o) => o.kind === 'continue' || o.kind === 'escape');
-  return (
-    <nav className="choices watch-next" aria-label="What next">
-      {steps.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          className={o.kind === 'escape' ? 'choice' : 'choice primary'}
-          disabled={o.disabledReason !== undefined}
-          onClick={() => {
-            onPick(o);
-          }}
-        >
-          {o.label}
-          {o.disabledReason && <small>{o.disabledReason}</small>}
-        </button>
-      ))}
-    </nav>
-  );
-}
-
-type Playback = ReturnType<typeof usePlayback>;
-
-/** Back, play or pause, on, speed and skip; and whether it stops when something comes at you. */
-function PlaybackBar({ play, watched }: { readonly play: Playback; readonly watched: boolean }) {
-  return (
-    <div className="playback">
-      {!play.done && (
-        <div className="playback-buttons" role="group" aria-label="Playback">
-          <button
-            type="button"
-            className="btn ghost small"
-            aria-label="Back a beat"
-            onClick={() => {
-              play.step(-1);
-            }}
-          >
-            ‹
-          </button>
-          <button type="button" className="btn small" onClick={play.toggle}>
-            {play.playing ? 'Pause' : 'Play'}
-          </button>
-          <button
-            type="button"
-            className="btn ghost small"
-            aria-label="On a beat"
-            onClick={() => {
-              play.step(1);
-            }}
-          >
-            ›
-          </button>
-          <button type="button" className="btn ghost small" onClick={play.faster}>
-            {play.speed === 1 ? 'Normal speed' : 'Double speed'}
-          </button>
-          <button type="button" className="btn ghost small" onClick={play.skip}>
-            Skip
-          </button>
-        </div>
-      )}
-      {!watched && (
-        <button
-          type="button"
-          className="stop-toggle"
-          aria-pressed={play.stopForYou}
-          onClick={play.toggleStopForYou}
-        >
-          {play.stopForYou ? 'Stops when something comes at you' : 'Plays straight through'}
-        </button>
-      )}
-    </div>
   );
 }
 
@@ -271,13 +180,14 @@ interface StageProps {
   readonly view: CombatView;
   readonly beat: FightBeat | undefined;
   readonly fighters: readonly CombatantView[];
+  /** The bars the beat flashes. */
+  readonly pulses: Readonly<Record<string, HealthPulse>>;
   readonly reads: Readonly<Record<string, ScoutingRead>>;
   readonly sightOf: SightOf;
 }
 
 /** Both sides as the beat leaves them, and every fighter's bars when they are shown. */
-function Stage({ view, beat, fighters, reads, sightOf }: StageProps) {
-  const pulses = useHealthPulses(fighters);
+function Stage({ view, beat, fighters, pulses, reads, sightOf }: StageProps) {
   return (
     <>
       <Formation
@@ -308,7 +218,7 @@ export function WatchScreen(props: WatchScreenProps) {
   const play = usePlayback({ beats, youId, fresh, onDone: onWatched });
   const beat = play.beat;
   useWatchKeys(play, props);
-  useBeatSounds(beat, youId, fresh);
+  useBeatSounds(beat, youId, play.arrival);
   // Once played, everyone stands as they are now (pools gathered back, dazes worn off at the end).
   const fighters = play.done ? [...view.combatants] : fightersAt(view, beat, props.before);
   // The heading names the stretch you are in; a divider being told now is the beat itself.
@@ -325,6 +235,7 @@ export function WatchScreen(props: WatchScreenProps) {
             view={view}
             beat={beat}
             fighters={fighters}
+            pulses={beatPulses(beats, play.at, play.arrival, props.before)}
             reads={reads}
             sightOf={props.sightOf}
           />
@@ -340,6 +251,7 @@ export function WatchScreen(props: WatchScreenProps) {
       {play.done && (
         <NextSteps
           view={view}
+          waiting={props.waiting}
           onPick={props.onPick}
           onPlan={props.onPlan}
           onLeave={props.onLeave}

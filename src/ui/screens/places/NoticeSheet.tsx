@@ -2,7 +2,7 @@ import type { GameAction, Notice } from '@/game';
 
 import { ThreatChip } from '../../components/ThreatChip';
 import { Opposition } from './Opposition';
-import { useCloseOnEscape } from '../../components/useCloseOnEscape';
+import { SheetBackdrop } from '../../components/SheetBackdrop';
 
 interface NoticeSheetProps {
   readonly notice: Notice;
@@ -33,9 +33,8 @@ function NoticeChips({ notice: n }: { readonly notice: Notice }) {
 
 /** A notice taken down from the board to read: the job in full, and accepting it. */
 export function NoticeSheet({ notice: n, perform, onClose }: NoticeSheetProps) {
-  useCloseOnEscape(onClose);
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
+    <SheetBackdrop onClose={onClose}>
       <section
         className="sheet paper-sheet enter"
         onClick={(e) => {
@@ -65,6 +64,6 @@ export function NoticeSheet({ notice: n, perform, onClose }: NoticeSheetProps) {
           Accept the job
         </button>
       </section>
-    </div>
+    </SheetBackdrop>
   );
 }

@@ -2,24 +2,22 @@ import { useCallback, useEffect, useState } from 'react';
 
 import {
   sceneOnScreen,
-  dayEndView,
   hubView,
+  overlayOnScreen,
   reportSound,
   type GameContext,
   type GameState,
-  type SceneKind,
 } from '@/game';
 
 import { useSound } from '../audio/SoundProvider';
 
 import { CueLayer } from '../components/CueLayer';
-import { DaySheet } from '../components/day/DaySheet';
 import { Dock, type DockTab } from '../components/Dock';
 import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
 import { CompanionSheet } from '../components/CompanionSheet';
-import { ReportCard } from '../components/ReportCard';
-import { appClass, isStoryScene } from '../layout/sceneLayout';
+import { OverlayCard } from '../components/OverlayCard';
+import { appClass } from '../layout/sceneLayout';
 import { WideFrame } from '../layout/WideFrame';
 import { useWideScreen } from '../layout/useWideScreen';
 import type { GameSession } from '../useGameSession';
@@ -28,21 +26,9 @@ import { BondsScreen } from './BondsScreen';
 import { HubScreen } from './HubScreen';
 import { PlacePage } from './places/PlacePage';
 import { RecordScreen } from './RecordScreen';
-import { CombatScene } from './scenes/CombatScene';
-import { ConversationScene } from './scenes/ConversationScene';
-import { EncounterScene } from './scenes/EncounterScene';
-import { ExamScene } from './scenes/ExamScene';
-import { JourneyScene } from './scenes/journey/JourneyScene';
-import { MissionScene } from './scenes/MissionScene';
-import { PromotionScene } from './scenes/PromotionScene';
-import { RaceScene } from './scenes/RaceScene';
-import { RivalScene } from './scenes/RivalScene';
-import { StorySceneFrame } from './scenes/StorySceneFrame';
+import { SceneBox } from './SceneBox';
 import type { SaveKeeping } from './settings/SaveData';
 import { SettingsScreen } from './settings/SettingsScreen';
-import { ChakraPaperScene } from './scenes/ChakraPaperScene';
-import { SenseiTestScene } from './scenes/SenseiTestScene';
-import { TeamScene } from './scenes/TeamScene';
 import { JutsuScreen } from './YouScreens';
 import { ShinobiScreen } from './ShinobiScreen';
 import { TravelScreen } from './TravelScreen';
@@ -154,53 +140,27 @@ function TabContent({
   }
 }
 
-function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
-  switch (kind) {
-    case 'combat':
-      return <CombatScene {...props} />;
-    case 'encounter':
-      return <EncounterScene {...props} />;
-    case 'mission':
-      return <MissionScene {...props} />;
-    case 'journey':
-      return <JourneyScene {...props} />;
-    case 'exam':
-      return <ExamScene {...props} />;
-    case 'promotion':
-      return <PromotionScene {...props} />;
-    case 'conversation':
-      return <ConversationScene {...props} />;
-    case 'team':
-      return <TeamScene {...props} />;
-    case 'chakra-paper':
-      return <ChakraPaperScene {...props} />;
-    case 'sensei-test':
-      return <SenseiTestScene {...props} />;
-    case 'rival':
-      return <RivalScene {...props} />;
-    case 'race':
-      return <RaceScene {...props} />;
-  }
+interface DrawerProps extends ScreenProps {
+  /** The person whose sheet is open; otherwise it is your companion's. */
+  readonly personId: string | null;
+  readonly onClosePerson: () => void;
+  readonly onCloseCompanion: () => void;
 }
 
-/**
- * The cards over play: a report waits for a fight's last exchange; the end-of-day sheet waits
- * for scenes and reports (and shows only in the full setting).
- */
-function cardsOver(state: GameState, ctx: GameContext, scene: SceneKind | null) {
-  const report = state.reports[0];
-  // A fight's or a trip's last moments play out before any card covers them.
-  const ending = state.combatFinale !== null || state.journeyEnd !== null;
-  const showReport = report && !ending ? report : null;
-  const day = dayEndView(state, ctx);
-  const quiet = !scene && !showReport && !ending;
-  return { showReport, showDay: day?.mode === 'full' && quiet ? day : null };
+/** The sheet open from the right over a tab: a person's, or your companion's. */
+function Drawer({ personId, onClosePerson, onCloseCompanion, ...props }: DrawerProps) {
+  return personId ? (
+    <PersonSheet {...props} personId={personId} onClose={onClosePerson} />
+  ) : (
+    <CompanionSheet {...props} onClose={onCloseCompanion} />
+  );
 }
 
 /**
  * Routes between the three layers: scenes (fights, missions, exams, ceremonies, talks, team
  * assignment) take the whole screen; otherwise the dock tab decides, and "Here" shows the village or a place.
- * A person's sheet can open over any tab.
+ * A person's sheet can open over any tab, and the game's card (`overlayOnScreen`) over
+ * everything. Keys reach only what is on top: every sheet and card is a `KeyLayer` of its own.
  */
 export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [nav, setNav] = useState<Nav>({ tab: 'here', placeId: null });
@@ -208,11 +168,13 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [companionOpen, setCompanionOpen] = useState(false);
   const props: ScreenProps = { ctx, state, perform: session.perform };
   const scene = sceneOnScreen(state, ctx);
-  const { showReport, showDay } = cardsOver(state, ctx, scene);
+  const overlay = overlayOnScreen(state, ctx, scene);
+  const report = overlay?.kind === 'report' ? overlay.report : null;
+  const drawer = !scene && (personId !== null || companionOpen);
   const { play } = useSound();
   useEffect(() => {
-    if (showReport) play(reportSound(showReport));
-  }, [showReport, play]);
+    if (report) play(reportSound(report));
+  }, [report, play]);
   const wide = useWideScreen();
   const selectTab = useCallback((tab: DockTab) => {
     setNav({ tab, placeId: null });
@@ -243,15 +205,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
       <ThinkingSlip thinking={session.thinking} />
       {scene ? (
-        <div className="wide-scene">
-          {wide && isStoryScene(scene) ? (
-            <StorySceneFrame ctx={ctx} state={state}>
-              <Scene {...props} kind={scene} />
-            </StorySceneFrame>
-          ) : (
-            <Scene {...props} kind={scene} />
-          )}
-        </div>
+        <SceneBox {...props} kind={scene} thinking={session.thinking} />
       ) : wide ? (
         <WideFrame
           {...props}
@@ -269,19 +223,14 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
           <Dock active={nav.tab} onSelect={selectTab} />
         </>
       )}
-      {personId && !scene && (
-        <PersonSheet
+      {drawer && (
+        <Drawer
           {...props}
           personId={personId}
-          onClose={() => {
+          onClosePerson={() => {
             setPersonId(null);
           }}
-        />
-      )}
-      {companionOpen && !scene && (
-        <CompanionSheet
-          {...props}
-          onClose={() => {
+          onCloseCompanion={() => {
             setCompanionOpen(false);
           }}
         />
@@ -289,15 +238,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       {session.cue && state.settings.animations && (
         <CueLayer cue={session.cue} onDone={session.clearCue} />
       )}
-      {showDay && <DaySheet view={showDay} perform={session.perform} />}
-      {showReport && (
-        <ReportCard
-          report={showReport}
-          onContinue={() => {
-            session.perform({ type: 'dismissReport' });
-          }}
-        />
-      )}
+      {overlay && <OverlayCard overlay={overlay} perform={session.perform} />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { DayEndView, GameAction } from '@/game';
 
 import { DaySky } from '../../art/DaySky';
+import { KeyLayer } from '../../layout/KeyLayer';
 import { DayPlaques } from './DayPlaques';
 import { Find, Growth, Hurt, Moment, Person, Purse } from './DayRows';
 
@@ -64,28 +65,30 @@ function Ledger({ view }: { readonly view: DayEndView }) {
  */
 export function DaySheet({ view, perform }: DaySheetProps) {
   return (
-    <div className="day-sheet" role="dialog" aria-modal="true" aria-labelledby="day-title">
-      <header className="day-sky">
-        <DaySky dawn={!view.slept} />
-        <p>{view.when}</p>
-        <h2 id="day-title">{view.title}</h2>
-      </header>
-      <div className="day-body">
-        {view.moments.map((m) => (
-          <Moment key={m.title} m={m} />
-        ))}
-        <Ledger view={view} />
-        <DayPlaques label={view.aheadLabel} hooks={view.ahead} />
-        <button
-          type="button"
-          className="btn wide day-close"
-          onClick={() => {
-            perform(view.dismiss);
-          }}
-        >
-          {view.button}
-        </button>
+    <KeyLayer>
+      <div className="day-sheet" role="dialog" aria-modal="true" aria-labelledby="day-title">
+        <header className="day-sky">
+          <DaySky dawn={!view.slept} />
+          <p>{view.when}</p>
+          <h2 id="day-title">{view.title}</h2>
+        </header>
+        <div className="day-body">
+          {view.moments.map((m) => (
+            <Moment key={m.title} m={m} />
+          ))}
+          <Ledger view={view} />
+          <DayPlaques label={view.aheadLabel} hooks={view.ahead} />
+          <button
+            type="button"
+            className="btn wide day-close"
+            onClick={() => {
+              perform(view.dismiss);
+            }}
+          >
+            {view.button}
+          </button>
+        </div>
       </div>
-    </div>
+    </KeyLayer>
   );
 }

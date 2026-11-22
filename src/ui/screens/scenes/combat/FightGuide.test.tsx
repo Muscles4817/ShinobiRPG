@@ -34,6 +34,7 @@ function renderPlan() {
       view={view}
       reads={{}}
       onPick={() => undefined}
+      waiting={false}
       techniqueOf={() => null}
       sightOf={() => SEEN_IN_FULL}
     />,

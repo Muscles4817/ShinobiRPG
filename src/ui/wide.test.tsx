@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { render, screen, within } from '@testing-library/react';
+import { act as settle, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { serialize, type SaveStore } from '@/game';
+import { serialize, type GameState, type Report, type SaveStore } from '@/game';
 import { act, freshGame, newGame, pressOn, veteran } from '@/test/gameFixtures';
 
 import { App } from './App';
@@ -26,6 +26,29 @@ function windowWide(wide: boolean) {
       removeListener: () => undefined,
       dispatchEvent: () => false,
     }) as MediaQueryList; // a stand-in: jsdom has no matchMedia of its own
+}
+
+/** A window that starts wide (or not) and can be resized across the breakpoint while it is up. */
+function resizableWindow(wide: boolean): (wide: boolean) => void {
+  const listeners = new Set<() => void>();
+  let isWide = wide;
+  window.matchMedia = (query: string) =>
+    ({
+      matches: isWide && query.includes('min-width'),
+      media: query,
+      onchange: null,
+      addEventListener: (_: string, listener: () => void) => listeners.add(listener),
+      removeEventListener: (_: string, listener: () => void) => listeners.delete(listener),
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList; // a stand-in: jsdom has no matchMedia of its own
+  return (next) => {
+    isWide = next;
+    settle(() => {
+      for (const listener of listeners) listener();
+    });
+  };
 }
 
 async function openGame(game = newGame()) {
@@ -157,6 +180,88 @@ describe('the desktop layout (smoke test)', () => {
     expect(screen.getByRole('button', { name: 'Here' })).toHaveAttribute('aria-current', 'page');
   });
 
+  it('keeps a story scene where it was as the window crosses the breakpoint', async () => {
+    const resize = resizableWindow(true);
+    const user = await openGame(freshGame());
+    await user.click(screen.getByRole('button', { name: 'Hear the honours' }));
+    await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
+    // The scene's own node: a remount would draw a new one (and forget what it held).
+    const heading = screen.getByRole('heading', { name: 'Team assignment' });
+    resize(false);
+    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBe(heading);
+    expect(screen.queryByRole('complementary', { name: 'You' })).not.toBeInTheDocument();
+    resize(true);
+    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBe(heading);
+    expect(screen.getByRole('complementary', { name: 'You' })).toBeInTheDocument();
+  });
+
+  describe('under a card laid over play', () => {
+    const HOME: Report = { kind: 'home-again', place: 'Home', days: 2, news: [], text: 'Back.' };
+    const onJob = () =>
+      act(veteran(newGame(), 5), { type: 'startMission', missionId: 'tea-merchant-escort' });
+    const dayEnded = (): GameState =>
+      act(
+        { ...newGame(), time: { day: 1, slot: 3 } },
+        { type: 'train', trainingId: 'rooftop-sprints' },
+      );
+
+    it('keeps a scene’s number keys from reaching under a report', async () => {
+      windowWide(true);
+      const user = await openGame({ ...onJob(), reports: [HOME] });
+      await user.keyboard('1');
+      expect(screen.queryByRole('button', { name: /^Scan the ridgeline/ })).toBeNull();
+      await user.click(
+        within(screen.getByRole('dialog')).getByRole('button', { name: 'Continue' }),
+      );
+      await user.keyboard('1');
+      expect(await screen.findByRole('button', { name: /^Scan the ridgeline/ })).toBeVisible();
+    });
+
+    it('keeps the dock’s number keys from switching tabs under the day’s sheet', async () => {
+      windowWide(true);
+      const user = await openGame(dayEnded());
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      await user.keyboard('3');
+      expect(screen.getByRole('button', { name: 'Jutsu' })).not.toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+    });
+
+    it('keeps the dock’s number keys from switching tabs under a person’s sheet', async () => {
+      windowWide(true);
+      const user = await openGame();
+      const around = screen.getByRole('region', { name: 'Who’s here' });
+      await user.click(within(around).getAllByRole('button')[0]!);
+      expect(document.querySelector('.person-sheet')).not.toBeNull();
+      await user.keyboard('3');
+      expect(screen.getByRole('button', { name: 'Jutsu' })).not.toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+    });
+  });
+
+  describe('under a sheet', () => {
+    it('keeps the dock’s number keys from switching tabs under a notice', async () => {
+      windowWide(true);
+      const user = await openGame();
+      const rail = screen.getByRole('region', { name: /^Places in/ });
+      await user.click(within(rail).getByRole('button', { name: /mission/i }));
+      await user.click(document.querySelector<HTMLElement>('.board .paper, button.paper')!);
+      expect(document.querySelector('.sheet')).not.toBeNull();
+      await user.keyboard('3');
+      expect(screen.getByRole('button', { name: 'Jutsu' })).not.toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+      await user.keyboard('{Escape}');
+      expect(document.querySelector('.sheet')).toBeNull();
+      await user.keyboard('3');
+      expect(screen.getByRole('button', { name: 'Jutsu' })).toHaveAttribute('aria-current', 'page');
+    });
+  });
+
   describe('on the title menu', () => {
     function openMenu() {
       const user = userEvent.setup();
@@ -250,6 +355,17 @@ describe('the desktop layout (smoke test)', () => {
       expect(screen.getByRole('region', { name: 'Your cards' })).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: 'Begin the fight' }));
       expect(await screen.findByRole('region', { name: 'So far' })).toBeInTheDocument();
+    });
+
+    it('keeps Enter from beginning the round under the fight guide', async () => {
+      windowWide(true);
+      const user = await openGame(inFight());
+      await user.click(screen.getByRole('button', { name: 'How fighting works' }));
+      // Off the guide's Close button, so Enter is the page's to take.
+      await user.click(screen.getByRole('heading', { name: 'How fighting works' }));
+      await user.keyboard('{Enter}');
+      expect(screen.queryByRole('region', { name: 'So far' })).not.toBeInTheDocument();
+      expect(screen.getByRole('dialog', { name: 'How fighting works' })).toBeInTheDocument();
     });
 
     it('begins the fight with Enter', async () => {

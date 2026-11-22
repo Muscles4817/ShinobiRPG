@@ -9,7 +9,7 @@ import {
 } from '@/game';
 
 import { BondMeter } from './BondMeter';
-import { useCloseOnEscape } from './useCloseOnEscape';
+import { SheetBackdrop } from './SheetBackdrop';
 
 type CompanionGrowingView = CompanionSheetView['growing'];
 
@@ -103,11 +103,10 @@ function Arts({
 
 /** Your companion's sheet: how it is, and feeding, play and medicine, wherever it is with you. */
 export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetProps) {
-  useCloseOnEscape(onClose);
   const c = companionSheet(state, ctx);
   if (!c) return null;
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
+    <SheetBackdrop onClose={onClose}>
       <section
         className="sheet person-sheet paper-sheet enter companion-sheet"
         aria-label={c.name}
@@ -170,7 +169,7 @@ export function CompanionSheet({ ctx, state, perform, onClose }: CompanionSheetP
           </button>
         </footer>
       </section>
-    </div>
+    </SheetBackdrop>
   );
 }
 

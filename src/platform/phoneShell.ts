@@ -4,7 +4,7 @@ import { App } from '@capacitor/app';
 /**
  * What the phone app does around the game once it is running natively: light status bar icons
  * over the night ground, and Android's back button. Back is the phone's Esc: it closes an open
- * sheet the way the keyboard does on a desktop (`useCloseOnEscape`), and otherwise does nothing,
+ * sheet the way the keyboard does on a desktop (`KeyLayer`'s Esc), and otherwise does nothing,
  * so a press mid-scene never quits the game. Leaving the app is the system's home gesture.
  */
 
