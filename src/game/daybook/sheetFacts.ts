@@ -13,8 +13,7 @@ export function onTheSheet(fact: Fact): fact is SheetFact {
     case 'injuryAdded':
     case 'jobDone':
       return true;
-    // A gift for the house is told as it is given; at-hand slots are for your sensei to judge.
-    case 'giftGiven':
+    // At-hand slots are for your sensei to judge.
     case 'atHand':
       return false;
   }

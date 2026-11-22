@@ -133,7 +133,7 @@ reading words written for the player. Each of these broke:
   changes.
 
 The fix is one more structure beside the sequencer: **facts** (`game/facts/`). A `Fact` is a
-discriminated union (`injuryAdded`, `jobDone`, `giftGiven`, `atHand`), each with its day, written
+discriminated union (`injuryAdded`, `jobDone`, `atHand`; a gift is remembered by who gave it, `housing.givers`), each with its day, written
 by `recordFact` from the one function that makes the change: `inflict` gives each wound an
 `instance` and records it, `afterStage` records the job with its grade, `giftsGiven` records the
 gift (and `housing.givers` remembers the giver for good), and a time happening first in

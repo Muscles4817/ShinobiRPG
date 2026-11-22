@@ -149,7 +149,6 @@ describe('gifts and keepsakes', () => {
     const gifted = giftsGiven(withBond(60), ctx);
     expect(gifted.housing.furniture).toContain('silk-futon');
     expect(gifted.housing.givers).toEqual([id]);
-    expect(gifted.facts.at(-1)).toMatchObject({ kind: 'giftGiven', personId: id, handed: true });
     expect(giftsGiven(gifted, ctx)).toEqual(gifted);
   });
 

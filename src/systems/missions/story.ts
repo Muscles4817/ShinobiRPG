@@ -95,6 +95,8 @@ export interface LedgerLine {
   /**
    * Something went wrong: a check failed or the pay was docked. Declared where it happens, so
    * the grade counts what went wrong, never what merely hurt (a hard road taken on purpose).
+   * Docked pay is a setback even when chosen (a purse given up out of mercy): the grade weighs
+   * what the job earned, and that choice cost it. Only a hurt is free to choose.
    */
   readonly setback?: true;
 }

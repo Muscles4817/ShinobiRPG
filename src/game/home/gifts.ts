@@ -3,7 +3,6 @@ import { stageOf } from '@/systems/bonds';
 import { addFurniture, ownsFurniture } from '@/systems/housing';
 
 import type { GameContext } from '../context';
-import { recordFact } from '../facts/record';
 import { chip, log } from '../ops';
 import { findPerson, inTownWith, whereNow } from '../people/cast';
 import type { GameState } from '../state';
@@ -63,27 +62,23 @@ export function giftsFoundAtTheDoor(state: GameState, ctx: GameContext): GameSta
   }, cleared);
 }
 
-/** The gift given: the piece is yours, the friend has given, and the fact of it is kept. */
-function given(state: GameState, person: PersonDef, gift: FurnishingDef, handed: boolean) {
+/** The gift given: the piece is yours, and the friend is remembered as having given. */
+function given(
+  state: GameState,
+  person: PersonDef,
+  gift: FurnishingDef,
+  handed: boolean,
+): GameState {
   const housing = addFurniture(state.housing, gift.id);
   const left = handed ? [] : [{ furnishingId: gift.id, fromId: person.id }];
-  return recordFact(
-    {
-      ...state,
-      housing: {
-        ...housing,
-        givers: [...housing.givers, person.id],
-        doorstep: [...housing.doorstep, ...left],
-      },
+  return {
+    ...state,
+    housing: {
+      ...housing,
+      givers: [...housing.givers, person.id],
+      doorstep: [...housing.doorstep, ...left],
     },
-    {
-      kind: 'giftGiven',
-      day: state.time.day,
-      personId: person.id,
-      furnishingId: gift.id,
-      handed,
-    },
-  );
+  };
 }
 
 /**

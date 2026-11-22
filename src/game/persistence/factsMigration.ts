@@ -34,6 +34,47 @@ function givers(people: RawState): string[] {
 }
 
 /**
+ * How a v74 debrief told a line was yours: it opened on a past tense. Frozen here as it was, so
+ * the lines already written on a job under way read as they did; never shared with live code.
+ */
+const V74_IRREGULAR = new Set(
+  (
+    'beat bit bought broke brought caught chose came did drew dug fell felt fought found gave ' +
+    'got had heard held hid hung kept knew laid led left let lost made meant met paid ran read ' +
+    'rode said sat saw sent set shut slept sold spoke split stood stole struck swore taught ' +
+    'thought threw told took was went woke won wore wrote'
+  ).split(' '),
+);
+const V74_NOT_VERBS = new Set(['need', 'seed', 'speed', 'bleed', 'breed', 'shed', 'sled', 'embed']);
+
+function v74Yours(text: string): boolean {
+  const first = /^[A-Za-z-]+/.exec(text.trim())?.[0] ?? '';
+  if (first !== first.charAt(0).toUpperCase() + first.slice(1).toLowerCase()) return false;
+  const word = first.toLowerCase();
+  return V74_IRREGULAR.has(word) || (/^[a-z-]{2,}ed$/.test(word) && !V74_NOT_VERBS.has(word));
+}
+
+/**
+ * A job under way keeps the lines it has written: each now says whose it is (as v74 read it)
+ * and whether it was a setback (as v74 graded it: a line told as a cost).
+ */
+function ledgerLine(value: unknown): RawState {
+  const line = record(value);
+  const text = typeof line.text === 'string' ? line.text : '';
+  return {
+    ...line,
+    ...(v74Yours(text) ? {} : { subject: 'its-own' }),
+    ...(line.tone === 'cost' ? { setback: true } : {}),
+  };
+}
+
+function mission(value: unknown): unknown {
+  if (value === null || value === undefined) return value;
+  const run = record(value);
+  return { ...run, ledger: list(run.ledger).map(ledgerLine) };
+}
+
+/**
  * The day's record as facts: the dawn snapshot no longer keeps injuries or the jobs count, and
  * counts the facts instead. A sheet waiting to be read was written the old way and is put away.
  */
@@ -47,7 +88,9 @@ function daybook(value: unknown): RawState {
 /**
  * v74 → v75: what happened is written down as it happens. Injuries have their own numbers, the
  * friends who gave a gift are remembered, the board decides tomorrow's jobs a day ahead, and
- * the day's record reads the facts. A save from before has none recorded yet.
+ * the day's record reads the facts. A save from before has none recorded yet, so a meeting
+ * earlier on the day it is loaded has no slots at hand to judge it by and is excused: lenient,
+ * once, rather than marking a miss nobody saw.
  */
 export function v74ToV75(state: RawState): RawState {
   return {
@@ -57,5 +100,6 @@ export function v74ToV75(state: RawState): RawState {
     housing: { ...record(state.housing), givers: givers(record(state.people)) },
     board: { ...record(state.board), upcoming: null },
     daybook: daybook(state.daybook),
+    mission: mission(state.mission),
   };
 }

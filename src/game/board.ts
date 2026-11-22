@@ -83,6 +83,11 @@ function keptOn(board: Board, day: number): readonly Posting[] {
   return board.postings.filter((p) => p.expiresDay >= day);
 }
 
+/** A job done once already that can never be done again. */
+function spent(board: Board, def: Pick<MissionDef, 'id' | 'once'>): boolean {
+  return def.once === true && board.completed.includes(def.id);
+}
+
 /** Jobs that could go up on `day` beside what is still up. */
 function candidatesOn(board: Board, day: number, ctx: GameContext, who: Reader): MissionDef[] {
   const kept = keptOn(board, day);
@@ -90,7 +95,7 @@ function candidatesOn(board: Board, day: number, ctx: GameContext, who: Reader):
     (m) =>
       !m.standing &&
       !inArc(ctx, m) &&
-      !(m.once && board.completed.includes(m.id)) &&
+      !spent(board, m) &&
       trusted(m, who, ctx) &&
       !kept.some((p) => p.missionId === m.id),
   );
@@ -141,8 +146,10 @@ function postDay(board: Board, day: number, ctx: GameContext, who: Reader): Boar
   const kept = keptOn(board, day);
   const decided =
     board.upcoming?.day === day ? board.upcoming.missionIds : chooseNew(board, day, ctx, who);
+  // A job decided yesterday may have been done since (a `once` job finished that day).
   const added = decided
     .filter((id) => !kept.some((p) => p.missionId === id))
+    .filter((id) => !spent(board, ctx.content.missions.require(id)))
     .map((id) => postingFor(board, id, day));
   const posted = toppedUp(
     { ...board, refreshedDay: day, postings: [...kept, ...added] },

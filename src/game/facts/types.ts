@@ -3,7 +3,7 @@ import type { JobGrade } from '../reports';
 /**
  * What happened, as it happened (`docs/design/happenings-plan.md`, "Facts"). A fact is written
  * where the change it records is made, through the one function that makes it (`inflict` adds
- * an injury, `afterStage` finishes a job, `giftsGiven` hands over a gift), so nothing has to work
+ * an injury, `afterStage` finishes a job), so nothing has to work
  * it out afterwards by comparing the state before and after, or by reading what was written for
  * the player. Whoever needs to know what happened (the day's sheet, your sensei settling a day)
  * reads the facts and switches over their kinds, so a new kind is one more case the compiler
@@ -27,14 +27,6 @@ export type Fact =
       readonly missionId: string;
       readonly title: string;
       readonly grade: JobGrade;
-    }
-  /** A close friend gave you a piece for the house: in hand, or left at your door. */
-  | {
-      readonly kind: 'giftGiven';
-      readonly day: number;
-      readonly personId: string;
-      readonly furnishingId: string;
-      readonly handed: boolean;
     }
   /**
    * A slot of the day passed with you at hand for your sensei: home, not out on a job or laid

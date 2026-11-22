@@ -122,4 +122,19 @@ describe('the gossip about tomorrow’s jobs', () => {
     }
     expect(missed).toBe(0);
   });
+
+  it('never posts a once-only job again that was finished after it was decided', () => {
+    // Decided for tomorrow while it was still open, then finished today.
+    const start = onDay(5, veteran(onDay(1), 2));
+    const today = { ...start, board: boardFor(start, ctx) };
+    const board = {
+      ...today.board,
+      upcoming: { day: 6, missionIds: ['the-white-stag'] },
+      completed: [...today.board.completed, 'the-white-stag'],
+    };
+    const tomorrow = { ...today, board, time: { day: 6, slot: 0 } };
+    expect(boardFor(tomorrow, ctx).postings.map((p) => p.missionId)).not.toContain(
+      'the-white-stag',
+    );
+  });
 });

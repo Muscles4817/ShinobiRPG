@@ -1,5 +1,5 @@
 import { bondWith } from '@/systems/bonds';
-import { newGame } from '@/test/gameFixtures';
+import { act, newGame } from '@/test/gameFixtures';
 
 import { deserialize } from './save';
 
@@ -43,5 +43,31 @@ describe('the facts migration', () => {
     expect(state.daybook.start?.factsFrom).toBe(0);
     expect(state.daybook.start).not.toHaveProperty('injuries');
     expect(state.daybook.ended).toBeNull();
+  });
+
+  it('keeps the lines a job under way has written reading as they did, and graded as they were', () => {
+    const veteranRun = act(newGame({ standing: { ...newGame().standing, missionsCompleted: 5 } }), {
+      type: 'startMission',
+      missionId: 'tea-merchant-escort',
+    });
+    const run = veteranRun.mission!;
+    const { facts: _f, ...rest } = veteranRun;
+    const older = {
+      ...rest,
+      mission: {
+        ...run,
+        ledger: [
+          { stageIndex: 0, text: 'Took a goat track over the hill.', tone: 'cost' },
+          { stageIndex: 0, text: 'The client asked for you by name.', tone: 'gain' },
+        ],
+      },
+    };
+    const loaded = deserialize(JSON.stringify({ version: 74, state: older }));
+    if (!loaded.ok) throw new Error(loaded.error);
+    const [mine, theirs] = loaded.value.mission!.ledger;
+    expect(mine).toMatchObject({ setback: true });
+    expect(mine).not.toHaveProperty('subject');
+    expect(theirs).toMatchObject({ subject: 'its-own' });
+    expect(theirs).not.toHaveProperty('setback');
   });
 });

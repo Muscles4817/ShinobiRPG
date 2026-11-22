@@ -21,7 +21,7 @@ export const LEDGER_MAX_WORDS = 16;
 const SOMEONE_ELSE = new Set(
   (
     'The A An No Her His Their Its Our My Your This That These Those Every Each Some One ' +
-    'It He She They We You I Everyone Nobody Someone'
+    'It He She They We You I Everyone Everything Nobody Nothing Someone Something'
   ).split(' '),
 );
 
