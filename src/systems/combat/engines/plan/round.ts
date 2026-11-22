@@ -340,14 +340,14 @@ export function resolveExchange(state: PlanState, rng: Rng): PlanState {
   }));
   const { field: _old, ...rest } = state;
   const closing = result ? [closingLine(end, result)] : fading;
-  // Told up to the fight as it now stands (`storyLevel.ts`).
   const after = {
     fighters,
     ...(field ? { field } : {}),
     ...(end.mark ? { mark: end.mark } : {}),
     ...(end.foeMark ? { foeMark: end.foeMark } : {}),
   };
-  const story = levelled(toldOn([...state.story, ...end.story], ...closing), after);
+  // Brought level first, so the closing line (or a field fading) shows the fight as it stands.
+  const story = toldOn(levelled([...state.story, ...end.story], after), ...closing);
   return {
     ...rest,
     round: result ? state.round : state.round + 1,

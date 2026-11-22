@@ -95,6 +95,16 @@ describe('shadow clones', () => {
     expect(shadowsOf(wound(round, { who: 'hero', damage: 999 }), 'hero')).toHaveLength(0);
   });
 
+  it('are numbered past every clone still standing, so none shares an id', () => {
+    const round = cast(roundOf());
+    const [first] = shadowsOf(round, 'hero');
+    // The first pops and leaves; the next clones must not take the id of the one still up.
+    const left = shadowsAfter(wound(round, { who: first!.id, damage: 1 }));
+    const again = cast(left);
+    const ids = again.fighters.map((f) => f.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it('never stand more than a few at once', () => {
     let round = roundOf();
     for (let i = 0; i < 5; i++) round = cast(round);

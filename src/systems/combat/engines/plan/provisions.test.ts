@@ -92,6 +92,9 @@ describe('provisions in Plan & Watch', () => {
     const winded = secondWinds(hurt);
     expect(bandit(winded).health).toBe(20 + SECOND_WIND_HEAL);
     expect(textOf(winded.story).at(-1)).toContain('finds a second wind');
+    expect(winded.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', who: 'bandit', cause: 'heal' }),
+    );
     const again = { ...winded, fighters: atHealth(winded.fighters, 'bandit', 10) };
     expect(bandit(secondWinds(again)).health).toBe(10);
     const healthy = secondWinds(start);

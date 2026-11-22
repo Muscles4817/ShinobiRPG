@@ -89,6 +89,9 @@ describe('summons', () => {
     const called = callSummon(round(), caller(round()), 'toad');
     expect(toad(called)).toMatchObject({ name: 'A great toad', side: 'player', row: 'front' });
     expect(caller(called).health).toBe(90);
+    expect(called.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', to: 90, cause: 'price' }),
+    );
     expect(textOf(called.story).join(' ')).toMatch(/answers the call/);
   });
 

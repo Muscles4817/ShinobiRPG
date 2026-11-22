@@ -359,6 +359,9 @@ describe('healing', () => {
       mend,
     );
     const said = textOf(after.story).join(' ');
+    expect(after.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', cause: 'heal', by: hurt.id }),
+    );
     expect(said).toContain('Mending Glow closes the worst of');
     expect(said).not.toContain('breath');
   });

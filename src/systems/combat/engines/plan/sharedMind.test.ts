@@ -110,6 +110,15 @@ describe('a shared mind', () => {
     expect(decide(r.fighters)).toBe('victory');
     const after = mindsAfter(r);
     expect(who(after, 'mask-a').health).toBe(0);
+    expect(after.story).toContainEqual(
+      expect.objectContaining({
+        kind: 'health',
+        who: 'mask-a',
+        to: 0,
+        cause: 'put-down',
+        by: 'keeper',
+      }),
+    );
     expect(textOf(after.story).join(' ')).toMatch(/drops where/);
   });
 
@@ -126,6 +135,15 @@ describe('a shared mind', () => {
     const r = changed(keeperFight(), 'mask-a', { health: 0, fellAt: 3 });
     const after = mindsAfter(r);
     expect(who(after, 'mask-a').health).toBe(50);
+    expect(after.story).toContainEqual(
+      expect.objectContaining({
+        kind: 'health',
+        who: 'mask-a',
+        to: 50,
+        cause: 'raised',
+        by: 'keeper',
+      }),
+    );
     expect(who(after, 'mask-a').fellAt).toBeUndefined();
     expect(who(after, 'keeper').chakra).toBe(100 - raiseCost(who(r, 'keeper')));
     expect(who(after, 'keeper').exposure).toBe(1);

@@ -135,6 +135,10 @@ describe('the gates', () => {
     const seventh = empowerSelf(third, guy(third), use(wonder));
     const after = afterEmpowers(withGuy(seventh, { health: 25 }), 2);
     expect(guy(after).health).toBe(0);
+    expect(after.story).toContainEqual(
+      expect.objectContaining({ kind: 'health', to: 0, cause: 'price' }),
+    );
+    expect(after.story).toContainEqual(expect.objectContaining({ kind: 'fall' }));
     expect(guy(after).fellAt).toBe(after.number);
     expect(textOf(after.story).join(' ')).toMatch(/body gives out under/);
   });

@@ -83,9 +83,23 @@ describe('holding a foe off', () => {
     expect(held.length).toBeGreaterThan(0);
     expect(through.length).toBeGreaterThan(0);
     for (const r of held) expect(distanceBetween(r, 'hero', 'caster')).toBe('mid');
+    // Bug #15: the holder's line, about the closer: it is the closer's step that failed.
+    for (const r of held)
+      expect(linesOf(r.story).find((l) => l.cause)).toMatchObject({
+        actor: 'caster',
+        cause: { cause: 'held-off', kind: 'step-failed', subject: 'hero' },
+      });
     for (const r of through) expect(distanceBetween(r, 'hero', 'caster')).toBe('close');
     // Holding off is the holder's turn.
     for (const r of [...held, ...through]) expect(r.acted).toContain('caster');
+  });
+
+  it('a step stopped in its own contest is the stepper’s failed step', () => {
+    const causes = Array.from({ length: 60 }, (_, i) => stepIn(atMid(['caster']), i + 1)).flatMap(
+      (r) => linesOf(r.story).flatMap((l) => (l.cause ? [l.cause] : [])),
+    );
+    expect(causes.length).toBeGreaterThan(0);
+    for (const c of causes) expect(c).toMatchObject({ kind: 'step-failed', subject: 'hero' });
   });
 
   it('a holder who has already acted this exchange can’t', () => {

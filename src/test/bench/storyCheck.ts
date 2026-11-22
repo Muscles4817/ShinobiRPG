@@ -11,7 +11,12 @@ import { poolsNow } from '@/systems/combat/engines/plan/toldPools';
  *   exactly the engine's state, everyone's health,
  *   pools and statuses and who is on the field;
  * - nothing hurts untold: within each exchange, every change of health is followed by a line
- *   that tells it, so the watch screen never moves a bar after the story has moved on.
+ *   that tells it, so the watch screen never moves a bar after the story has moved on, and each
+ *   was recorded by the writer that made it, never only found by the levelling;
+ * - the fight ends on its closing line: nothing moves after it.
+ *
+ * The levelling (`plan/storyLevel.ts`) says whatever the fold lacks, so the first check alone
+ * mostly checks the levelling; the others hold the writers to account.
  *
  * A broken invariant throws, naming the fight's first difference.
  */
@@ -73,6 +78,22 @@ function healthTold(events: readonly CombatEvent[]): void {
   }
 }
 
+/**
+ * Every health change is recorded by the writer that made it (`plan/health.ts`), with why and by
+ * whom: one only the levelling found (`settled`) is a change made out of the writer's sight.
+ */
+function healthRecorded(events: readonly CombatEvent[]): void {
+  const unseen = events.find((e) => e.kind === 'health' && e.cause === 'settled');
+  if (unseen) fail('health changed out of its writer’s sight', unseen);
+}
+
+/** As the fight ends, the closing line is told last: nothing moves after it. */
+function closedLast(plan: PlanState): void {
+  const last = plan.story.map((e) => e.kind).lastIndexOf('told');
+  const after = plan.story.slice(last + 1);
+  if (plan.result !== null && after.length > 0) fail('changes after the closing line', after);
+}
+
 /** Checks a planned fight's story after an act; `before` is the state the act was played from. */
 export function checkStory(state: CombatState, before?: CombatState): void {
   const plan = decode(state);
@@ -81,5 +102,8 @@ export function checkStory(state: CombatState, before?: CombatState): void {
   const from = before ? decode(before) : null;
   const start = from ? (from.storyDropped ?? 0) + from.story.length : 0;
   const offset = plan.storyDropped ?? 0;
-  healthTold(plan.story.slice(Math.max(0, start - offset)));
+  const fresh = plan.story.slice(Math.max(0, start - offset));
+  healthTold(fresh);
+  healthRecorded(fresh);
+  closedLast(plan);
 }
