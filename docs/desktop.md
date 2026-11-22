@@ -59,6 +59,13 @@ Every write goes to a `.tmp` file beside the real one, is flushed to disk, then 
 so a crash or power cut keeps the old file whole. Deleting the save from the game deletes its
 backup too. To move a game to another computer, copy the `saves` folder.
 
+The page writes each save behind the game, so the newest may still be on its way when the window
+is closed. The page holds that close on `beforeunload` until the write is done (at most a few
+seconds, `src/platform/keepWrites.ts`), then closes the window itself; a quit asked meanwhile
+(Cmd+Q included) goes ahead once it closes. Chromium only lets a page hold a close after the
+player has interacted with it, which is always the case once a save has been made by playing.
+To check it by hand: `npm run desktop:dev`, act, and close the window at once; the action is kept.
+
 ## Packaging
 
 To get a build without building it yourself, download one the **App builds** workflow made

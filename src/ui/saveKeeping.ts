@@ -59,7 +59,7 @@ export function keepCopy(rescue: SaveStore, raw: string): CopyKept {
 export const COPY_NOTICE: Readonly<Record<CopyKept, string>> = {
   kept: 'A copy of it is kept on this device (Settings, Save data), and a new game won’t erase it.',
   'earlier-kept':
-    'It couldn’t be kept as a copy, but an earlier copy is (Settings, Save data), and a new game won’t erase that.',
+    'It isn’t a whole save, so the copy kept earlier stays in its place (Settings, Save data), and a new game won’t erase that.',
   'not-kept':
     'This device couldn’t keep a copy of it, so starting a new game will replace it for good.',
 };

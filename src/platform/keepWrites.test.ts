@@ -1,55 +1,65 @@
 import type { PendingWrites } from './cachedStores';
-import { keepWritesOnLeave, type LeavingPage } from './keepWrites';
+import { holdCloseForWrites, type ClosingPage } from './keepWrites';
 
-/** A page that remembers its listeners, so a test can fire them. */
-function page(visibility = 'visible') {
-  const listeners: Record<string, (event: Event) => void> = {};
+/** A window stand-in that remembers its close listener. */
+function page() {
+  let listener: ((event: Event) => void) | null = null;
   const closed = vi.fn();
-  const doc = { visibilityState: visibility };
-  const stub: LeavingPage = {
-    addEventListener: (type, listener) => {
-      listeners[type] = listener;
+  const stub: ClosingPage = {
+    addEventListener: (_type, l) => {
+      listener = l;
     },
     close: closed,
-    document: doc,
   };
-  return { stub, listeners, closed, doc };
+  const leave = () => {
+    const event = new Event('beforeunload', { cancelable: true });
+    listener?.(event);
+    return event;
+  };
+  return { stub, closed, leave };
 }
 
-function writes(busy: boolean): PendingWrites & { readonly flushed: ReturnType<typeof vi.fn> } {
-  return { busy: () => busy, flushed: vi.fn(() => Promise.resolve()) };
+function writes(busy: boolean, flushed: () => Promise<void>): PendingWrites {
+  return { busy: () => busy, flushed };
 }
 
-describe('keeping the last saves as the app goes away', () => {
-  it('hurries pending writes on when the page is hidden or put away', () => {
-    const { stub, listeners, doc } = page();
-    const pending = writes(true);
-    keepWritesOnLeave(pending, stub, { holdClose: false });
-    listeners.pagehide?.(new Event('pagehide'));
-    doc.visibilityState = 'hidden';
-    listeners.visibilitychange?.(new Event('visibilitychange'));
-    expect(pending.flushed).toHaveBeenCalledTimes(2);
+describe('keeping the desktop app’s last save as its window closes', () => {
+  it('holds a close until the save is written, then closes', async () => {
+    const { stub, closed, leave } = page();
+    holdCloseForWrites(
+      writes(true, () => Promise.resolve()),
+      stub,
+    );
+    expect(leave().defaultPrevented).toBe(true);
+    await vi.waitFor(() => {
+      expect(closed).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('in the desktop app, holds a close until the save is written, then closes', async () => {
-    const { stub, listeners, closed } = page();
-    keepWritesOnLeave(writes(true), stub, { holdClose: true });
-    const leaving = new Event('beforeunload', { cancelable: true });
-    listeners.beforeunload?.(leaving);
-    expect(leaving.defaultPrevented).toBe(true);
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(closed).toHaveBeenCalled();
+  it('lets a close go at once when nothing is waiting', () => {
+    const { stub, closed, leave } = page();
+    holdCloseForWrites(
+      writes(false, () => Promise.resolve()),
+      stub,
+    );
+    expect(leave().defaultPrevented).toBe(false);
+    expect(closed).not.toHaveBeenCalled();
   });
 
-  it('lets a close go at once when nothing is waiting, and never holds one in a browser', () => {
-    const idle = page();
-    keepWritesOnLeave(writes(false), idle.stub, { holdClose: true });
-    const leaving = new Event('beforeunload', { cancelable: true });
-    idle.listeners.beforeunload?.(leaving);
-    expect(leaving.defaultPrevented).toBe(false);
-    const browser = page();
-    keepWritesOnLeave(writes(true), browser.stub, { holdClose: false });
-    expect(browser.listeners.beforeunload).toBeUndefined();
+  it('closes anyway once the limit passes, so a hung write never keeps the window open', () => {
+    vi.useFakeTimers();
+    const { stub, closed, leave } = page();
+    holdCloseForWrites(
+      writes(true, () => new Promise(() => undefined)),
+      stub,
+      100,
+    );
+    expect(leave().defaultPrevented).toBe(true);
+    // A second close while one is held waits with it, and closes only once.
+    expect(leave().defaultPrevented).toBe(true);
+    return vi.advanceTimersByTimeAsync(100).then(() => {
+      expect(closed).toHaveBeenCalledTimes(1);
+      vi.useRealTimers();
+    });
   });
 });

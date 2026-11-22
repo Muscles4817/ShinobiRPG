@@ -29,6 +29,7 @@ export const LEAF_ELEMENTS: readonly TechniqueDef[] = [
     element: 'water',
     reach: ['far'],
     accuracy: 'sure',
+    tags: { delivery: ['thrown'] },
     effects: [{ verb: 'damage', power: 10 }],
     chakraCost: 6,
     rank: 'E',

@@ -42,14 +42,20 @@ function start(): void {
     if (window.isMinimized()) window.restore();
     window.focus();
   });
+  // Set once the player asks to quit. The page may hold its window's close for a save still
+  // being written (`src/platform/keepWrites.ts`), which cancels that quit; when the window then
+  // closes itself, the quit goes ahead, even on macOS, where a closed window normally keeps the
+  // app running.
+  let quitting = false;
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+    if (quitting || process.platform !== 'darwin') app.quit();
   });
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) openWindow();
   });
   // Writes still under way finish before the app goes.
   app.on('before-quit', (event) => {
+    quitting = true;
     if (!files.busy()) return;
     event.preventDefault();
     void files.settled().finally(() => {

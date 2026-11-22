@@ -1,8 +1,6 @@
 import { SystemBars, SystemBarsStyle } from '@capacitor/core';
 import { App } from '@capacitor/app';
 
-import type { PendingWrites } from './cachedStores';
-
 /**
  * What the phone app does around the game once it is running natively: light status bar icons
  * over the night ground, and Android's back button. Back is the phone's Esc: it closes an open
@@ -15,15 +13,9 @@ function pressEscape(): void {
   window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
 }
 
-/**
- * Sets the shell up. A part that fails is reported and left out; the game plays on. Sent to
- * the background, the app hurries its last save on: the system may end it there.
- */
-export async function startPhoneShell(writes: PendingWrites | null): Promise<void> {
+/** Sets the shell up. A part that fails is reported and left out; the game plays on. */
+export async function startPhoneShell(): Promise<void> {
   const parts = [
-    App.addListener('pause', () => {
-      void writes?.flushed();
-    }),
     SystemBars.setStyle({ style: SystemBarsStyle.Dark }),
     // Listening replaces Android's default, which would close the app.
     App.addListener('backButton', () => {

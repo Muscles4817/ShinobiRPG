@@ -1,44 +1,48 @@
 import type { PendingWrites } from './cachedStores';
 
 /**
- * Keeping a native shell's last saves when the app goes away. The game's stores write behind
- * it (`cachedStores.ts`), so the newest save may still be waiting when the player closes the
- * window or the phone sends the app to the background. When the page is hidden or put away
- * the writes are hurried on; and where the shell lets the page hold a close (the desktop app,
- * whose window waits on `beforeunload`), a close that would cut a write short waits for it,
- * then closes the window itself.
+ * Keeping the desktop app's last save when its window is closed. The game's stores write
+ * behind it (`cachedStores.ts`): each save starts writing at once, but the newest may still be
+ * on its way when the player closes the window. The window waits on `beforeunload`, so a close
+ * that would cut a write short is held until the writes are done (or `HOLD_LIMIT_MS` has
+ * passed, so a write that hangs can never keep the window open), then the window closes
+ * itself. A browser would ask the player instead, so only a shell that closes quietly holds.
  */
 
-/** The parts of the page the keeper listens to: the window, or a stand-in in tests. */
-export interface LeavingPage {
-  readonly addEventListener: (type: string, listener: (event: Event) => void) => void;
+/** The longest a close is held for writes still under way. */
+export const HOLD_LIMIT_MS = 3000;
+
+/** The parts of the page the keeper needs: the window, or a stand-in in tests. */
+export interface ClosingPage {
+  readonly addEventListener: (type: 'beforeunload', listener: (event: Event) => void) => void;
   readonly close: () => void;
-  readonly document: { readonly visibilityState: string };
 }
 
-export interface KeepOptions {
-  /** Whether a close may be held until the writes are done (true only in the desktop app). */
-  readonly holdClose: boolean;
+/** Settles when the writes are done or the limit has passed, whichever comes first. */
+function writtenOrTimedOut(writes: PendingWrites, limitMs: number): Promise<void> {
+  return Promise.race([
+    writes.flushed(),
+    new Promise<void>((resolve) => {
+      setTimeout(resolve, limitMs);
+    }),
+  ]);
 }
 
-export function keepWritesOnLeave(
+export function holdCloseForWrites(
   writes: PendingWrites,
-  page: LeavingPage,
-  { holdClose }: KeepOptions,
+  page: ClosingPage,
+  limitMs = HOLD_LIMIT_MS,
 ): void {
-  const hurry = () => {
-    void writes.flushed();
-  };
-  page.addEventListener('pagehide', hurry);
-  page.addEventListener('visibilitychange', () => {
-    if (page.document.visibilityState === 'hidden') hurry();
-  });
-  if (!holdClose) return;
+  let holding = false;
   page.addEventListener('beforeunload', (event) => {
-    if (!writes.busy()) return;
-    // Electron cancels the close quietly; the window closes once the save is written.
+    if (!holding && !writes.busy()) return;
+    // Electron cancels the close quietly; the window closes once the save is written. A close
+    // asked again while one is held waits with it.
     event.preventDefault();
-    void writes.flushed().then(() => {
+    if (holding) return;
+    holding = true;
+    void writtenOrTimedOut(writes, limitMs).then(() => {
+      holding = false;
       page.close();
     });
   });

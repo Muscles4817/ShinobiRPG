@@ -239,7 +239,7 @@ export const ORIGINAL_LOCATIONS: readonly LocationDef[] = [
         id: 'home',
         kind: 'home',
         name: 'Home',
-        inText: 'home',
+        inText: 'your home',
         icon: 'house',
         blurb: 'Room above the noodle stand',
         lodging: 'Room above the noodle stand',
