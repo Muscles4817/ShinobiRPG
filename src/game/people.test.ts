@@ -6,7 +6,7 @@ import { tastesOf } from './people/cast';
 import { deserialize, serialize } from './persistence/save';
 import type { GameState } from './state';
 import { hubView } from './views/hub';
-import { bondsView } from './views/people';
+import { bondsView, personCard } from './views/people';
 import { personSheet } from './views/personSheet';
 import { activeScene, conversationScene, teamScene } from './views/peopleScenes';
 
@@ -153,6 +153,15 @@ describe('talking', () => {
     expect(training?.people.map((f) => f.name)).toContain('Gōran');
     const traveller = { ...newGame(), locationId: 'sakyugakure' };
     expect(bondsView(traveller, ctx).team[0]?.where).toBe('Away');
+  });
+
+  it('says where someone is in the place’s own words, never by guessing an article', () => {
+    const goran = ctx.content.people.require('goran');
+    const at = (slot: number) =>
+      personCard({ ...newGame(), time: { day: 1, slot } }, ctx, goran).where;
+    expect(at(0)).toBe('At the training ground');
+    // Market Street takes no article; the old rule made it "At the Market Street".
+    expect(at(2)).toBe('At Market Street');
   });
 });
 

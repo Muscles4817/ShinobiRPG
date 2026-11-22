@@ -74,7 +74,7 @@ export function drivenAttributes(
  * a scroll's unsealing, or a hold the threads themselves keep (a channelled pin).
  */
 export function handsOnThreads(technique: CombatTechnique): boolean {
-  if (!isSigned(technique.discipline)) return true;
+  if (!isSigned(technique)) return true;
   return technique.effects.some(
     (e) => e.verb === 'summon' || (e.verb === 'pin' && e.channelled === true),
   );

@@ -12,6 +12,7 @@ export const LEAF_CAST_ARMOUR: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'earth',
     needs: { nature: 'earth' },
+    tags: { execution: { handSigns: true } },
     effects: [{ verb: 'shroud', power: 12, kind: 'earth' }],
     chakraCost: 12,
     rank: 'B',

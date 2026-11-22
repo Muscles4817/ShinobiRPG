@@ -55,6 +55,7 @@ export const NARUTO_LETTINGS: PlaceDef = {
   id: 'housing-office',
   kind: 'lettings',
   name: 'Village Housing Office',
+  inText: 'the Village Housing Office',
   icon: 'house',
   blurb: 'Flats and houses; a carpenter next door',
   keeper: 'The housing clerk',

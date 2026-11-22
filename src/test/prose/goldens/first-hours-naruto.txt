@@ -73,7 +73,7 @@ view:
     specialty:
       label: Taijutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your team has not been assigned yet.
     style: Quiet and patient, and impossible to knock over. Asks more questions than he answers.
@@ -88,7 +88,7 @@ view:
     specialty:
       label: Ninjutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your team has not been assigned yet.
     style: A former academy instructor who still teaches as patiently as ever, from the very beginning.
@@ -227,7 +227,7 @@ view:
     specialty:
       label: Taijutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
@@ -1239,7 +1239,7 @@ view:
     specialty:
       label: Taijutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
@@ -1326,7 +1326,7 @@ view:
     specialty:
       label: Taijutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your rival is waiting for an answer.
     spar:

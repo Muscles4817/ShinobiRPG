@@ -12,15 +12,18 @@ import type { SlotName, StorageBackend } from './storageBackend';
 
 export type Stores = Readonly<Record<SlotName, SaveStore>>;
 
-/** A store whose writes can be waited on: for tests, and for closing the app cleanly. */
-export interface CachedStore extends SaveStore {
+/** Writes that can be waited on: for tests, and for closing the app without losing a save. */
+export interface PendingWrites {
+  /** Whether a write is under way or waiting. */
+  readonly busy: () => boolean;
   /** Settles once every write asked for so far has been tried. */
   readonly flushed: () => Promise<void>;
 }
 
-export interface CachedStores {
+export type CachedStore = SaveStore & PendingWrites;
+
+export interface CachedStores extends PendingWrites {
   readonly stores: Stores;
-  readonly flushed: () => Promise<void>;
 }
 
 /** Queued in place of data: the slot is to be emptied, after any write under way. */
@@ -77,6 +80,7 @@ export function cachedStore(
       pending = REMOVE;
       if (!writing) run();
     },
+    busy: () => writing || pending !== null,
     flushed: async () => {
       while (writing) await idle;
     },
@@ -97,8 +101,9 @@ export async function openCachedStores(backend: StorageBackend): Promise<CachedS
     edits: cachedStore(backend, 'edits', edits),
     rescue: cachedStore(backend, 'rescue', rescue),
   };
+  const all = Object.values(stores);
   const flushed = async () => {
-    await Promise.all(Object.values(stores).map((store) => store.flushed()));
+    await Promise.all(all.map((store) => store.flushed()));
   };
-  return { stores, flushed };
+  return { stores, busy: () => all.some((store) => store.busy()), flushed };
 }

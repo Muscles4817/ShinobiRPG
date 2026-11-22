@@ -23,6 +23,7 @@ export const CEDAR_DEEP: LocationDef = {
       id: 'cedar-deep-woods',
       kind: 'wilds',
       name: 'Under the Cedars',
+      inText: 'the old cedars',
       icon: 'tree',
       blurb: 'Trees older than the village, and moss to the knee',
       biome: 'woods',

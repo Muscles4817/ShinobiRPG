@@ -94,6 +94,7 @@ export const TANZAKU_TOWN: LocationDef = {
       id: 'tanzaku-townhouse',
       kind: 'house',
       name: 'A Townhouse Below the Castle',
+      inText: 'a townhouse below the castle',
       icon: 'house',
       blurb:
         'Two floors on a quiet lane, a kitchen, and a balcony with the castle roofs over it. Won at dice, and sold at a loss.',

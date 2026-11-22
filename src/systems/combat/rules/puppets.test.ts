@@ -61,6 +61,9 @@ describe('a master’s attention', () => {
     const threads = technique({ effects: [{ verb: 'pin', power: 14, channelled: true }] });
     expect(handsOnThreads(unseal)).toBe(true);
     expect(handsOnThreads(threads)).toBe(true);
+    // A look takes no signs, so it can be cast with the hands on the threads.
+    const look = technique({ discipline: 'genjutsu', tags: { delivery: ['eye-contact'] } });
+    expect(handsOnThreads(look)).toBe(true);
   });
 
   it('slips under a hit that takes a quarter of the master’s health', () => {

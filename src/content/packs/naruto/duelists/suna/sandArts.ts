@@ -100,6 +100,7 @@ export const SAND_ARTS: readonly TechniqueDef[] = [
     discipline: 'ninjutsu',
     element: 'fire',
     reach: ['mid', 'far'],
+    tags: { delivery: ['thrown'] },
     effects: [
       { verb: 'damage', power: 14, hits: 3 },
       { verb: 'afflict', power: 6, harm: 'burn' },

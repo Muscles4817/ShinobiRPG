@@ -4,6 +4,8 @@ import { registerSW } from 'virtual:pwa-register';
 
 import { CAPACITOR_SHELL } from '@/platform/capacitorBackend';
 import { chooseStores } from '@/platform/chooseStores';
+import { ELECTRON_SHELL } from '@/platform/electronBackend';
+import { holdCloseForWrites } from '@/platform/keepWrites';
 import { startPhoneShell } from '@/platform/phoneShell';
 import { App } from '@/ui/App';
 import '@/ui/theme/fonts.css';
@@ -61,7 +63,9 @@ const root = document.getElementById('root');
 if (!root) throw new Error('Missing #root element');
 
 async function boot(container: HTMLElement): Promise<void> {
-  const { stores, shell } = await chooseStores();
+  const { stores, shell, writes } = await chooseStores();
+  // The desktop app's saves are written behind the game: a close waits for the last one.
+  if (writes && shell === ELECTRON_SHELL) holdCloseForWrites(writes, window);
   createRoot(container).render(
     <StrictMode>
       <App store={stores.save} prefs={stores.prefs} edits={stores.edits} rescue={stores.rescue} />

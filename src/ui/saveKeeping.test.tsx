@@ -63,11 +63,25 @@ describe('keeping saves', () => {
 
   it('never lets text that isn’t a save take the place of a kept copy', () => {
     const rescue = memoryStore('a good copy');
-    keepCopy(rescue, 'half a fi');
+    expect(keepCopy(rescue, 'half a fi')).toBe('earlier-kept');
     expect(rescue.data).toBe('a good copy');
     const empty = memoryStore();
-    keepCopy(empty, 'half a fi');
+    expect(keepCopy(empty, 'half a fi')).toBe('kept');
     expect(empty.data).toBe('half a fi');
+  });
+
+  it('says so when no copy could be kept, rather than promising one', () => {
+    const full = {
+      load: () => null,
+      save: () => {
+        throw new Error('full');
+      },
+      clear: () => undefined,
+    };
+    expect(keepCopy(full, 'half a fi')).toBe('not-kept');
+    render(<App store={memoryStore('half a fi')} rescue={full} />);
+    expect(screen.getByText(/starting a new game will replace it/)).toBeInTheDocument();
+    expect(screen.queryByText(/A copy of it is kept/)).toBeNull();
   });
 
   it('loads a pasted save from the title’s settings, keeping the game it replaces', async () => {

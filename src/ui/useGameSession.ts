@@ -16,7 +16,7 @@ import {
 import { useSound } from './audio/SoundProvider';
 import { useEdits } from './edits/EditsProvider';
 import { isFightStep, useThinking } from './fight/useThinking';
-import { fromOlderVersion, keepCopy, readSave, type Loaded } from './saveKeeping';
+import { COPY_NOTICE, fromOlderVersion, keepCopy, readSave, type Loaded } from './saveKeeping';
 import { saveSafely, STORAGE_FULL } from './saveSafely';
 
 /** An animation to play for the last action; `id` tells two of the same kind apart. */
@@ -57,10 +57,10 @@ function loadInitial(
   if (!raw) return { game: null, notice: null };
   const read = readSave(raw);
   if (!read.ok) {
-    keepCopy(rescue, raw);
+    const copy = keepCopy(rescue, raw);
     return {
       game: null,
-      notice: `Your save could not be loaded: ${read.error} A copy of it is kept on this device (Settings, Save data), and a new game won’t erase it.`,
+      notice: `Your save could not be loaded: ${read.error} ${COPY_NOTICE[copy]}`,
     };
   }
   // The save as it was before this version changed it, in case the change went wrong.

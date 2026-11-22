@@ -4,6 +4,7 @@ import {
   bladeInHand,
   counterSkill,
   handsFull,
+  isSigned,
   LEAD_PER_SPEED,
   reachLead,
   REACH_LEAD,
@@ -121,12 +122,24 @@ describe('a swing is a commitment', () => {
   });
 });
 
+/** A technique of this art, as a fight holds it. */
+function cast(over: Partial<CombatTechnique>): CombatTechnique {
+  return { id: 't', name: 'T', discipline: 'ninjutsu', effects: [], chakraCost: 5, ...over };
+}
+
 describe('hands full', () => {
   it('signs around a drawn blade, short of far, are made with hands full', () => {
-    expect(handsFull(swordsman, 'ninjutsu', 'close')).toBe(true);
-    expect(handsFull(swordsman, 'genjutsu', 'mid')).toBe(true);
-    expect(handsFull(swordsman, 'ninjutsu', 'far')).toBe(false);
-    expect(handsFull(swordsman, 'kenjutsu', 'close')).toBe(false);
-    expect(handsFull(fighter(), 'ninjutsu', 'close')).toBe(false);
+    const ninjutsu = cast({ discipline: 'ninjutsu' });
+    expect(handsFull(swordsman, ninjutsu, 'close')).toBe(true);
+    expect(handsFull(swordsman, cast({ discipline: 'genjutsu' }), 'mid')).toBe(true);
+    expect(handsFull(swordsman, ninjutsu, 'far')).toBe(false);
+    expect(handsFull(swordsman, cast({ discipline: 'kenjutsu' }), 'close')).toBe(false);
+    expect(handsFull(fighter(), ninjutsu, 'close')).toBe(false);
+  });
+
+  it('asks the technique’s tags, as the close-quarters contest does: a look takes no signs', () => {
+    const look = cast({ discipline: 'genjutsu', tags: { delivery: ['eye-contact'] } });
+    expect(isSigned(look)).toBe(false);
+    expect(handsFull(swordsman, look, 'close')).toBe(false);
   });
 });

@@ -178,6 +178,7 @@ export const SUNAGAKURE: LocationDef = {
       id: 'cliff-cut-room',
       kind: 'house',
       name: 'A Room Cut in the Cliff',
+      inText: 'a room cut in the cliff',
       icon: 'house',
       blurb:
         'Two rooms carved into the ring’s inner wall, with a shutter that opens on the whole village. Cool all day.',

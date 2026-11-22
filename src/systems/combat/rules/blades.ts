@@ -1,8 +1,7 @@
-import type { Discipline } from '@/systems/techniques';
-
 import type { CombatAttributes, CombatTechnique, RangeBand } from '../contract';
 import { shapeOf, type CombatGear, type CombatWeapon, type WeaponShape } from '../gearContract';
 import { weaponArt } from './mastery';
+import { tagsOf } from './tags';
 import { speedOf, weaponGuard } from './weaponClasses';
 
 /**
@@ -28,12 +27,13 @@ export const LEAD_PER_SPEED = 1.5;
 const WEAPON_ART_SHAPES: readonly WeaponShape[] = ['blade', 'blunt'];
 /** A foe whose taijutsu is this much more than the wielder's kenjutsu takes the reach away. */
 const CLEAR_OF_REACH = 1.3;
-/** Arts cast with hand signs, which a drawn blade gets in the way of. */
-const SIGNED_ARTS: readonly Discipline[] = ['ninjutsu', 'genjutsu', 'fuuinjutsu'];
-
-/** Whether an art is cast with hand signs, which need both hands free. */
-export function isSigned(discipline: Discipline): boolean {
-  return SIGNED_ARTS.includes(discipline);
+/**
+ * Whether a technique is cast with hand signs, which need both hands free. Its tags decide
+ * (`execution.handSigns`), the one answer the close-quarters contest reads too: an
+ * eye-contact illusion or a touch takes none, whatever its art.
+ */
+export function isSigned(technique: CombatTechnique): boolean {
+  return tagsOf(technique).execution.handSigns;
 }
 /** With hands full, a signed technique arrives this much as fast… */
 export const HANDS_FULL_ARRIVAL = 0.85;
@@ -111,7 +111,7 @@ export function counterSkill(defender: Armed): number {
   return closeSkill(defender);
 }
 
-/** A technique cast with hands full: a signed art, a weapon drawn, short of far. */
-export function handsFull(caster: Armed, discipline: Discipline, band: RangeBand): boolean {
-  return band !== 'far' && isSigned(discipline) && weaponInHand(caster);
+/** A technique cast with hands full: one with hand signs, a weapon drawn, short of far. */
+export function handsFull(caster: Armed, technique: CombatTechnique, band: RangeBand): boolean {
+  return band !== 'far' && isSigned(technique) && weaponInHand(caster);
 }

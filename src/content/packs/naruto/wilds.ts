@@ -20,6 +20,7 @@ export const KONOHA_WILDS: readonly PlaceDef[] = [
     id: 'naka-river',
     kind: 'wilds',
     name: 'Naka River',
+    inText: 'the Naka River',
     icon: 'wave',
     blurb: 'The river that runs through the village',
     biome: 'river',
