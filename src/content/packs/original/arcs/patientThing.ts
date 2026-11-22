@@ -182,6 +182,7 @@ export const PATIENT_THING_ACT_TWO: MissionDef = {
             { kind: 'memory', text: 'the night in the roots' },
           ],
           ledger: 'The patient thing was ended.',
+          ledgerSubject: 'its-own',
         },
       ],
     },

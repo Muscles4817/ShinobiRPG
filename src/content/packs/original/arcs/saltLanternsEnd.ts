@@ -90,6 +90,7 @@ export const WHAT_UMI_SAW: MissionDef = {
             { kind: 'memory', text: 'the night on the breakwater' },
           ],
           ledger: 'Umi told you she had seen drowned sailors at the shrine.',
+          ledgerSubject: 'its-own',
         },
         {
           label: 'Tell her ghosts are a shinobi’s job',
@@ -98,6 +99,7 @@ export const WHAT_UMI_SAW: MissionDef = {
             'She scowls, then laughs, then tells you anyway. Wet sailors, at the shrine, putting the lights out one by one.',
           effects: [{ kind: 'world', mark: 'salt-umi-told' }],
           ledger: 'Umi told you, once she had finished being annoyed.',
+          ledgerSubject: 'its-own',
         },
       ],
     },

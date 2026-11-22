@@ -5,6 +5,7 @@ import type { ArcDef, MissionDef, MissionStage } from '@/systems/missions';
 import type { Discipline } from '@/systems/techniques';
 
 import { rolledPronouns } from '../../people/pronouns';
+import { ledgerOf } from './ledger';
 
 /**
  * A generated sensei's story, made from their past (`compose.ts`): the four conversations at
@@ -146,13 +147,13 @@ function findStages(past: SenseiPast, input: ArcInput): MissionStage[] {
           stat: 'perception',
           difficulty: FIND_DIFFICULTY,
           role: 'tracker',
-          onSuccess: { ...found, ledger: s(past.arc.ledger.found) },
+          onSuccess: { ...found, ...ledgerOf(past, 'found', s) },
         },
         {
           label: s('Think where {foe.they} would be'),
           stat: 'intellect',
           difficulty: FIND_DIFFICULTY,
-          onSuccess: { ...found, ledger: s(past.arc.ledger.found) },
+          onSuccess: { ...found, ...ledgerOf(past, 'found', s) },
         },
       ],
       success: s(t.found),
@@ -190,20 +191,20 @@ function settleStages(past: SenseiPast, input: ArcInput): MissionStage[] {
           tone: 'earnest',
           reply: s(t.mercy.reply),
           effects: mercy,
-          ledger: s(past.arc.ledger.mercy),
+          ...ledgerOf(past, 'mercy', s),
         },
         {
           label: s(t.leave.label),
           tone: 'quiet',
           reply: s(t.leave.reply),
           effects: mercy,
-          ledger: s(past.arc.ledger.leave),
+          ...ledgerOf(past, 'leave', s),
         },
         {
           label: s(t.finish.label),
           tone: 'challenge',
           reply: s(t.finish.reply),
-          ledger: s(past.arc.ledger.finish),
+          ...ledgerOf(past, 'finish', s),
         },
       ],
     },
@@ -226,7 +227,7 @@ function settleStages(past: SenseiPast, input: ArcInput): MissionStage[] {
             { kind: 'world', mark: input.ids.settled },
             { kind: 'memory', text: `the day it ended at ${place}` },
           ],
-          ledger: s(past.arc.ledger.spared),
+          ...ledgerOf(past, 'spared', s),
         },
         {
           text: s(t.ended),
@@ -234,7 +235,7 @@ function settleStages(past: SenseiPast, input: ArcInput): MissionStage[] {
             { kind: 'world', mark: input.ids.settled },
             { kind: 'memory', text: `the last night at ${place}` },
           ],
-          ledger: s(past.arc.ledger.ended),
+          ...ledgerOf(past, 'ended', s),
         },
       ],
     },

@@ -3,7 +3,7 @@ import { PRONOUN_FORMS } from '@/core';
 import { SENSEI_ARCHETYPES } from './senseiArchetypes';
 import type { SenseiPast, SenseiTemperament } from './senseiParts';
 import type { ContentPack } from './types';
-import { LEDGER_MAX_WORDS } from './validateLedger';
+import { LEDGER_MAX_WORDS, opensOnSomeoneElse } from './validateLedger';
 
 /**
  * Checks the parts generated senseis are made from (`senseiParts.ts`): every reference is
@@ -67,6 +67,10 @@ function arcLedgerProblems(past: SenseiPast): string[] {
       // the fact a sentence of its own.
       ...(line.includes('{place}') ? [`names the place in its ledger: ${key}`] : []),
       ...(/[.!?]$/.test(line) ? [] : [`has a ledger line without a full stop: ${key}`]),
+      // Names are drawn, so no name list can catch one: a line opening on a slot says so.
+      ...(!past.arc.ledgerSubjects?.[key] && opensOnSomeoneElse(line, new Set())
+        ? [`tells its ${key} ledger line as yours, though it opens on someone else`]
+        : []),
     ];
   });
 }

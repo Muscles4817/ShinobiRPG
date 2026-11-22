@@ -74,15 +74,29 @@ export type Effect =
 /** How a ledger line reads in the debrief: something gained, something lost, or what happened. */
 export type LedgerTone = 'gain' | 'cost' | 'plain';
 
+/**
+ * Whose deed a ledger line tells: left out, yours, its subject understood ("Pulled a carter out
+ * of the ditch."), which the debrief gives a "you"; `its-own` when the line names its subject
+ * ("The client asked for you by name.") and stands as written. Declared, never read from words.
+ */
+export type LedgerSubject = 'its-own';
+
 /** One line of the job as it went, for the debrief. */
 export interface LedgerLine {
   readonly stageIndex: number;
   readonly text: string;
+  /** The line names its own subject (`LedgerSubject`); left out, it is something you did. */
+  readonly subject?: LedgerSubject;
   readonly tone: LedgerTone;
   /** The share of the pay it moved, if it moved any. */
   readonly pay?: number;
   /** Something found worth remembering (a clue). */
   readonly noted?: true;
+  /**
+   * Something went wrong: a check failed or the pay was docked. Declared where it happens, so
+   * the grade counts what went wrong, never what merely hurt (a hard road taken on purpose).
+   */
+  readonly setback?: true;
 }
 
 /** What the story so far is: the run's marks and threads, and who went. */

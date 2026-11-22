@@ -1,5 +1,5 @@
 import type { MissionRole } from './missionRank';
-import type { Condition, Effect } from './story';
+import type { Condition, Effect, LedgerSubject } from './story';
 import type { StatId } from '@/systems/stats';
 
 /**
@@ -11,8 +11,13 @@ import type { StatId } from '@/systems/stats';
 /** What a result does, and how the debrief tells it. */
 export interface Outcome {
   readonly effects?: readonly Effect[];
-  /** The debrief's line for it ("Lost the light at the spring"). No numbers. */
+  /**
+   * The debrief's line for it, a fact with no numbers. Written as something you did, its
+   * subject left out ("Lost the light at the spring.") unless `ledgerSubject` says otherwise.
+   */
   readonly ledger?: string;
+  /** The ledger line names its own subject ("The client asked for you by name."). */
+  readonly ledgerSubject?: LedgerSubject;
   /** Something found worth remembering (a clue): the debrief stamps its line. */
   readonly noted?: true;
 }

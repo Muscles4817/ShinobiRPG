@@ -24,7 +24,7 @@ export function playEnding(state: GameState, def: MissionDef, stage: EndingStage
   const run = state.mission;
   const ending = endingFor(state, stage);
   if (!run || !ending) return state;
-  const applied = applyOutcome(run, def, ending, 'plain');
+  const applied = applyOutcome(run, def, ending, 'chosen');
   const moved = advance(applied.run, { kind: 'outcome', text: ending.text });
   return feel({ ...state, mission: moved }, applied.personal).state;
 }

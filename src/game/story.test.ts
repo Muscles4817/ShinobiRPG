@@ -60,7 +60,12 @@ describe('a mission’s story', () => {
     expect(s.mission?.marks).toContain('lost-light');
     expect(s.mission?.threads.daylight).toBe(0);
     expect(s.mission?.ledger).toEqual([
-      { stageIndex: 1, text: 'Tried to hurry the blessing and lost the light.', tone: 'cost' },
+      {
+        stageIndex: 1,
+        text: 'Tried to hurry the blessing and lost the light.',
+        tone: 'cost',
+        setback: true,
+      },
     ]);
     // The stage for a lost light plays; the one for light to spare is passed over.
     expect(missionScene(s, ctx)?.prompt).toBe('Dusk falls before the pass.');

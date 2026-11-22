@@ -39,6 +39,7 @@ export const TOWN_APART: MissionDef = {
             '“Ropes cut on the bridge and nets cut in the harbour, on the same nights,” Inari says. “Everyone knows who did it, and everyone knows a different answer.”',
           effects: [{ kind: 'mark', mark: 'same-nights' }],
           ledger: 'Inari told you the ropes and the nets were cut on the same nights.',
+          ledgerSubject: 'its-own',
         },
         {
           label: 'Tell him you’ll sort it out',
@@ -87,6 +88,7 @@ export const CUT_NETS: MissionDef = {
               { kind: 'tally', tally: TWO_SIDES_CLUES, by: 1 },
             ],
             ledger: 'The net-cutter wore the tycoon’s company sandals, not a builder’s boots.',
+            ledgerSubject: 'its-own',
             noted: true,
           },
         },

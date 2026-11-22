@@ -140,6 +140,7 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
           reply: 'Masaru’s father straightens in the doorway.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Masaru fought in his father’s style.',
+          ledgerSubject: 'its-own',
         },
         {
           label: '“With yours. And ours.”',
@@ -147,6 +148,7 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
           reply: '“Together, then,” Masaru says, looking happier than he has all week.',
           effects: [{ kind: 'mark', mark: 'mercy' }],
           ledger: 'Masaru fought as a shinobi, with the team.',
+          ledgerSubject: 'its-own',
         },
         {
           label: '“Just win.”',
@@ -184,6 +186,7 @@ export const SWORD_SCHOOL_ACT_TWO: MissionDef = {
             { kind: 'memory', text: 'the duel in the school yard' },
           ],
           ledger: 'The rōnin fell in the school yard.',
+          ledgerSubject: 'its-own',
         },
       ],
     },

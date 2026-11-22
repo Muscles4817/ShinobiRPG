@@ -97,12 +97,14 @@ export const EAST_BRIDGE: MissionDef = {
             { kind: 'memory', text: 'the night Kōun crossed the east bridge' },
           ],
           ledger: 'Kōun crossed the east bridge, and Tsugumi forgave him.',
+          ledgerSubject: 'its-own',
         },
         {
           when: { has: 'at-peace' },
           text: 'Her lantern goes out gently, and the bridge is only a bridge. You carry her words down the pass for Kōun as carefully as a full bowl. He can stop, she said.',
           effects: [{ kind: 'world', mark: 'koun-favours-done' }],
           ledger: 'Tsugumi forgave Kōun, and rests.',
+          ledgerSubject: 'its-own',
         },
         {
           text: 'She breaks apart in the cold, unanswered. All the way down the pass you decide what to tell Kōun, and you know he’ll know you’re being kind.',

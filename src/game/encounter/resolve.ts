@@ -76,6 +76,7 @@ function getPast(
     text: END_LINES[ending.end],
     tone: share < 0 ? 'cost' : 'plain',
     ...(share !== 0 ? { pay: share } : {}),
+    ...(share < 0 ? { setback: true as const } : {}),
   });
   const run = withStagePay(advance(told, ...ending.notes), pay);
   return afterStage({ ...state, mission: run }, ctx);

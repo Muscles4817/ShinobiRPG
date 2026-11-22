@@ -1,4 +1,5 @@
 import type { CombatForm } from '@/systems/combat';
+import type { LedgerSubject } from '@/systems/missions';
 import type { Discipline, Element } from '@/systems/techniques';
 
 import type { Tone } from './people';
@@ -93,6 +94,8 @@ export interface SenseiPastArc {
    * subject where they are yours ("Found the camp near {place}."), and never a scene's own line.
    */
   readonly ledger: SenseiPastLedger;
+  /** The ledger lines that name their own subject ("{foe} died in the rain."), by key. */
+  readonly ledgerSubjects?: Readonly<Partial<Record<keyof SenseiPastLedger, LedgerSubject>>>;
   readonly find: {
     readonly title: string;
     readonly summary: string;

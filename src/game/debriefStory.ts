@@ -6,8 +6,9 @@ import type { DebriefLine } from './reports';
  * The debrief told as a short paragraph rather than read back line by line. Ledger lines are
  * facts written without a subject ("Pulled a carter out of the ditch."); the narrator gives
  * them one ("You pulled…"), runs a few together into a sentence, and moves the story on between
- * sentences ("Then you…"), while lines with a subject of their own ("The client asked for you
- * by name.") stand as written. Each line stays its own fragment, so its pay chip sits beside
+ * sentences ("Then you…"), while lines declared with a subject of their own (`subject:
+ * 'its-own'`: "The client asked for you by name.") stand as written. Which is which is declared
+ * on the line, never guessed from its first word: English verbs are too irregular to read. Each line stays its own fragment, so its pay chip sits beside
  * the words that earned it. Story text carries no numbers, and nothing here adds any.
  */
 
@@ -18,27 +19,6 @@ export const CLAUSES_PER_SENTENCE = 3;
 const ONWARD = ['Then you', 'After that you', 'Later you'] as const;
 /** The last sentence, when there were several. */
 const LAST = 'In the end you';
-
-/** Past tenses that don't end in -ed, as ledger lines start with them. */
-const IRREGULAR = new Set(
-  (
-    'beat bit bought broke brought caught chose came did drew dug fell felt fought found gave ' +
-    'got had heard held hid hung kept knew laid led left let lost made meant met paid ran read ' +
-    'rode said sat saw sent set shut slept sold spoke split stood stole struck swore taught ' +
-    'thought threw told took was went woke won wore wrote'
-  ).split(' '),
-);
-
-/** Words ending in -ed that are not past tenses. */
-const NOT_VERBS = new Set(['need', 'seed', 'speed', 'bleed', 'breed', 'shed', 'sled', 'embed']);
-
-/** Whether a line opens on its verb, its subject understood to be you. */
-export function subjectless(text: string): boolean {
-  const first = /^[A-Za-z-]+/.exec(text)?.[0] ?? '';
-  if (first !== first.charAt(0).toUpperCase() + first.slice(1).toLowerCase()) return false;
-  const word = first.toLowerCase();
-  return IRREGULAR.has(word) || (/^[a-z-]{2,}ed$/.test(word) && !NOT_VERBS.has(word));
-}
 
 interface Fact {
   readonly line: LedgerLine;
@@ -54,7 +34,7 @@ function factOf(line: LedgerLine): Fact {
   const end = text.search(/[.!?](\s|$)/);
   const first = end < 0 ? text : text.slice(0, end);
   const rest = end < 0 ? '' : text.slice(end + 1).trim();
-  return { line, clause: first, rest, mine: subjectless(text) };
+  return { line, clause: first, rest, mine: line.subject !== 'its-own' };
 }
 
 /** A fact that can run on with others: yours, one sentence, no commas of its own. */

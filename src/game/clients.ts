@@ -25,7 +25,7 @@ export function welcomeBack(state: GameState, def: MissionDef, run: MissionRun):
   if (!asksForYou(state, def)) return run;
   const paid = { ...run, rewardMultiplier: run.rewardMultiplier + CLIENT_RETURN_SHARE };
   const text = `${def.client} asked for you by name.`;
-  return addLedger(paid, { text, tone: 'gain', pay: CLIENT_RETURN_SHARE });
+  return addLedger(paid, { text, subject: 'its-own', tone: 'gain', pay: CLIENT_RETURN_SHARE });
 }
 
 /** One more job done for a client. */

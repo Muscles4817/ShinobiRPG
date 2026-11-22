@@ -187,6 +187,7 @@ export const BLACK_WING: MissionDef = {
             { kind: 'memory', text: 'the night on the pass' },
           ],
           ledger: 'Kurobane fell on the pass.',
+          ledgerSubject: 'its-own',
         },
       ],
     },

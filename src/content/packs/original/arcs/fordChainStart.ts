@@ -162,6 +162,7 @@ export const REED_BLADE: MissionDef = {
           reply: 'You take it, and the ferrymen at the door look at the floor.',
           effects: [{ kind: 'pay', share: 0.5 }],
           ledger: 'The ferry office paid the job its true rank.',
+          ledgerSubject: 'its-own',
         },
         {
           label: 'Take half, and tell them to keep the rest',

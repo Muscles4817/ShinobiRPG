@@ -127,6 +127,7 @@ export const THE_FIRE: SenseiPast = {
       spared: 'Brought {foe} home bound, for the village to judge.',
       ended: '{foe} died in the rain, and the fires went out.',
     },
+    ledgerSubjects: { ended: 'its-own' },
     find: {
       title: 'Smoke at {place}',
       summary: 'Follow {foe}’s trail of burned farms near {place} to where {foe.they} hide{foe.s}.',

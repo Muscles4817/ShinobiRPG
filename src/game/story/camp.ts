@@ -73,7 +73,7 @@ function sitWithCharge(
   if (!run) return state;
   if (!holds(storyOf(run), activity.opensWhen))
     return told(state, { kind: 'story', text: activity.guarded });
-  const applied = applyOutcome(run, def, activity.outcome, 'gain');
+  const applied = applyOutcome(run, def, activity.outcome, 'success');
   const felt = feel({ ...state, mission: applied.run }, applied.personal);
   return told(felt.state, { kind: 'story', text: activity.text });
 }
@@ -121,7 +121,7 @@ function keepWatch(
   const roll: MissionNote = { kind: 'roll', stat: activity.stat, chance, success };
   if (!success || !state.mission)
     return told(state, roll, { kind: 'story', text: activity.failure });
-  const applied = applyOutcome(state.mission, def, activity.onSuccess, 'gain');
+  const applied = applyOutcome(state.mission, def, activity.onSuccess, 'success');
   const felt = feel({ ...state, mission: applied.run }, applied.personal);
   return told(felt.state, roll, { kind: 'story', text: activity.success });
 }

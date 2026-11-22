@@ -72,6 +72,7 @@ export {
   type CrewCondition,
   type Effect,
   type LedgerLine,
+  type LedgerSubject,
   type LedgerTone,
   type StoryState,
   type ThreadDef,

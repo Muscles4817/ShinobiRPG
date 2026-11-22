@@ -115,7 +115,13 @@ describe('outcomes', () => {
     expect(applied.run.threads).toEqual({ trust: 2 });
     expect(applied.run.rewardMultiplier).toBe(0.75);
     expect(applied.run.ledger).toEqual([
-      { stageIndex: 0, text: 'Lost the light at the spring.', tone: 'cost', pay: -0.25 },
+      {
+        stageIndex: 0,
+        text: 'Lost the light at the spring.',
+        tone: 'cost',
+        pay: -0.25,
+        setback: true,
+      },
     ]);
     expect(applied.personal).toEqual([
       { kind: 'harm', health: 3 },

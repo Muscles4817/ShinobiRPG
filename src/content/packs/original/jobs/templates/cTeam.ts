@@ -120,6 +120,7 @@ export const C_TEAM_ROAD: readonly MissionTemplate[] = [
             text: '{ending} The drovers pass round a jar of something strong, and insist you have the first cup.',
             effects: [{ kind: 'pay', share: 0.1 }],
             ledger: 'The drovers were in good heart all the way, and the client tipped for it.',
+            ledgerSubject: 'its-own',
           },
           { text: '{ending}' },
         ],

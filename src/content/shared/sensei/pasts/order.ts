@@ -122,6 +122,7 @@ export const WRONG_ORDER: SenseiPast = {
       spared: 'Brought {foe} home to trial, and cleared {lost}’s name.',
       ended: '{foe} died, and {name} burned the old order at last.',
     },
+    ledgerSubjects: { ended: 'its-own' },
     find: {
       title: 'Papers at {place}',
       summary: 'Find where {foe} is working from near {place}.',

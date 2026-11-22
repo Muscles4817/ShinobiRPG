@@ -115,6 +115,7 @@ export {
   type Haunt,
   type SenseiGround,
   type SenseiPast,
+  type SenseiPastLedger,
   type SenseiPastArc,
   type SenseiPastBeat,
   type SenseiPastFoe,

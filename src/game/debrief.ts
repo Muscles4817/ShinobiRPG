@@ -36,7 +36,9 @@ function payShare(run: MissionRun): number {
 }
 
 export function gradeOf(run: MissionRun): JobGrade {
-  const setbacks = run.ledger.filter((l) => l.tone === 'cost').length;
+  // Setbacks are declared where they happen (`LedgerLine.setback`): a line's tone is only how
+  // it reads, and a hurt taken on purpose is no setback.
+  const setbacks = run.ledger.filter((l) => l.setback === true).length;
   if (payShare(run) < BOTCHED_BELOW || setbacks >= BOTCHED_SETBACKS) return 'botched';
   return setbacks === 0 && payShare(run) >= 1 ? 'clean' : 'rough';
 }

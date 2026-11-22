@@ -10,10 +10,12 @@ export const KIRI_LETTER_DELIVERED = 'kiri-letter-delivered';
 const SEEN = {
   effects: [{ kind: 'mark', mark: 'seen' }],
   ledger: 'The hunter-nin heard the child.',
+  ledgerSubject: 'its-own',
 } as const;
 const CHASED = {
   effects: [{ kind: 'mark', mark: 'chased' }],
   ledger: 'The watch post saw you go by.',
+  ledgerSubject: 'its-own',
 } as const;
 
 export const KIRI_RESCUE_JOBS: readonly MissionDef[] = [

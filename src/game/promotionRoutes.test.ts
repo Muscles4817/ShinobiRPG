@@ -1,5 +1,5 @@
 import { CONTENT_PACKS } from '@/content';
-import type { LedgerLine, MissionRun } from '@/systems/missions';
+import { applyOutcome, writtenOptions, type LedgerLine, type MissionRun } from '@/systems/missions';
 import { onTheDay } from '@/test/examFixtures';
 import { act, ctx, newGame, postEverything, veteran } from '@/test/gameFixtures';
 
@@ -33,7 +33,12 @@ function patrolRun(state: GameState, setback = false): MissionRun {
   const started = act(postEverything(state), { type: 'startMission', missionId: 'lantern-patrol' });
   const run = started.mission;
   if (!run) throw new Error('The patrol did not start.');
-  const lost: LedgerLine = { stageIndex: 0, text: 'A lamp was lost.', tone: 'cost' };
+  const lost: LedgerLine = {
+    stageIndex: 0,
+    text: 'A lamp was lost.',
+    tone: 'cost',
+    setback: true,
+  };
   const ledger = setback ? [lost] : [];
   return { ...run, ledger };
 }
@@ -59,6 +64,19 @@ describe('a field promotion', () => {
     expect(afterFieldWork(state, ctx, weir, patrolRun(state, true)).exams.ceremony).toBeNull();
     const green = newGame();
     expect(afterFieldWork(green, ctx, weir, patrolRun(green)).exams.ceremony).toBeNull();
+  });
+
+  it('is not lost to a hard road taken on purpose', () => {
+    // A shortcut that costs a little health is a choice, not a setback: the job stays clean.
+    const state = ready(newGame());
+    const event = ctx.content.roadEvents.all.find((e) =>
+      writtenOptions(e).some((o) => o.label === 'Take the goat track'),
+    );
+    const goatTrack = writtenOptions(event!).find((o) => o.label === 'Take the goat track')!;
+    const taken = applyOutcome(patrolRun(state), weir, goatTrack).run;
+    expect(taken.ledger.at(-1)).toMatchObject({ tone: 'cost' });
+    expect(taken.ledger.at(-1)?.setback).toBeUndefined();
+    expect(afterFieldWork(state, ctx, weir, taken).exams.ceremony?.route).toBe('field');
   });
 });
 
