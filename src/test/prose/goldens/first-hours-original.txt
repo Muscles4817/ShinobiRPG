@@ -73,7 +73,7 @@ view:
     specialty:
       label: Taijutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your team has not been assigned yet.
     style: Up before dawn, running stairs until you can’t feel your legs, and loud about it the whole way up.
@@ -87,7 +87,7 @@ view:
     specialty:
       label: Genjutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your team has not been assigned yet.
     style: Brilliant, vain and loud about both. Will show you anything, mostly to show off.
@@ -225,7 +225,7 @@ view:
     specialty:
       label: Genjutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
@@ -1622,7 +1622,7 @@ view:
     specialty:
       label: Genjutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your rival is waiting for an answer.
     spar:
@@ -1702,7 +1702,7 @@ view:
     specialty:
       label: Genjutsu
     stageName: Stranger
-    where: At the Training Grounds
+    where: At the training ground
     talk:
       blocker: Your rival is waiting for an answer.
     spar:

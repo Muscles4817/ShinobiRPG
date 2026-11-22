@@ -124,6 +124,6 @@ describe('where a generated sensei spends the evening', () => {
       (p) => p.sensei?.pooled?.temperament === 'showboat',
     )!;
     const evening = { ...under(regular.id, state), time: { ...state.time, slot: 2 } };
-    expect(personCard(evening, ctx, regular).where).toBe('At The Paper Lantern');
+    expect(personCard(evening, ctx, regular).where).toBe('At the Paper Lantern');
   });
 });
