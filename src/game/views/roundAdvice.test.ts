@@ -48,6 +48,20 @@ describe('round advice', () => {
     expect(roundAdvice(after(blocked, blocked))).toMatch(/Fight from where you stand/);
   });
 
+  it('a leap clear followed, or a pin held, is not a step that keeps failing', () => {
+    const followed = because('kept-pace', 'aoi', 'goro');
+    const pinned = because('held', 'aoi');
+    expect(roundAdvice(after(followed, followed))).toBeNull();
+    expect(roundAdvice(after(pinned, pinned))).toBeNull();
+  });
+
+  it('a Counter read late turns a blow aside: no word about a Guard kept up', () => {
+    const turned = said('Goro turns it aside.', 'aoi', {
+      reactions: [reacting('turned-aside', 'goro', 'aoi')],
+    });
+    expect(roundAdvice(after(turned, turned))).toBeNull();
+  });
+
   // Bug #1: a counter is told in the attacker's turn and names the counterer, so reading whom a
   // line was aimed at from its words got it backwards.
   it('warns of a counter only when a foe’s Counter answered your blow', () => {

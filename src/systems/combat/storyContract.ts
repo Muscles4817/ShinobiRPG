@@ -13,7 +13,10 @@ import type { RangeBand } from './sides';
  * is a field here, said by whoever did it: nothing is read back out of the words.
  */
 
-/** What a defence did about an attack, or (`missed`) that it was slipped without one. */
+/**
+ * What a defence did about an attack, or (`missed`) that it was slipped without one; a Counter
+ * read late turns the attack aside (`turned-aside`), which is not a Guard kept up.
+ */
 export const NARRATION_REACTIONS = [
   'dodged',
   'missed',
@@ -21,6 +24,7 @@ export const NARRATION_REACTIONS = [
   'guarded',
   'guard-broken',
   'countered',
+  'turned-aside',
   'swapped',
   'shielded',
 ] as const;

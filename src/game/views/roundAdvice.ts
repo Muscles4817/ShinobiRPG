@@ -18,6 +18,9 @@ import { causesFor, reactionsIn, yourAttacksMet } from './roundWhy';
 /** How often something must happen in a round before it is worth a word. */
 export const ADVICE_AFTER = 2;
 
+/** Failed steps that say the step itself is the problem: outrun, cut off, held off, walled in. */
+const STOPPED_STEPS: readonly NarrationCause[] = ['outpaced', 'cut-off', 'held-off', 'no-room'];
+
 interface Rule {
   readonly when: (round: RoundRead, you: string) => boolean;
   readonly advice: string;
@@ -59,7 +62,8 @@ const RULES: readonly Rule[] = [
     advice: 'Nothing you slotted fit here. Slot a card that works from this distance.',
   },
   {
-    when: caused('step-failed'),
+    // Steps the foes stopped or the ground did; held fast or followed, a step isn't the problem.
+    when: caused('step-failed', STOPPED_STEPS),
     advice: 'Your steps keep failing. Fight from where you stand, or slot what reaches from here.',
   },
   {

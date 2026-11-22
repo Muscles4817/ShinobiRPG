@@ -110,7 +110,7 @@ export function counterOn(round: Round, c: Coming): Countered {
       return { round: answered(seen, waits, c, answer), stopped: true };
     }
     case 'late':
-      return { round: say(seen, reactionLine(said, defending, 'guarded')), stopped: true };
+      return { round: say(seen, reactionLine(said, defending, 'turned-aside')), stopped: true };
     case 'missed':
       return { round: say(seen, said), stopped: false };
   }

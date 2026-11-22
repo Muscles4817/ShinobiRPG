@@ -31,6 +31,7 @@ export const REACTION_LABEL: Readonly<Record<NarrationReaction, string>> = {
   guarded: 'Guarded',
   'guard-broken': 'Guard broken',
   countered: 'Countered',
+  'turned-aside': 'Turned aside',
   swapped: 'Swapped out',
   shielded: 'Shielded',
 };
