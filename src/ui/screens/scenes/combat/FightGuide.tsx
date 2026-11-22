@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { fightGlossary } from '@/game';
 
-import { useCloseOnEscape } from '../../../components/useCloseOnEscape';
+import { SheetBackdrop } from '../../../components/SheetBackdrop';
 
 /**
  * "How fighting works": the fight glossary as a reference sheet, opened from the plan screen.
@@ -12,9 +12,8 @@ import { useCloseOnEscape } from '../../../components/useCloseOnEscape';
  */
 
 function GuideSheet({ onClose }: { readonly onClose: () => void }) {
-  useCloseOnEscape(onClose);
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
+    <SheetBackdrop onClose={onClose}>
       <section
         className="sheet paper-sheet fight-guide"
         role="dialog"
@@ -50,7 +49,7 @@ function GuideSheet({ onClose }: { readonly onClose: () => void }) {
           </button>
         </footer>
       </section>
-    </div>
+    </SheetBackdrop>
   );
 }
 

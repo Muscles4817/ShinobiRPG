@@ -17,7 +17,6 @@ import { Notice } from '../components/Notice';
 import { PersonSheet } from '../components/PersonSheet';
 import { CompanionSheet } from '../components/CompanionSheet';
 import { OverlayCard } from '../components/OverlayCard';
-import { KeyLayer } from '../layout/KeyLayer';
 import { appClass } from '../layout/sceneLayout';
 import { WideFrame } from '../layout/WideFrame';
 import { useWideScreen } from '../layout/useWideScreen';
@@ -161,8 +160,7 @@ function Drawer({ personId, onClosePerson, onCloseCompanion, ...props }: DrawerP
  * Routes between the three layers: scenes (fights, missions, exams, ceremonies, talks, team
  * assignment) take the whole screen; otherwise the dock tab decides, and "Here" shows the village or a place.
  * A person's sheet can open over any tab, and the game's card (`overlayOnScreen`) over
- * everything. Keys reach only what is on top: each layer under something is a `KeyLayer` that
- * isn't live.
+ * everything. Keys reach only what is on top: every sheet and card is a `KeyLayer` of its own.
  */
 export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [nav, setNav] = useState<Nav>({ tab: 'here', placeId: null });
@@ -170,7 +168,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
   const [companionOpen, setCompanionOpen] = useState(false);
   const props: ScreenProps = { ctx, state, perform: session.perform };
   const scene = sceneOnScreen(state, ctx);
-  const overlay = overlayOnScreen(state, ctx);
+  const overlay = overlayOnScreen(state, ctx, scene);
   const report = overlay?.kind === 'report' ? overlay.report : null;
   const drawer = !scene && (personId !== null || companionOpen);
   const { play } = useSound();
@@ -206,41 +204,37 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
     <div className={appClass(wide, scene)} data-motion={state.settings.animations ? 'on' : 'off'}>
       {session.notice && <Notice text={session.notice} onDismiss={session.dismissNotice} />}
       <ThinkingSlip thinking={session.thinking} />
-      <KeyLayer live={overlay === null && !drawer}>
-        {scene ? (
-          <SceneBox {...props} kind={scene} thinking={session.thinking} />
-        ) : wide ? (
-          <WideFrame
-            {...props}
-            tab={nav.tab}
-            placeId={nav.placeId}
-            onTab={selectTab}
-            onOpenPlace={openPlace}
-            onOpenCompanion={openCompanion}
-          >
-            {tabContent}
-          </WideFrame>
-        ) : (
-          <>
-            {tabContent}
-            <Dock active={nav.tab} onSelect={selectTab} />
-          </>
-        )}
-      </KeyLayer>
-      <KeyLayer live={overlay === null}>
-        {drawer && (
-          <Drawer
-            {...props}
-            personId={personId}
-            onClosePerson={() => {
-              setPersonId(null);
-            }}
-            onCloseCompanion={() => {
-              setCompanionOpen(false);
-            }}
-          />
-        )}
-      </KeyLayer>
+      {scene ? (
+        <SceneBox {...props} kind={scene} thinking={session.thinking} />
+      ) : wide ? (
+        <WideFrame
+          {...props}
+          tab={nav.tab}
+          placeId={nav.placeId}
+          onTab={selectTab}
+          onOpenPlace={openPlace}
+          onOpenCompanion={openCompanion}
+        >
+          {tabContent}
+        </WideFrame>
+      ) : (
+        <>
+          {tabContent}
+          <Dock active={nav.tab} onSelect={selectTab} />
+        </>
+      )}
+      {drawer && (
+        <Drawer
+          {...props}
+          personId={personId}
+          onClosePerson={() => {
+            setPersonId(null);
+          }}
+          onCloseCompanion={() => {
+            setCompanionOpen(false);
+          }}
+        />
+      )}
       {session.cue && state.settings.animations && (
         <CueLayer cue={session.cue} onDone={session.clearCue} />
       )}

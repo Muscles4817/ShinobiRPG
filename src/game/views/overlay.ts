@@ -1,8 +1,8 @@
 import type { GameContext } from '../context';
 import type { Report } from '../reports';
+import type { SceneKind } from './peopleScenes';
 import type { GameState } from '../state';
 import { dayEndView, type DayEndView } from './dayEnd';
-import { sceneOnScreen } from './journeyView';
 
 /**
  * What is laid over play, if anything: the one place that decides which card is on top, so the
@@ -16,12 +16,17 @@ export type Overlay =
   | { readonly kind: 'report'; readonly report: Report }
   | { readonly kind: 'day'; readonly view: DayEndView };
 
-export function overlayOnScreen(state: GameState, ctx: GameContext): Overlay | null {
+/** `scene` is what has the screen (`sceneOnScreen`), worked out once by the caller. */
+export function overlayOnScreen(
+  state: GameState,
+  ctx: GameContext,
+  scene: SceneKind | null,
+): Overlay | null {
   // A fight's last exchange and a trip's title card play before any card covers them.
   if (state.combatFinale !== null || state.journeyEnd !== null) return null;
   const report = state.reports[0];
   if (report) return { kind: 'report', report };
-  if (sceneOnScreen(state, ctx) !== null) return null;
+  if (scene !== null) return null;
   const day = dayEndView(state, ctx);
   return day?.mode === 'full' ? { kind: 'day', view: day } : null;
 }

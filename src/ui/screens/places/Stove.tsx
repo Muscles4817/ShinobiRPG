@@ -9,7 +9,7 @@ import {
   type GameState,
   type RecipeCard,
 } from '@/game';
-import { useCloseOnEscape } from '../../components/useCloseOnEscape';
+import { SheetBackdrop } from '../../components/SheetBackdrop';
 
 interface StoveProps {
   readonly ctx: GameContext;
@@ -30,7 +30,6 @@ function complete(steps: Partial<CookingSteps>): CookingSteps | null {
  * learned of the dish is set for you; the rest is your call, and the result tells you how it went.
  */
 export function Stove({ ctx, state, recipe, perform, onClose }: StoveProps) {
-  useCloseOnEscape(onClose);
   const [steps, setSteps] = useState<Partial<CookingSteps>>(recipe.knownSteps);
   const ready = complete(steps);
   const action: GameAction | null = ready
@@ -38,7 +37,7 @@ export function Stove({ ctx, state, recipe, perform, onClose }: StoveProps) {
     : null;
   const blocker = action ? blockerFor(state, action, ctx) : 'Choose all three first.';
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
+    <SheetBackdrop onClose={onClose}>
       <section
         className="sheet paper-sheet enter stove"
         aria-label={`Cook ${recipe.name} at the stove`}
@@ -82,6 +81,6 @@ export function Stove({ ctx, state, recipe, perform, onClose }: StoveProps) {
           Cook it
         </button>
       </section>
-    </div>
+    </SheetBackdrop>
   );
 }

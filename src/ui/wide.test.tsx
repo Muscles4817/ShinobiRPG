@@ -185,12 +185,13 @@ describe('the desktop layout (smoke test)', () => {
     const user = await openGame(freshGame());
     await user.click(screen.getByRole('button', { name: 'Hear the honours' }));
     await user.click(screen.getByRole('button', { name: 'Hear the teams' }));
-    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBeInTheDocument();
+    // The scene's own node: a remount would draw a new one (and forget what it held).
+    const heading = screen.getByRole('heading', { name: 'Team assignment' });
     resize(false);
-    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBe(heading);
     expect(screen.queryByRole('complementary', { name: 'You' })).not.toBeInTheDocument();
     resize(true);
-    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Team assignment' })).toBe(heading);
     expect(screen.getByRole('complementary', { name: 'You' })).toBeInTheDocument();
   });
 
@@ -238,6 +239,26 @@ describe('the desktop layout (smoke test)', () => {
         'aria-current',
         'page',
       );
+    });
+  });
+
+  describe('under a sheet', () => {
+    it('keeps the dock’s number keys from switching tabs under a notice', async () => {
+      windowWide(true);
+      const user = await openGame();
+      const rail = screen.getByRole('region', { name: /^Places in/ });
+      await user.click(within(rail).getByRole('button', { name: /mission/i }));
+      await user.click(document.querySelector<HTMLElement>('.board .paper, button.paper')!);
+      expect(document.querySelector('.sheet')).not.toBeNull();
+      await user.keyboard('3');
+      expect(screen.getByRole('button', { name: 'Jutsu' })).not.toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+      await user.keyboard('{Escape}');
+      expect(document.querySelector('.sheet')).toBeNull();
+      await user.keyboard('3');
+      expect(screen.getByRole('button', { name: 'Jutsu' })).toHaveAttribute('aria-current', 'page');
     });
   });
 
@@ -334,6 +355,17 @@ describe('the desktop layout (smoke test)', () => {
       expect(screen.getByRole('region', { name: 'Your cards' })).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: 'Begin the fight' }));
       expect(await screen.findByRole('region', { name: 'So far' })).toBeInTheDocument();
+    });
+
+    it('keeps Enter from beginning the round under the fight guide', async () => {
+      windowWide(true);
+      const user = await openGame(inFight());
+      await user.click(screen.getByRole('button', { name: 'How fighting works' }));
+      // Off the guide's Close button, so Enter is the page's to take.
+      await user.click(screen.getByRole('heading', { name: 'How fighting works' }));
+      await user.keyboard('{Enter}');
+      expect(screen.queryByRole('region', { name: 'So far' })).not.toBeInTheDocument();
+      expect(screen.getByRole('dialog', { name: 'How fighting works' })).toBeInTheDocument();
     });
 
     it('begins the fight with Enter', async () => {

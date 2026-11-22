@@ -5,6 +5,7 @@ import { musicMood, saveSummary, type MusicMood, type SaveStore } from '@/game';
 import { SoundProvider, useMusic } from './audio/SoundProvider';
 import { CrashBoundary } from './components/CrashScreen';
 import { EditsProvider } from './edits/EditsProvider';
+import { KeyLayers } from './layout/KeyLayer';
 import { GameScreen } from './screens/GameScreen';
 import { CreationScreen } from './screens/creation/CreationScreen';
 import { EditorScreen } from './screens/editor/EditorScreen';
@@ -45,7 +46,9 @@ export function App({ store, prefs = NOWHERE, edits = NOWHERE, rescue = NOWHERE 
     <CrashBoundary store={store}>
       <SoundProvider prefs={prefs}>
         <EditsProvider store={edits}>
-          <Screens store={store} rescue={rescue} />
+          <KeyLayers>
+            <Screens store={store} rescue={rescue} />
+          </KeyLayers>
         </EditsProvider>
       </SoundProvider>
     </CrashBoundary>

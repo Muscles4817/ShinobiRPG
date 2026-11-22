@@ -1,5 +1,7 @@
 import type { Report } from '@/game';
 
+import { KeyLayer } from '../layout/KeyLayer';
+
 import { DebriefRoad, DebriefSections } from './Debrief';
 import { gainRow, peopleCardContent, type CardContent, type CardList } from './peopleReports';
 import { ventureCard } from './ventureCard';
@@ -254,39 +256,46 @@ export function ReportCard({ report, onContinue }: ReportCardProps) {
   // A job's debrief tells how it ended first, then the pay, then the road.
   const job = isJob(report);
   return (
-    <div className="report-backdrop" role="dialog" aria-modal="true" aria-labelledby="report-title">
-      <div className={`report enter tone-${c.tone}${job ? ' debrief' : ''}`}>
-        {c.seal && (
-          <span className="seal" aria-hidden="true">
-            {c.seal}
-          </span>
-        )}
-        {c.grade && (
-          <span className="seal grade-seal" data-grade={c.grade} aria-hidden="true">
-            {c.grade}
-          </span>
-        )}
-        <p className="label">{c.subtitle}</p>
-        <h2 id="report-title" className="report-title">
-          {c.title}
-        </h2>
-        {job && c.note && <p className="story report-note">{c.note}</p>}
-        <dl className="report-rows">
-          {c.rows.map((r, i) => (
-            <div key={`${r.label}-${i}`}>
-              <dt>{r.label}</dt>
-              <dd className={`num ${r.tone ?? ''}`}>{r.value}</dd>
-            </div>
-          ))}
-        </dl>
-        {c.list && <ReportList list={c.list} />}
-        {job && <DebriefSections report={report} />}
-        {report.kind === 'venture-over' && <DebriefRoad lines={report.road} title="On the way" />}
-        {!job && c.note && <p className="story report-note">{c.note}</p>}
-        <button type="button" className="btn wide" onClick={onContinue} autoFocus>
-          Continue
-        </button>
+    <KeyLayer>
+      <div
+        className="report-backdrop"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-title"
+      >
+        <div className={`report enter tone-${c.tone}${job ? ' debrief' : ''}`}>
+          {c.seal && (
+            <span className="seal" aria-hidden="true">
+              {c.seal}
+            </span>
+          )}
+          {c.grade && (
+            <span className="seal grade-seal" data-grade={c.grade} aria-hidden="true">
+              {c.grade}
+            </span>
+          )}
+          <p className="label">{c.subtitle}</p>
+          <h2 id="report-title" className="report-title">
+            {c.title}
+          </h2>
+          {job && c.note && <p className="story report-note">{c.note}</p>}
+          <dl className="report-rows">
+            {c.rows.map((r, i) => (
+              <div key={`${r.label}-${i}`}>
+                <dt>{r.label}</dt>
+                <dd className={`num ${r.tone ?? ''}`}>{r.value}</dd>
+              </div>
+            ))}
+          </dl>
+          {c.list && <ReportList list={c.list} />}
+          {job && <DebriefSections report={report} />}
+          {report.kind === 'venture-over' && <DebriefRoad lines={report.road} title="On the way" />}
+          {!job && c.note && <p className="story report-note">{c.note}</p>}
+          <button type="button" className="btn wide" onClick={onContinue} autoFocus>
+            Continue
+          </button>
+        </div>
       </div>
-    </div>
+    </KeyLayer>
   );
 }

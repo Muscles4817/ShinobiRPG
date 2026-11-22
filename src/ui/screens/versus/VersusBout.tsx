@@ -5,6 +5,7 @@ import {
   dispatch,
   fightRecordFile,
   overlayOnScreen,
+  sceneOnScreen,
   type GameAction,
   type GameState,
 } from '@/game';
@@ -15,7 +16,6 @@ import { Notice } from '../../components/Notice';
 import { appClass } from '../../layout/sceneLayout';
 import { useWideScreen } from '../../layout/useWideScreen';
 import { OverlayCard } from '../../components/OverlayCard';
-import { KeyLayer } from '../../layout/KeyLayer';
 import { randomSeed } from '../../randomSeed';
 import { ThinkingSlip } from '../../fight/ThinkingSlip';
 import { isFightStep, useThinking } from '../../fight/useThinking';
@@ -128,7 +128,7 @@ export function VersusBout(props: VersusBoutProps) {
     );
   }
   // A bout ends on its report; a bout passes no time, so no day ends over it.
-  const overlay = overlayOnScreen(state, ctx);
+  const overlay = overlayOnScreen(state, ctx, sceneOnScreen(state, ctx));
   const card = overlay?.kind === 'report' ? overlay : null;
   const fighting = state.combat !== null || state.combatFinale !== null;
   // A bout is the game's fight scene, so it takes the fight's desktop arrangement too.
@@ -143,15 +143,13 @@ export function VersusBout(props: VersusBoutProps) {
         />
       )}
       <ThinkingSlip thinking={thinking} />
-      <KeyLayer live={card === null}>
-        {fighting ? (
-          <div className="wide-scene">
-            <CombatScene ctx={ctx} state={state} perform={perform} thinking={thinking} seeAll />
-          </div>
-        ) : (
-          !card && <AfterBout {...props} state={state} />
-        )}
-      </KeyLayer>
+      {fighting ? (
+        <div className="wide-scene">
+          <CombatScene ctx={ctx} state={state} perform={perform} thinking={thinking} seeAll />
+        </div>
+      ) : (
+        !card && <AfterBout {...props} state={state} />
+      )}
       {card && <OverlayCard overlay={card} perform={perform} />}
     </div>
   );

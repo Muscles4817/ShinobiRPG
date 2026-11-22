@@ -1,3 +1,4 @@
+import { KeyLayer } from '../../layout/KeyLayer';
 import { FighterProfile } from './FighterProfile';
 import { RosterBrowser } from './RosterBrowser';
 import { slotLabel, type Slot } from './SideSlots';
@@ -69,33 +70,35 @@ export function PickSheet({
 }) {
   const label = slotLabel(slot);
   return (
-    <div className="versus-sheet" role="dialog" aria-modal="true" aria-label={label}>
-      <header className="versus-sheet-head">
-        <h2>{label}</h2>
-        <button
-          type="button"
-          className="btn ghost small"
-          onClick={() => {
-            setup.openSlot(null);
-          }}
-        >
-          Close
-        </button>
-      </header>
-      {setup.profile ? (
-        <FighterProfile profile={setup.profile}>
-          <SheetActions setup={setup} slot={slot} />
-        </FighterProfile>
-      ) : (
-        <RosterBrowser
-          roster={setup.roster}
-          filter={setup.filter}
-          onFilter={setup.setFilter}
-          focusedId={setup.idAt(slot)}
-          stampOf={setup.stampOf}
-          onFocus={setup.setFocusId}
-        />
-      )}
-    </div>
+    <KeyLayer>
+      <div className="versus-sheet" role="dialog" aria-modal="true" aria-label={label}>
+        <header className="versus-sheet-head">
+          <h2>{label}</h2>
+          <button
+            type="button"
+            className="btn ghost small"
+            onClick={() => {
+              setup.openSlot(null);
+            }}
+          >
+            Close
+          </button>
+        </header>
+        {setup.profile ? (
+          <FighterProfile profile={setup.profile}>
+            <SheetActions setup={setup} slot={slot} />
+          </FighterProfile>
+        ) : (
+          <RosterBrowser
+            roster={setup.roster}
+            filter={setup.filter}
+            onFilter={setup.setFilter}
+            focusedId={setup.idAt(slot)}
+            stampOf={setup.stampOf}
+            onFocus={setup.setFocusId}
+          />
+        )}
+      </div>
+    </KeyLayer>
   );
 }
