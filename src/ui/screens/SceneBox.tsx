@@ -18,10 +18,16 @@ import type { ScreenProps } from './types';
 
 /** The scene that has the screen, by kind, in the box the desktop layout arranges. */
 
-function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
+interface SceneProps extends ScreenProps {
+  readonly kind: SceneKind;
+  /** A fight's step is being played off the page's thread (`useThinking`). */
+  readonly thinking: boolean;
+}
+
+function Scene({ kind, thinking, ...props }: SceneProps) {
   switch (kind) {
     case 'combat':
-      return <CombatScene {...props} />;
+      return <CombatScene {...props} thinking={thinking} />;
     case 'encounter':
       return <EncounterScene {...props} />;
     case 'mission':
@@ -51,7 +57,7 @@ function Scene({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
  * A scene in its box: a story scene always in its frame, at any width, so crossing the
  * breakpoint never remounts it.
  */
-export function SceneBox({ kind, ...props }: ScreenProps & { readonly kind: SceneKind }) {
+export function SceneBox({ kind, ...props }: SceneProps) {
   return (
     <div className="wide-scene">
       {isStoryScene(kind) ? (

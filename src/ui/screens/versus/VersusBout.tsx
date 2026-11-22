@@ -146,7 +146,7 @@ export function VersusBout(props: VersusBoutProps) {
       <KeyLayer live={card === null}>
         {fighting ? (
           <div className="wide-scene">
-            <CombatScene ctx={ctx} state={state} perform={perform} seeAll />
+            <CombatScene ctx={ctx} state={state} perform={perform} thinking={thinking} seeAll />
           </div>
         ) : (
           !card && <AfterBout {...props} state={state} />

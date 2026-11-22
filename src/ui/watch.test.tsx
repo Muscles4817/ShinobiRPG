@@ -65,6 +65,31 @@ describe('watching a fight play (smoke test)', () => {
     expect(done.length).toBeGreaterThan(0);
   });
 
+  it('says a beat arrived only when it was reached going on', () => {
+    const onDone = () => undefined;
+    const { result } = renderHook(() =>
+      usePlayback({ beats: BEATS, youId: null, fresh: true, onDone }),
+    );
+    expect(result.current.arrival).toBe(1);
+    settle(() => {
+      result.current.toggle();
+      result.current.step(1);
+    });
+    expect(result.current).toMatchObject({ at: 1, arrival: 2 });
+    settle(() => {
+      result.current.step(-1);
+    });
+    expect(result.current).toMatchObject({ at: 0, arrival: null });
+    settle(() => {
+      result.current.step(1);
+    });
+    expect(result.current).toMatchObject({ at: 1, arrival: 3 });
+    settle(() => {
+      result.current.skip();
+    });
+    expect(result.current).toMatchObject({ at: 3, arrival: null });
+  });
+
   it('plays straight through when you ask it to, and shows the end when nothing is new', () => {
     const onDone = () => undefined;
     const { result } = renderHook(() =>

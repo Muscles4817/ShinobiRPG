@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
-import type { CombatantView } from '@/game';
+import { healthMoves, type CombatantView, type FightBeat } from '@/game';
 
 /**
  * Which fighters' health just moved, so their bar can flash: red for a hit, green for healing.
  * Each change counts up `n`, which the bar uses as its key, so a second hit in a row flashes
- * again. Presentation only: the numbers come from the view, this just notices them change.
+ * again. Presentation only: the numbers come from the view. Between rounds and turn by turn the
+ * view only ever moves on, so a change noticed is a change made (`useHealthPulses`); a replay
+ * can step back, so its flashes come from the beat itself (`beatPulses`).
  */
 
 export interface HealthPulse {
@@ -47,4 +49,20 @@ export function useHealthPulses(
   const next = noticed(seen, fighters);
   if (next) setSeen(next);
   return (next ?? seen).pulses;
+}
+
+/**
+ * The flashes of a beat on the watch screen: the health moves the beat itself made, flashed only
+ * when the beat was arrived at going on (`usePlayback`'s `arrival`, which keys each flash afresh),
+ * never when it was reached going back or skipped to.
+ */
+export function beatPulses(
+  beats: readonly FightBeat[],
+  at: number,
+  arrival: number | null,
+): Readonly<Record<string, HealthPulse>> {
+  if (arrival === null) return {};
+  return Object.fromEntries(
+    Object.entries(healthMoves(beats, at)).map(([id, kind]) => [id, { kind, n: arrival }]),
+  );
 }

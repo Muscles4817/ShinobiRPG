@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { combatScene, type GameState } from '@/game';
+import { combatScene, type GameAction, type GameState } from '@/game';
 import { atEncounter, capable, hardCtx, withStats } from '@/test/encounterFixtures';
 import {
   act,
@@ -63,7 +63,62 @@ function Live({ start }: { readonly start: GameState }) {
   );
 }
 
+/**
+ * The scene as the game plays it: a fight's step is played off the page's thread, so what you
+ * press is out (`thinking`) until "Arrive" lands it. This step's result is the whole round, back
+ * to the card table, as a step that ends a round lands.
+ */
+function Pending({ start }: { readonly start: GameState }) {
+  const [state, setState] = useState(start);
+  const [out, setOut] = useState<GameAction | null>(null);
+  return (
+    <>
+      <CombatScene
+        ctx={ctx}
+        state={state}
+        perform={(action) => {
+          if (!out) setOut(action);
+        }}
+        thinking={out !== null}
+      />
+      <button
+        type="button"
+        onClick={() => {
+          if (out) setState((s) => act(act(s, out), { type: 'combatAct', optionId: 'round' }));
+          setOut(null);
+        }}
+      >
+        Arrive
+      </button>
+    </>
+  );
+}
+
 describe('CombatScene (smoke test)', () => {
+  it('stages a round only once its lines arrive, so a step still out can’t skip it', async () => {
+    const user = userEvent.setup();
+    render(<Pending start={act(withAllStats(newGame(), 7), { type: 'spar', personId: 'kaen' })} />);
+    await user.click(screen.getByRole('button', { name: /^Begin the fight/ }));
+    // Nothing has come back yet: if the stage offered a way past it, take it, as a player would.
+    const wayOn = /^(Plan the next round|Change your plan)$/;
+    const offered = screen.queryByRole('button', { name: wayOn });
+    if (offered) await user.click(offered);
+    await user.click(screen.getByRole('button', { name: 'Arrive' }));
+    expect(screen.getByRole('button', { name: 'Pause' })).toBeInTheDocument();
+    expect(offered).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
+    expect(screen.getByRole('button', { name: wayOn })).toBeInTheDocument();
+  });
+
+  it('offers no way on from the stage while the step asked for is still out', async () => {
+    const user = userEvent.setup();
+    const begun = act(withAllStats(newGame(), 7), { type: 'spar', personId: 'kaen' });
+    render(<Pending start={act(begun, { type: 'combatAct', optionId: 'begin' })} />);
+    await user.click(screen.getByRole('button', { name: 'Next exchange' }));
+    expect(screen.getByRole('button', { name: 'Next exchange' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Watch the round' })).toBeDisabled();
+  });
+
   it('keeps the log’s earlier lines in place as new ones arrive, so only new lines rise in', () => {
     const state = classicSpar(6);
     const { container, rerender } = render(

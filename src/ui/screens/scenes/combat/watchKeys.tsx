@@ -1,22 +1,14 @@
-import type { CombatOption, CombatView } from '@/game';
-
 import { useKeys } from '../../../layout/useKeys';
 import { useWideScreen } from '../../../layout/useWideScreen';
 
 import type { usePlayback } from './usePlayback';
+import type { WatchNextProps as WatchNext } from './WatchControls';
 
 type Playback = ReturnType<typeof usePlayback>;
 
-/** What the watch screen offers once the beats have played. */
-interface WatchNext {
-  readonly view: CombatView;
-  readonly onPick: (option: CombatOption) => void;
-  readonly onPlan: (() => void) | null;
-  readonly onLeave: (() => void) | null;
-}
-
 /** What Enter does once the beats have played: the one way on, or the first step offered. */
 function nextStep(props: WatchNext): (() => void) | undefined {
+  if (props.waiting) return undefined;
   const only = props.onLeave ?? props.onPlan;
   if (only) return only;
   const step = props.view.options.find((o) => o.kind === 'continue' && !o.disabledReason);

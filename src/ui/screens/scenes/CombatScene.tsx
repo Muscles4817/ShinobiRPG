@@ -27,6 +27,7 @@ import type { SightOf } from './combat/Gauges';
 import { RangeStrip } from './combat/RangeStrip';
 import { PlansByOwner, TeamOrders } from './combat/TeamOrders';
 import { useHealthPulses, type HealthPulse } from './combat/useHealthPulses';
+import { useWatching } from './combat/useWatching';
 
 /** The last lines of the fight log on screen. */
 const SHOWN_LINES = 6;
@@ -165,16 +166,6 @@ function FightScreen({ ctx, state, perform, view }: ScreenProps & { readonly vie
   );
 }
 
-/** Where watching stands: the log line the shown beats start at, how far you have watched,
- * and whether the watch screen is holding the stage until you go back to plan. */
-interface Watching {
-  readonly from: number;
-  readonly seen: number;
-  readonly holding: boolean;
-  /** Everyone as they stood when the beats being watched began, for the gauges. */
-  readonly before: readonly CombatantView[] | null;
-}
-
 /** A style played on a stage (Plan & Watch) offers no hand of cards to play turn by turn. */
 function isStaged(view: CombatView): boolean {
   return !view.options.some((o) => o.kind === 'basic' || o.kind === 'technique');
@@ -183,6 +174,8 @@ function isStaged(view: CombatView): boolean {
 type CombatSceneProps = ScreenProps & {
   /** See every fighter's bars in full (versus, where you set up both sides), not by your eyes. */
   readonly seeAll?: boolean;
+  /** A step of the fight is being played off the page's thread: its lines aren't here yet. */
+  readonly thinking?: boolean;
 };
 
 const SEE_ALL: SightOf = () => SEEN_IN_FULL;
@@ -190,31 +183,22 @@ const SEE_ALL: SightOf = () => SEEN_IN_FULL;
 /**
  * One scene for every fight style. A staged fight is two screens: the card table between
  * rounds (the plan screen) and the stage that plays out what you chose (the watch screen),
- * which holds after a round until you go back to plan. Turn-by-turn styles keep one screen.
+ * which holds after a round until you go back to plan. What is staged follows the log
+ * (`useWatching`), so a step still being played changes nothing until its lines arrive, and
+ * while it is out (`thinking`) the stage offers no way on. Turn-by-turn styles keep one screen.
  */
-export function CombatScene({ seeAll = false, ...props }: CombatSceneProps) {
+export function CombatScene({ seeAll = false, thinking = false, ...props }: CombatSceneProps) {
   const live = combatScene(props.state, props.ctx);
   const view = live ?? finishedFightScene(props.state);
   const length = view ? storyEnd(view) : 0;
-  const [watch, setWatch] = useState<Watching>({
-    from: length,
-    seen: length,
-    holding: false,
-    before: null,
-  });
+  const staged = view !== null && isStaged(view);
+  const { watch, playOn, watched, plan } = useWatching(length, staged);
   if (!view) return null;
-  if (!isStaged(view)) {
-    // Turn by turn, the log is the screen; keep up so a finished fight stages only its end.
-    if (watch.from !== length)
-      setWatch({ from: length, seen: length, holding: false, before: null });
-    return <FightScreen {...props} view={view} />;
-  }
+  if (!staged) return <FightScreen {...props} view={view} />;
   const act = (o: CombatOption) => {
-    // Playing on (begin, the next exchange, the round, flight) stages what follows; changing
-    // your cards or orders just changes the table.
-    if (o.kind === 'continue' || o.kind === 'escape') {
-      setWatch((w) => ({ ...w, from: length, holding: true, before: view.combatants }));
-    }
+    // Playing on (begin, the next exchange, the round, flight) stages what follows once it
+    // arrives; changing your cards or orders just changes the table.
+    if (o.kind === 'continue' || o.kind === 'escape') playOn(view.combatants);
     props.perform({ type: 'combatAct', optionId: o.id });
   };
   const reads = combatScouting(props.state, props.ctx);
@@ -238,20 +222,13 @@ export function CombatScene({ seeAll = false, ...props }: CombatSceneProps) {
       view={view}
       beats={fightReplay(view, watch.from)}
       fresh={length > watch.seen}
+      waiting={thinking}
       reads={reads}
       onPick={act}
       before={watch.before}
       sightOf={sightOf}
-      onWatched={() => {
-        setWatch((w) => (w.seen === length ? w : { ...w, seen: length }));
-      }}
-      onPlan={
-        planning
-          ? () => {
-              setWatch((w) => ({ ...w, holding: false }));
-            }
-          : null
-      }
+      onWatched={watched}
+      onPlan={planning ? plan : null}
       onLeave={
         live
           ? null

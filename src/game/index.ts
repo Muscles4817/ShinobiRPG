@@ -109,6 +109,7 @@ export {
 } from './views/settings';
 export { dayEndView, type DayEndView } from './views/dayEnd';
 export { overlayOnScreen, type Overlay } from './views/overlay';
+export { healthMoves, type HealthMove } from './views/beatMoves';
 export { rivalChallengeView, rivalScene, type RivalChallengeView } from './views/rival';
 export { rivalryView, type ContestOffer, type RivalryView } from './views/rivalry';
 export { raceView } from './views/race';

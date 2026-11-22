@@ -208,7 +208,7 @@ export function GameScreen({ session, ctx, state, onMenu }: GameScreenProps) {
       <ThinkingSlip thinking={session.thinking} />
       <KeyLayer live={overlay === null && !drawer}>
         {scene ? (
-          <SceneBox {...props} kind={scene} />
+          <SceneBox {...props} kind={scene} thinking={session.thinking} />
         ) : wide ? (
           <WideFrame
             {...props}
