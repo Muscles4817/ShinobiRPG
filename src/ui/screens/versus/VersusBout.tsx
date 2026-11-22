@@ -1,13 +1,21 @@
 import { useCallback, useState } from 'react';
 
-import { createVersus, dispatch, fightRecordFile, type GameAction, type GameState } from '@/game';
+import {
+  createVersus,
+  dispatch,
+  fightRecordFile,
+  overlayOnScreen,
+  type GameAction,
+  type GameState,
+} from '@/game';
 
 import { downloadFile } from '../../downloadFile';
 
 import { Notice } from '../../components/Notice';
 import { appClass } from '../../layout/sceneLayout';
 import { useWideScreen } from '../../layout/useWideScreen';
-import { ReportCard } from '../../components/ReportCard';
+import { OverlayCard } from '../../components/OverlayCard';
+import { KeyLayer } from '../../layout/KeyLayer';
 import { randomSeed } from '../../randomSeed';
 import { ThinkingSlip } from '../../fight/ThinkingSlip';
 import { isFightStep, useThinking } from '../../fight/useThinking';
@@ -119,7 +127,9 @@ export function VersusBout(props: VersusBoutProps) {
       </main>
     );
   }
-  const report = state.reports[0];
+  // A bout ends on its report; a bout passes no time, so no day ends over it.
+  const overlay = overlayOnScreen(state, ctx);
+  const card = overlay?.kind === 'report' ? overlay : null;
   const fighting = state.combat !== null || state.combatFinale !== null;
   // A bout is the game's fight scene, so it takes the fight's desktop arrangement too.
   return (
@@ -133,21 +143,16 @@ export function VersusBout(props: VersusBoutProps) {
         />
       )}
       <ThinkingSlip thinking={thinking} />
-      {fighting ? (
-        <div className="wide-scene">
-          <CombatScene ctx={ctx} state={state} perform={perform} seeAll />
-        </div>
-      ) : (
-        !report && <AfterBout {...props} state={state} />
-      )}
-      {report && !state.combatFinale && (
-        <ReportCard
-          report={report}
-          onContinue={() => {
-            perform({ type: 'dismissReport' });
-          }}
-        />
-      )}
+      <KeyLayer live={card === null}>
+        {fighting ? (
+          <div className="wide-scene">
+            <CombatScene ctx={ctx} state={state} perform={perform} seeAll />
+          </div>
+        ) : (
+          !card && <AfterBout {...props} state={state} />
+        )}
+      </KeyLayer>
+      {card && <OverlayCard overlay={card} perform={perform} />}
     </div>
   );
 }
