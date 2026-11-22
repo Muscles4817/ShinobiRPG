@@ -124,6 +124,8 @@ interface Going {
   readonly lost: boolean;
   /** Its caller sent it home hurt, before it could be lost. */
   readonly saved?: true;
+  /** What is said of its going, in place of the usual line (sent home to spare chakra). */
+  readonly told?: string;
 }
 
 function hurtTo(summon: Fighter, share: number): boolean {
@@ -186,9 +188,10 @@ function leaves(round: Round, summon: Fighter, going: Going): Round {
     });
   const lines = summon.puppet ? PUPPET_LINES : HOME_LINES;
   const line =
-    going.saved && caller
+    going.told ??
+    (going.saved && caller
       ? tell(SAVED_LINE, { a: caller, s: summon })
-      : tell(lines[fate], { s: summon });
+      : tell(lines[fate], { s: summon }));
   return say({ ...round, fighters }, line);
 }
 
@@ -233,15 +236,9 @@ function spared(round: Round, callerId: string): Round {
   const [smallest] = out;
   if (!smallest || out.length < 2) return round;
   if (caller.chakra >= upkeepOut(round, caller) * UPKEEP_HORIZON) return round;
-  const gone = leaves(round, smallest, { fate: 'sent-home', lost: false });
-  // Sent home quietly: only the line that says why is told.
-  const { toldPools: _told, ...left } = gone;
-  const quiet = {
-    ...left,
-    story: round.story,
-    ...(round.toldPools ? { toldPools: round.toldPools } : {}),
-  };
-  return say(quiet, tell(SPARED_LINE, { a: caller, s: smallest }));
+  // Sent home quietly: the line that says why is its going.
+  const told = tell(SPARED_LINE, { a: caller, s: smallest });
+  return leaves(round, smallest, { fate: 'sent-home', lost: false, told });
 }
 
 /** At the end of an exchange: each summon out goes home, or its caller pays to keep it. */

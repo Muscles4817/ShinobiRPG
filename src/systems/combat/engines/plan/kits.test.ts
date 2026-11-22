@@ -164,6 +164,9 @@ describe('plan & watch kits: hits', () => {
     const after = hitOn({ ...coward!, health: 18 }, STRIKE);
     expect(after.fighters[1]?.health).toBe(0);
     expect(told(textOf(after.story).at(-1) ?? '').text).toBe('Foe turns and runs.');
+    // Run off, not down: the story says the health it left with, and no fall.
+    expect(after.story).toContainEqual(expect.objectContaining({ kind: 'health', cause: 'fled' }));
+    expect(after.story.some((e) => e.kind === 'fall')).toBe(false);
     expect(decide(after.fighters)).toBe('victory');
   });
 

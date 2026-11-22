@@ -31,7 +31,9 @@ function healthEvents(was: number, who: string, to: number, how: HealthChange): 
     cause: how.cause,
     ...(how.by ? { by: how.by } : {}),
   };
-  return to <= 0 && was > 0 ? [change, { kind: 'fall', who }] : [change];
+  // Someone who runs off is out of the fight, not down.
+  const falls = to <= 0 && was > 0 && how.cause !== 'fled';
+  return falls ? [change, { kind: 'fall', who }] : [change];
 }
 
 /** Sets one fighter's health, recording it as it is made. */

@@ -102,11 +102,14 @@ function toldOf(line: string): ToldEvent {
   };
 }
 
-/** What one fighter's pools said: someone new stands; anyone else's pools and health move. */
-function poolEvents(id: string, pools: StoryPools, known: Set<string>): CombatEvent[] {
-  if (!known.has(id)) {
-    known.add(id);
-    return [{ kind: 'stand', who: id, pools, statuses: [] }];
+/**
+ * What one fighter's pools said: someone new stands (on a divider, as a stretch opens) or joins
+ * (mid-fight); anyone else's pools and health move.
+ */
+function poolEvents(id: string, pools: StoryPools, seen: Seen): CombatEvent[] {
+  if (!seen.known.has(id)) {
+    seen.known.add(id);
+    return [{ kind: seen.opening ? 'stand' : 'join', who: id, pools, statuses: [] }];
   }
   const { health, ...rest } = pools;
   return [
@@ -117,11 +120,18 @@ function poolEvents(id: string, pools: StoryPools, known: Set<string>): CombatEv
   ];
 }
 
+interface Seen {
+  readonly known: Set<string>;
+  /** The line is a divider: those it first names were standing as the stretch opened. */
+  readonly opening: boolean;
+}
+
 /** Lines told the old way (a fight saved before events, or a shelved engine's log) as the events they told, in order. */
 export function storyOfLines(lines: readonly string[]): CombatEvent[] {
   const known = new Set<string>();
   return lines.flatMap((line): CombatEvent[] => {
-    const pools = Object.entries(poolsIn(line)).flatMap(([id, p]) => poolEvents(id, p, known));
+    const seen = { known, opening: line.startsWith(DIVIDER) };
+    const pools = Object.entries(poolsIn(line)).flatMap(([id, p]) => poolEvents(id, p, seen));
     const statuses = Object.entries(statusesIn(line)).map(([who, s]): CombatEvent => ({
       kind: 'status',
       who,

@@ -301,6 +301,8 @@ export interface Round extends Pick<PlanState, 'decisions' | 'toTheLast'>, Excha
   readonly offPlan?: NarrationOffPlan;
   /** The story's last lines before this exchange, so words aren't picked twice running. */
   readonly recent?: readonly ToldEvent[];
+  /** Everyone who has stood on the field this fight (`cast.ts`), so a clone's id isn't reused. */
+  readonly cast?: PlanState['cast'];
   /** Where everyone's health and pools stood as of the last line told (`say`); unset: none told. */
   readonly toldPools?: Pools;
 }

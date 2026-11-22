@@ -79,12 +79,12 @@ function copyOf(maker: PlanFighter, index: number, chakra: number): PlanFighter 
 }
 
 /**
- * The highest number among a maker's clones on the field: new ones are numbered past it, so a
- * clone never shares an id with one still standing (counting them did, once one had left).
+ * The highest number among a maker's clones this fight, on the field or gone from it (`cast`):
+ * new ones are numbered past it, so a clone never takes the id of another, standing or not.
  */
 function lastShadowIndex(round: Round, makerId: string): number {
   const prefix = `${makerId}~shadow~`;
-  return round.fighters.reduce(
+  return [...round.fighters, ...(round.cast ?? [])].reduce(
     (most, f) =>
       f.id.startsWith(prefix) ? Math.max(most, Number(f.id.slice(prefix.length))) : most,
     0,

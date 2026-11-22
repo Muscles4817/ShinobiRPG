@@ -127,6 +127,16 @@ describe('a story saved as lines', () => {
     ]);
   });
 
+  it('has someone first seen mid-fight join it, not stand as the stretch opened', () => {
+    const later = 'A clone bursts out. ⟦pl:clone=health:50⟧';
+    expect(storyOfLines([...saved, later]).at(-2)).toEqual({
+      kind: 'join',
+      who: 'clone',
+      pools: { health: 50 },
+      statuses: [],
+    });
+  });
+
   it('is told apart from a story of events', () => {
     expect(isLegacyStory([{ kind: 'told', text: 'Hi.' }])).toBe(false);
   });

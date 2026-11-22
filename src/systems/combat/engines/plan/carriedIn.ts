@@ -15,6 +15,7 @@ export function carriedIn(state: PlanState): Partial<Round> {
     ...(state.watching ? { watching: true as const } : {}),
     ...(state.toTheLast ? { toTheLast: true as const } : {}),
     ...(state.slotTrace ? { slotTrace: state.slotTrace } : {}),
+    ...(state.cast ? { cast: state.cast } : {}),
     ...(state.decisions ? { decisions: [] } : {}),
   };
 }

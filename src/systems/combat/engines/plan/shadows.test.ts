@@ -105,6 +105,16 @@ describe('shadow clones', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it('never take the id of a clone that has left the field', () => {
+    const gone = ['hero~shadow~1', 'hero~shadow~2'].map((id) => ({
+      id,
+      name: id,
+      side: 'player' as const,
+    }));
+    const again = cast({ ...roundOf(), cast: gone });
+    expect(shadowsOf(again, 'hero').map((c) => c.id)).toEqual(['hero~shadow~3', 'hero~shadow~4']);
+  });
+
   it('never stand more than a few at once', () => {
     let round = roundOf();
     for (let i = 0; i < 5; i++) round = cast(round);
