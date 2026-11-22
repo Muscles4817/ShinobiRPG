@@ -1673,7 +1673,7 @@ view:
     blocker: You don’t know whether they’ve noticed you. Watch or sense them first.
   approaches[2]:
     label: Sneak past
-    detail: Speed 95%, at Goro’s pace
+    detail: Speed 88%, at Goro’s pace
   approaches[3]:
     label: Talk them down
     detail: Willpower 100%
@@ -1762,7 +1762,7 @@ view:
     detail: They reel, you strike first
   approaches[2]:
     label: Sneak past
-    detail: Speed 95%, at Goro’s pace
+    detail: Speed 88%, at Goro’s pace
   approaches[3]:
     label: Talk them down
     detail: Willpower 100%
@@ -1810,23 +1810,22 @@ view:
 --- combat (day 3, slot 0) ---
   —— First exchange ——
   You close in at once.
+  Gōran keeps low and comes in under the first bandit thug’s guard, inside the first bandit thug’s reach.
+  Goro closes in.
   Asuka opens with Lantern Cut.
   Asuka’s Lantern Cut tears through the first bandit thug, through the guard all the same, and he’s nearly knocked off his feet. [Guarded] [−38]
-  Gōran darts in close.
-  Goro keeps low and comes in under the first bandit thug’s guard, inside the first bandit thug’s reach.
-  The second bandit thug closes in.
+  The second bandit thug darts in close.
   The second bandit thug strikes as he lands.
   The second bandit thug’s strike only just clips Gōran. [−1]
-  The first bandit thug’s strike lands on Goro before Goro is properly set. [−12]
+  The first bandit thug’s strike lands on Goro before Goro is properly set. [−14]
   —— Second exchange ——
   You send Gale Heel howling out.
   Your Gale Heel hurls aside the first bandit thug, guard or no guard, and he’s nearly knocked off his feet. [Guarded] [−62]
   The first bandit thug goes down and stays down.
-  Steel flashes as Asuka looses Lantern Cut.
-  The second bandit thug can do little as Asuka’s Lantern Cut tears through him, guard or no guard. [Guarded] [−37]
-  Gōran launches into Lantern Wind Flurry.
+  Gōran explodes forward with Lantern Wind Flurry.
   Gōran’s Lantern Wind Flurry drives through the second bandit thug with everything behind it, guard or no guard. [Guarded] [−35]
-  Gōran’s Lantern Wind Flurry flattens the second bandit thug once more, and he’s nearly knocked off his feet. [−28]
+  The second bandit thug can do little as Gōran’s Lantern Wind Flurry flattens him again. [−41]
+  Gōran’s Lantern Wind Flurry smashes into the second bandit thug again, and he’s nearly knocked off his feet. [−24]
   The second bandit thug drops to his knees and topples over.
   You are still on your feet, and no one is left to face you.
 

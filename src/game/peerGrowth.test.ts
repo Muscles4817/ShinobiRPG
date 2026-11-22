@@ -1,5 +1,5 @@
 import { act, ctx, freshGame, newGame, veteran } from '@/test/gameFixtures';
-import { evenAptitude, statTier, STAT_IDS } from '@/systems/stats';
+import { evenAptitude, STAT_IDS, STAT_READING, statTier } from '@/systems/stats';
 
 import { companionCombatant } from './people/companions';
 import { peopleGrown, personAptitude, personStats, trainPerson } from './people/progress';
@@ -35,8 +35,12 @@ describe('generated genin', () => {
   it('are made with a rank, a graduate’s stats and a talent of their own', () => {
     for (const person of newGame().people.generated) {
       expect(person.rank).toBe('genin');
-      // Made like the player: early training on a file, nothing past C at graduation.
-      for (const id of STAT_IDS) expect(statTier(person.stats[id]).grade).toMatch(/[EDC]/);
+      // Made like the player: early training on a file takes a skill no further than C at
+      // graduation. Body and mind start from the birth curve and the same training sits on top,
+      // so a naturally sharp classmate who trained their eyes may read higher there.
+      for (const id of STAT_IDS.filter((s) => STAT_READING[s] === 'skill')) {
+        expect(statTier(person.stats[id]).grade).toMatch(/[EDC]/);
+      }
       expect(Math.max(...STAT_IDS.map((id) => person.stats[id]))).toBeGreaterThanOrEqual(6);
       expect(person.aptitude).toBeDefined();
     }

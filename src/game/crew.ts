@@ -1,6 +1,6 @@
 import type { PersonDef } from '@/content';
 import { jobProfile, postedAway } from '@/content';
-import { hashUnit } from '@/core';
+import { drawUnit } from '@/core';
 import {
   crewOptions,
   pickCrewKind,
@@ -75,7 +75,7 @@ interface CrewPick {
 function shuffled(pick: CrewPick, people: readonly PersonDef[]): PersonDef[] {
   const seed = pick.state.board.seed;
   return people
-    .map((p) => ({ p, k: hashUnit(seed, pick.day, pick.def.id, 'crew', p.id) }))
+    .map((p) => ({ p, k: drawUnit(seed, pick.day, pick.def.id, 'crew', p.id) }))
     .sort((a, b) => a.k - b.k)
     .map(({ p }) => p);
 }
@@ -90,7 +90,7 @@ function pool(pick: CrewPick, rank: PersonDef['rank'], roles: readonly PersonDef
 }
 
 function roll(pick: CrewPick, what: string): number {
-  return hashUnit(pick.state.board.seed, pick.day, pick.def.id, what);
+  return drawUnit(pick.state.board.seed, pick.day, pick.def.id, what);
 }
 
 function oldTeam(pick: CrewPick): Crew | null {
